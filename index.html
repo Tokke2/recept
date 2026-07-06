@@ -60,10 +60,17 @@
   .machine-card h3 { font-size:.92rem; margin-bottom:3px; }
   .machine-card p { color:var(--muted); font-size:.78rem; }
   .no-hit { color:var(--muted); padding:20px; text-align:center; display:none; }
+  .changelog { background:var(--card); border-radius:14px; padding:8px 20px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  .cl-item { display:flex; gap:14px; align-items:baseline; padding:10px 0; border-bottom:1px solid #f0ebe3; font-size:.9rem; }
+  .cl-item:last-child { border-bottom:none; }
+  .cl-date { color:var(--muted); font-size:.8rem; white-space:nowrap; min-width:84px; }
+  .cl-msg { flex:1; }
+  .cl-files { color:var(--muted); font-size:.78rem; }
   .loading { color:var(--muted); padding:16px; }
   footer { text-align:center; color:var(--muted); font-size:.82rem; padding:34px 20px 26px; }
   footer a { color:var(--accent); }
 </style>
+<link rel="stylesheet" href="assets/print.css">
 </head>
 <body>
 
@@ -83,6 +90,11 @@
     <h2>Recepten</h2>
     <p>Sök och filtrera per maskin</p>
   </a>
+  <a class="nav-card" href="kokbok.html">
+    <div class="icon">📖</div>
+    <h2>Kokboken</h2>
+    <p>Alla recept + maskinguide som utskrivbar bok/PDF</p>
+  </a>
   <a class="nav-card" href="json/maskindatabas.json" download>
     <div class="icon">📦</div>
     <h2>Ladda ner databasen</h2>
@@ -101,6 +113,11 @@
     <div class="loading" id="loading">Läser in recept…</div>
     <div class="grid" id="recipeGrid"></div>
     <div class="no-hit" id="noHit">Inga recept matchade. 🤔</div>
+  </section>
+
+  <section id="nytt" class="no-print">
+    <h2>🆕 Senaste ändringar</h2>
+    <div class="changelog" id="changelog"><span style="color:var(--muted);">Hämtar ändringshistorik…</span></div>
   </section>
 
   <section id="maskiner">
@@ -290,6 +307,34 @@ function applyFilters() {
   document.getElementById('noHit').style.display = hits ? 'none' : 'block';
 }
 
+/* ===== Ändringslogg från GitHub commit-historik ===== */
+loadChangelog();
+async function loadChangelog() {
+  const el = document.getElementById('changelog');
+  if (!isGitHubPages) { el.innerHTML = '<span style="color:var(--muted);">Ändringsloggen visas när sajten körs på GitHub Pages.</span>'; return; }
+  try {
+    const parts = location.pathname.split('/').filter(Boolean);
+    const user = location.hostname.split('.')[0];
+    const repo = parts.length ? parts[0] : user + '.github.io';
+    const res = await fetch(`https://api.github.com/repos/${user}/${repo}/commits?per_page=8`);
+    if (!res.ok) throw new Error();
+    const commits = await res.json();
+    el.innerHTML = commits.map(c => {
+      const d = new Date(c.commit.author.date);
+      const date = d.toLocaleDateString('sv-SE', { day:'numeric', month:'short' });
+      let msg = c.commit.message.split('\n')[0];
+      // Gör GitHubs standardmeddelanden trevligare
+      msg = msg.replace(/^Add files via upload$/i, 'Filer uppladdade/uppdaterade')
+               .replace(/^Update (.+)$/i, 'Uppdaterade $1')
+               .replace(/^Create (.+)$/i, 'Ny fil: $1')
+               .replace(/^Delete (.+)$/i, 'Tog bort $1');
+      return `<div class="cl-item"><span class="cl-date">${date}</span><span class="cl-msg">${msg}</span></div>`;
+    }).join('');
+  } catch (e) {
+    el.innerHTML = '<span style="color:var(--muted);">Kunde inte hämta ändringshistoriken just nu.</span>';
+  }
+}
+
 function renderMachines(machines) {
   document.getElementById('machineGrid').innerHTML = machines.map(m => `
     <a class="machine-card" href="maskindatabas.html">
@@ -302,6 +347,7 @@ function renderMachines(machines) {
     </a>`).join('');
 }
 </script>
-</body>
+<script src="assets/print.js"></script>
+<script src="assets/app.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1706f70f9b6f3c7',t:'MTc4MzM2MDA1Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
- 

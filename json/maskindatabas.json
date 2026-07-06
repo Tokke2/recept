@@ -38,5 +38,7 @@
       ]
     }
   ],
-  "struktur": "Maskiner ligger som separata filer i json/maskiner/ – en fil per maskin. Sidan läser in alla automatiskt."
+  "struktur": "Maskiner ligger som separata filer i json/maskiner/ – en fil per maskin. Sidan läser in alla automatiskt.",
+  "elpris_kr_per_kwh": 2.5,
+  "elpris_kommentar": "Ändra här (kr/kWh inkl. nätavgift & skatt) – recepten räknar om automatiskt."
 }
