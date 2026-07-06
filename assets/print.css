@@ -1,0 +1,169 @@
+/* ============================================================
+   CENTRAL UTSKRIFTSMODUL – Mitt Maskinkök
+   ============================================================
+   EN fil som hanterar A4-utskrift för ALLA sidor på sajten.
+   Ändra här → alla sidor (start, maskindatabas, alla recept)
+   uppdateras samtidigt. Sidorna länkar in den med:
+
+     <link rel="stylesheet" href="assets/print.css">        (rotsidor)
+     <link rel="stylesheet" href="../assets/print.css">     (receptsidor)
+
+   Utskriftsknappen läggs till automatiskt av assets/print.js
+   ============================================================ */
+
+/* ---------- Flytande utskriftsknapp (skärm) ---------- */
+.print-btn {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 99;
+  background: #2c3e50;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 13px 20px;
+  font-size: .95rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,.25);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.print-btn:hover { background: #1a2733; transform: translateY(-2px); }
+
+/* ============================================================
+   A4-UTSKRIFT – gäller alla sidor
+   ============================================================ */
+@page { size: A4 portrait; margin: 15mm 12mm; }
+
+@media print {
+
+  /* ---------- Grundformat: A4, pt-typografi, svart på vitt ---------- */
+  html, body {
+    width: 186mm;               /* A4-bredd minus marginaler */
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #fff !important;
+    color: #000;
+    font-size: 10pt;
+    line-height: 1.4;
+  }
+
+  /* ---------- Dölj interaktiva element (alla sidor) ---------- */
+  .print-btn, .no-print, .toolbar,
+  .tabs, .chips, .reco-box, #recoResults,          /* maskindatabasen */
+  .nav-cards, .search-row, .machine-filter,        /* startsidan */
+  #noHit, #loading,
+  #betyg,                                          /* recept: betyg/anteckningar */
+  footer.screen-only { display: none !important; }
+
+  /* ---------- Rubrikband → rent svartvitt brevhuvud ---------- */
+  header, header.hero {
+    background: #fff !important;
+    color: #000 !important;
+    border: none;
+    border-bottom: 2pt solid #000;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0 0 4mm 0;
+    margin-bottom: 5mm;
+    text-align: left;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  header h1 { font-size: 17pt; }
+  header p { font-size: 9pt; color: #333; }
+  header a { display: none !important; }
+  header p span { background: none !important; border: .5pt solid #999; color: #000 !important; }
+
+  h2 { font-size: 12pt; }
+  h3 { font-size: 11pt; }
+
+  /* ---------- Kort & rutor: vita med tunn ram, bryts ej mitt itu ---------- */
+  .card, .recipe-card, .machine-card, .machine-step, .warn, .alt, .result {
+    background: #fff !important;
+    box-shadow: none;
+    border: .5pt solid #999;
+    border-radius: 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 4mm;
+  }
+  .card { padding: 4mm 5mm; }
+
+  /* Accentrutor: grå med markerad vänsterkant */
+  .machine-step, .warn, .notes {
+    background: #f5f5f5 !important;
+    border-left: 2pt solid #000;
+    -webkit-print-color-adjust: exact;
+  }
+  .machine-step .prog { color: #000; }
+  .alt { background: #fafafa !important; font-size: 9pt; }
+  .warn { font-size: 9pt; }
+  .notes { font-size: 8.5pt; }
+
+  /* ---------- Tabeller: kompakta, rader håller ihop ---------- */
+  table { font-size: 9pt; page-break-inside: auto; }
+  tr { page-break-inside: avoid; break-inside: avoid; }
+  th {
+    background: #eee !important;
+    font-size: 7.5pt;
+    -webkit-print-color-adjust: exact;
+  }
+  td { padding: 1.5mm 2mm; }
+  .total td { background: #eee !important; font-weight: 700; }
+
+  /* ---------- Etiketter & knappar → text/ramar ---------- */
+  .badge, .spec, .tag {
+    background: none !important;
+    color: #000 !important;
+    border: .5pt solid #999;
+    font-size: 7.5pt;
+  }
+  .link-btn {
+    background: none !important;
+    color: #000 !important;
+    padding: 0 3mm 0 0;
+    text-decoration: underline;
+    font-size: 8pt;
+  }
+  a { color: #000; }
+
+  /* ---------- Maskindatabasen: visa ALLA maskiner, ej bara aktiv flik ---------- */
+  .card.hidden { display: block !important; }
+  .machine-title { font-size: 12pt; }
+  .machine-sub { font-size: 8.5pt; }
+  .prog-type { font-size: 7pt; }
+  .time { font-size: 8pt; }
+  .card img { max-width: 70pt !important; max-height: 55pt !important; }
+
+  /* ---------- Startsidan: listor istället för rutnät, inga bilder ---------- */
+  .grid, .machine-grid { display: block; }
+  .recipe-card img.thumb, .machine-card img { display: none; }
+  .recipe-card .body { padding: 3mm 4mm; }
+  .machine-line {
+    background: #f5f5f5 !important;
+    border-left: 2pt solid #000;
+    font-size: 9pt;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* ---------- Recept: bild & QR i lagom pappersstorlek ---------- */
+  .hero-img {
+    max-height: 55mm;
+    width: auto;
+    max-width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    display: block;
+    margin: 0 auto 4mm;
+  }
+  ol { padding-left: 5mm; }
+  .qr-box img { border: none; box-shadow: none; width: 30mm; height: 30mm; }
+  .qr-box p { font-size: 8pt; }
+
+  footer { font-size: 7.5pt; color: #666; }
+}
