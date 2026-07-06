@@ -1,0 +1,39 @@
+{
+  "id": "krups-fdk452",
+  "namn": "KRUPS Grcic Sandwich Maker",
+  "typ": "Smörgåsgrill / Sandwich Maker",
+  "varumarke": "KRUPS",
+  "modellnamn": "FDK452",
+  "asin": "B00AZZHCPG",
+  "kapacitet": "2 sandwichar, 850 W",
+  "egenskaper": [
+    "Non-stick-beläggning",
+    "Design av Konstantin Grcic",
+    "Klarlampa",
+    "Kompakt förvaring"
+  ],
+  "lankar": {
+    "kop": "https://www.amazon.se/dp/B00AZZHCPG",
+    "bruksanvisning": "https://www.krups.com",
+    "tillverkare": "https://www.krups.com"
+  },
+  "program": [
+    {
+      "namn": "Sandwichgrillning",
+      "typ": "Enda funktion",
+      "standardtid": "3–5 min",
+      "beskrivning": "Grillar och förseglar dubbelmackor i triangelform. Förvärm tills lampan visar klart.",
+      "bast_for": "Varma mackor, ost & skinka-toast, sötfyllda mackor",
+      "nyckelord": [
+        "toast",
+        "macka",
+        "varm macka",
+        "sandwich",
+        "ost",
+        "skinka",
+        "grilled cheese"
+      ]
+    }
+  ],
+  "bild": "images/krups-fdk452.png"
+}

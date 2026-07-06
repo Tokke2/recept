@@ -1,0 +1,54 @@
+{
+  "id": "linkchef-grinder",
+  "namn": "LINKChef Elektrisk Kaffekvarn / Kryddkvarn",
+  "typ": "Kaffekvarn / Kryddkvarn (våt & torr)",
+  "varumarke": "LINKChef",
+  "asin": "B07DXFS43F",
+  "kapacitet": "80 g (ca 12 koppar kaffe), 300 W",
+  "egenskaper": [
+    "Våt- och torrmalning",
+    "Löstagbar rostfri skål – kan sköljas direkt",
+    "Rengöringsborste/sked ingår",
+    "Enknappsstyrning (puls)"
+  ],
+  "lankar": {
+    "kop": "https://www.amazon.se/dp/B07DXFS43F",
+    "bruksanvisning": "https://www.amazon.se/dp/B07DXFS43F",
+    "tillverkare": "https://www.amazon.se/dp/B07DXFS43F"
+  },
+  "program": [
+    {
+      "namn": "Torrmalning (puls)",
+      "typ": "Manuell",
+      "standardtid": "Korta pulser 5–15 sek",
+      "beskrivning": "Mal kaffebönor, kryddor, nötter och frön. Pulsa för jämn malning.",
+      "bast_for": "Kaffebönor, hela kryddor, nötter, linfrön",
+      "nyckelord": [
+        "mala",
+        "kaffe",
+        "kaffebönor",
+        "kryddor",
+        "nötter",
+        "peppar",
+        "kanel",
+        "kardemumma"
+      ]
+    },
+    {
+      "namn": "Våtmalning",
+      "typ": "Manuell",
+      "standardtid": "Korta pulser",
+      "beskrivning": "Mal våta ingredienser till pastor.",
+      "bast_for": "Vitlök, ingefära, chilipasta, currypasta",
+      "nyckelord": [
+        "vitlök",
+        "ingefära",
+        "chilipasta",
+        "currypasta",
+        "pesto",
+        "våtmala"
+      ]
+    }
+  ],
+  "bild": "images/linkchef-grinder.jpg"
+}

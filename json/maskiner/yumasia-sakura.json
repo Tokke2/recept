@@ -1,0 +1,172 @@
+{
+  "id": "yumasia-sakura",
+  "namn": "Yum Asia Sakura Riskokare med keramisk skål",
+  "typ": "Riskokare / Multikokare (Advanced Fuzzy Logic)",
+  "varumarke": "Yum Asia",
+  "modellnamn": "YUM-EN15EU (Sakura)",
+  "asin": "B075WWQY2Y",
+  "kapacitet": "8 koppar / 1,5 liter okokt ris (1–8 personer)",
+  "egenskaper": [
+    "Advanced Fuzzy Logic (AI)",
+    "7-fas kokning, 3D-värmeteknik",
+    "Motouch LED-touchpanel",
+    "5-lagers keramisk Ninja-innerskål 2 mm",
+    "Varmhållning 24 h + timer 24 h",
+    "Ångkorg, mätkopp, spatel, soppslev ingår"
+  ],
+  "lankar": {
+    "kop": "https://www.amazon.se/dp/B075WWQY2Y",
+    "bruksanvisning": "https://yum-asia.com/eu/instruction-manuals/",
+    "tillverkare": "https://yum-asia.com/eu/product/sakura-advanced-fuzzy-logic-ceramic-rice-cooker/"
+  },
+  "program": [
+    {
+      "namn": "Vitt/långkornigt ris",
+      "typ": "Risprogram",
+      "standardtid": "Auto (fuzzy logic)",
+      "beskrivning": "Perfekt vitt och långkornigt ris med 7-faskokning.",
+      "bast_for": "Jasmin, basmati, långkornigt",
+      "nyckelord": [
+        "ris",
+        "vitt ris",
+        "jasminris",
+        "basmati",
+        "långkornigt"
+      ]
+    },
+    {
+      "namn": "Kortkornigt ris (sushi)",
+      "typ": "Risprogram",
+      "standardtid": "Auto",
+      "beskrivning": "För kortkornigt ris och sushiris.",
+      "bast_for": "Sushiris, kortkornigt",
+      "nyckelord": [
+        "sushi",
+        "sushiris",
+        "kortkornigt"
+      ]
+    },
+    {
+      "namn": "Brunt ris/fullkorn",
+      "typ": "Risprogram",
+      "standardtid": "Auto (längre)",
+      "beskrivning": "Längre program för fullkornsris.",
+      "bast_for": "Brunt ris, råris, fullkorn",
+      "nyckelord": [
+        "brunt ris",
+        "råris",
+        "fullkorn"
+      ]
+    },
+    {
+      "namn": "Crust/Tahdig",
+      "typ": "Risprogram",
+      "standardtid": "Auto",
+      "beskrivning": "Persiskt ris med gyllene krispig botten.",
+      "bast_for": "Tahdig, persiskt ris, krispig risbotten",
+      "nyckelord": [
+        "tahdig",
+        "crust",
+        "persiskt ris",
+        "krispigt ris"
+      ]
+    },
+    {
+      "namn": "Quick (snabbris)",
+      "typ": "Risprogram",
+      "standardtid": "Snabbare",
+      "beskrivning": "Snabbare kokning av vitt ris.",
+      "bast_for": "Vitt ris när det är bråttom",
+      "nyckelord": [
+        "snabbris",
+        "quick",
+        "snabbt ris"
+      ]
+    },
+    {
+      "namn": "Gröt (Porridge)",
+      "typ": "Multiprogram",
+      "standardtid": "Auto",
+      "beskrivning": "Gröt och congee.",
+      "bast_for": "Risgrynsgröt, congee, havregrynsgröt",
+      "nyckelord": [
+        "gröt",
+        "congee",
+        "risgrynsgröt",
+        "havregrynsgröt"
+      ]
+    },
+    {
+      "namn": "Ångkokning (Steam)",
+      "typ": "Multiprogram",
+      "standardtid": "Justerbar",
+      "beskrivning": "Ångkokar i medföljande korg – även samtidigt som ris koks under.",
+      "bast_for": "Grönsaker, fisk, dumplings",
+      "nyckelord": [
+        "ånga",
+        "ångkoka",
+        "grönsaker",
+        "fisk",
+        "dumplings"
+      ]
+    },
+    {
+      "namn": "Långkok (Slow cook)",
+      "typ": "Multiprogram",
+      "standardtid": "Justerbar",
+      "beskrivning": "Långkok på låg värme.",
+      "bast_for": "Grytor, mört kött",
+      "nyckelord": [
+        "långkok",
+        "slow cook",
+        "gryta"
+      ]
+    },
+    {
+      "namn": "Soppa (Soup)",
+      "typ": "Multiprogram",
+      "standardtid": "Justerbar",
+      "beskrivning": "Kokar soppor och buljonger.",
+      "bast_for": "Soppor, buljong",
+      "nyckelord": [
+        "soppa",
+        "buljong"
+      ]
+    },
+    {
+      "namn": "Kakbakning (Cake)",
+      "typ": "Multiprogram",
+      "standardtid": "Justerbar",
+      "beskrivning": "Bakar mjuk kaka i keramikskålen.",
+      "bast_for": "Sockerkaka, mjuk kaka",
+      "nyckelord": [
+        "kaka",
+        "sockerkaka",
+        "baka"
+      ]
+    },
+    {
+      "namn": "Yoghurt",
+      "typ": "Multiprogram",
+      "standardtid": "Flera timmar",
+      "beskrivning": "Fermenterar hemgjord yoghurt.",
+      "bast_for": "Yoghurt",
+      "nyckelord": [
+        "yoghurt",
+        "fermentera"
+      ]
+    },
+    {
+      "namn": "Varmhållning 24 h",
+      "typ": "Funktion",
+      "standardtid": "Max 24 h",
+      "beskrivning": "Håller riset perfekt i upp till ett dygn.",
+      "bast_for": "Varmhållning av ris",
+      "nyckelord": [
+        "varmhållning",
+        "hålla varm"
+      ]
+    }
+  ],
+  "bild": "images/yumasia-sakura.jpg"
+}

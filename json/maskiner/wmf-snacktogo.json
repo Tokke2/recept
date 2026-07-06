@@ -1,0 +1,106 @@
+{
+  "id": "wmf-snacktogo",
+  "namn": "WMF KÜCHENminis Snack to go Torkautomat",
+  "typ": "Torkautomat / Dehydrator",
+  "varumarke": "WMF",
+  "modellnamn": "0415250011",
+  "asin": "B075KXXD3G",
+  "kapacitet": "5 torkgaller (utbyggbar med 3 till), 250 W",
+  "egenskaper": [
+    "Temperatur 30–70°C i 5°-steg",
+    "Timer 0–24 h i 30-minuterssteg",
+    "LCD-display",
+    "Överhettningsskydd med auto-avstängning",
+    "Tyst läge (mute) för nattkörning",
+    "Silikonform för müslibars + 2 förvaringsboxar ingår",
+    "Receptbok ingår"
+  ],
+  "lankar": {
+    "kop": "https://www.amazon.se/dp/B075KXXD3G",
+    "bruksanvisning": "https://www.manual.nz/wmf/kitchenminis-0415250011/manual",
+    "tillverkare": "https://www.wmf.com"
+  },
+  "program": [
+    {
+      "namn": "Örter & kryddor (30–40°C)",
+      "typ": "Manuell inställning",
+      "standardtid": "3–6 h",
+      "beskrivning": "Skonsam torkning av örter som behåller arom.",
+      "bast_for": "Basilika, persilja, dill, mynta",
+      "nyckelord": [
+        "örter",
+        "kryddor",
+        "basilika",
+        "persilja",
+        "dill",
+        "torka örter"
+      ]
+    },
+    {
+      "namn": "Grönsaker (50–55°C)",
+      "typ": "Manuell inställning",
+      "standardtid": "6–10 h",
+      "beskrivning": "Torkar grönsaker till chips eller förvaring.",
+      "bast_for": "Grönsakschips, tomater, svamp",
+      "nyckelord": [
+        "grönsaker",
+        "grönsakschips",
+        "tomater",
+        "svamp",
+        "torka grönsaker"
+      ]
+    },
+    {
+      "namn": "Frukt (57–60°C)",
+      "typ": "Manuell inställning",
+      "standardtid": "6–12 h",
+      "beskrivning": "Torkad frukt och fruktchips.",
+      "bast_for": "Äppelchips, banan, aprikoser, bär",
+      "nyckelord": [
+        "frukt",
+        "äppelchips",
+        "banan",
+        "torkad frukt",
+        "fruktchips"
+      ]
+    },
+    {
+      "namn": "Kött/jerky (65–70°C)",
+      "typ": "Manuell inställning",
+      "standardtid": "4–8 h",
+      "beskrivning": "Torkar kött till jerky på högsta temperatur.",
+      "bast_for": "Beef jerky, torkat kött",
+      "nyckelord": [
+        "jerky",
+        "beef jerky",
+        "torkat kött"
+      ]
+    },
+    {
+      "namn": "Müslibars (silikonform)",
+      "typ": "Tillbehör",
+      "standardtid": "Enligt recept",
+      "beskrivning": "Gör egna müsli-/energibars i den medföljande silikonformen.",
+      "bast_for": "Müslibars, energibars",
+      "nyckelord": [
+        "müslibar",
+        "energibar",
+        "bars",
+        "mellanmål"
+      ]
+    },
+    {
+      "namn": "Nattläge (mute)",
+      "typ": "Funktion",
+      "standardtid": "-",
+      "beskrivning": "Håll Set-knappen 3 sek – ingen pipsignal, kör över natten.",
+      "bast_for": "Torkning över natten",
+      "nyckelord": [
+        "nattläge",
+        "tyst",
+        "natt"
+      ]
+    }
+  ],
+  "bild": "images/wmf-snacktogo.jpg"
+}

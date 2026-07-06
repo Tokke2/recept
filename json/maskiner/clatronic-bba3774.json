@@ -1,0 +1,191 @@
+{
+  "id": "clatronic-bba3774",
+  "namn": "Clatronic Bakmaskin BBA 3774",
+  "typ": "Bakmaskin / Brödbakningsmaskin",
+  "varumarke": "Clatronic",
+  "modellnamn": "BBA 3774",
+  "asin": "B09LHRL5G3",
+  "kapacitet": "Limpor upp till ca 1000 g (max 590 g mjöl), 550 W, 12 program / 53 inställningar",
+  "egenskaper": [
+    "12 bakprogram",
+    "Display med enkel styrning",
+    "Timer/fördröjd start upp till 13 h",
+    "Automatisk varmhållning efter bakning",
+    "Knådar, jäser och bakar automatiskt",
+    "Val av skorpfärg (ljus/medium/mörk)"
+  ],
+  "viktigt": [
+    "Max 590 g mjöl och 7 g torrjäst (21 g färsk) – annars kan degen svämma över",
+    "Program 7 (Quick), 9 (Jam) och 12 (Bake) kan inte startas med fördröjd timer",
+    "Använd inte timerfunktionen med färskvaror (mjölk, ägg, frukt, yoghurt, lök)",
+    "Timer ej lämplig för glutenfritt bröd (görs med varmt vatten)",
+    "Cake-programmet använder knådkrok (ej visp) – kakor blir något fastare",
+    "10 pipsignaler under 2:a knådningen = dags att tillsätta frukt/nötter/frön"
+  ],
+  "lankar": {
+    "kop": "https://www.amazon.se/dp/B09LHRL5G3",
+    "bruksanvisning": "https://manuals.plus/clatronic/bba-3774-bread-maker-manual",
+    "tillverkare": "https://www.clatronic.de"
+  },
+  "program": [
+    {
+      "namn": "1. Basic",
+      "typ": "Bakprogram",
+      "standardtid": "3:00 h (timer OK)",
+      "beskrivning": "Standardprogram: knåda 10 min → jäs 20 min → knåda 15 min (signal för tillsatser) → jäs 25+45 min → baka 65 min. Varmhållning 60 min.",
+      "bast_for": "Vitt bröd, ljust matbröd, blandbröd, surdegsbröd",
+      "nyckelord": [
+        "vitt bröd",
+        "matbröd",
+        "basbröd",
+        "limpa",
+        "blandbröd",
+        "surdegsbröd"
+      ]
+    },
+    {
+      "namn": "2. French",
+      "typ": "Bakprogram",
+      "standardtid": "3:50 h (timer OK)",
+      "beskrivning": "Längre jäsning (40+30+50 min) för luftigt bröd med krispig skorpa. Baka 70 min.",
+      "bast_for": "Franskbröd, italienskt vitt bröd",
+      "nyckelord": [
+        "franskbröd",
+        "franskt bröd",
+        "baguette",
+        "luftigt bröd",
+        "krispig skorpa"
+      ]
+    },
+    {
+      "namn": "3. Whole Wheat (Fullkorn)",
+      "typ": "Bakprogram",
+      "standardtid": "3:40 h (timer OK)",
+      "beskrivning": "För fullkornsbröd, extra lång 3:e jäsning (65 min). Blötlägg hela korn över natten.",
+      "bast_for": "Fullkornsbröd, sjukornsbröd, grovt bröd",
+      "nyckelord": [
+        "fullkorn",
+        "fullkornsbröd",
+        "rågbröd",
+        "grovt bröd",
+        "grahamsbröd"
+      ]
+    },
+    {
+      "namn": "4. Quick (Snabbt bröd)",
+      "typ": "Bakprogram",
+      "standardtid": "2:10 h (timer OK)",
+      "beskrivning": "Snabbare beredning: kortare jäsning, baka 70 min.",
+      "bast_for": "Snabbt vardagsbröd, cream cheese-bröd",
+      "nyckelord": [
+        "snabbt bröd",
+        "snabbprogram"
+      ]
+    },
+    {
+      "namn": "5. Sweet (Sött bröd)",
+      "typ": "Bakprogram",
+      "standardtid": "2:55 h (timer OK)",
+      "beskrivning": "För söta degar med socker, honung, russin.",
+      "bast_for": "Russinbröd, sött vetebröd",
+      "nyckelord": [
+        "sött bröd",
+        "russinbröd",
+        "vetebröd",
+        "kanelbröd"
+      ]
+    },
+    {
+      "namn": "6. Gluten Free (Glutenfritt)",
+      "typ": "Bakprogram",
+      "standardtid": "2:55 h (ej timer i praktiken)",
+      "beskrivning": "För glutenfria mixer med varmt vatten. Baka 70 min. Välj mörk skorpa.",
+      "bast_for": "Glutenfritt bröd",
+      "nyckelord": [
+        "glutenfritt",
+        "glutenfri",
+        "specialkost"
+      ]
+    },
+    {
+      "namn": "7. Quick (Extra snabb)",
+      "typ": "Bakprogram",
+      "standardtid": "1:38 h (ej timer)",
+      "beskrivning": "Snabbast: knåda 13+5 min, jäs 35 min, baka 45 min.",
+      "bast_for": "Expressbröd, lökbröd, pizzabröd",
+      "nyckelord": [
+        "express",
+        "snabbast",
+        "lökbröd",
+        "pizzabröd"
+      ]
+    },
+    {
+      "namn": "8. Dough (Deg)",
+      "typ": "Degprogram",
+      "standardtid": "1:30 h (timer OK)",
+      "beskrivning": "Knåda 20 min + jäs 30+40 min – UTAN bakning. Ta ut och forma själv.",
+      "bast_for": "Pizzadeg, baguettedeg, bulldeg",
+      "nyckelord": [
+        "deg",
+        "pizzadeg",
+        "bulldeg",
+        "knåda",
+        "jäsa deg",
+        "baguettedeg"
+      ]
+    },
+    {
+      "namn": "9. Jam (Sylt)",
+      "typ": "Specialprogram",
+      "standardtid": "1:20 h (ej timer)",
+      "beskrivning": "Värm 15 min → knåda+värm 45 min → vila 20 min. Kokar sylt med omrörning.",
+      "bast_for": "Jordgubbssylt, apelsinmarmelad",
+      "nyckelord": [
+        "sylt",
+        "marmelad",
+        "jam",
+        "bär"
+      ]
+    },
+    {
+      "namn": "10. Cake (Kaka)",
+      "typ": "Bakprogram",
+      "standardtid": "1:50 h totalt",
+      "beskrivning": "Knåda 6 min → vila 5 min → knåda 10 min (signal) → vila 9 min → BAKA 80 min. För kakor med BAKPULVER (pound cake). Knådkrok ger fastare kaka än visp.",
+      "bast_for": "Sockerkaka/pound cake med bakpulver",
+      "nyckelord": [
+        "kaka",
+        "mjuk kaka",
+        "sockerkaka",
+        "bakpulver",
+        "pound cake"
+      ]
+    },
+    {
+      "namn": "11. Sandwich",
+      "typ": "Bakprogram",
+      "standardtid": "3:00 h (timer OK)",
+      "beskrivning": "Luftigt toastbröd med mjuk skorpa. Baka 55 min.",
+      "bast_for": "Sandwichbröd, toastbröd",
+      "nyckelord": [
+        "sandwichbröd",
+        "toastbröd",
+        "mjukt bröd"
+      ]
+    },
+    {
+      "namn": "12. Bake (Endast gräddning)",
+      "typ": "Specialprogram",
+      "standardtid": "10–60 min (ej timer)",
+      "beskrivning": "Enbart gräddning, justerbar 10–60 min. Eftergrädda blekt bröd eller grädda färdigjäst deg.",
+      "bast_for": "Eftergräddning, färdig deg",
+      "nyckelord": [
+        "grädda",
+        "eftergrädda",
+        "endast bakning"
+      ]
+    }
+  ],
+  "bild": "images/clatronic-bba3774.png"
+}

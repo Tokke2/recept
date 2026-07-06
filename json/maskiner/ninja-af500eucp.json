@@ -1,0 +1,119 @@
+{
+  "id": "ninja-af500eucp",
+  "namn": "Ninja Foodi FlexDrawer Airfryer 10,4 L",
+  "typ": "Airfryer / Varmluftsfritös (FlexDrawer dubbelzon)",
+  "varumarke": "Ninja",
+  "modellnamn": "AF500EUCP (koppar/svart)",
+  "asin": "B0CJVNGMFL",
+  "kapacitet": "10,4 L (2 zoner à 5,2 L eller 1 MegaZone)",
+  "egenskaper": [
+    "7-i-1",
+    "Löstagbar avdelare: 2 zoner ↔ 1 MegaZone",
+    "40–240°C",
+    "2470 W",
+    "Non-stick, diskmaskinssäkra delar",
+    "Rymmer 2 kg kyckling per zon"
+  ],
+  "lankar": {
+    "kop": "https://www.amazon.se/dp/B0CJVNGMFL",
+    "bruksanvisning": "https://ninjakitchen.co.uk/instruction-manuals",
+    "tillverkare": "https://ninjakitchen.co.uk"
+  },
+  "program": [
+    {
+      "namn": "Air Fry",
+      "typ": "Program",
+      "standardtid": "Varierar, ca 170–200°C",
+      "beskrivning": "Frityrkrispigt med upp till 75% mindre fett.",
+      "bast_for": "Pommes, kyckling, grönsaker",
+      "nyckelord": [
+        "airfry",
+        "pommes",
+        "frites",
+        "kyckling",
+        "krispig"
+      ]
+    },
+    {
+      "namn": "Max Crisp",
+      "typ": "Program",
+      "standardtid": "240°C",
+      "beskrivning": "Maximal värme för frysta produkter – snabbast och krispigast.",
+      "bast_for": "Fryst: fiskpinnar, nuggets, pommes",
+      "nyckelord": [
+        "max crisp",
+        "fryst",
+        "fiskpinnar",
+        "nuggets",
+        "snabbt"
+      ]
+    },
+    {
+      "namn": "Roast (Rosta)",
+      "typ": "Program",
+      "standardtid": "Varierar",
+      "beskrivning": "Rostar stora köttbitar och grönsaker – hel kyckling, lammstek.",
+      "bast_for": "Söndagsstek, hel kyckling, rotfrukter",
+      "nyckelord": [
+        "rosta",
+        "stek",
+        "hel kyckling",
+        "lammstek",
+        "rotfrukter"
+      ]
+    },
+    {
+      "namn": "Bake (Baka)",
+      "typ": "Program",
+      "standardtid": "Varierar",
+      "beskrivning": "Bakar bröd, kakor och traybakes.",
+      "bast_for": "Bröd, kakor, traybake",
+      "nyckelord": [
+        "baka",
+        "bröd",
+        "kakor",
+        "traybake"
+      ]
+    },
+    {
+      "namn": "Reheat (Värm upp)",
+      "typ": "Program",
+      "standardtid": "Varierar",
+      "beskrivning": "Värmer rester utan att torka ut dem.",
+      "bast_for": "Rester, pizza",
+      "nyckelord": [
+        "värma",
+        "rester",
+        "reheat"
+      ]
+    },
+    {
+      "namn": "Dehydrate (Torka)",
+      "typ": "Program",
+      "standardtid": "40–80°C, flera timmar",
+      "beskrivning": "Torkar frukt, grönsakschips och jerky.",
+      "bast_for": "Torkad frukt, chips, jerky",
+      "nyckelord": [
+        "torka",
+        "dehydrate",
+        "jerky",
+        "chips"
+      ]
+    },
+    {
+      "namn": "Prove (Jäsa)",
+      "typ": "Program",
+      "standardtid": "ca 40°C",
+      "beskrivning": "Perfekt jäsmiljö för degar.",
+      "bast_for": "Jäsa bröddeg, pizzadeg",
+      "nyckelord": [
+        "jäsa",
+        "prove",
+        "deg",
+        "bröddeg",
+        "pizzadeg"
+      ]
+    }
+  ],
+  "bild": "images/ninja-af500eucp.jpg"
+}

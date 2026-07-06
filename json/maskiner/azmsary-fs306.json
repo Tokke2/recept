@@ -1,0 +1,141 @@
+{
+  "id": "azmsary-fs306",
+  "namn": "Azmsary Slushiemaskin / Glassmaskin (Swiss Classic Set)",
+  "typ": "Slushmaskin / Glassmaskin / Frozen Drink Maker",
+  "varumarke": "Azmsary",
+  "modellnamn": "FS306",
+  "upc": "760754538067",
+  "kapacitet": "Min 450 ml – Max 1900 ml (85 oz)",
+  "egenskaper": [
+    "LED-skärm med skärmlås",
+    "6 förinställda program",
+    "Rapid Chill – ingen is behövs",
+    "Automatisk rengöring",
+    "Nattläge 3–4°C",
+    "Justerbar konsistens",
+    "Kan köras upp till 12 h",
+    "Glass-spritstillbehör"
+  ],
+  "viktigt": [
+    "Minst 4% sockerhalt (16,5 g/330 ml) annars E1-fel",
+    "Spiked Slush: 2,8–16% alkohol (E7 vid för stark)",
+    "Aldrig is, frusen frukt eller varma ingredienser",
+    "Stå upprätt 2 h före första användning",
+    "Milkshake/Frappé: servera inom 30 min"
+  ],
+  "lankar": {
+    "kop": "https://www.amazon.se/s?k=Azmsary+slushiemaskin+FS306",
+    "bruksanvisning": "https://manuals.plus/azmsary/fs306-slushie-machine-manual",
+    "tillverkare": "https://azmsary.com/"
+  },
+  "program": [
+    {
+      "namn": "Slush",
+      "typ": "Förinställt program",
+      "standardtid": "15–45 min",
+      "beskrivning": "Klassisk slush av saft, juice eller läsk. Minst 4% socker.",
+      "bast_for": "Slush av saft, läsk",
+      "nyckelord": [
+        "slush",
+        "slushie",
+        "isdryck",
+        "saft",
+        "läsk",
+        "fest"
+      ]
+    },
+    {
+      "namn": "Spiked Slush",
+      "typ": "Förinställt program",
+      "standardtid": "15–45 min",
+      "beskrivning": "Frusna drinkar, 2,8–16% alkohol. Sprit: max 118 ml/710 ml.",
+      "bast_for": "Frozen margarita, daiquiri, vinslush",
+      "nyckelord": [
+        "margarita",
+        "drink",
+        "cocktail",
+        "alkohol",
+        "daiquiri",
+        "vin"
+      ]
+    },
+    {
+      "namn": "Frappé",
+      "typ": "Förinställt program",
+      "standardtid": "15–45 min",
+      "beskrivning": "Iskaffe av kall kaffebas. Servera inom 30 min.",
+      "bast_for": "Frappé, iskaffe",
+      "nyckelord": [
+        "frappé",
+        "frappe",
+        "iskaffe",
+        "kaffe"
+      ]
+    },
+    {
+      "namn": "Milkshake",
+      "typ": "Förinställt program",
+      "standardtid": "15–45 min",
+      "beskrivning": "Krämiga milkshakes. Servera inom 30 min.",
+      "bast_for": "Milkshake choklad/vanilj/jordgubb",
+      "nyckelord": [
+        "milkshake",
+        "shake",
+        "choklad",
+        "vanilj",
+        "jordgubb"
+      ]
+    },
+    {
+      "namn": "Frozen Juice",
+      "typ": "Förinställt program",
+      "standardtid": "15–45 min",
+      "beskrivning": "Frusen juice/sorbetdryck. Kyl juicen innan.",
+      "bast_for": "Frusen apelsinjuice, sorbetdryck",
+      "nyckelord": [
+        "juice",
+        "frusen juice",
+        "sorbet"
+      ]
+    },
+    {
+      "namn": "Mjukglass (Soft Serve)",
+      "typ": "Förinställt program",
+      "standardtid": "15–45 min",
+      "beskrivning": "Mjukglass av kyld glassbas. Använd spritstillbehöret.",
+      "bast_for": "Mjukglass, softis",
+      "nyckelord": [
+        "glass",
+        "mjukglass",
+        "softis",
+        "soft serve",
+        "gelato"
+      ]
+    },
+    {
+      "namn": "Nattläge (Night Mode)",
+      "typ": "Funktion",
+      "standardtid": "Kontinuerlig",
+      "beskrivning": "Håller 3–4°C så slushen inte behöver slängas.",
+      "bast_for": "Förvara slush, kalla drycker",
+      "nyckelord": [
+        "nattläge",
+        "förvara",
+        "kall dryck"
+      ]
+    },
+    {
+      "namn": "Rengöring (Rinse)",
+      "typ": "Funktion",
+      "standardtid": "15 min",
+      "beskrivning": "Sköljprogram utan kylning.",
+      "bast_for": "Rengöring",
+      "nyckelord": [
+        "rengöring",
+        "rinse",
+        "diska"
+      ]
+    }
+  ],
+  "bild": "images/azmsary-fs306.webp"
+}

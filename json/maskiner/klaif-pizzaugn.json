@@ -1,0 +1,61 @@
+{
+  "id": "klaif-pizzaugn",
+  "namn": "KLAIF Elektrisk Pizzaugn med keramisk sten 12\"",
+  "typ": "Pizzaugn (bänkmodell)",
+  "varumarke": "KLAIF",
+  "modellnamn": "LMR (Röd)",
+  "asin": "B0FJRMD8LT",
+  "kapacitet": "12 tum / ca 30 cm pizza",
+  "egenskaper": [
+    "Keramisk piza-sten 12\"",
+    "Två separata temperaturvred (över- och undervärme)",
+    "Inbyggd termometer",
+    "Upp till ca 400°C",
+    "4 pizzaverktyg ingår (spade, skrapa m.m.)"
+  ],
+  "lankar": {
+    "kop": "https://www.amazon.se/dp/B0FJRMD8LT",
+    "bruksanvisning": "https://manuals.plus/asin/B0F5W8YS1L",
+    "tillverkare": "https://manuals.plus/category/klaif"
+  },
+  "program": [
+    {
+      "namn": "Pizza (över + under max)",
+      "typ": "Manuell inställning",
+      "standardtid": "Förvärm 10–15 min, grädda 4–6 min",
+      "beskrivning": "Båda vreden på max. Förvärm tills termometern når måltemp, skjut in pizzan på den heta stenen.",
+      "bast_for": "Napolitansk pizza, tunnbottnad pizza",
+      "nyckelord": [
+        "pizza",
+        "napolitansk",
+        "pizzasten",
+        "calzone"
+      ]
+    },
+    {
+      "namn": "Krispig botten (mest undervärme)",
+      "typ": "Manuell inställning",
+      "standardtid": "Efter behov",
+      "beskrivning": "Högre undervärme för extra krispig botten, t.ex. tjockare pizzor.",
+      "bast_for": "Pan pizza, tjock botten, pizzabullar",
+      "nyckelord": [
+        "pan pizza",
+        "tjock botten",
+        "krispig botten"
+      ]
+    },
+    {
+      "namn": "Gratinering (mest övervärme)",
+      "typ": "Manuell inställning",
+      "standardtid": "Efter behov",
+      "beskrivning": "Högre övervärme för att smälta ost och ge färg.",
+      "bast_for": "Gratinera, smälta ost, värma pizzabitar",
+      "nyckelord": [
+        "gratinera",
+        "smälta ost",
+        "värma pizza"
+      ]
+    }
+  ],
+  "bild": "images/klaif-pizzaugn.jpg"
+}

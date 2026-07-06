@@ -4,15 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🍍 Mjuk Ananaskaka – Recept</title>
-
-<!-- ===== RECEPT-METADATA (läses automatiskt av startsidan) ===== -->
-<meta name="recept:namn" content="Mjuk ananaskaka">
-<meta name="recept:emoji" content="🍍">
-<meta name="recept:beskrivning" content="Saftig & mjuk med ananasbitar, socker + honung. 12 bitar, ~176 kcal/bit, ~32 kr.">
-<meta name="recept:taggar" content="kaka, mjuk kaka, ananas, fika, efterrätt, bakning">
-<meta name="recept:maskiner" content="Blanda degen: Clatronic BBA 3774 · 10. Cake (1:a knådfasen 6 min) | Gräddning (rek.): Midea MB-FS5017 · Kaka 50 min | Alternativ: COSORI TwinFry · Bake 160°C 30–35 min">
-<!-- ============================================================ -->
-
 <style>
   :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -20,7 +11,6 @@
   header { background:linear-gradient(135deg,#e67e22,#f1c40f); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:20px; box-shadow:0 4px 14px rgba(0,0,0,.12); }
   header h1 { font-size:1.6rem; margin-bottom:4px; }
   header p { opacity:.95; font-size:.92rem; }
-  .hero-img { width:100%; max-height:340px; object-fit:cover; border-radius:14px; margin-bottom:16px; box-shadow:0 2px 10px rgba(0,0,0,.1); }
   .card { background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
   h2 { font-size:1.1rem; margin-bottom:10px; }
   table { width:100%; border-collapse:collapse; font-size:.9rem; }
@@ -39,45 +29,15 @@
   .cols > div { flex:1; min-width:260px; }
   .badge { display:inline-block; background:#eaf7ef; color:var(--green); border-radius:6px; padding:2px 10px; font-size:.8rem; font-weight:600; margin-right:6px; }
   footer { text-align:center; color:var(--muted); font-size:.8rem; margin-top:20px; }
-  .toolbar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
-  .tool-btn { background:var(--dark); color:#fff; border:none; border-radius:10px; padding:10px 18px; font-size:.9rem; font-weight:600; cursor:pointer; text-decoration:none; display:inline-block; }
-  .tool-btn:hover { opacity:.85; }
-  .stars { font-size:1.9rem; cursor:pointer; user-select:none; letter-spacing:4px; }
-  .stars span { color:#ddd; transition:color .1s; }
-  .stars span.on { color:#f1c40f; }
-  textarea { width:100%; min-height:90px; border:2px solid #ddd; border-radius:10px; padding:12px; font-size:.95rem; font-family:inherit; resize:vertical; }
-  textarea:focus { outline:none; border-color:var(--accent2); }
-  .saved-note { color:var(--green); font-size:.82rem; margin-top:6px; visibility:hidden; }
-  .qr-box { text-align:center; }
-  .qr-box img { border:8px solid #fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.1); }
-  .qr-box p { color:var(--muted); font-size:.85rem; margin-top:8px; }
-
-  /* ===== UTSKRIFTSLÄGE ===== */
-  @media print {
-    body { background:#fff; padding:0; max-width:100%; }
-    header { background:#fff !important; color:#000; box-shadow:none; border:2px solid #000; -webkit-print-color-adjust:exact; }
-    header a, .toolbar, #betyg, footer .no-print, .no-print { display:none !important; }
-    .card, .machine-step, .warn, .alt { box-shadow:none; border:1px solid #ccc; page-break-inside:avoid; }
-    .hero-img { max-height:200px; }
-  }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="no-print" style="margin-bottom:8px;"><a href="../index.html" style="color:#fff; opacity:.85; text-decoration:none; font-size:.9rem;">← Till startsidan</a></div>
   <h1>🍍 Mjuk Ananaskaka</h1>
   <p>Saftig &amp; mjuk · ananasbitar · socker + honung · 12 bitar · ~176 kcal/bit · ~32 kr totalt</p>
   <p style="margin-top:6px;"><span style="background:rgba(255,255,255,.25); border-radius:6px; padding:2px 10px; font-size:.85rem;">Deg: Clatronic BBA 3774</span> <span style="background:rgba(255,255,255,.25); border-radius:6px; padding:2px 10px; font-size:.85rem;">Gräddning: Midea MB-FS5017 (rek.) eller COSORI TwinFry</span></p>
 </header>
-
-<!-- EGEN BILD: lägg en bild i images/recept/ med samma namn som receptfilen (ananaskaka.jpg) så visas den här automatiskt -->
-<img class="hero-img" src="../images/recept/ananaskaka.jpg" alt="Mjuk ananaskaka" onerror="this.style.display='none'">
-
-<div class="toolbar no-print">
-  <button class="tool-btn" onclick="window.print()">🖨️ Skriv ut receptet</button>
-  <button class="tool-btn" onclick="document.getElementById('qr').scrollIntoView({behavior:'smooth'})">📱 QR-kod för köket</button>
-</div>
 
 <div class="warn">
   ⚠️ <b>Kör INTE hela kakan i bakmaskinen!</b> Cake-programmets fulla cykel (1:50 h) kör <b>två knådfaser (6 + 10 min) med knådkrok</b> – det slår in luft och river smeten, kakan blir skummig/fast istället för mjuk och fluffig (manualen medger själv att kakor blir "fastare" pga knådkroken). Använd bakmaskinen <b>endast för första blandningsfasen (~5–6 min)</b>, stoppa sedan med Start/Stop-knappen.
@@ -167,62 +127,7 @@
   </div>
 </div>
 
-<!-- ===== BETYG & ANTECKNINGAR (sparas lokalt i din webbläsare) ===== -->
-<div class="card no-print" id="betyg">
-  <h2>⭐ Mitt betyg &amp; anteckningar</h2>
-  <div class="stars" id="stars">
-    <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
-  </div>
-  <p style="color:var(--muted); font-size:.83rem; margin:6px 0 12px;">Klicka för att betygsätta. Sparas i din webbläsare.</p>
-  <textarea id="notes" placeholder="Egna anteckningar... t.ex. 'Gjorde 2026-07-05: behövde +10 min i Midean, ananasen fick rinna av först.'"></textarea>
-  <div class="saved-note" id="savedNote">✓ Sparat</div>
-</div>
+<footer>Recept kopplat till Maskindatabas v2.1 · Beräkningar baserade på ingrediensdatabas © Rickard Längkvist 2025–2026</footer>
 
-<!-- ===== QR-KOD ===== -->
-<div class="card qr-box" id="qr">
-  <h2>📱 QR-kod – skriv ut och sätt i köket</h2>
-  <img id="qrImg" src="" alt="QR-kod till receptet" width="180" height="180">
-  <p>Skanna med mobilen för att öppna receptet direkt vid spisen.<br>
-  <span class="no-print">Tips: klicka 🖨️ Skriv ut – QR-koden följer med på pappret.</span></p>
-</div>
-
-<footer>Recept kopplat till Maskindatabas v3.0 · Beräkningar baserade på ingrediensdatabas © Rickard Längkvist 2025–2026</footer>
-
-<script>
-/* ===== Betyg & anteckningar (localStorage) ===== */
-const KEY = 'recept-' + location.pathname.split('/').pop();
-const state = JSON.parse(localStorage.getItem(KEY) || '{}');
-
-const starEls = document.querySelectorAll('#stars span');
-function paintStars(v) { starEls.forEach(s => s.classList.toggle('on', +s.dataset.v <= v)); }
-paintStars(state.rating || 0);
-starEls.forEach(s => s.onclick = () => {
-  state.rating = +s.dataset.v;
-  localStorage.setItem(KEY, JSON.stringify(state));
-  paintStars(state.rating);
-  flashSaved();
-});
-
-const notes = document.getElementById('notes');
-notes.value = state.notes || '';
-let t;
-notes.oninput = () => {
-  clearTimeout(t);
-  t = setTimeout(() => {
-    state.notes = notes.value;
-    localStorage.setItem(KEY, JSON.stringify(state));
-    flashSaved();
-  }, 600);
-};
-function flashSaved() {
-  const el = document.getElementById('savedNote');
-  el.style.visibility = 'visible';
-  setTimeout(() => el.style.visibility = 'hidden', 1500);
-}
-
-/* ===== QR-kod (genereras av gratis API när sidan är live) ===== */
-document.getElementById('qrImg').src =
-  'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(location.href);
-</script>
 </body>
 </html>

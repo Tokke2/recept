@@ -83,7 +83,7 @@
     <h2>Recepten</h2>
     <p>Sök och filtrera per maskin</p>
   </a>
-  <a class="nav-card" href="maskindatabas.json" download>
+  <a class="nav-card" href="json/maskindatabas.json" download>
     <div class="icon">📦</div>
     <h2>Ladda ner databasen</h2>
     <p>JSON – delbar med AI-assistenter</p>
@@ -112,8 +112,8 @@
 
 <footer>
   Mitt Maskinkök · Programdata verifierad mot officiella bruksanvisningar ·
-  <a href="maskindatabas.json">maskindatabas.json</a><br>
-  Nya recept? Släpp bara en .html-fil i <code>recept/</code>-mappen – den läses in automatiskt.
+  <a href="json/maskindatabas.json">json/</a><br>
+  Nya recept: släpp en .html-fil i <code>recept/</code> · Nya maskiner: släpp en .json-fil i <code>json/maskiner/</code> – båda läses in automatiskt.
 </footer>
 
 <script>
@@ -135,11 +135,17 @@ init();
 
 async function init() {
   try {
-    DB = await (await fetch('maskindatabas.json')).json();
+    DB = await (await fetch('json/maskindatabas.json')).json();
   } catch (e) {
     document.getElementById('loading').textContent =
-      'Kunde inte läsa maskindatabas.json. (Obs: sidan måste köras via webbserver, t.ex. GitHub Pages – inte öppnas direkt som fil.)';
+      'Kunde inte läsa json/maskindatabas.json. (Obs: sidan måste köras via webbserver, t.ex. GitHub Pages – inte öppnas direkt som fil.)';
     return;
+  }
+  // Läs in maskiner automatiskt från json/maskiner/ (en fil per maskin)
+  DB.maskiner = [];
+  const mFiles = await listJsonFiles('json/maskiner', 'json/maskiner-index.json');
+  for (const f of mFiles) {
+    try { DB.maskiner.push(await (await fetch('json/maskiner/' + f)).json()); } catch (e) {}
   }
   renderMachines(DB.maskiner || []);
 
@@ -166,28 +172,33 @@ async function init() {
   renderRecipes();
 }
 
-async function listRecipeFiles() {
+async function listJsonFiles(dir, fallbackIndex, ext) {
+  ext = ext || '.json';
   // 1) GitHub API (automatisk mapplistning på GitHub Pages)
   if (isGitHubPages) {
     try {
-      const parts = location.pathname.split('/').filter(Boolean); // [repo, ...]
+      const parts = location.pathname.split('/').filter(Boolean);
       const user = location.hostname.split('.')[0];
       const repo = parts.length ? parts[0] : user + '.github.io';
-      const path = parts.length ? 'recept' : 'recept';
-      const api = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
-      const res = await fetch(api);
+      const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${dir}`);
       if (res.ok) {
         const items = await res.json();
-        return items.filter(i => i.name.toLowerCase().endsWith('.html')).map(i => i.name);
+        return items.filter(i => i.name.toLowerCase().endsWith(ext)).map(i => i.name);
       }
     } catch (e) { /* fall through */ }
   }
-  // 2) recept/index.json (manuell lista, valfri)
+  // 2) Reservlista (index-fil)
   try {
-    const res = await fetch('recept/index.json');
+    const res = await fetch(fallbackIndex);
     if (res.ok) return await res.json();
   } catch (e) { /* fall through */ }
-  // 3) fallback: fil-lista ur maskindatabas.json
+  return [];
+}
+
+async function listRecipeFiles() {
+  const files = await listJsonFiles('recept', 'json/recept-index.json', '.html');
+  if (files.length) return files;
+  // fallback: fil-lista ur maskindatabas.json
   return (DB.recept || []).map(r => r.fil.replace(/^recept\//, ''));
 }
 
@@ -291,5 +302,5 @@ function renderMachines(machines) {
     </a>`).join('');
 }
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a16d1d759b68f327',t:'MTc4MzMyNTIzOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>

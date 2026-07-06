@@ -1,0 +1,18 @@
+SÅ LÄGGER DU TILL EN NY MASKIN:
+
+1. Kopiera valfri befintlig maskinfil (t.ex. midea-mb-fs5017.json)
+2. Ändra alla fält – viktigast:
+   - "id": unikt, små bokstäver med bindestreck (t.ex. "philips-airfryer-xxl")
+   - "namn", "varumarke", "modellnamn", "typ"
+   - "program": lista med alla program (namn, typ, standardtid, beskrivning, bast_for, nyckelord)
+   - "lankar": kop / bruksanvisning / tillverkare
+   - "bild": "images/DITT-ID.jpg" (ladda upp bilden till images/-mappen)
+3. Spara som DITT-ID.json (t.ex. philips-airfryer-xxl.json)
+4. Ladda upp till json/maskiner/ på GitHub
+5. KLART! Både maskindatabasen och startsidan hittar den automatiskt.
+
+(Utanför GitHub Pages: lägg även till filnamnet i json/maskiner-index.json)
+
+TIPS: Be AI-chatten göra jobbet! Klistra in Amazon-länken eller produkttexten
+i chatten och be om "en maskinfil för json/maskiner/ enligt strukturen i
+maskindatabasen" – ladda ner och ladda upp.

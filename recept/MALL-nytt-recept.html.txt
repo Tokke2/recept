@@ -1,0 +1,13 @@
+KOPIERA ananaskaka.html och ändra:
+
+1. <title> och rubriken
+2. Metadata-taggarna i <head> (läses automatiskt av startsidan):
+   <meta name="recept:namn" content="Receptets namn">
+   <meta name="recept:emoji" content="🍲">
+   <meta name="recept:beskrivning" content="Kort beskrivning...">
+   <meta name="recept:taggar" content="tagg1, tagg2, tagg3">
+   <meta name="recept:maskiner" content="Roll: Maskin · Program | Roll 2: Maskin · Program">
+3. Innehållet (ingredienser, steg, näringsvärde)
+4. Spara som t.ex. kottgryta.html i recept/-mappen
+5. Egen bild? Lägg bild med SAMMA NAMN i images/recept/ (kottgryta.jpg) – visas automatiskt
+6. (Endast om sajten INTE ligger på GitHub Pages): lägg till filnamnet i recept/index.json

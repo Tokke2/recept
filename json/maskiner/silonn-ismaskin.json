@@ -1,0 +1,65 @@
+{
+  "id": "silonn-ismaskin",
+  "namn": "Silonn Ismaskin (bänkmodell)",
+  "typ": "Ismaskin / Ice Maker",
+  "varumarke": "Silonn",
+  "modellnamn": "SLIM01",
+  "asin": "B0CLCQQY1M",
+  "kapacitet": "9 iskuber på 6 min, upp till 12 kg/dygn, 2 L vattentank",
+  "egenskaper": [
+    "Självrengöring (30 min-cykel)",
+    "2 kubstorlekar (S/L, bullet-is)",
+    "Bärhandtag",
+    "Iskorg + skopa ingår",
+    "IS FULL-indikator",
+    "Tyst drift"
+  ],
+  "lankar": {
+    "kop": "https://www.amazon.se/dp/B0CLCQQY1M",
+    "bruksanvisning": "https://manuals.plus/asin/B0CDWXZXNC",
+    "tillverkare": "https://silonn.com"
+  },
+  "program": [
+    {
+      "namn": "Små iskuber (S)",
+      "typ": "Program",
+      "standardtid": "9 kuber / 6 min",
+      "beskrivning": "Små bullet-kuber som kyler snabbt.",
+      "bast_for": "Läsk, juice, snabb kylning, slushunderlag",
+      "nyckelord": [
+        "is",
+        "iskuber",
+        "små kuber",
+        "kyla",
+        "läsk"
+      ]
+    },
+    {
+      "namn": "Stora iskuber (L)",
+      "typ": "Program",
+      "standardtid": "9 kuber / ca 8 min",
+      "beskrivning": "Större kuber som smälter långsammare.",
+      "bast_for": "Whisky, cocktails, drinkar",
+      "nyckelord": [
+        "is",
+        "stora kuber",
+        "whisky",
+        "cocktail",
+        "drink"
+      ]
+    },
+    {
+      "namn": "Självrengöring",
+      "typ": "Funktion",
+      "standardtid": "30 min",
+      "beskrivning": "Håll ON/OFF/CLEAN intryckt tills rengöringscykeln startar.",
+      "bast_for": "Rengöring av vattensystemet",
+      "nyckelord": [
+        "rengöring",
+        "självrengöring",
+        "clean"
+      ]
+    }
+  ],
+  "bild": "images/silonn-ismaskin.jpg"
+}

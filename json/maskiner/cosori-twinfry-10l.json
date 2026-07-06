@@ -1,0 +1,132 @@
+{
+  "id": "cosori-twinfry-10l",
+  "namn": "COSORI Dual Blaze TwinFry XXL Airfryer 2 kammare 10 L",
+  "typ": "Airfryer / Varmluftsfritös (dubbel kammare)",
+  "varumarke": "COSORI",
+  "modellnamn": "CAF-TF101S (Dual Blaze TwinFry)",
+  "asin": "B0D3HQKCQ9",
+  "kapacitet": "10 L (2 kammare med löstagbar avdelare)",
+  "egenskaper": [
+    "8-i-1",
+    "Löstagbar avdelare – 1 stor eller 2 zoner",
+    "Nedre värmeelement (Dual Blaze)",
+    "35–240°C",
+    "70 recept",
+    "2–6 personer",
+    "Sync Finish & Sync Cook"
+  ],
+  "lankar": {
+    "kop": "https://www.amazon.se/dp/B0D3HQKCQ9",
+    "bruksanvisning": "https://manuals.plus/cosori/caf-tf101s-aeur-10-liter-dual-blaze-twinfry-airfryer-manual",
+    "tillverkare": "https://cosori.co.uk/products/cosori-dual-blaze-twinfry-10l-smart-air-fryer"
+  },
+  "program": [
+    {
+      "namn": "Air Fry",
+      "typ": "Program",
+      "standardtid": "20 min @ 200°C (120–205°C, 1–60 min)",
+      "beskrivning": "Varmluftsfritering med lite/ingen olja.",
+      "bast_for": "Pommes, kycklingvingar, nuggets",
+      "nyckelord": [
+        "airfry",
+        "pommes",
+        "frites",
+        "kycklingvingar",
+        "nuggets",
+        "frityr",
+        "krispig"
+      ]
+    },
+    {
+      "namn": "Roast (Rosta)",
+      "typ": "Program",
+      "standardtid": "30 min @ 190°C (120–205°C, 1–240 min)",
+      "beskrivning": "Rostar kött och grönsaker jämnt.",
+      "bast_for": "Rostade grönsaker, kycklingklubbor, fläskfilé",
+      "nyckelord": [
+        "rosta",
+        "roast",
+        "rostade grönsaker",
+        "klubbor",
+        "rotfrukter"
+      ]
+    },
+    {
+      "namn": "Bake (Baka)",
+      "typ": "Program",
+      "standardtid": "25 min @ 160°C (80–205°C, 1–240 min)",
+      "beskrivning": "Bakar med jämn värme.",
+      "bast_for": "Muffins, småkakor, bullar",
+      "nyckelord": [
+        "baka",
+        "muffins",
+        "bullar",
+        "kakor"
+      ]
+    },
+    {
+      "namn": "Grill",
+      "typ": "Program",
+      "standardtid": "10 min @ 240°C (205–240°C, 1–30 min)",
+      "beskrivning": "Hög värme för yta och färg.",
+      "bast_for": "Grillspett, halloumi, korv, gratinering",
+      "nyckelord": [
+        "grill",
+        "spett",
+        "halloumi",
+        "korv",
+        "gratinera"
+      ]
+    },
+    {
+      "namn": "Reheat (Värm upp)",
+      "typ": "Program",
+      "standardtid": "15 min @ 165°C (40–205°C)",
+      "beskrivning": "Värmer rester krispigt.",
+      "bast_for": "Pizza, rester, pommes",
+      "nyckelord": [
+        "värma",
+        "rester",
+        "återuppvärmning",
+        "reheat"
+      ]
+    },
+    {
+      "namn": "Dehydrate (Torka)",
+      "typ": "Program",
+      "standardtid": "6 h @ 55°C (35–95°C, 30 min–48 h)",
+      "beskrivning": "Torkar frukt, grönsaker och kött.",
+      "bast_for": "Torkad frukt, jerky, chips",
+      "nyckelord": [
+        "torka",
+        "dehydrate",
+        "jerky",
+        "torkad frukt"
+      ]
+    },
+    {
+      "namn": "Sync Finish",
+      "typ": "Funktion",
+      "standardtid": "-",
+      "beskrivning": "Två zoner blir klara samtidigt.",
+      "bast_for": "Hel måltid i två zoner",
+      "nyckelord": [
+        "sync",
+        "samtidigt",
+        "två rätter"
+      ]
+    },
+    {
+      "namn": "Sync Cook",
+      "typ": "Funktion",
+      "standardtid": "-",
+      "beskrivning": "Samma inställning i båda zonerna.",
+      "bast_for": "Stora mängder av samma rätt",
+      "nyckelord": [
+        "sync cook",
+        "dubbel mängd"
+      ]
+    }
+  ],
+  "bild": "images/cosori-twinfry-10l.jpg"
+}

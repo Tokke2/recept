@@ -1,0 +1,194 @@
+{
+  "id": "midea-mb-fs5017",
+  "namn": "Midea Multifunktionell Riskokare med Ångkokare",
+  "typ": "Riskokare / Multikokare",
+  "varumarke": "Midea",
+  "modellnamn": "MB-FS5017",
+  "modell": "MRD50B1AMK",
+  "tillverkningsar": 2024,
+  "asin": "B0CSVLDJPJ",
+  "kapacitet": "10 koppar / 1,8 liter (5L innerkruka)",
+  "egenskaper": [
+    "LED-display",
+    "Timer upp till 24 h",
+    "Varmhållning 24 h",
+    "Non-stick löstagbar innerkruka"
+  ],
+  "inkluderade_komponenter": [
+    "Bruksanvisning",
+    "Innerkruka",
+    "Mätkopp",
+    "Skopa",
+    "Ångkorg"
+  ],
+  "lankar": {
+    "kop": "https://www.amazon.se/dp/B0CSVLDJPJ",
+    "bruksanvisning": "https://www.manualslib.com/manual/1535297/Midea-Mb-Fs5017.html",
+    "tillverkare": "https://www.midea.com/ca/small-appliances/cookers/smart-digital-rice-cooker.mb-fs5017"
+  },
+  "program": [
+    {
+      "namn": "Ris (Rice)",
+      "typ": "Snabbknapp",
+      "standardtid": "Auto (ca 13 min nedräkning)",
+      "beskrivning": "Kokar vitt ris automatiskt, upp till 10 koppar. Vattenskala 2–10 i krukan. Går till varmhållning.",
+      "bast_for": "Vitt ris, jasminris, basmati, sushiris",
+      "nyckelord": [
+        "ris",
+        "vitt ris",
+        "jasminris",
+        "basmati",
+        "sushiris"
+      ]
+    },
+    {
+      "namn": "Långkok (Slow cook)",
+      "typ": "Snabbknapp",
+      "standardtid": "8 h",
+      "beskrivning": "Låg temperatur under lång tid. Bryn kött och koka upp vätskan först.",
+      "bast_for": "Pulled pork, högrev, chili, bönor",
+      "nyckelord": [
+        "långkok",
+        "slow cook",
+        "pulled pork",
+        "högrev",
+        "chili",
+        "bönor"
+      ]
+    },
+    {
+      "namn": "Stuvning (Stew)",
+      "typ": "Snabbknapp",
+      "standardtid": "1 h",
+      "beskrivning": "Kokar grytor och stuvningar. Bryn först, tillsätt kokande vätska.",
+      "bast_for": "Köttgryta, curry, gulasch",
+      "nyckelord": [
+        "gryta",
+        "stuvning",
+        "köttgryta",
+        "curry",
+        "gulasch",
+        "kalops"
+      ]
+    },
+    {
+      "namn": "Kött (Meat)",
+      "typ": "Menyprogram",
+      "standardtid": "20 min (10 min–1 h)",
+      "beskrivning": "Max 500 g åt gången. Olja + kryddor. Nötkött: 10 min + 10 min/100 g.",
+      "bast_for": "Kyckling, fläsk, nötkött i bitar",
+      "nyckelord": [
+        "kött",
+        "kyckling",
+        "fläsk",
+        "nötkött",
+        "filé"
+      ]
+    },
+    {
+      "namn": "Soppa (Soup)",
+      "typ": "Menyprogram",
+      "standardtid": "1 h (1–5 h)",
+      "beskrivning": "Kokar soppor och buljonger med jämn värme.",
+      "bast_for": "Soppor, buljong, linssoppa",
+      "nyckelord": [
+        "soppa",
+        "buljong",
+        "linssoppa",
+        "ärtsoppa",
+        "fond"
+      ]
+    },
+    {
+      "namn": "Yoghurt",
+      "typ": "Menyprogram",
+      "standardtid": "8 h (6–10 h)",
+      "beskrivning": "Fermenterar yoghurt. Mjölk 37–45°C + kultur.",
+      "bast_for": "Hemgjord yoghurt",
+      "nyckelord": [
+        "yoghurt",
+        "fermentering"
+      ]
+    },
+    {
+      "namn": "Bröd (Bread)",
+      "typ": "Menyprogram",
+      "standardtid": "3 h (1–3 h)",
+      "beskrivning": "Jäser och bakar bröd i innerkrukan.",
+      "bast_for": "Formbröd, jäsning av deg",
+      "nyckelord": [
+        "bröd",
+        "bröddeg",
+        "deg",
+        "jäsa",
+        "limpa"
+      ]
+    },
+    {
+      "namn": "Fisk (Fish)",
+      "typ": "Menyprogram",
+      "standardtid": "20 min (10 min–1 h)",
+      "beskrivning": "Skonsam tillagning av fisk med olja och kryddor.",
+      "bast_for": "Lax, torsk, vit fisk",
+      "nyckelord": [
+        "fisk",
+        "lax",
+        "torsk",
+        "fiskfilé"
+      ]
+    },
+    {
+      "namn": "Ångkokning (Steam)",
+      "typ": "Menyprogram",
+      "standardtid": "30 min (30 min–2 h)",
+      "beskrivning": "Ångkokar med ångkorgen ovanför vatten.",
+      "bast_for": "Grönsaker, dumplings, potatis",
+      "nyckelord": [
+        "ånga",
+        "ångkoka",
+        "grönsaker",
+        "broccoli",
+        "dumplings",
+        "potatis"
+      ]
+    },
+    {
+      "namn": "Gröt/Risotto",
+      "typ": "Menyprogram",
+      "standardtid": "1 h (1–4 h)",
+      "beskrivning": "Kokar gröt, congee och risotto utan omrörning.",
+      "bast_for": "Risgrynsgröt, havregrynsgröt, risotto",
+      "nyckelord": [
+        "gröt",
+        "risgrynsgröt",
+        "havregrynsgröt",
+        "congee",
+        "risotto"
+      ]
+    },
+    {
+      "namn": "Kaka (Cake)",
+      "typ": "Menyprogram",
+      "standardtid": "40 min (30 min–2 h)",
+      "beskrivning": "Bakar mjuka kakor i non-stick-krukan.",
+      "bast_for": "Sockerkaka, kladdkaka",
+      "nyckelord": [
+        "kaka",
+        "sockerkaka",
+        "kladdkaka"
+      ]
+    },
+    {
+      "namn": "Varmhållning",
+      "typ": "Funktion",
+      "standardtid": "Max 24 h",
+      "beskrivning": "Håller maten varm, aktiveras automatiskt.",
+      "bast_for": "Hålla mat varm till servering",
+      "nyckelord": [
+        "varmhållning",
+        "hålla varm"
+      ]
+    }
+  ],
+  "bild": "images/midea-mb-fs5017.jpg"
+}
