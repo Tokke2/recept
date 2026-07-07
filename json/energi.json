@@ -1,0 +1,19 @@
+{
+  "kommentar": "CENTRAL ENERGIDATA – ett recept per rad, nyckel = filnamnet i recept/. Ange maskin-id (från json/maskiner/) + minuter. Effekt (W) hämtas automatiskt ur maskinfilen, elpris ur json/maskindatabas.json. Recepten behöver INGEN egen energidata i HTML!",
+  "recept": {
+    "ananaskaka.html": [
+      { "maskin": "clatronic-bba3774", "min": 6, "moment": "Blanda degen" },
+      { "maskin": "midea-mb-fs5017", "min": 50, "moment": "Gräddning" }
+    ],
+    "Ananas_Rom_Yoghurt_Slush.html": [
+      { "maskin": "azmsary-fs306", "min": 30, "moment": "Slush" }
+    ],
+    "pizzadeg-5x200g.html": [
+      { "maskin": "clatronic-bba3774", "min": 90, "moment": "Knådning & jäsning" },
+      { "maskin": "klaif-pizzaugn", "min": 20, "moment": "Förvärmning + gräddning" }
+    ],
+    "annanasglas_hund.html": [
+      { "maskin": "azmsary-fs306", "min": 30, "moment": "Mjukglass" }
+    ]
+  }
+}
