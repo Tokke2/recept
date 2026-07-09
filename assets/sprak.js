@@ -9,17 +9,17 @@
    1) ORDBOK      json/sprak/<kod>.json  – exakta fraser (bäst kvalitet)
    2) MÖNSTER     "Steg {1} av {2}" osv. med platshållare
    3) AUTO (AI)   Text som saknas i ordboken skickas automatiskt
-                  till gratis översättnings-API (MyMemory, ingen
-                  nyckel krävs) och CACHAS i webbläsaren – varje
-                  text översätts bara EN gång per enhet.
+                  till gratis Google-endpoint (gtx, ingen nyckel,
+                  ~35 ms svarstid) i BUNTAR och CACHAS i webb-
+                  läsaren – varje text översätts bara EN gång.
+                  OBS: Ordböckerna är förgenererade och täcker
+                  nästan allt → översättningen är i praktiken
+                  OMEDELBAR; auto är bara reserv för nytt innehåll.
 
    Ordboken vinner alltid över auto (bättre kvalitet). Auto-
    resultat loggas i konsolen så bra fraser enkelt kan flyttas
    in i ordboken permanent.
 
-   OBS AUTO-GRÄNS: MyMemory ger ca 5 000 tecken/dygn per IP
-   gratis. Räcker gott tack vare cachen – första besöket på en
-   sida översätter, sedan är det lagrat.
 
    NYTT SPRÅK: skapa json/sprak/XX.json + rad i LANGS nedan.
    ============================================================ */
@@ -119,30 +119,34 @@
 
   function pump() {
     if (busy) return;
-    var text = queue.shift();
-    if (!text) return;
+    if (!queue.length) return;
     busy = true;
-    var url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) +
-              '&langpair=sv|' + lang;
+    // BUNTA upp till 30 texter per anrop (gtx tolererar \n-separator)
+    var batch = queue.splice(0, 30);
+    var q = batch.join('\n');
+    var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=sv&tl=' +
+              lang + '&dt=t&q=' + encodeURIComponent(q);
     fetch(url)
       .then(function (r) { return r.json(); })
       .then(function (d) {
-        var out = d && d.responseData && d.responseData.translatedText || '';
-        // MyMemory returnerar ibland VERSALER eller felflaggor – sanera lätt
-        if (/MYMEMORY WARNING/i.test(out)) out = '';
-        if (out) {
-          autoCache[text] = out;
-          saveCache();
-          applyAuto(text, out, pending[text] || []);
-          console.info('[Maskinkök/språk] AUTO: "' + text + '" → "' + out +
-            '"  (lägg gärna in i json/sprak/' + lang + '.json för permanent kvalitet)');
-        }
-        delete pending[text];
+        var full = '';
+        (d && d[0] || []).forEach(function (seg) { if (seg && seg[0]) full += seg[0]; });
+        var outs = full.split('\n');
+        batch.forEach(function (text, i) {
+          var out = (outs.length === batch.length ? outs[i] : '').trim();
+          if (out && out !== text) {
+            autoCache[text] = out;
+            applyAuto(text, out, pending[text] || []);
+          }
+          delete pending[text];
+        });
+        saveCache();
       })
-      .catch(function () { delete pending[text]; })
-      .finally ? undefined : null;
-    // .finally saknas i äldre motorer – kör vidare via then/catch ovan:
-    setTimeout(function () { busy = false; pump(); }, 350); // skonsam takt mot API:t
+      .catch(function () { batch.forEach(function (t) { delete pending[t]; }); })
+      .then(function () {
+        busy = false;
+        if (queue.length) setTimeout(pump, 120);
+      });
   }
 
   /* ============================================================
