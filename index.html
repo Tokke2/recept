@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- PLATS: /index.html  (repo-roten – startsidan, RECEPTFOKUS v2) -->
+<!-- PLATS: /index.html  (repo-roten – startsidan med receptflikar & import) -->
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mitt Maskinkök – Recept</title>
+<title>Mitt Maskinkök – Startsida</title>
 <meta name="description" content="Recept för mina matlagningsmaskiner – med maskinval, program, kostnad och kockläge.">
 <style>
   :root {
@@ -19,110 +19,108 @@
   /* ================= HERO ================= */
   .hero {
     background:linear-gradient(140deg,#c0392b 0%,#e67e22 60%,#f1c40f 130%);
-    color:#fff; text-align:center; padding:56px 20px 96px; position:relative;
+    color:#fff; text-align:center; padding:50px 20px 84px;
   }
-  .hero h1 { font-size:clamp(1.9rem,5vw,2.8rem); margin-bottom:10px; letter-spacing:-.5px; }
-  .hero p { opacity:.95; font-size:1.05rem; max-width:520px; margin:0 auto; }
-  .hero .stats { margin-top:18px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-  .hero .stat {
-    background:rgba(255,255,255,.18); backdrop-filter:blur(4px); border-radius:999px;
-    padding:7px 18px; font-size:.9rem; font-weight:600;
-  }
+  .hero h1 { font-size:clamp(1.9rem,5vw,2.7rem); margin-bottom:10px; letter-spacing:-.5px; }
+  .hero p { opacity:.95; font-size:1.02rem; max-width:520px; margin:0 auto; }
+  .hero .stats { margin-top:16px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .hero .stat { background:rgba(255,255,255,.18); border-radius:999px; padding:7px 18px; font-size:.88rem; font-weight:600; }
 
-  /* ================= SÖK (flyter över hero-kanten) ================= */
-  .search-wrap { max-width:760px; margin:-56px auto 0; padding:0 20px; position:relative; z-index:5; }
-  .search-box {
-    background:var(--card); border-radius:18px; box-shadow:var(--shadow-lg);
-    padding:10px; display:flex; gap:8px; align-items:center;
+  /* ================= STARTSIDE-KORT ================= */
+  .nav-cards { display:flex; gap:16px; flex-wrap:wrap; max-width:1060px; margin:-46px auto 0; padding:0 20px; position:relative; z-index:5; }
+  .nav-card {
+    flex:1; min-width:210px; background:var(--card); border-radius:16px; padding:20px 22px;
+    text-align:center; box-shadow:var(--shadow-lg); text-decoration:none; color:var(--dark);
+    transition:transform .16s; cursor:pointer; border:none; font-family:inherit;
   }
-  .search-box .icon { font-size:1.3rem; padding-left:10px; }
-  .search-box input {
-    flex:1; border:none; outline:none; font-size:1.1rem; padding:12px 6px;
-    font-family:inherit; background:transparent; min-width:100px;
-  }
-  .search-box select {
-    border:none; outline:none; background:#f0ebe3; border-radius:12px;
-    padding:11px 12px; font-size:.9rem; font-weight:600; color:var(--dark);
-    cursor:pointer; font-family:inherit; max-width:170px;
-  }
+  .nav-card:hover { transform:translateY(-4px); }
+  .nav-card .icon { font-size:2rem; margin-bottom:6px; display:block; }
+  .nav-card h2 { font-size:1.02rem; margin-bottom:4px; }
+  .nav-card p { color:var(--muted); font-size:.82rem; }
 
-  /* ================= FILTERRAD ================= */
   .wrap { max-width:1060px; margin:0 auto; padding:0 20px 40px; }
-  .filters { display:flex; gap:8px; flex-wrap:wrap; margin:22px 0 6px; align-items:center; }
-  .chip {
-    display:flex; align-items:center; gap:7px; background:var(--card);
-    border:2px solid transparent; border-radius:999px; padding:8px 16px 8px 10px;
-    cursor:pointer; font-size:.87rem; font-weight:600; color:var(--dark);
-    box-shadow:var(--shadow); transition:all .16s; user-select:none;
+
+  /* ================= RECEPTSEKTION MED FLIKAR ================= */
+  section.recept { margin-top:40px; }
+  section.recept > h2 { font-size:1.45rem; margin-bottom:14px; }
+
+  .tabbar { display:flex; gap:6px; flex-wrap:wrap; border-bottom:3px solid #e5ddd0; margin-bottom:4px; }
+  .tab {
+    display:flex; align-items:center; gap:7px; background:none; border:none; cursor:pointer;
+    font-family:inherit; font-size:.92rem; font-weight:700; color:var(--muted);
+    padding:11px 16px; border-radius:12px 12px 0 0; position:relative; transition:color .15s;
   }
-  .chip:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg); }
-  .chip.active { background:var(--dark); color:#fff; }
-  .chip img { width:28px; height:28px; object-fit:contain; border-radius:50%; background:#fff; }
-  .chip .em { width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:1.05rem; }
-  .result-count { color:var(--muted); font-size:.85rem; margin:8px 2px 14px; }
+  .tab img { width:24px; height:24px; object-fit:contain; border-radius:50%; background:#fff; }
+  .tab:hover { color:var(--dark); background:rgba(255,255,255,.6); }
+  .tab.active { color:var(--accent); background:var(--card); box-shadow:var(--shadow); }
+  .tab.active::after { content:''; position:absolute; left:0; right:0; bottom:-3px; height:3px; background:var(--accent); border-radius:3px; }
+  .tab .n { opacity:.55; font-weight:600; }
+
+  .toolrow { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:16px 0 8px; }
+  .toolrow input {
+    flex:1; min-width:200px; background:var(--card); border:2px solid #e5ddd0; border-radius:12px;
+    padding:11px 15px; font-size:1rem; font-family:inherit; outline:none;
+  }
+  .toolrow input:focus { border-color:var(--accent2); }
+  .toolrow select {
+    background:var(--card); border:2px solid #e5ddd0; border-radius:12px; padding:11px 12px;
+    font-size:.9rem; font-weight:600; font-family:inherit; cursor:pointer; outline:none;
+  }
+  .result-count { color:var(--muted); font-size:.85rem; margin:4px 2px 14px; }
 
   /* ================= RECEPTKORT ================= */
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:22px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(295px,1fr)); gap:20px; }
   .rcard {
-    background:var(--card); border-radius:20px; overflow:hidden; box-shadow:var(--shadow);
+    background:var(--card); border-radius:18px; overflow:hidden; box-shadow:var(--shadow);
     text-decoration:none; color:var(--dark); display:flex; flex-direction:column;
-    transition:transform .18s, box-shadow .18s; position:relative;
+    transition:transform .18s, box-shadow .18s;
   }
   .rcard:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); }
   .rcard .media {
-    height:170px; position:relative; display:flex; align-items:center; justify-content:center;
+    height:160px; position:relative; display:flex; align-items:center; justify-content:center;
     background:linear-gradient(135deg,#e67e22,#f1c40f); overflow:hidden;
   }
   .rcard .media img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
-  .rcard .media .big-emoji { font-size:4.2rem; filter:drop-shadow(0 4px 10px rgba(0,0,0,.25)); }
-  .rcard .media .stars {
-    position:absolute; top:12px; right:12px; background:rgba(0,0,0,.45);
-    color:var(--gold); border-radius:999px; padding:4px 12px; font-size:.85rem;
-    backdrop-filter:blur(3px);
-  }
-  .rcard .body { padding:18px 20px 20px; flex:1; display:flex; flex-direction:column; }
-  .rcard h3 { font-size:1.18rem; margin-bottom:6px; line-height:1.3; }
-  .rcard .desc { color:var(--muted); font-size:.88rem; line-height:1.5; margin-bottom:12px; flex:1; }
-  .rcard .mrow { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
-  .rcard .mline {
-    font-size:.8rem; background:#f4fbf6; border-left:3px solid var(--green);
-    border-radius:0 8px 8px 0; padding:6px 10px; line-height:1.4;
-  }
+  .rcard .media .big-emoji { font-size:4rem; filter:drop-shadow(0 4px 10px rgba(0,0,0,.25)); }
+  .rcard .media .stars { position:absolute; top:10px; right:10px; background:rgba(0,0,0,.45); color:var(--gold); border-radius:999px; padding:4px 12px; font-size:.85rem; }
+  .rcard .body { padding:16px 18px 18px; flex:1; display:flex; flex-direction:column; }
+  .rcard h3 { font-size:1.12rem; margin-bottom:5px; line-height:1.3; }
+  .rcard .desc { color:var(--muted); font-size:.87rem; line-height:1.5; margin-bottom:11px; flex:1; }
+  .rcard .mline { font-size:.79rem; background:#f4fbf6; border-left:3px solid var(--green); border-radius:0 8px 8px 0; padding:5px 10px; margin-bottom:5px; line-height:1.4; }
   .rcard .mline b { color:var(--green); }
-  .rcard .tags { display:flex; flex-wrap:wrap; gap:5px; }
-  .rcard .tag { background:#f0ebe3; border-radius:999px; padding:3px 11px; font-size:.73rem; color:var(--muted); font-weight:600; }
-  .rcard .cta {
-    margin-top:14px; background:var(--dark); color:#fff; text-align:center;
-    border-radius:12px; padding:11px; font-weight:700; font-size:.92rem;
-    transition:background .15s;
-  }
+  .rcard .tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
+  .rcard .tag { background:#f0ebe3; border-radius:999px; padding:3px 11px; font-size:.72rem; color:var(--muted); font-weight:600; }
+  .rcard .cta { margin-top:13px; background:var(--dark); color:#fff; text-align:center; border-radius:11px; padding:10px; font-weight:700; font-size:.9rem; transition:background .15s; }
   .rcard:hover .cta { background:var(--accent); }
 
-  /* Skelett-laddning */
-  .skel { border-radius:20px; overflow:hidden; background:var(--card); box-shadow:var(--shadow); }
-  .skel .a { height:170px; } .skel .b { height:20px; margin:18px 20px 10px; border-radius:6px; width:70%; }
-  .skel .c { height:12px; margin:0 20px 8px; border-radius:6px; }
-  .skel .a,.skel .b,.skel .c {
-    background:linear-gradient(90deg,#eee 25%,#f7f4ef 50%,#eee 75%); background-size:200% 100%;
-    animation:sh 1.2s infinite;
-  }
+  .skel { border-radius:18px; overflow:hidden; background:var(--card); box-shadow:var(--shadow); }
+  .skel .a { height:160px; } .skel .b { height:18px; margin:16px 18px 10px; border-radius:6px; width:70%; }
+  .skel .c { height:11px; margin:0 18px 8px; border-radius:6px; }
+  .skel .a,.skel .b,.skel .c { background:linear-gradient(90deg,#eee 25%,#f7f4ef 50%,#eee 75%); background-size:200% 100%; animation:sh 1.2s infinite; }
   @keyframes sh { to { background-position:-200% 0; } }
+  .no-hit { text-align:center; color:var(--muted); padding:46px 20px; font-size:1.02rem; display:none; }
+  .no-hit .e { font-size:2.8rem; display:block; margin-bottom:8px; }
 
-  .no-hit { text-align:center; color:var(--muted); padding:50px 20px; font-size:1.05rem; display:none; }
-  .no-hit .e { font-size:3rem; display:block; margin-bottom:10px; }
-
-  /* ================= ÖVRIGT (pausat, diskret) ================= */
-  .more { margin-top:46px; border-top:1px solid #e5ddd0; padding-top:22px; }
-  .more h2 { font-size:1rem; color:var(--muted); font-weight:600; margin-bottom:12px; }
-  .more .links { display:flex; gap:10px; flex-wrap:wrap; }
-  .more a {
-    background:var(--card); border-radius:12px; padding:10px 18px; text-decoration:none;
-    color:var(--dark); font-size:.88rem; font-weight:600; box-shadow:var(--shadow);
-    transition:transform .15s;
+  /* ================= IMPORT-MODAL ================= */
+  .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; padding:20px; overflow:auto; }
+  .modal { max-width:620px; margin:40px auto; background:var(--card); border-radius:18px; padding:26px 28px; box-shadow:var(--shadow-lg); }
+  .modal h2 { font-size:1.25rem; margin-bottom:12px; }
+  .modal ol { padding-left:22px; line-height:1.8; font-size:.93rem; }
+  .modal .close { float:right; background:var(--dark); color:#fff; border:none; border-radius:10px; padding:8px 16px; cursor:pointer; font-weight:700; }
+  .drop {
+    border:3px dashed #d5cbb8; border-radius:14px; padding:26px; text-align:center;
+    color:var(--muted); margin:14px 0; cursor:pointer; transition:all .15s; font-size:.93rem;
   }
-  .more a:hover { transform:translateY(-2px); }
+  .drop:hover, .drop.over { border-color:var(--accent2); background:#fdf6ee; }
+  .imp-result { border-radius:12px; padding:14px 16px; margin-top:12px; font-size:.9rem; display:none; }
+  .imp-result.ok { display:block; border-left:5px solid var(--green); background:#f4fbf6; }
+  .imp-result.warn { display:block; border-left:5px solid var(--accent2); background:#fdf6ee; }
+  .imp-result ul { padding-left:20px; margin-top:6px; }
+  .btn { background:var(--accent); color:#fff; border:none; border-radius:10px; padding:11px 18px; font-weight:700; font-size:.92rem; cursor:pointer; margin-top:10px; }
+  .btn.sec { background:var(--dark); }
+  .modal a.gh { color:var(--accent); font-weight:700; }
 
-  footer { text-align:center; color:var(--muted); font-size:.8rem; padding:30px 20px; }
+  footer { text-align:center; color:var(--muted); font-size:.8rem; padding:28px 20px; }
 </style>
 <link rel="stylesheet" href="assets/print.css">
 </head>
@@ -135,57 +133,87 @@
   <div class="stats" id="heroStats"></div>
 </header>
 
-<!-- ================= SÖK ================= -->
-<div class="search-wrap">
-  <div class="search-box">
-    <span class="icon">🔍</span>
-    <input type="text" id="q" placeholder="Sök recept, ingrediens eller tagg..." oninput="apply()">
-    <select id="sort" onchange="apply()">
-      <option value="name">Sortera: A–Ö</option>
-      <option value="rating">Sortera: Betyg</option>
-      <option value="new">Sortera: Nyast</option>
-    </select>
-  </div>
+<!-- ================= STARTSIDE-KORT ================= -->
+<div class="nav-cards no-print">
+  <a class="nav-card" href="#recept">
+    <span class="icon">📖</span><h2>Recepten</h2><p>Bläddra per maskin i flikarna</p>
+  </a>
+  <button class="nav-card" onclick="openImport()">
+    <span class="icon">📥</span><h2>Importera recept</h2><p>Kontrollera &amp; lägg till en receptfil</p>
+  </button>
+  <a class="nav-card" href="generator.html">
+    <span class="icon">🧪</span><h2>Receptgeneratorn</h2><p>Bygg nytt recept av ingredienser</p>
+  </a>
+  <a class="nav-card" href="maskindatabas.html">
+    <span class="icon">🔧</span><h2>Maskindatabasen</h2><p>Alla program, tider &amp; manualer</p>
+  </a>
 </div>
 
 <div class="wrap">
 
-  <!-- Maskinfilter -->
-  <div class="filters" id="machineFilter"></div>
-  <div class="result-count" id="count"></div>
-
-  <!-- Receptkort -->
-  <div class="grid" id="grid">
-    <div class="skel"><div class="a"></div><div class="b"></div><div class="c"></div><div class="c" style="width:60%;margin-bottom:20px;"></div></div>
-    <div class="skel"><div class="a"></div><div class="b"></div><div class="c"></div><div class="c" style="width:60%;margin-bottom:20px;"></div></div>
-    <div class="skel"><div class="a"></div><div class="b"></div><div class="c"></div><div class="c" style="width:60%;margin-bottom:20px;"></div></div>
-  </div>
-  <div class="no-hit" id="noHit"><span class="e">🤔</span>Inga recept matchade – prova ett annat sökord.</div>
-
-  <!-- Pausat: allt annat diskret längst ner -->
-  <div class="more no-print">
-    <h2>Mer</h2>
-    <div class="links">
-      <a href="maskindatabas.html">🔧 Maskindatabasen</a>
-      <a href="generator.html">🧪 Receptgeneratorn</a>
-      <a href="json/maskindatabas.json" download>📦 Ladda ner databasen</a>
+  <!-- ================= RECEPT MED FLIKAR ================= -->
+  <section class="recept" id="recept">
+    <h2>📖 Recept</h2>
+    <div class="tabbar" id="tabbar"></div>
+    <div class="toolrow no-print">
+      <input type="text" id="q" placeholder="🔍 Sök i fliken..." oninput="apply()">
+      <select id="sort" onchange="apply()">
+        <option value="name">A–Ö</option>
+        <option value="rating">Betyg</option>
+        <option value="new">Nyast</option>
+      </select>
     </div>
+    <div class="result-count" id="count"></div>
+    <div class="grid" id="grid">
+      <div class="skel"><div class="a"></div><div class="b"></div><div class="c"></div><div class="c" style="width:60%;margin-bottom:18px;"></div></div>
+      <div class="skel"><div class="a"></div><div class="b"></div><div class="c"></div><div class="c" style="width:60%;margin-bottom:18px;"></div></div>
+      <div class="skel"><div class="a"></div><div class="b"></div><div class="c"></div><div class="c" style="width:60%;margin-bottom:18px;"></div></div>
+    </div>
+    <div class="no-hit" id="noHit"><span class="e">🤔</span>Inga recept matchade i denna flik.</div>
+  </section>
+
+</div>
+
+<!-- ================= IMPORT-MODAL ================= -->
+<div class="modal-bg" id="impBg" onclick="if(event.target===this)closeImport()">
+  <div class="modal">
+    <button class="close" onclick="closeImport()">✕ Stäng</button>
+    <h2>📥 Importera recept</h2>
+    <p style="font-size:.92rem; color:var(--muted); margin-bottom:10px;">
+      Släpp en receptfil (.html eller .pdf) här – HTML kontrolleras och lagas automatiskt
+      (site.js-raden, metadata) innan du laddar upp den till sajten.</p>
+
+    <div class="drop" id="drop" onclick="document.getElementById('impFile').click()">
+      📄 Släpp .html- eller .pdf-fil här<br>eller klicka för att välja
+    </div>
+    <input type="file" id="impFile" accept=".html,.htm,.pdf" style="display:none;" onchange="handleFile(this.files[0])">
+
+    <div class="imp-result" id="impRes"></div>
+
+    <h2 style="margin-top:20px; font-size:1.05rem;">Så hamnar receptet på sajten</h2>
+    <ol>
+      <li>Kontrollera/laga filen ovan (eller hoppa över om den är gjord från mallen)</li>
+      <li>Öppna <a class="gh" href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">GitHub-uppladdningen för recept-mappen ↗</a></li>
+      <li>Dra in filen → <b>Commit changes</b></li>
+      <li>Klart! Startsidan hittar receptet automatiskt (~1 min)</li>
+      <li>Bild? Ladda upp <b>images/recept/SAMMA-NAMN.jpg</b> så visas den på kortet</li>
+    </ol>
   </div>
 </div>
 
-<footer>Mitt Maskinkök · recepten läses direkt från recept-mappen</footer>
+<footer>Mitt Maskinkök · recepten läses direkt från recept-mappen ·
+  <a href="json/maskindatabas.json" download style="color:var(--accent);">databas (JSON)</a></footer>
 
 <script>
 /* ============================================================
-   RECEPTFOKUS: läser ENBART main/recept/*.html
-   (GitHub-listning + metadata direkt ur varje fil)
+   Recept läses ENBART från main/recept/*.html
+   Flikar: Alla recept + en flik per maskin (byggs automatiskt)
    ============================================================ */
-let DB = { maskiner: [] }, RECIPES = [], activeMachine = 'all';
+let DB = { maskiner: [] }, RECIPES = [], activeTab = 'all';
 
 init();
 
 async function init() {
-  // Maskiner (för filterknappar + id-koppling) – statisk indexlista
   try {
     const mFiles = await (await fetch('json/maskiner-index.json')).json();
     for (const f of mFiles) {
@@ -193,7 +221,6 @@ async function init() {
     }
   } catch (e) {}
 
-  // Recept: lista main/recept/ + läs metadata ur varje HTML
   let files = [];
   try {
     const parts = location.pathname.split('/').filter(Boolean);
@@ -201,12 +228,29 @@ async function init() {
     const repo = parts.length ? parts[0] : user + '.github.io';
     const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/recept?ref=main`);
     if (res.ok) files = (await res.json())
-      .filter(i => i.type === 'file' && i.name.toLowerCase().endsWith('.html'))
+      .filter(i => i.type === 'file' && /\.(html?|pdf)$/i.test(i.name))
       .map(i => i.name);
   } catch (e) {}
 
   RECIPES = [];
   await Promise.all(files.map(async f => {
+    // PDF-recept: kort direkt av filnamnet, öppnas som PDF
+    if (/\.pdf$/i.test(f)) {
+      const base = f.replace(/\.pdf$/i, '');
+      RECIPES.push({
+        file: 'recept/' + encodeURIComponent(f),
+        namn: base.replace(/[-_]+/g, ' '),
+        emoji: '📄',
+        beskrivning: 'PDF-recept – öppnas direkt.',
+        taggar: ['pdf'],
+        maskiner: [],
+        maskin_ids: [],
+        bild: 'images/recept/' + base + '.jpg',
+        rating: (JSON.parse(localStorage.getItem('recept-' + f) || '{}').rating) || 0,
+        isPdf: true
+      });
+      return;
+    }
     try {
       const html = await (await fetch('recept/' + encodeURIComponent(f))).text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -216,7 +260,7 @@ async function init() {
       RECIPES.push({
         file: 'recept/' + f,
         namn: get('namn') || (title ? title.textContent.replace(/ – Recept$/,'') : f.replace(/\.html$/,'')),
-        emoji: get('emoji') || (get('namn') || (title ? title.textContent : '')).match(/\p{Emoji_Presentation}/u)?.[0] || '🍽️',
+        emoji: get('emoji') || '🍽️',
         beskrivning: get('beskrivning') || 'Öppna receptet för detaljer.',
         taggar: get('taggar') ? get('taggar').split(',').map(t => t.trim()).filter(Boolean) : [],
         maskiner,
@@ -237,78 +281,127 @@ async function init() {
     `<span class="stat">🔧 ${DB.maskiner.length} maskiner</span>` +
     `<span class="stat">👨‍🍳 Kockläge på alla recept</span>`;
 
-  buildFilter();
-  render();
+  buildTabs();
+  apply();
 }
 
-/* ============ Maskinfilter ============ */
-function buildFilter() {
+/* ============ Flikar: Alla + per maskin ============ */
+function buildTabs() {
   const used = new Set();
   RECIPES.forEach(r => r.maskin_ids.forEach(id => used.add(id)));
-  let h = `<div class="chip active" data-id="all" onclick="setM('all',this)"><span class="em">🍽️</span>Alla recept</div>`;
+  let h = `<button class="tab active" data-id="all" onclick="setTab('all',this)">🍽️ Alla recept <span class="n">(${RECIPES.length})</span></button>`;
   DB.maskiner.forEach(m => {
     if (!used.has(m.id)) return;
     const n = RECIPES.filter(r => r.maskin_ids.includes(m.id)).length;
-    h += `<div class="chip" data-id="${m.id}" onclick="setM('${m.id}',this)">` +
-         (m.bild ? `<img src="${m.bild}" alt="">` : '<span class="em">🔧</span>') +
-         `${m.varumarke} ${m.modellnamn || ''} <span style="opacity:.55;">(${n})</span></div>`;
+    h += `<button class="tab" data-id="${m.id}" onclick="setTab('${m.id}',this)">` +
+         (m.bild ? `<img src="${m.bild}" alt="">` : '🔧 ') +
+         `${m.varumarke} ${m.modellnamn || ''} <span class="n">(${n})</span></button>`;
   });
-  document.getElementById('machineFilter').innerHTML = h;
+  document.getElementById('tabbar').innerHTML = h;
 }
-function setM(id, el) {
-  activeMachine = id;
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+function setTab(id, el) {
+  activeTab = id;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   apply();
 }
 
-/* ============ Rendering ============ */
+/* ============ Kort & filtrering ============ */
 function card(r) {
   const stars = r.rating ? `<span class="stars">${'★'.repeat(r.rating)}</span>` : '';
-  return `<a class="rcard" href="${r.file}">
-    <div class="media">
-      <span class="big-emoji">${r.emoji}</span>
-      <img src="${r.bild}" alt="" loading="lazy" onerror="this.remove()">
-      ${stars}
-    </div>
+  return `<a class="rcard" href="${r.file}"${r.isPdf ? ' target="_blank" rel="noopener"' : ''}>
+    <div class="media"><span class="big-emoji">${r.emoji}</span>
+      <img src="${r.bild}" alt="" loading="lazy" onerror="this.remove()">${stars}</div>
     <div class="body">
       <h3>${r.namn}</h3>
       <div class="desc">${r.beskrivning}</div>
-      <div class="mrow">${r.maskiner.slice(0,3).map(m =>
-        `<div class="mline">${m.replace(/^([^:]+):/, '<b>$1:</b>')}</div>`).join('')}</div>
+      ${r.maskiner.slice(0,3).map(m => `<div class="mline">${m.replace(/^([^:]+):/, '<b>$1:</b>')}</div>`).join('')}
       <div class="tags">${r.taggar.slice(0,5).map(t => `<span class="tag">${t}</span>`).join('')}</div>
-      <div class="cta">Öppna receptet →</div>
-    </div>
-  </a>`;
-}
-
-function render() {
-  document.getElementById('grid').innerHTML = RECIPES.map(card).join('');
-  apply();
+      <div class="cta">${r.isPdf ? '📄 Öppna PDF →' : 'Öppna receptet →'}</div>
+    </div></a>`;
 }
 
 function apply() {
   const q = (document.getElementById('q').value || '').trim().toLowerCase();
   const sort = document.getElementById('sort').value;
-
   let list = [...RECIPES];
   if (sort === 'rating') list.sort((a, b) => b.rating - a.rating);
   else if (sort === 'new') list.reverse();
-  else list.sort((a, b) => a.namn.localeCompare(b.namn, 'sv'));
 
-  const grid = document.getElementById('grid');
   const filtered = list.filter(r => {
     const text = (r.namn + ' ' + r.beskrivning + ' ' + r.taggar.join(' ') + ' ' + r.maskiner.join(' ')).toLowerCase();
-    return (!q || text.includes(q)) &&
-           (activeMachine === 'all' || r.maskin_ids.includes(activeMachine));
+    return (!q || text.includes(q)) && (activeTab === 'all' || r.maskin_ids.includes(activeTab));
   });
 
-  grid.innerHTML = filtered.map(card).join('');
+  document.getElementById('grid').innerHTML = filtered.map(card).join('');
   document.getElementById('noHit').style.display = filtered.length ? 'none' : 'block';
   document.getElementById('count').textContent =
     filtered.length === RECIPES.length ? `${RECIPES.length} recept` : `${filtered.length} av ${RECIPES.length} recept`;
 }
+
+/* ============================================================
+   IMPORT: kontrollera & laga en receptfil innan uppladdning
+   ============================================================ */
+function openImport() { document.getElementById('impBg').style.display = 'block'; }
+function closeImport() { document.getElementById('impBg').style.display = 'none'; }
+
+const drop = document.getElementById('drop');
+['dragover','dragenter'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) handleFile(f); });
+
+function handleFile(file) {
+  if (!file) return;
+  if (/\.pdf$/i.test(file.name)) {
+    const res = document.getElementById('impRes');
+    res.className = 'imp-result ok';
+    res.innerHTML = '<b>✅ PDF-recept!</b> PDF:er behöver ingen kontroll – ladda upp direkt till recept-mappen så visas den automatiskt som kort på startsidan.' +
+      '<br><a class="btn sec" style="display:inline-block;text-decoration:none;margin-top:10px;" href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">📤 Öppna GitHub-uppladdning</a>';
+    return;
+  }
+  if (!/\.html?$/i.test(file.name)) { alert('Välj en .html- eller .pdf-fil.'); return; }
+  const reader = new FileReader();
+  reader.onload = () => {
+    let t = reader.result;
+    const fixes = [], warns = [];
+
+    // 1) site.js-raden
+    if (t.indexOf('assets/site.js') === -1) {
+      const snippet = '<script src="../assets/site.js"><\/script>';
+      t = t.includes('</body>') ? t.replace('</body>', snippet + '\n</body>') : t + '\n' + snippet;
+      fixes.push('La till site.js-raden (utskrift/delning/kockläge/energi)');
+    }
+    // 2) Metadata-kontroll
+    ['namn','emoji','beskrivning','taggar','maskiner'].forEach(n => {
+      if (t.indexOf('name="recept:' + n + '"') === -1) warns.push('Saknar metadata: recept:' + n);
+    });
+    // 3) PLATS-märkning
+    if (t.indexOf('PLATS:') === -1) {
+      t = t.replace('<!DOCTYPE html>', '<!DOCTYPE html>\n<!-- PLATS: /recept/' + file.name + '  (recept-mappen – läses in automatiskt) -->');
+      fixes.push('La till PLATS-märkning');
+    }
+    // 4) Kockläges-steg
+    if (!/<ol[\s>]/i.test(t)) warns.push('Inga <ol>-steg hittades – kockläget får inga steg');
+
+    const res = document.getElementById('impRes');
+    res.className = 'imp-result ' + (warns.length ? 'warn' : 'ok');
+    res.innerHTML = '<b>' + (warns.length ? '⚠️ Kontrollerad med anmärkningar' : '✅ Filen ser komplett ut!') + '</b>' +
+      (fixes.length ? '<ul>' + fixes.map(f => '<li>🔧 ' + f + '</li>').join('') + '</ul>' : '') +
+      (warns.length ? '<ul>' + warns.map(w => '<li>⚠️ ' + w + ' <span style="color:var(--muted);">(auto-fixas ej – visas utan detta på startsidan)</span></li>').join('') + '</ul>' : '') +
+      '<button class="btn" id="impDl">⬇️ Ladda ner ' + (fixes.length ? 'lagad' : 'kontrollerad') + ' fil</button> ' +
+      '<a class="btn sec" style="display:inline-block;text-decoration:none;" href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">📤 Öppna GitHub-uppladdning</a>';
+
+    document.getElementById('impDl').onclick = () => {
+      const blob = new Blob([t], { type: 'text/html' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = file.name;
+      a.click();
+    };
+  };
+  reader.readAsText(file);
+}
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a21a4c7b7c4dc3b8',t:'MTc4NTE0MTIwMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
