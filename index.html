@@ -1,315 +1,312 @@
 <!DOCTYPE html>
-<!-- PLATS: /index.html  (repo-roten – startsidan) -->
+<!-- PLATS: /index.html  (repo-roten – startsidan, RECEPTFOKUS v2) -->
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mitt Maskinkök – Maskiner & Recept</title>
-<meta name="description" content="Min databas över matlagningsmaskiner och recept – med programförslag för varje rätt.">
+<title>Mitt Maskinkök – Recept</title>
+<meta name="description" content="Recept för mina matlagningsmaskiner – med maskinval, program, kostnad och kockläge.">
 <style>
-  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  :root {
+    --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22;
+    --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; --gold:#f1c40f;
+    --shadow:0 2px 10px rgba(0,0,0,.08); --shadow-lg:0 12px 32px rgba(0,0,0,.16);
+  }
   * { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); }
-  .wrap { max-width:1000px; margin:0 auto; padding:24px; }
-  header.hero { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; text-align:center; padding:52px 24px 44px; }
-  .hero h1 { font-size:2.2rem; margin-bottom:8px; }
-  .hero p { opacity:.94; font-size:1.05rem; max-width:560px; margin:0 auto; }
-  .nav-cards { display:flex; gap:18px; flex-wrap:wrap; margin:-26px auto 0; max-width:1000px; padding:0 24px; }
-  .nav-card { flex:1; min-width:240px; background:var(--card); border-radius:16px; padding:24px; text-align:center;
-    box-shadow:0 6px 18px rgba(0,0,0,.12); text-decoration:none; color:var(--dark); transition:transform .15s; }
-  .nav-card:hover { transform:translateY(-4px); }
-  .nav-card .icon { font-size:2.2rem; margin-bottom:6px; }
-  .nav-card h2 { font-size:1.1rem; margin-bottom:5px; }
-  .nav-card p { color:var(--muted); font-size:.87rem; }
-  section { margin-top:36px; }
-  section h2 { font-size:1.35rem; margin-bottom:14px; }
-  .search-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
-  input[type=text] { flex:1; min-width:240px; padding:13px 16px; border:2px solid #ddd; border-radius:12px; font-size:1rem; outline:none; background:#fff; }
-  input[type=text]:focus { border-color:var(--accent2); }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Segoe UI',system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--dark); }
 
-  /* Maskinväljare */
-  .machine-filter { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
-  .mf-btn { display:flex; align-items:center; gap:7px; background:var(--card); border:2px solid transparent; border-radius:999px;
-    padding:7px 14px 7px 8px; cursor:pointer; font-size:.86rem; font-weight:600; color:var(--dark);
-    box-shadow:0 2px 6px rgba(0,0,0,.07); transition:all .15s; }
-  .mf-btn:hover { transform:translateY(-2px); }
-  .mf-btn.active { background:var(--dark); color:#fff; }
-  .mf-btn img { width:30px; height:30px; object-fit:contain; border-radius:50%; background:#fff; }
-  .mf-btn .all-icon { width:30px; height:30px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+  /* ================= HERO ================= */
+  .hero {
+    background:linear-gradient(140deg,#c0392b 0%,#e67e22 60%,#f1c40f 130%);
+    color:#fff; text-align:center; padding:56px 20px 96px; position:relative;
+  }
+  .hero h1 { font-size:clamp(1.9rem,5vw,2.8rem); margin-bottom:10px; letter-spacing:-.5px; }
+  .hero p { opacity:.95; font-size:1.05rem; max-width:520px; margin:0 auto; }
+  .hero .stats { margin-top:18px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .hero .stat {
+    background:rgba(255,255,255,.18); backdrop-filter:blur(4px); border-radius:999px;
+    padding:7px 18px; font-size:.9rem; font-weight:600;
+  }
 
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
-  .recipe-card { background:var(--card); border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.07);
-    text-decoration:none; color:var(--dark); display:block; transition:transform .15s; }
-  .recipe-card:hover { transform:translateY(-3px); }
-  .recipe-card img.thumb { width:100%; height:150px; object-fit:cover; }
-  .recipe-card .body { padding:16px 18px 18px; }
-  .recipe-card .emoji { font-size:1.7rem; }
-  .recipe-card h3 { margin:4px 0 6px; font-size:1.08rem; }
-  .recipe-card p { color:var(--muted); font-size:.86rem; margin-bottom:9px; }
-  .machine-line { font-size:.8rem; background:#f4fbf6; border-left:3px solid var(--green); border-radius:6px; padding:5px 9px; margin-top:4px; }
-  .machine-line b { color:var(--green); }
-  .tags { margin-top:9px; }
-  .tag { display:inline-block; background:#f0ebe3; border-radius:999px; padding:2px 10px; font-size:.74rem; margin:2px 3px 0 0; color:var(--muted); }
-  .stars-mini { color:#f1c40f; font-size:.9rem; }
+  /* ================= SÖK (flyter över hero-kanten) ================= */
+  .search-wrap { max-width:760px; margin:-56px auto 0; padding:0 20px; position:relative; z-index:5; }
+  .search-box {
+    background:var(--card); border-radius:18px; box-shadow:var(--shadow-lg);
+    padding:10px; display:flex; gap:8px; align-items:center;
+  }
+  .search-box .icon { font-size:1.3rem; padding-left:10px; }
+  .search-box input {
+    flex:1; border:none; outline:none; font-size:1.1rem; padding:12px 6px;
+    font-family:inherit; background:transparent; min-width:100px;
+  }
+  .search-box select {
+    border:none; outline:none; background:#f0ebe3; border-radius:12px;
+    padding:11px 12px; font-size:.9rem; font-weight:600; color:var(--dark);
+    cursor:pointer; font-family:inherit; max-width:170px;
+  }
 
-  .machine-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
-  .machine-card { background:var(--card); border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.07);
-    text-decoration:none; color:var(--dark); transition:transform .15s; display:block; }
-  .machine-card:hover { transform:translateY(-3px); }
-  .machine-card img { width:100%; height:140px; object-fit:contain; background:#fff; padding:8px; }
-  .machine-card .info { padding:12px 14px; }
-  .machine-card h3 { font-size:.92rem; margin-bottom:3px; }
-  .machine-card p { color:var(--muted); font-size:.78rem; }
-  .no-hit { color:var(--muted); padding:20px; text-align:center; display:none; }
-  .changelog { background:var(--card); border-radius:14px; padding:8px 20px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
-  .cl-item { display:flex; gap:14px; align-items:baseline; padding:10px 0; border-bottom:1px solid #f0ebe3; font-size:.9rem; }
-  .cl-item:last-child { border-bottom:none; }
-  .cl-date { color:var(--muted); font-size:.8rem; white-space:nowrap; min-width:84px; }
-  .cl-msg { flex:1; }
-  .cl-files { color:var(--muted); font-size:.78rem; }
-  .loading { color:var(--muted); padding:16px; }
-  footer { text-align:center; color:var(--muted); font-size:.82rem; padding:34px 20px 26px; }
-  footer a { color:var(--accent); }
+  /* ================= FILTERRAD ================= */
+  .wrap { max-width:1060px; margin:0 auto; padding:0 20px 40px; }
+  .filters { display:flex; gap:8px; flex-wrap:wrap; margin:22px 0 6px; align-items:center; }
+  .chip {
+    display:flex; align-items:center; gap:7px; background:var(--card);
+    border:2px solid transparent; border-radius:999px; padding:8px 16px 8px 10px;
+    cursor:pointer; font-size:.87rem; font-weight:600; color:var(--dark);
+    box-shadow:var(--shadow); transition:all .16s; user-select:none;
+  }
+  .chip:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg); }
+  .chip.active { background:var(--dark); color:#fff; }
+  .chip img { width:28px; height:28px; object-fit:contain; border-radius:50%; background:#fff; }
+  .chip .em { width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:1.05rem; }
+  .result-count { color:var(--muted); font-size:.85rem; margin:8px 2px 14px; }
+
+  /* ================= RECEPTKORT ================= */
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:22px; }
+  .rcard {
+    background:var(--card); border-radius:20px; overflow:hidden; box-shadow:var(--shadow);
+    text-decoration:none; color:var(--dark); display:flex; flex-direction:column;
+    transition:transform .18s, box-shadow .18s; position:relative;
+  }
+  .rcard:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); }
+  .rcard .media {
+    height:170px; position:relative; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,#e67e22,#f1c40f); overflow:hidden;
+  }
+  .rcard .media img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+  .rcard .media .big-emoji { font-size:4.2rem; filter:drop-shadow(0 4px 10px rgba(0,0,0,.25)); }
+  .rcard .media .stars {
+    position:absolute; top:12px; right:12px; background:rgba(0,0,0,.45);
+    color:var(--gold); border-radius:999px; padding:4px 12px; font-size:.85rem;
+    backdrop-filter:blur(3px);
+  }
+  .rcard .body { padding:18px 20px 20px; flex:1; display:flex; flex-direction:column; }
+  .rcard h3 { font-size:1.18rem; margin-bottom:6px; line-height:1.3; }
+  .rcard .desc { color:var(--muted); font-size:.88rem; line-height:1.5; margin-bottom:12px; flex:1; }
+  .rcard .mrow { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+  .rcard .mline {
+    font-size:.8rem; background:#f4fbf6; border-left:3px solid var(--green);
+    border-radius:0 8px 8px 0; padding:6px 10px; line-height:1.4;
+  }
+  .rcard .mline b { color:var(--green); }
+  .rcard .tags { display:flex; flex-wrap:wrap; gap:5px; }
+  .rcard .tag { background:#f0ebe3; border-radius:999px; padding:3px 11px; font-size:.73rem; color:var(--muted); font-weight:600; }
+  .rcard .cta {
+    margin-top:14px; background:var(--dark); color:#fff; text-align:center;
+    border-radius:12px; padding:11px; font-weight:700; font-size:.92rem;
+    transition:background .15s;
+  }
+  .rcard:hover .cta { background:var(--accent); }
+
+  /* Skelett-laddning */
+  .skel { border-radius:20px; overflow:hidden; background:var(--card); box-shadow:var(--shadow); }
+  .skel .a { height:170px; } .skel .b { height:20px; margin:18px 20px 10px; border-radius:6px; width:70%; }
+  .skel .c { height:12px; margin:0 20px 8px; border-radius:6px; }
+  .skel .a,.skel .b,.skel .c {
+    background:linear-gradient(90deg,#eee 25%,#f7f4ef 50%,#eee 75%); background-size:200% 100%;
+    animation:sh 1.2s infinite;
+  }
+  @keyframes sh { to { background-position:-200% 0; } }
+
+  .no-hit { text-align:center; color:var(--muted); padding:50px 20px; font-size:1.05rem; display:none; }
+  .no-hit .e { font-size:3rem; display:block; margin-bottom:10px; }
+
+  /* ================= ÖVRIGT (pausat, diskret) ================= */
+  .more { margin-top:46px; border-top:1px solid #e5ddd0; padding-top:22px; }
+  .more h2 { font-size:1rem; color:var(--muted); font-weight:600; margin-bottom:12px; }
+  .more .links { display:flex; gap:10px; flex-wrap:wrap; }
+  .more a {
+    background:var(--card); border-radius:12px; padding:10px 18px; text-decoration:none;
+    color:var(--dark); font-size:.88rem; font-weight:600; box-shadow:var(--shadow);
+    transition:transform .15s;
+  }
+  .more a:hover { transform:translateY(-2px); }
+
+  footer { text-align:center; color:var(--muted); font-size:.8rem; padding:30px 20px; }
 </style>
 <link rel="stylesheet" href="assets/print.css">
 </head>
 <body>
 
+<!-- ================= HERO ================= -->
 <header class="hero">
   <h1>🍳 Mitt Maskinkök</h1>
-  <p>Mina matlagningsmaskiner och recept – varje recept berättar vilken maskin och vilket program som passar bäst.</p>
+  <p>Recept byggda för mina maskiner – rätt program, rätt tid, varje gång.</p>
+  <div class="stats" id="heroStats"></div>
 </header>
 
-<div class="nav-cards">
-  <a class="nav-card" href="maskindatabas.html">
-    <div class="icon">🔧</div>
-    <h2>Maskindatabasen</h2>
-    <p>Alla maskiner med program, tider, manualer &amp; köplänkar</p>
-  </a>
-  <a class="nav-card" href="#recept">
-    <div class="icon">📖</div>
-    <h2>Recepten</h2>
-    <p>Sök och filtrera per maskin</p>
-  </a>
-  <a class="nav-card" href="generator.html">
-    <div class="icon">🧪</div>
-    <h2>Receptgeneratorn</h2>
-    <p>Bygg recept av ingredienser – kostnad &amp; näring räknas automatiskt</p>
-  </a>
-  <a class="nav-card" href="json/maskindatabas.json" download>
-    <div class="icon">📦</div>
-    <h2>Ladda ner databasen</h2>
-    <p>JSON – delbar med AI-assistenter</p>
-  </a>
+<!-- ================= SÖK ================= -->
+<div class="search-wrap">
+  <div class="search-box">
+    <span class="icon">🔍</span>
+    <input type="text" id="q" placeholder="Sök recept, ingrediens eller tagg..." oninput="apply()">
+    <select id="sort" onchange="apply()">
+      <option value="name">Sortera: A–Ö</option>
+      <option value="rating">Sortera: Betyg</option>
+      <option value="new">Sortera: Nyast</option>
+    </select>
+  </div>
 </div>
 
 <div class="wrap">
 
-  <section id="recept">
-    <h2>📖 Recept</h2>
-    <div class="search-row">
-      <input type="text" id="recipeSearch" placeholder="🔍 Sök recept... (t.ex. kaka, ananas, fika)" oninput="applyFilters()">
+  <!-- Maskinfilter -->
+  <div class="filters" id="machineFilter"></div>
+  <div class="result-count" id="count"></div>
+
+  <!-- Receptkort -->
+  <div class="grid" id="grid">
+    <div class="skel"><div class="a"></div><div class="b"></div><div class="c"></div><div class="c" style="width:60%;margin-bottom:20px;"></div></div>
+    <div class="skel"><div class="a"></div><div class="b"></div><div class="c"></div><div class="c" style="width:60%;margin-bottom:20px;"></div></div>
+    <div class="skel"><div class="a"></div><div class="b"></div><div class="c"></div><div class="c" style="width:60%;margin-bottom:20px;"></div></div>
+  </div>
+  <div class="no-hit" id="noHit"><span class="e">🤔</span>Inga recept matchade – prova ett annat sökord.</div>
+
+  <!-- Pausat: allt annat diskret längst ner -->
+  <div class="more no-print">
+    <h2>Mer</h2>
+    <div class="links">
+      <a href="maskindatabas.html">🔧 Maskindatabasen</a>
+      <a href="generator.html">🧪 Receptgeneratorn</a>
+      <a href="json/maskindatabas.json" download>📦 Ladda ner databasen</a>
     </div>
-    <div class="machine-filter" id="machineFilter"></div>
-    <div class="loading" id="loading">Läser in recept…</div>
-    <div class="grid" id="recipeGrid"></div>
-    <div class="no-hit" id="noHit">Inga recept matchade. 🤔</div>
-  </section>
-
-  <section id="nytt" class="no-print">
-    <h2>🆕 Senaste ändringar</h2>
-    <div class="changelog" id="changelog"><span style="color:var(--muted);">Hämtar ändringshistorik…</span></div>
-  </section>
-
-  <section id="maskiner">
-    <h2>🔧 Maskinerna</h2>
-    <div class="machine-grid" id="machineGrid"></div>
-  </section>
-
+  </div>
 </div>
 
-<footer>
-  Mitt Maskinkök · Programdata verifierad mot officiella bruksanvisningar ·
-  <a href="json/maskindatabas.json">json/</a><br>
-  Nya recept: släpp en .html-fil i <code>recept/</code> · Nya maskiner: släpp en .json-fil i <code>json/maskiner/</code> – båda läses in automatiskt.
-</footer>
+<footer>Mitt Maskinkök · recepten läses direkt från recept-mappen</footer>
 
 <script>
-/* ==========================================================================
-   AUTOMATISK RECEPTINLÄSNING
-   1) Om sajten körs på GitHub Pages: listar recept/-mappen via GitHub API
-      och läser metadata (<meta name="recept:...">) ur varje HTML-fil.
-   2) Annars (annan server): försöker läsa recept/index.json om den finns,
-      annars faller tillbaka på recept-listan i maskindatabas.json.
-   ========================================================================== */
-
-let DB = null;
-let RECIPES = [];
-let activeMachine = 'all';
+/* ============================================================
+   RECEPTFOKUS: läser ENBART main/recept/*.html
+   (GitHub-listning + metadata direkt ur varje fil)
+   ============================================================ */
+let DB = { maskiner: [] }, RECIPES = [], activeMachine = 'all';
 
 init();
 
 async function init() {
+  // Maskiner (för filterknappar + id-koppling) – statisk indexlista
   try {
-    DB = await (await fetch('json/maskindatabas.json')).json();
-  } catch (e) {
-    document.getElementById('loading').textContent =
-      'Kunde inte läsa json/maskindatabas.json. (Sidan måste köras via webbserver.)';
-    return;
-  }
-  // Maskiner (statisk indexlista)
-  DB.maskiner = [];
-  let mFiles = [];
-  try { mFiles = await (await fetch('json/maskiner-index.json')).json(); } catch (e) {}
-  for (const f of mFiles) {
-    try { DB.maskiner.push(await (await fetch('json/maskiner/' + f)).json()); } catch (e) {}
-  }
-  renderMachines(DB.maskiner || []);
+    const mFiles = await (await fetch('json/maskiner-index.json')).json();
+    for (const f of mFiles) {
+      try { DB.maskiner.push(await (await fetch('json/maskiner/' + f)).json()); } catch (e) {}
+    }
+  } catch (e) {}
 
-  // ===== RECEPT: läses ENBART från main/recept/*.html =====
-  // 1) Lista mappen via GitHub (main-branchen)
+  // Recept: lista main/recept/ + läs metadata ur varje HTML
   let files = [];
   try {
     const parts = location.pathname.split('/').filter(Boolean);
     const user = location.hostname.split('.')[0];
     const repo = parts.length ? parts[0] : user + '.github.io';
     const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/recept?ref=main`);
-    if (res.ok) {
-      files = (await res.json())
-        .filter(i => i.type === 'file' && i.name.toLowerCase().endsWith('.html'))
-        .map(i => i.name);
-    }
+    if (res.ok) files = (await res.json())
+      .filter(i => i.type === 'file' && i.name.toLowerCase().endsWith('.html'))
+      .map(i => i.name);
   } catch (e) {}
 
-  // 2) Läs varje recept-HTML och plocka metadata direkt ur filen
   RECIPES = [];
-  for (const f of files) {
+  await Promise.all(files.map(async f => {
     try {
-      const html = await (await fetch('recept/' + f)).text();
+      const html = await (await fetch('recept/' + encodeURIComponent(f))).text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const get = n => { const el = doc.querySelector(`meta[name="recept:${n}"]`); return el ? el.content : ''; };
       const maskiner = get('maskiner') ? get('maskiner').split('|').map(s => s.trim()) : [];
+      const title = doc.querySelector('title');
       RECIPES.push({
         file: 'recept/' + f,
-        namn: get('namn') || (doc.querySelector('title') ? doc.querySelector('title').textContent : f),
-        emoji: get('emoji') || '🍽️',
-        beskrivning: get('beskrivning'),
-        taggar: get('taggar') ? get('taggar').split(',').map(t => t.trim()) : [],
-        maskiner: maskiner,
-        maskin_ids: (DB.maskiner || []).filter(m =>
-          maskiner.join(' ').toLowerCase().includes((m.modellnamn || '').toLowerCase()) && m.modellnamn ||
-          maskiner.join(' ').toLowerCase().includes(m.varumarke.toLowerCase())
+        namn: get('namn') || (title ? title.textContent.replace(/ – Recept$/,'') : f.replace(/\.html$/,'')),
+        emoji: get('emoji') || (get('namn') || (title ? title.textContent : '')).match(/\p{Emoji_Presentation}/u)?.[0] || '🍽️',
+        beskrivning: get('beskrivning') || 'Öppna receptet för detaljer.',
+        taggar: get('taggar') ? get('taggar').split(',').map(t => t.trim()).filter(Boolean) : [],
+        maskiner,
+        maskin_ids: DB.maskiner.filter(m =>
+          maskiner.join(' ').toLowerCase().includes((m.modellnamn || '§').toLowerCase()) ||
+          maskiner.join(' ').toLowerCase().includes(m.varumarke.toLowerCase()) ||
+          html.toLowerCase().includes((m.modellnamn || '§').toLowerCase())
         ).map(m => m.id),
-        bild: 'images/recept/' + f.replace(/\.html?$/i, '') + '.jpg'
+        bild: 'images/recept/' + f.replace(/\.html?$/i, '') + '.jpg',
+        rating: (JSON.parse(localStorage.getItem('recept-' + f) || '{}').rating) || 0
       });
     } catch (e) {}
-  }
+  }));
 
-  document.getElementById('loading').style.display = 'none';
-  buildMachineFilter();
-  renderRecipes();
+  RECIPES.sort((a, b) => a.namn.localeCompare(b.namn, 'sv'));
+  document.getElementById('heroStats').innerHTML =
+    `<span class="stat">📖 ${RECIPES.length} recept</span>` +
+    `<span class="stat">🔧 ${DB.maskiner.length} maskiner</span>` +
+    `<span class="stat">👨‍🍳 Kockläge på alla recept</span>`;
+
+  buildFilter();
+  render();
 }
 
-function machineName(id) {
-  const m = (DB.maskiner || []).find(x => x.id === id);
-  return m ? (m.varumarke + ' ' + (m.modellnamn || '')) : id;
-}
-
-/* ===== Maskinväljare ===== */
-function buildMachineFilter() {
-  const usedIds = new Set();
-  RECIPES.forEach(r => (r.maskin_ids || []).forEach(id => usedIds.add(id)));
-  const el = document.getElementById('machineFilter');
-  let html = `<button class="mf-btn active" data-id="all" onclick="setMachine('all', this)"><span class="all-icon">🍽️</span>Alla recept</button>`;
-  (DB.maskiner || []).forEach(m => {
-    if (!usedIds.has(m.id)) return;
-    html += `<button class="mf-btn" data-id="${m.id}" onclick="setMachine('${m.id}', this)">
-      ${m.bild ? `<img src="${m.bild}" alt="">` : '<span class="all-icon">🔧</span>'}${m.varumarke} ${m.modellnamn || ''}</button>`;
+/* ============ Maskinfilter ============ */
+function buildFilter() {
+  const used = new Set();
+  RECIPES.forEach(r => r.maskin_ids.forEach(id => used.add(id)));
+  let h = `<div class="chip active" data-id="all" onclick="setM('all',this)"><span class="em">🍽️</span>Alla recept</div>`;
+  DB.maskiner.forEach(m => {
+    if (!used.has(m.id)) return;
+    const n = RECIPES.filter(r => r.maskin_ids.includes(m.id)).length;
+    h += `<div class="chip" data-id="${m.id}" onclick="setM('${m.id}',this)">` +
+         (m.bild ? `<img src="${m.bild}" alt="">` : '<span class="em">🔧</span>') +
+         `${m.varumarke} ${m.modellnamn || ''} <span style="opacity:.55;">(${n})</span></div>`;
   });
-  el.innerHTML = html;
+  document.getElementById('machineFilter').innerHTML = h;
 }
-
-function setMachine(id, btn) {
+function setM(id, el) {
   activeMachine = id;
-  document.querySelectorAll('.mf-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  applyFilters();
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  apply();
 }
 
-/* ===== Rendering & filter ===== */
-function renderRecipes() {
-  const grid = document.getElementById('recipeGrid');
-  grid.innerHTML = RECIPES.map((r, i) => {
-    const rating = JSON.parse(localStorage.getItem('recept-' + r.file.split('/').pop()) || '{}').rating || 0;
-    return `
-    <a class="recipe-card" href="${r.file}" data-i="${i}">
-      <img class="thumb" src="${r.bild || ''}" alt="" onerror="this.style.display='none'">
-      <div class="body">
-        <span class="emoji">${r.emoji}</span>
-        ${rating ? `<span class="stars-mini">${'★'.repeat(rating)}</span>` : ''}
-        <h3>${r.namn}</h3>
-        <p>${r.beskrivning}</p>
-        ${(r.maskiner || []).map(m => `<div class="machine-line">${m.replace(/^([^:]+):/, '<b>$1:</b>')}</div>`).join('')}
-        <div class="tags">${(r.taggar || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
-      </div>
-    </a>`;
-  }).join('');
-  applyFilters();
+/* ============ Rendering ============ */
+function card(r) {
+  const stars = r.rating ? `<span class="stars">${'★'.repeat(r.rating)}</span>` : '';
+  return `<a class="rcard" href="${r.file}">
+    <div class="media">
+      <span class="big-emoji">${r.emoji}</span>
+      <img src="${r.bild}" alt="" loading="lazy" onerror="this.remove()">
+      ${stars}
+    </div>
+    <div class="body">
+      <h3>${r.namn}</h3>
+      <div class="desc">${r.beskrivning}</div>
+      <div class="mrow">${r.maskiner.slice(0,3).map(m =>
+        `<div class="mline">${m.replace(/^([^:]+):/, '<b>$1:</b>')}</div>`).join('')}</div>
+      <div class="tags">${r.taggar.slice(0,5).map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      <div class="cta">Öppna receptet →</div>
+    </div>
+  </a>`;
 }
 
-function applyFilters() {
-  const q = (document.getElementById('recipeSearch').value || '').trim().toLowerCase();
-  let hits = 0;
-  document.querySelectorAll('.recipe-card').forEach(c => {
-    const r = RECIPES[+c.dataset.i];
-    const text = (r.namn + ' ' + r.beskrivning + ' ' + (r.taggar || []).join(' ') + ' ' + (r.maskiner || []).join(' ')).toLowerCase();
-    const matchQ = !q || text.includes(q);
-    const matchM = activeMachine === 'all' || (r.maskin_ids || []).includes(activeMachine);
-    const show = matchQ && matchM;
-    c.style.display = show ? '' : 'none';
-    if (show) hits++;
+function render() {
+  document.getElementById('grid').innerHTML = RECIPES.map(card).join('');
+  apply();
+}
+
+function apply() {
+  const q = (document.getElementById('q').value || '').trim().toLowerCase();
+  const sort = document.getElementById('sort').value;
+
+  let list = [...RECIPES];
+  if (sort === 'rating') list.sort((a, b) => b.rating - a.rating);
+  else if (sort === 'new') list.reverse();
+  else list.sort((a, b) => a.namn.localeCompare(b.namn, 'sv'));
+
+  const grid = document.getElementById('grid');
+  const filtered = list.filter(r => {
+    const text = (r.namn + ' ' + r.beskrivning + ' ' + r.taggar.join(' ') + ' ' + r.maskiner.join(' ')).toLowerCase();
+    return (!q || text.includes(q)) &&
+           (activeMachine === 'all' || r.maskin_ids.includes(activeMachine));
   });
-  document.getElementById('noHit').style.display = hits ? 'none' : 'block';
-}
 
-/* ===== Ändringslogg från GitHub commit-historik ===== */
-loadChangelog();
-async function loadChangelog() {
-  const el = document.getElementById('changelog');
-  if (!isGitHubPages) { el.innerHTML = '<span style="color:var(--muted);">Ändringsloggen visas när sajten körs på GitHub Pages.</span>'; return; }
-  try {
-    const parts = location.pathname.split('/').filter(Boolean);
-    const user = location.hostname.split('.')[0];
-    const repo = parts.length ? parts[0] : user + '.github.io';
-    const res = await fetch(`https://api.github.com/repos/${user}/${repo}/commits?per_page=8`);
-    if (!res.ok) throw new Error();
-    const commits = await res.json();
-    el.innerHTML = commits.map(c => {
-      const d = new Date(c.commit.author.date);
-      const date = d.toLocaleDateString('sv-SE', { day:'numeric', month:'short' });
-      let msg = c.commit.message.split('\n')[0];
-      // Gör GitHubs standardmeddelanden trevligare
-      msg = msg.replace(/^Add files via upload$/i, 'Filer uppladdade/uppdaterade')
-               .replace(/^Update (.+)$/i, 'Uppdaterade $1')
-               .replace(/^Create (.+)$/i, 'Ny fil: $1')
-               .replace(/^Delete (.+)$/i, 'Tog bort $1');
-      return `<div class="cl-item"><span class="cl-date">${date}</span><span class="cl-msg">${msg}</span></div>`;
-    }).join('');
-  } catch (e) {
-    el.innerHTML = '<span style="color:var(--muted);">Kunde inte hämta ändringshistoriken just nu.</span>';
-  }
-}
-
-function renderMachines(machines) {
-  document.getElementById('machineGrid').innerHTML = machines.map(m => `
-    <a class="machine-card" href="maskindatabas.html">
-      ${m.bild ? `<img src="${m.bild}" alt="${m.namn}" loading="lazy">` : ''}
-      <div class="info">
-        <h3>${m.varumarke} ${m.modellnamn || ''}</h3>
-        <p>${m.typ}</p>
-        <p style="margin-top:4px; color:#27ae60; font-weight:600;">${m.program.length} program</p>
-      </div>
-    </a>`).join('');
+  grid.innerHTML = filtered.map(card).join('');
+  document.getElementById('noHit').style.display = filtered.length ? 'none' : 'block';
+  document.getElementById('count').textContent =
+    filtered.length === RECIPES.length ? `${RECIPES.length} recept` : `${filtered.length} av ${RECIPES.length} recept`;
 }
 </script>
 <script src="assets/site.js"></script>
