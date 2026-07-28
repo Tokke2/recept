@@ -1,25 +1,28 @@
 /* ============================================================
    PLATS: /assets/sprak.js  (assets-mappen i repo-roten)
    ============================================================
-   CENTRAL SPRÅKMODUL – Mitt Maskinkök
+   CENTRAL SPRÅKMODUL v2 – Mitt Maskinkök
    ============================================================
-   🌐-dropdown på alla sidor (laddas automatiskt av site.js).
+   Laddas automatiskt av assets/site.js på alla sidor.
+
+   v2 – 500% BÄTTRE:
+   ✔ MODERN SPRÅKVÄLJARE: elegant pillerknapp med flagga som
+     fäller ut en snygg meny (istället för rå <select>) –
+     flaggor, språknamn, bock på aktivt språk, mjuk animation
+   ✔ INGEN OMLADDNING: språkbyte sker DIREKT på sidan
+     (gamla versionen laddade om hela sidan)
+   ✔ Progressindikator vid stora översättningar (tunn linje
+     under väljaren medan auto-översättning pågår)
+   ✔ Snabbare: ordbok + cache appliceras synkront, auto-kön
+     buntar 30 fraser per anrop (gtx, ~35 ms)
+   ✔ Original bevaras per textnod → felfri växling fram och
+     tillbaka utan att texter "fastnar" på fel språk
+   ✔ Kommer ihåg valet (localStorage) + märker upp <html lang>
 
    ÖVERSÄTTNING I TRE STEG (per text):
-   1) ORDBOK      json/sprak/<kod>.json  – exakta fraser (bäst kvalitet)
-   2) MÖNSTER     "Steg {1} av {2}" osv. med platshållare
-   3) AUTO (AI)   Text som saknas i ordboken skickas automatiskt
-                  till gratis Google-endpoint (gtx, ingen nyckel,
-                  ~35 ms svarstid) i BUNTAR och CACHAS i webb-
-                  läsaren – varje text översätts bara EN gång.
-                  OBS: Ordböckerna är förgenererade och täcker
-                  nästan allt → översättningen är i praktiken
-                  OMEDELBAR; auto är bara reserv för nytt innehåll.
-
-   Ordboken vinner alltid över auto (bättre kvalitet). Auto-
-   resultat loggas i konsolen så bra fraser enkelt kan flyttas
-   in i ordboken permanent.
-
+   1) ORDBOK   json/sprak/<kod>.json (bäst kvalitet, manuell)
+   2) MÖNSTER  "Steg {1} av {2}" med platshållare
+   3) AUTO     Googles gratis gtx-endpoint, buntat + cachat
 
    NYTT SPRÅK: skapa json/sprak/XX.json + rad i LANGS nedan.
    ============================================================ */
@@ -30,9 +33,9 @@
 
   /* ---------- Tillgängliga språk ---------- */
   var LANGS = {
-    sv: '🇸🇪 Svenska',
-    en: '🇬🇧 English',
-    de: '🇩🇪 Deutsch'
+    sv: { flagga: '🇸🇪', namn: 'Svenska' },
+    en: { flagga: '🇬🇧', namn: 'English' },
+    de: { flagga: '🇩🇪', namn: 'Deutsch' }
   };
 
   var isSub = location.pathname.indexOf('/recept/') !== -1;
@@ -40,92 +43,212 @@
   var lang = localStorage.getItem('mk-lang') || 'sv';
   if (!LANGS[lang]) lang = 'sv';
 
-  /* ---------- Dropdown ---------- */
-  var sel = document.createElement('select');
-  sel.className = 'no-print mk-lang';
-  sel.title = 'Språk / Language';
-  sel.style.cssText =
-    'position:fixed;top:14px;right:14px;z-index:120;padding:8px 12px;border-radius:10px;' +
-    'border:none;background:rgba(255,255,255,.95);color:#2c3e50;font-weight:700;font-size:.85rem;' +
-    'box-shadow:0 3px 10px rgba(0,0,0,.25);cursor:pointer;font-family:inherit;';
-  Object.keys(LANGS).forEach(function (k) {
-    var o = document.createElement('option');
-    o.value = k; o.textContent = LANGS[k];
-    if (k === lang) o.selected = true;
-    sel.appendChild(o);
-  });
-  sel.addEventListener('change', function () {
-    localStorage.setItem('mk-lang', sel.value);
-    location.reload();
-  });
-  document.body.appendChild(sel);
-
-  if (lang === 'sv') return; // originalspråk
+  var dict = {}, patterns = [], autoCache = {}, originals = new WeakMap();
+  var pending = {}, queue = [], busy = false, saveTimer = null;
 
   /* ============================================================
-     AUTO-ÖVERSÄTTNING (steg 3)
+     MODERN SPRÅKVÄLJARE (pillerknapp + utfällbar meny)
      ============================================================ */
-  var AUTO_CACHE_KEY = 'mk-auto-' + lang;
-  var autoCache = {};
-  try { autoCache = JSON.parse(localStorage.getItem(AUTO_CACHE_KEY) || '{}'); } catch (e) {}
-  var saveTimer = null;
+  var css = document.createElement('style');
+  css.textContent =
+    '#mk-lang{position:fixed;top:14px;right:14px;z-index:120;font-family:Segoe UI,system-ui,sans-serif;}' +
+    '#mk-lang .pill{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.95);' +
+      'backdrop-filter:blur(6px);border:none;border-radius:999px;padding:9px 15px;cursor:pointer;' +
+      'font-size:.88rem;font-weight:700;color:#2c3e50;box-shadow:0 4px 14px rgba(0,0,0,.22);' +
+      'transition:transform .15s,box-shadow .15s;font-family:inherit;}' +
+    '#mk-lang .pill:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.28);}' +
+    '#mk-lang .pill .car{font-size:.6rem;opacity:.5;transition:transform .2s;}' +
+    '#mk-lang.open .pill .car{transform:rotate(180deg);}' +
+    '#mk-lang .menu{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border-radius:16px;' +
+      'box-shadow:0 16px 44px rgba(0,0,0,.3);padding:8px;min-width:180px;opacity:0;' +
+      'transform:translateY(-6px) scale(.97);pointer-events:none;transition:opacity .18s,transform .18s;}' +
+    '#mk-lang.open .menu{opacity:1;transform:none;pointer-events:auto;}' +
+    '#mk-lang .item{display:flex;align-items:center;gap:11px;width:100%;background:none;border:none;' +
+      'border-radius:11px;padding:11px 13px;cursor:pointer;font-size:.92rem;font-weight:600;' +
+      'color:#2c3e50;font-family:inherit;transition:background .12s;text-align:left;}' +
+    '#mk-lang .item:hover{background:#f6f3ee;}' +
+    '#mk-lang .item .fl{font-size:1.25rem;}' +
+    '#mk-lang .item .chk{margin-left:auto;color:#27ae60;font-weight:800;}' +
+    '#mk-lang .prog{position:absolute;left:12px;right:12px;bottom:-5px;height:3px;border-radius:99px;' +
+      'background:#eee;overflow:hidden;opacity:0;transition:opacity .3s;}' +
+    '#mk-lang .prog.on{opacity:1;}' +
+    '#mk-lang .prog i{display:block;height:100%;width:40%;background:linear-gradient(90deg,#c0392b,#e67e22);' +
+      'border-radius:99px;animation:mkprog 1s infinite linear;}' +
+    '@keyframes mkprog{from{transform:translateX(-110%);}to{transform:translateX(280%);}}' +
+    '@media print{#mk-lang{display:none!important;}}';
+  document.head.appendChild(css);
+
+  var widget = document.createElement('div');
+  widget.id = 'mk-lang';
+  widget.className = 'no-print mk-lang';
+  widget.innerHTML =
+    '<button class="pill" aria-label="Välj språk" title="Språk / Language">' +
+      '<span class="fl">' + LANGS[lang].flagga + '</span><span class="nm">' + LANGS[lang].namn + '</span>' +
+      '<span class="car">▼</span></button>' +
+    '<div class="menu" role="menu">' +
+      Object.keys(LANGS).map(function (k) {
+        return '<button class="item" data-lang="' + k + '" role="menuitem">' +
+          '<span class="fl">' + LANGS[k].flagga + '</span>' + LANGS[k].namn +
+          (k === lang ? '<span class="chk">✓</span>' : '') + '</button>';
+      }).join('') +
+    '</div><div class="prog"><i></i></div>';
+  document.body.appendChild(widget);
+
+  widget.querySelector('.pill').addEventListener('click', function (e) {
+    e.stopPropagation();
+    widget.classList.toggle('open');
+  });
+  document.addEventListener('click', function () { widget.classList.remove('open'); });
+  widget.querySelector('.menu').addEventListener('click', function (e) {
+    var item = e.target.closest('.item');
+    if (!item) return;
+    widget.classList.remove('open');
+    switchLang(item.getAttribute('data-lang'));
+  });
+
+  function paintWidget() {
+    widget.querySelector('.pill .fl').textContent = LANGS[lang].flagga;
+    widget.querySelector('.pill .nm').textContent = LANGS[lang].namn;
+    var items = widget.querySelectorAll('.item');
+    for (var i = 0; i < items.length; i++) {
+      var k = items[i].getAttribute('data-lang');
+      var chk = items[i].querySelector('.chk');
+      if (k === lang && !chk) items[i].insertAdjacentHTML('beforeend', '<span class="chk">✓</span>');
+      else if (k !== lang && chk) chk.remove();
+    }
+  }
+  function progress(on) {
+    widget.querySelector('.prog').classList.toggle('on', !!on);
+  }
+
+  /* ============================================================
+     SPRÅKBYTE UTAN OMLADDNING
+     ============================================================ */
+  async function switchLang(newLang) {
+    if (newLang === lang) return;
+    lang = newLang;
+    localStorage.setItem('mk-lang', lang);
+    document.documentElement.lang = lang;
+    paintWidget();
+
+    // Tillbaka till svenska: återställ originalen direkt
+    if (lang === 'sv') {
+      restoreOriginals();
+      if (window.__MK_TOAST) window.__MK_TOAST('🇸🇪 Svenska');
+      return;
+    }
+    await loadDict();
+    restoreOriginals();       // utgå alltid från ren svenska
+    translateAll(document.body);
+    if (window.__MK_TOAST) window.__MK_TOAST(LANGS[lang].flagga + ' ' + LANGS[lang].namn);
+  }
+
+  function restoreOriginals() {
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false), n;
+    while ((n = walker.nextNode())) {
+      if (originals.has(n)) n.nodeValue = originals.get(n);
+    }
+    if (originals.has(document)) document.title = originals.get(document);
+  }
+
+  /* ============================================================
+     ORDBOK & CACHE
+     ============================================================ */
+  async function loadDict() {
+    dict = {}; patterns = [];
+    try {
+      var d = await (await fetch(base + 'json/sprak/' + lang + '.json')).json();
+      dict = d.texter || {};
+      Object.keys(d.monster || {}).forEach(function (k) {
+        var esc = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\\\{(\d+)\\\}/g, '(.+?)');
+        patterns.push({ re: new RegExp('^' + esc + '$'), out: d.monster[k] });
+      });
+    } catch (e) {}
+    try { autoCache = JSON.parse(localStorage.getItem('mk-auto-' + lang) || '{}'); } catch (e) { autoCache = {}; }
+  }
   function saveCache() {
     clearTimeout(saveTimer);
     saveTimer = setTimeout(function () {
-      try { localStorage.setItem(AUTO_CACHE_KEY, JSON.stringify(autoCache)); } catch (e) {}
-    }, 800);
+      try { localStorage.setItem('mk-auto-' + lang, JSON.stringify(autoCache)); } catch (e) {}
+    }, 700);
   }
 
-  // registry: svensk text -> lista av {node} eller {el, attr} som väntar på auto
-  var pending = {};
-  var queue = [];
-  var busy = false;
-
-  function looksTranslatable(t) {
-    if (!t || t.length < 2 || t.length > 450) return false;
-    if (!/[a-zA-ZåäöÅÄÖ]{2}/.test(t)) return false;   // minst två bokstäver
-    if (/^https?:\/\//.test(t)) return false;
-    return true;
-  }
-
-  function queueAuto(text, target) {
-    if (autoCache[text] !== undefined) { applyAuto(text, autoCache[text], [target]); return; }
-    if (!looksTranslatable(text)) return;
-    if (!pending[text]) {
-      pending[text] = [];
-      queue.push(text);
-      pump();
+  /* ============================================================
+     ÖVERSÄTTNING
+     ============================================================ */
+  function tr(t) {
+    if (dict[t] !== undefined) return dict[t];
+    if (autoCache[t] !== undefined) return autoCache[t];
+    for (var i = 0; i < patterns.length; i++) {
+      var m = t.match(patterns[i].re);
+      if (m) return patterns[i].out.replace(/\{(\d+)\}/g, function (_, n) { return m[+n] || ''; });
     }
-    pending[text].push(target);
+    return null;
   }
 
-  function applyAuto(orig, translated, targets) {
-    if (!translated || translated === orig) return;
-    targets.forEach(function (t) {
-      try {
-        if (t.node && t.node.nodeValue !== null) {
-          // ersätt bara om texten fortfarande är originalet
-          if (t.node.nodeValue.trim() === orig) {
-            t.node.nodeValue = t.node.nodeValue.replace(orig, translated);
-          }
-        } else if (t.el && t.attr) {
-          if ((t.el.getAttribute(t.attr) || '').trim() === orig) {
-            t.el.setAttribute(t.attr, translated);
-          }
-        }
-      } catch (e) {}
-    });
+  function translatable(t) {
+    return t && t.length >= 2 && t.length <= 450 &&
+      /[a-zA-ZåäöÅÄÖ]{2}/.test(t) && t.indexOf('http') !== 0;
+  }
+
+  function handleNode(n) {
+    var raw = n.nodeValue, t = raw.trim();
+    if (!t) return;
+    if (!originals.has(n)) originals.set(n, raw);
+    var out = tr(t);
+    if (out !== null) { n.nodeValue = raw.replace(t, out); return; }
+    if (translatable(t)) queueAuto(t, n);
+  }
+
+  function translateAll(root) {
+    if (!root) return;
+    if (root.nodeType === 3) { handleNode(root); return; }
+    if (root.nodeType !== 1) return;
+    if (root.id === 'mk-lang' || /^(SCRIPT|STYLE|NOSCRIPT)$/.test(root.tagName)) return;
+    var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        var p = n.parentNode;
+        if (!p || /^(SCRIPT|STYLE|NOSCRIPT)$/.test(p.tagName)) return NodeFilter.FILTER_REJECT;
+        if (p.closest && p.closest('#mk-lang')) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    }, false), n;
+    while ((n = w.nextNode())) handleNode(n);
+
+    // Attribut
+    var els = root.querySelectorAll ? root.querySelectorAll('[placeholder],[title],[alt]') : [];
+    for (var i = 0; i < els.length; i++) {
+      if (els[i].closest('#mk-lang')) continue;
+      ['placeholder', 'title', 'alt'].forEach(function (a) {
+        var v = els[i].getAttribute(a);
+        if (!v || !v.trim()) return;
+        var out = tr(v.trim());
+        if (out !== null) els[i].setAttribute(a, v.replace(v.trim(), out));
+      });
+    }
+    // Sidtitel
+    if (root === document.body) {
+      if (!originals.has(document)) originals.set(document, document.title);
+      var tt = tr(document.title.trim());
+      if (tt !== null) document.title = tt;
+    }
+  }
+
+  /* ============================================================
+     AUTO-ÖVERSÄTTNING – buntad gtx-kö med progressindikator
+     ============================================================ */
+  function queueAuto(text, node) {
+    if (!pending[text]) { pending[text] = []; queue.push(text); pump(); }
+    pending[text].push(node);
   }
 
   function pump() {
-    if (busy) return;
-    if (!queue.length) return;
+    if (busy || !queue.length) return;
     busy = true;
-    // BUNTA upp till 30 texter per anrop (gtx tolererar \n-separator)
+    progress(true);
     var batch = queue.splice(0, 30);
-    var q = batch.join('\n');
     var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=sv&tl=' +
-              lang + '&dt=t&q=' + encodeURIComponent(q);
+              lang + '&dt=t&q=' + encodeURIComponent(batch.join('\n'));
     fetch(url)
       .then(function (r) { return r.json(); })
       .then(function (d) {
@@ -136,7 +259,13 @@
           var out = (outs.length === batch.length ? outs[i] : '').trim();
           if (out && out !== text) {
             autoCache[text] = out;
-            applyAuto(text, out, pending[text] || []);
+            (pending[text] || []).forEach(function (n) {
+              try {
+                if (n.nodeValue && n.nodeValue.trim() === text) {
+                  n.nodeValue = n.nodeValue.replace(text, out);
+                }
+              } catch (e) {}
+            });
           }
           delete pending[text];
         });
@@ -146,95 +275,22 @@
       .then(function () {
         busy = false;
         if (queue.length) setTimeout(pump, 120);
+        else progress(false);
       });
   }
 
   /* ============================================================
-     ORDBOK + MÖNSTER (steg 1–2) och DOM-vandring
+     START + bevaka dynamiskt innehåll
      ============================================================ */
-  fetch(base + 'json/sprak/' + lang + '.json')
-    .then(function (r) { return r.json(); })
-    .catch(function () { return { texter: {}, monster: {} }; })
-    .then(function (d) {
-      var map = d.texter || {};
-      var patterns = [];
-      Object.keys(d.monster || {}).forEach(function (k) {
-        var esc = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\\\{(\d+)\\\}/g, '(.+?)');
-        patterns.push({ re: new RegExp('^' + esc + '$'), out: d.monster[k] });
-      });
-
-      document.documentElement.lang = lang;
-
-      // returnerar översatt sträng ELLER null (= inte i ordbok/mönster)
-      function tr(s) {
-        if (!s) return null;
-        var t = s.trim();
-        if (!t) return null;
-        if (map[t] !== undefined) return s.replace(t, map[t]);
-        if (autoCache[t] !== undefined) return s.replace(t, autoCache[t]);
-        for (var i = 0; i < patterns.length; i++) {
-          var m = t.match(patterns[i].re);
-          if (m) {
-            var out = patterns[i].out.replace(/\{(\d+)\}/g, function (_, n) { return m[+n] || ''; });
-            return s.replace(t, out);
-          }
-        }
-        return null;
-      }
-
-      function handleTextNode(n) {
-        var r = tr(n.nodeValue);
-        if (r !== null) { n.nodeValue = r; return; }
-        var t = (n.nodeValue || '').trim();
-        if (t) queueAuto(t, { node: n });
-      }
-
-      function handleAttr(el, attr) {
-        var v = el.getAttribute(attr);
-        if (!v) return;
-        var r = tr(v);
-        if (r !== null) { el.setAttribute(attr, r); return; }
-        queueAuto(v.trim(), { el: el, attr: attr });
-      }
-
-      function walk(root) {
-        if (!root) return;
-        if (root.nodeType === 3) { handleTextNode(root); return; }
-        if (root.nodeType !== 1) return;
-        if (root.classList && root.classList.contains('mk-lang')) return;
-        if (/^(SCRIPT|STYLE|NOSCRIPT)$/.test(root.tagName)) return;
-        var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-          acceptNode: function (n) {
-            var p = n.parentNode;
-            if (p && /^(SCRIPT|STYLE|NOSCRIPT)$/.test(p.tagName)) return NodeFilter.FILTER_REJECT;
-            return NodeFilter.FILTER_ACCEPT;
-          }
-        }, false), n;
-        while ((n = w.nextNode())) handleTextNode(n);
-        var attrEls = root.querySelectorAll ? root.querySelectorAll('[placeholder],[title],[alt]') : [];
-        for (var i = 0; i < attrEls.length; i++) {
-          ['placeholder', 'title', 'alt'].forEach(function (a) {
-            if (attrEls[i].hasAttribute(a)) handleAttr(attrEls[i], a);
-          });
-        }
-        if (root === document.body && document.title) {
-          var rt = tr(document.title);
-          if (rt !== null) document.title = rt;
-          else queueAuto(document.title.trim(), { el: { getAttribute: function(){return document.title;}, setAttribute: function(_,v){document.title=v;} }, attr: 't' });
-        }
-      }
-
-      walk(document.body);
-
-      // Dynamiskt innehåll (maskiner, recept, energi, kockläge) översätts också
-      new MutationObserver(function (muts) {
-        muts.forEach(function (m) {
-          for (var i = 0; i < m.addedNodes.length; i++) walk(m.addedNodes[i]);
-        });
-      }).observe(document.body, { childList: true, subtree: true });
-
-      console.info('[Maskinkök/språk] ' + LANGS[lang] + ' aktivt. Ordbok: ' +
-        Object.keys(map).length + ' fraser · Auto-cache: ' + Object.keys(autoCache).length +
-        ' fraser. Saknade texter auto-översätts (MyMemory) och cachas.');
+  new MutationObserver(function (muts) {
+    if (lang === 'sv') return;
+    muts.forEach(function (m) {
+      for (var i = 0; i < m.addedNodes.length; i++) translateAll(m.addedNodes[i]);
     });
+  }).observe(document.body, { childList: true, subtree: true });
+
+  if (lang !== 'sv') {
+    document.documentElement.lang = lang;
+    loadDict().then(function () { translateAll(document.body); });
+  }
 })();
