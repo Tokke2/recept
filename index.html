@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- PLATS: /index.html  (repo-roten – startsidan med receptflikar & import) -->
+<!-- PLATS: /index.html  (repo-roten – startsidan/portalen: beskrivning + länkar till allt) -->
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mitt Maskinkök – Startsida</title>
-<meta name="description" content="Recept för mina matlagningsmaskiner – med maskinval, program, kostnad och kockläge.">
+<title>Mitt Maskinkök – Recept &amp; maskiner för det automatiska köket</title>
+<meta name="description" content="En komplett receptsajt byggd kring mina köksmaskiner: verifierade program och tider, kostnad per portion, energiförbrukning, kockläge vid spisen och utskrifter i kokboksformat.">
 <style>
   :root {
     --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22;
@@ -15,112 +15,81 @@
   * { box-sizing:border-box; margin:0; padding:0; }
   html { scroll-behavior:smooth; }
   body { font-family:'Segoe UI',system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--dark); }
+  .serif { font-family:Georgia,'Times New Roman',serif; }
 
   /* ================= HERO ================= */
   .hero {
-    background:linear-gradient(140deg,#c0392b 0%,#e67e22 60%,#f1c40f 130%);
-    color:#fff; text-align:center; padding:50px 20px 84px;
+    background:linear-gradient(150deg,#7b241c 0%,#c0392b 40%,#e67e22 100%);
+    color:#fff; text-align:center; padding:64px 20px 100px; position:relative;
   }
-  .hero h1 { font-size:clamp(1.9rem,5vw,2.7rem); margin-bottom:10px; letter-spacing:-.5px; }
-  .hero p { opacity:.95; font-size:1.02rem; max-width:520px; margin:0 auto; }
-  .hero .stats { margin-top:16px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-  .hero .stat { background:rgba(255,255,255,.18); border-radius:999px; padding:7px 18px; font-size:.88rem; font-weight:600; }
-
-  /* ================= STARTSIDE-KORT ================= */
-  .nav-cards { display:flex; gap:16px; flex-wrap:wrap; max-width:1060px; margin:-46px auto 0; padding:0 20px; position:relative; z-index:5; }
-  .nav-card {
-    flex:1; min-width:210px; background:var(--card); border-radius:16px; padding:20px 22px;
-    text-align:center; box-shadow:var(--shadow-lg); text-decoration:none; color:var(--dark);
-    transition:transform .16s; cursor:pointer; border:none; font-family:inherit;
+  .hero .kicker { font-size:.78rem; letter-spacing:.28em; text-transform:uppercase; opacity:.85; margin-bottom:14px; font-family:Georgia,serif; }
+  .hero h1 { font-family:Georgia,serif; font-size:clamp(2.2rem,6vw,3.4rem); margin-bottom:14px; letter-spacing:-.5px; }
+  .hero .sub { opacity:.95; font-size:1.12rem; max-width:640px; margin:0 auto; line-height:1.65; }
+  .hero .stats { margin-top:24px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .hero .stat { background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:8px 20px; font-size:.9rem; font-weight:600; }
+  .hero .cta-row { margin-top:30px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .hero .cta {
+    background:#fff; color:var(--accent); text-decoration:none; font-weight:800;
+    border-radius:14px; padding:16px 34px; font-size:1.08rem; box-shadow:0 8px 24px rgba(0,0,0,.25);
+    transition:transform .16s;
   }
-  .nav-card:hover { transform:translateY(-4px); }
-  .nav-card .icon { font-size:2rem; margin-bottom:6px; display:block; }
-  .nav-card h2 { font-size:1.02rem; margin-bottom:4px; }
-  .nav-card p { color:var(--muted); font-size:.82rem; }
+  .hero .cta:hover { transform:translateY(-3px); }
+  .hero .cta.ghost { background:rgba(255,255,255,.14); color:#fff; border:1px solid rgba(255,255,255,.4); }
 
-  .wrap { max-width:1060px; margin:0 auto; padding:0 20px 40px; }
+  .wrap { max-width:1020px; margin:0 auto; padding:0 20px 50px; }
 
-  /* ================= RECEPTSEKTION MED FLIKAR ================= */
-  section.recept { margin-top:40px; }
-  section.recept > h2 { font-size:1.45rem; margin-bottom:14px; }
-
-  .tabbar { display:flex; gap:6px; flex-wrap:wrap; border-bottom:3px solid #e5ddd0; margin-bottom:4px; }
-  .tab {
-    display:flex; align-items:center; gap:7px; background:none; border:none; cursor:pointer;
-    font-family:inherit; font-size:.92rem; font-weight:700; color:var(--muted);
-    padding:11px 16px; border-radius:12px 12px 0 0; position:relative; transition:color .15s;
+  /* ================= HUVUDLÄNKAR ================= */
+  .main-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:18px; margin:-52px auto 0; position:relative; z-index:5; }
+  .mcard {
+    background:var(--card); border-radius:18px; padding:26px 24px; text-decoration:none;
+    color:var(--dark); box-shadow:var(--shadow-lg); transition:transform .16s; display:block;
   }
-  .tab img { width:24px; height:24px; object-fit:contain; border-radius:50%; background:#fff; }
-  .tab:hover { color:var(--dark); background:rgba(255,255,255,.6); }
-  .tab.active { color:var(--accent); background:var(--card); box-shadow:var(--shadow); }
-  .tab.active::after { content:''; position:absolute; left:0; right:0; bottom:-3px; height:3px; background:var(--accent); border-radius:3px; }
-  .tab .n { opacity:.55; font-weight:600; }
+  .mcard:hover { transform:translateY(-5px); }
+  .mcard .icon { font-size:2.3rem; display:block; margin-bottom:10px; }
+  .mcard h2 { font-size:1.15rem; margin-bottom:7px; font-family:Georgia,serif; }
+  .mcard p { color:var(--muted); font-size:.88rem; line-height:1.55; }
+  .mcard .go { display:inline-block; margin-top:12px; color:var(--accent); font-weight:700; font-size:.88rem; }
 
-  .toolrow { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:16px 0 8px; }
-  .toolrow input {
-    flex:1; min-width:200px; background:var(--card); border:2px solid #e5ddd0; border-radius:12px;
-    padding:11px 15px; font-size:1rem; font-family:inherit; outline:none;
-  }
-  .toolrow input:focus { border-color:var(--accent2); }
-  .toolrow select {
-    background:var(--card); border:2px solid #e5ddd0; border-radius:12px; padding:11px 12px;
-    font-size:.9rem; font-weight:600; font-family:inherit; cursor:pointer; outline:none;
-  }
-  .result-count { color:var(--muted); font-size:.85rem; margin:4px 2px 14px; }
+  /* ================= OM SAJTEN ================= */
+  section { margin-top:54px; }
+  section > h2 { font-family:Georgia,serif; font-size:1.6rem; margin-bottom:6px; }
+  section > .lede { color:var(--muted); font-size:1rem; margin-bottom:22px; max-width:640px; line-height:1.6; }
+  .divider { width:64px; border:none; border-top:3px double #c9b99a; margin:10px 0 18px; }
 
-  /* ================= RECEPTKORT ================= */
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(295px,1fr)); gap:20px; }
-  .rcard {
-    background:var(--card); border-radius:18px; overflow:hidden; box-shadow:var(--shadow);
-    text-decoration:none; color:var(--dark); display:flex; flex-direction:column;
-    transition:transform .18s, box-shadow .18s;
-  }
-  .rcard:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); }
-  .rcard .media {
-    height:160px; position:relative; display:flex; align-items:center; justify-content:center;
-    background:linear-gradient(135deg,#e67e22,#f1c40f); overflow:hidden;
-  }
-  .rcard .media img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
-  .rcard .media .big-emoji { font-size:4rem; filter:drop-shadow(0 4px 10px rgba(0,0,0,.25)); }
-  .rcard .media .stars { position:absolute; top:10px; right:10px; background:rgba(0,0,0,.45); color:var(--gold); border-radius:999px; padding:4px 12px; font-size:.85rem; }
-  .rcard .body { padding:16px 18px 18px; flex:1; display:flex; flex-direction:column; }
-  .rcard h3 { font-size:1.12rem; margin-bottom:5px; line-height:1.3; }
-  .rcard .desc { color:var(--muted); font-size:.87rem; line-height:1.5; margin-bottom:11px; flex:1; }
-  .rcard .mline { font-size:.79rem; background:#f4fbf6; border-left:3px solid var(--green); border-radius:0 8px 8px 0; padding:5px 10px; margin-bottom:5px; line-height:1.4; }
-  .rcard .mline b { color:var(--green); }
-  .rcard .tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
-  .rcard .tag { background:#f0ebe3; border-radius:999px; padding:3px 11px; font-size:.72rem; color:var(--muted); font-weight:600; }
-  .rcard .cta { margin-top:13px; background:var(--dark); color:#fff; text-align:center; border-radius:11px; padding:10px; font-weight:700; font-size:.9rem; transition:background .15s; }
-  .rcard:hover .cta { background:var(--accent); }
+  .feature-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+  .feat { background:var(--card); border-radius:16px; padding:20px 22px; box-shadow:var(--shadow); }
+  .feat .fi { font-size:1.6rem; }
+  .feat h3 { font-size:1.02rem; margin:8px 0 6px; }
+  .feat p { color:var(--muted); font-size:.87rem; line-height:1.55; }
+  .feat a { color:var(--accent); font-weight:600; }
 
-  .skel { border-radius:18px; overflow:hidden; background:var(--card); box-shadow:var(--shadow); }
-  .skel .a { height:160px; } .skel .b { height:18px; margin:16px 18px 10px; border-radius:6px; width:70%; }
-  .skel .c { height:11px; margin:0 18px 8px; border-radius:6px; }
-  .skel .a,.skel .b,.skel .c { background:linear-gradient(90deg,#eee 25%,#f7f4ef 50%,#eee 75%); background-size:200% 100%; animation:sh 1.2s infinite; }
-  @keyframes sh { to { background-position:-200% 0; } }
-  .no-hit { text-align:center; color:var(--muted); padding:46px 20px; font-size:1.02rem; display:none; }
-  .no-hit .e { font-size:2.8rem; display:block; margin-bottom:8px; }
-
-  /* ================= IMPORT-MODAL ================= */
-  .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; padding:20px; overflow:auto; }
-  .modal { max-width:620px; margin:40px auto; background:var(--card); border-radius:18px; padding:26px 28px; box-shadow:var(--shadow-lg); }
-  .modal h2 { font-size:1.25rem; margin-bottom:12px; }
-  .modal ol { padding-left:22px; line-height:1.8; font-size:.93rem; }
-  .modal .close { float:right; background:var(--dark); color:#fff; border:none; border-radius:10px; padding:8px 16px; cursor:pointer; font-weight:700; }
-  .drop {
-    border:3px dashed #d5cbb8; border-radius:14px; padding:26px; text-align:center;
-    color:var(--muted); margin:14px 0; cursor:pointer; transition:all .15s; font-size:.93rem;
+  /* Så fungerar det */
+  .how { counter-reset:hstep; }
+  .how .step { display:flex; gap:16px; background:var(--card); border-radius:16px; padding:18px 22px; margin-bottom:12px; box-shadow:var(--shadow); align-items:flex-start; }
+  .how .step::before {
+    counter-increment:hstep; content:counter(hstep);
+    font-family:Georgia,serif; font-weight:700; font-size:1.3rem; color:#fff;
+    background:var(--accent); border-radius:50%; width:40px; height:40px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
-  .drop:hover, .drop.over { border-color:var(--accent2); background:#fdf6ee; }
-  .imp-result { border-radius:12px; padding:14px 16px; margin-top:12px; font-size:.9rem; display:none; }
-  .imp-result.ok { display:block; border-left:5px solid var(--green); background:#f4fbf6; }
-  .imp-result.warn { display:block; border-left:5px solid var(--accent2); background:#fdf6ee; }
-  .imp-result ul { padding-left:20px; margin-top:6px; }
-  .btn { background:var(--accent); color:#fff; border:none; border-radius:10px; padding:11px 18px; font-weight:700; font-size:.92rem; cursor:pointer; margin-top:10px; }
-  .btn.sec { background:var(--dark); }
-  .modal a.gh { color:var(--accent); font-weight:700; }
+  .how .step h3 { font-size:1rem; margin-bottom:4px; }
+  .how .step p { color:var(--muted); font-size:.88rem; line-height:1.55; }
+  .how .step a { color:var(--accent); font-weight:600; }
 
-  footer { text-align:center; color:var(--muted); font-size:.8rem; padding:28px 20px; }
+  /* Alla sidor-listan */
+  .sitemap { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+  .sm-group { background:var(--card); border-radius:16px; padding:18px 22px; box-shadow:var(--shadow); }
+  .sm-group h3 { font-size:.78rem; text-transform:uppercase; letter-spacing:.14em; color:#a5967e; margin-bottom:10px; font-family:Georgia,serif; }
+  .sm-group a { display:flex; align-items:baseline; gap:8px; padding:7px 0; text-decoration:none; color:var(--dark); font-size:.92rem; font-weight:600; border-bottom:1px dotted #eee; }
+  .sm-group a:last-child { border-bottom:none; }
+  .sm-group a:hover { color:var(--accent); }
+  .sm-group a small { color:var(--muted); font-weight:400; font-size:.78rem; }
+
+  footer {
+    text-align:center; color:var(--muted); font-size:.82rem; padding:36px 20px;
+    border-top:3px double #c9b99a; margin-top:56px; font-family:Georgia,serif;
+  }
+  footer a { color:var(--accent); }
 </style>
 <link rel="stylesheet" href="assets/print.css">
 </head>
@@ -128,280 +97,152 @@
 
 <!-- ================= HERO ================= -->
 <header class="hero">
-  <h1>🍳 Mitt Maskinkök</h1>
-  <p>Recept byggda för mina maskiner – rätt program, rätt tid, varje gång.</p>
-  <div class="stats" id="heroStats"></div>
+  <div class="kicker">Receptsamling · Maskindatabas · Kökshandbok</div>
+  <h1>Mitt Maskinkök</h1>
+  <p class="sub">En komplett receptsajt byggd kring köksmaskinerna: varje recept anger exakt
+  <b>vilken maskin</b>, <b>vilket program</b> och <b>vilken tid</b> som gäller – med kostnad
+  per portion, energiförbrukning och steg-för-steg-läge vid spisen.</p>
+  <div class="stats" id="heroStats">
+    <span class="stat">📖 Recept med verifierade program</span>
+    <span class="stat">🔧 11 maskiner dokumenterade</span>
+    <span class="stat">⚡ Kostnad &amp; energi per rätt</span>
+  </div>
+  <div class="cta-row">
+    <a class="cta" href="recept.html">📖 Öppna receptsamlingen</a>
+    <a class="cta ghost" href="maskindatabas.html">🔧 Maskindatabasen</a>
+  </div>
 </header>
-
-<!-- ================= STARTSIDE-KORT ================= -->
-<div class="nav-cards no-print">
-  <a class="nav-card" href="#recept">
-    <span class="icon">📖</span><h2>Recepten</h2><p>Bläddra per maskin i flikarna</p>
-  </a>
-  <button class="nav-card" onclick="openImport()">
-    <span class="icon">📥</span><h2>Importera recept</h2><p>Kontrollera &amp; lägg till en receptfil</p>
-  </button>
-  <a class="nav-card" href="generator.html">
-    <span class="icon">🧪</span><h2>Receptgeneratorn</h2><p>Bygg nytt recept av ingredienser</p>
-  </a>
-  <a class="nav-card" href="maskindatabas.html">
-    <span class="icon">🔧</span><h2>Maskindatabasen</h2><p>Alla program, tider &amp; manualer</p>
-  </a>
-</div>
 
 <div class="wrap">
 
-  <!-- ================= RECEPT MED FLIKAR ================= -->
-  <section class="recept" id="recept">
-    <h2>📖 Recept</h2>
-    <div class="tabbar" id="tabbar"></div>
-    <div class="toolrow no-print">
-      <input type="text" id="q" placeholder="🔍 Sök i fliken..." oninput="apply()">
-      <select id="sort" onchange="apply()">
-        <option value="name">A–Ö</option>
-        <option value="rating">Betyg</option>
-        <option value="new">Nyast</option>
-      </select>
+  <!-- ================= HUVUDLÄNKAR ================= -->
+  <div class="main-cards no-print">
+    <a class="mcard" href="recept.html">
+      <span class="icon">📖</span>
+      <h2>Receptsamlingen</h2>
+      <p>Alla recept sorterade i flikar per maskin. Sök, filtrera, betygsätt – och importera nya recept direkt på sidan.</p>
+      <span class="go">Till recepten →</span>
+    </a>
+    <a class="mcard" href="maskindatabas.html">
+      <span class="icon">🔧</span>
+      <h2>Maskindatabasen</h2>
+      <p>Alla maskiner med kompletta programlistor, tider verifierade mot bruksanvisningarna, köplänkar och manualer. Fråga "vad ska du laga?" och få programförslag.</p>
+      <span class="go">Till maskinerna →</span>
+    </a>
+    <a class="mcard" href="generator.html">
+      <span class="icon">🧪</span>
+      <h2>Receptgeneratorn</h2>
+      <p>Bygg ett nytt recept av ingredienserna i databasen – kostnad och näringsvärden räknas ut automatiskt medan du väljer.</p>
+      <span class="go">Skapa recept →</span>
+    </a>
+    <a class="mcard" href="status.html">
+      <span class="icon">🩺</span>
+      <h2>Hälsokontrollen</h2>
+      <p>Testar hela sajten live: recept, metadata, bilder, energidata och maskinfiler. Grönt = allt fungerar.</p>
+      <span class="go">Kör kontrollen →</span>
+    </a>
+  </div>
+
+  <!-- ================= VAD ÄR DETTA? ================= -->
+  <section>
+    <h2>Vad är Mitt Maskinkök?</h2>
+    <hr class="divider">
+    <p class="lede">De flesta recept säger "grädda i ugn 175°C". Men vad gör du med en riskokare,
+    en bakmaskin, två airfryers och en slushmaskin? Den här sajten är svaret: en receptsamling
+    där <b>varje recept är skrivet för maskinerna som faktiskt står på bänken</b> – med programval
+    och tider som är provlagade och verifierade mot maskinernas bruksanvisningar.</p>
+
+    <div class="feature-grid">
+      <div class="feat"><span class="fi">⚙️</span><h3>Rätt maskin, rätt program</h3>
+        <p>Varje recept anger exakt maskin och program: "Blanda i Clatronic BBA 3774 · Cake-programmets första knådfas · grädda i Midea MB-FS5017 · Kaka 50 min". Ingen gissning.</p></div>
+      <div class="feat"><span class="fi">👨‍🍳</span><h3>Kockläge vid spisen</h3>
+        <p>Öppna receptet på mobilen → ett steg i taget i jättetext, inbyggda timers med pip, uppläsning och skärmen som hålls tänd. Byggt för mjöliga fingrar.</p></div>
+      <div class="feat"><span class="fi">💰</span><h3>Kostnad på öret</h3>
+        <p>Ingredienspriser ur en central databas ger exakt kostnad per portion – och <a href="json/energi.json">energiförbrukningen</a> per maskinsteg räknas om automatiskt när elpriset ändras.</p></div>
+      <div class="feat"><span class="fi">🖨️</span><h3>Utskrifter i kokboksformat</h3>
+        <p>Varje sida skrivs ut som en klassisk kokbokssida i A4: serif-rubriker, prickade ingredienslinjer, numrerade steg och QR-kod tillbaka till receptet.</p></div>
+      <div class="feat"><span class="fi">🌐</span><h3>Flera språk</h3>
+        <p>Välj språk i menyn uppe till höger – hela sajten översätts, även recepten och maskinernas programtexter.</p></div>
+      <div class="feat"><span class="fi">📱</span><h3>Installera som app</h3>
+        <p>Lägg till på mobilens hemskärm → egen ikon, helskärm och recepten fungerar offline i köket. Skanna QR-koden på en utskrift så är du där.</p></div>
     </div>
-    <div class="result-count" id="count"></div>
-    <div class="grid" id="grid">
-      <div class="skel"><div class="a"></div><div class="b"></div><div class="c"></div><div class="c" style="width:60%;margin-bottom:18px;"></div></div>
-      <div class="skel"><div class="a"></div><div class="b"></div><div class="c"></div><div class="c" style="width:60%;margin-bottom:18px;"></div></div>
-      <div class="skel"><div class="a"></div><div class="b"></div><div class="c"></div><div class="c" style="width:60%;margin-bottom:18px;"></div></div>
+  </section>
+
+  <!-- ================= SÅ FUNGERAR DET ================= -->
+  <section>
+    <h2>Så fungerar det</h2>
+    <hr class="divider">
+    <div class="how">
+      <div class="step"><div><h3>Välj recept</h3>
+        <p>Öppna <a href="recept.html">receptsamlingen</a> och bläddra i flikarna – varje maskin har sin egen flik så du ser direkt vad som går att laga med det du har.</p></div></div>
+      <div class="step"><div><h3>Följ maskinstegen</h3>
+        <p>Receptet visar maskin, program och tid i gröna rutor – med varningar där det behövs (som att kakor blir skummiga om hela bakmaskinsprogrammet körs).</p></div></div>
+      <div class="step"><div><h3>Laga med kockläget</h3>
+        <p>Tryck 👨‍🍳 Kockläge → stegen visas ett i taget med timers och uppläsning. När du klickar "Klart!" räknas tillagningen i receptets historik.</p></div></div>
+      <div class="step"><div><h3>Betygsätt &amp; anteckna</h3>
+        <p>Sätt stjärnor och skriv egna anteckningar ("+10 min i Midean") – de sparas och visas i receptets provenienshuvud nästa gång.</p></div></div>
+      <div class="step"><div><h3>Lägg till egna recept</h3>
+        <p>Använd <a href="generator.html">generatorn</a>, eller importera en färdig fil via 📥-knappen i receptsamlingen – filen kontrolleras och lagas automatiskt. Även PDF:er fungerar.</p></div></div>
     </div>
-    <div class="no-hit" id="noHit"><span class="e">🤔</span>Inga recept matchade i denna flik.</div>
+  </section>
+
+  <!-- ================= ALLA SIDOR & RESURSER ================= -->
+  <section>
+    <h2>Alla sidor &amp; resurser</h2>
+    <hr class="divider">
+    <div class="sitemap">
+      <div class="sm-group">
+        <h3>Laga mat</h3>
+        <a href="recept.html">📖 Receptsamlingen <small>flikar per maskin, sök &amp; import</small></a>
+        <a href="maskindatabas.html">🔧 Maskindatabasen <small>program, tider, manualer</small></a>
+        <a href="generator.html">🧪 Receptgeneratorn <small>bygg recept av ingredienser</small></a>
+      </div>
+      <div class="sm-group">
+        <h3>Verktyg &amp; data</h3>
+        <a href="status.html">🩺 Hälsokontrollen <small>testar hela sajten live</small></a>
+        <a href="json/maskindatabas.json" download>📦 Maskindatabasen (JSON) <small>delbar med AI-assistenter</small></a>
+        <a href="json/ingredienser.json" download>🥫 Ingrediensdatabasen (JSON) <small>priser &amp; näring per 100 g</small></a>
+        <a href="json/energi.json" download>⚡ Energidatabasen (JSON) <small>maskintider per recept</small></a>
+      </div>
+      <div class="sm-group">
+        <h3>För utvecklare &amp; AI</h3>
+        <a href="SPEC.md" download>📋 SPEC.md <small>komplett specifikation – klistra in i valfri AI-chatt</small></a>
+        <a href="https://github.com/Tokke2/recept" target="_blank" rel="noopener">🗂️ Källkoden på GitHub <small>hela sajten, öppen</small></a>
+        <a href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">📤 Ladda upp recept direkt <small>dra in .html/.pdf → commit</small></a>
+      </div>
+    </div>
   </section>
 
 </div>
 
-<!-- ================= IMPORT-MODAL ================= -->
-<div class="modal-bg" id="impBg" onclick="if(event.target===this)closeImport()">
-  <div class="modal">
-    <button class="close" onclick="closeImport()">✕ Stäng</button>
-    <h2>📥 Importera recept</h2>
-    <p style="font-size:.92rem; color:var(--muted); margin-bottom:10px;">
-      Släpp en receptfil (.html eller .pdf) här – HTML kontrolleras och lagas automatiskt
-      (site.js-raden, metadata) innan du laddar upp den till sajten.</p>
-
-    <div class="drop" id="drop" onclick="document.getElementById('impFile').click()">
-      📄 Släpp .html- eller .pdf-fil här<br>eller klicka för att välja
-    </div>
-    <input type="file" id="impFile" accept=".html,.htm,.pdf" style="display:none;" onchange="handleFile(this.files[0])">
-
-    <div class="imp-result" id="impRes"></div>
-
-    <h2 style="margin-top:20px; font-size:1.05rem;">Så hamnar receptet på sajten</h2>
-    <ol>
-      <li>Kontrollera/laga filen ovan (eller hoppa över om den är gjord från mallen)</li>
-      <li>Öppna <a class="gh" href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">GitHub-uppladdningen för recept-mappen ↗</a></li>
-      <li>Dra in filen → <b>Commit changes</b></li>
-      <li>Klart! Startsidan hittar receptet automatiskt (~1 min)</li>
-      <li>Bild? Ladda upp <b>images/recept/SAMMA-NAMN.jpg</b> så visas den på kortet</li>
-    </ol>
-  </div>
-</div>
-
-<footer>Mitt Maskinkök · recepten läses direkt från recept-mappen ·
-  <a href="json/maskindatabas.json" download style="color:var(--accent);">databas (JSON)</a></footer>
+<footer>
+  Mitt Maskinkök · Receptsamlingen<br>
+  Alla program och tider verifierade mot maskinernas bruksanvisningar ·
+  Kostnadsberäkningar © Rickard Längkvist<br>
+  <a href="recept.html">Recept</a> · <a href="maskindatabas.html">Maskiner</a> ·
+  <a href="generator.html">Generator</a> · <a href="status.html">Status</a>
+</footer>
 
 <script>
-/* ============================================================
-   Recept läses ENBART från main/recept/*.html
-   Flikar: Alla recept + en flik per maskin (byggs automatiskt)
-   ============================================================ */
-let DB = { maskiner: [] }, RECIPES = [], activeTab = 'all';
-
-init();
-
-async function init() {
-  try {
-    const mFiles = await (await fetch('json/maskiner-index.json')).json();
-    for (const f of mFiles) {
-      try { DB.maskiner.push(await (await fetch('json/maskiner/' + f)).json()); } catch (e) {}
-    }
-  } catch (e) {}
-
-  let files = [];
+/* Uppdatera hero-statistiken med riktiga siffror (recept + maskiner) */
+(async function () {
+  let nM = 0, nR = 0;
+  try { nM = (await (await fetch('json/maskiner-index.json')).json()).length; } catch (e) {}
   try {
     const parts = location.pathname.split('/').filter(Boolean);
     const user = location.hostname.split('.')[0];
     const repo = parts.length ? parts[0] : user + '.github.io';
     const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/recept?ref=main`);
-    if (res.ok) files = (await res.json())
-      .filter(i => i.type === 'file' && /\.(html?|pdf)$/i.test(i.name))
-      .map(i => i.name);
+    if (res.ok) nR = (await res.json()).filter(i => i.type === 'file' && /\.(html?|pdf)$/i.test(i.name)).length;
   } catch (e) {}
-
-  RECIPES = [];
-  await Promise.all(files.map(async f => {
-    // PDF-recept: kort direkt av filnamnet, öppnas som PDF
-    if (/\.pdf$/i.test(f)) {
-      const base = f.replace(/\.pdf$/i, '');
-      RECIPES.push({
-        file: 'recept/' + encodeURIComponent(f),
-        namn: base.replace(/[-_]+/g, ' '),
-        emoji: '📄',
-        beskrivning: 'PDF-recept – öppnas direkt.',
-        taggar: ['pdf'],
-        maskiner: [],
-        maskin_ids: [],
-        bild: 'images/recept/' + base + '.jpg',
-        rating: (JSON.parse(localStorage.getItem('recept-' + f) || '{}').rating) || 0,
-        isPdf: true
-      });
-      return;
-    }
-    try {
-      const html = await (await fetch('recept/' + encodeURIComponent(f))).text();
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      const get = n => { const el = doc.querySelector(`meta[name="recept:${n}"]`); return el ? el.content : ''; };
-      const maskiner = get('maskiner') ? get('maskiner').split('|').map(s => s.trim()) : [];
-      const title = doc.querySelector('title');
-      RECIPES.push({
-        file: 'recept/' + f,
-        namn: get('namn') || (title ? title.textContent.replace(/ – Recept$/,'') : f.replace(/\.html$/,'')),
-        emoji: get('emoji') || '🍽️',
-        beskrivning: get('beskrivning') || 'Öppna receptet för detaljer.',
-        taggar: get('taggar') ? get('taggar').split(',').map(t => t.trim()).filter(Boolean) : [],
-        maskiner,
-        maskin_ids: DB.maskiner.filter(m =>
-          maskiner.join(' ').toLowerCase().includes((m.modellnamn || '§').toLowerCase()) ||
-          maskiner.join(' ').toLowerCase().includes(m.varumarke.toLowerCase()) ||
-          html.toLowerCase().includes((m.modellnamn || '§').toLowerCase())
-        ).map(m => m.id),
-        bild: 'images/recept/' + f.replace(/\.html?$/i, '') + '.jpg',
-        rating: (JSON.parse(localStorage.getItem('recept-' + f) || '{}').rating) || 0
-      });
-    } catch (e) {}
-  }));
-
-  RECIPES.sort((a, b) => a.namn.localeCompare(b.namn, 'sv'));
-  document.getElementById('heroStats').innerHTML =
-    `<span class="stat">📖 ${RECIPES.length} recept</span>` +
-    `<span class="stat">🔧 ${DB.maskiner.length} maskiner</span>` +
-    `<span class="stat">👨‍🍳 Kockläge på alla recept</span>`;
-
-  buildTabs();
-  apply();
-}
-
-/* ============ Flikar: Alla + per maskin ============ */
-function buildTabs() {
-  const used = new Set();
-  RECIPES.forEach(r => r.maskin_ids.forEach(id => used.add(id)));
-  let h = `<button class="tab active" data-id="all" onclick="setTab('all',this)">🍽️ Alla recept <span class="n">(${RECIPES.length})</span></button>`;
-  DB.maskiner.forEach(m => {
-    if (!used.has(m.id)) return;
-    const n = RECIPES.filter(r => r.maskin_ids.includes(m.id)).length;
-    h += `<button class="tab" data-id="${m.id}" onclick="setTab('${m.id}',this)">` +
-         (m.bild ? `<img src="${m.bild}" alt="">` : '🔧 ') +
-         `${m.varumarke} ${m.modellnamn || ''} <span class="n">(${n})</span></button>`;
-  });
-  document.getElementById('tabbar').innerHTML = h;
-}
-function setTab(id, el) {
-  activeTab = id;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  apply();
-}
-
-/* ============ Kort & filtrering ============ */
-function card(r) {
-  const stars = r.rating ? `<span class="stars">${'★'.repeat(r.rating)}</span>` : '';
-  return `<a class="rcard" href="${r.file}"${r.isPdf ? ' target="_blank" rel="noopener"' : ''}>
-    <div class="media"><span class="big-emoji">${r.emoji}</span>
-      <img src="${r.bild}" alt="" loading="lazy" onerror="this.remove()">${stars}</div>
-    <div class="body">
-      <h3>${r.namn}</h3>
-      <div class="desc">${r.beskrivning}</div>
-      ${r.maskiner.slice(0,3).map(m => `<div class="mline">${m.replace(/^([^:]+):/, '<b>$1:</b>')}</div>`).join('')}
-      <div class="tags">${r.taggar.slice(0,5).map(t => `<span class="tag">${t}</span>`).join('')}</div>
-      <div class="cta">${r.isPdf ? '📄 Öppna PDF →' : 'Öppna receptet →'}</div>
-    </div></a>`;
-}
-
-function apply() {
-  const q = (document.getElementById('q').value || '').trim().toLowerCase();
-  const sort = document.getElementById('sort').value;
-  let list = [...RECIPES];
-  if (sort === 'rating') list.sort((a, b) => b.rating - a.rating);
-  else if (sort === 'new') list.reverse();
-
-  const filtered = list.filter(r => {
-    const text = (r.namn + ' ' + r.beskrivning + ' ' + r.taggar.join(' ') + ' ' + r.maskiner.join(' ')).toLowerCase();
-    return (!q || text.includes(q)) && (activeTab === 'all' || r.maskin_ids.includes(activeTab));
-  });
-
-  document.getElementById('grid').innerHTML = filtered.map(card).join('');
-  document.getElementById('noHit').style.display = filtered.length ? 'none' : 'block';
-  document.getElementById('count').textContent =
-    filtered.length === RECIPES.length ? `${RECIPES.length} recept` : `${filtered.length} av ${RECIPES.length} recept`;
-}
-
-/* ============================================================
-   IMPORT: kontrollera & laga en receptfil innan uppladdning
-   ============================================================ */
-function openImport() { document.getElementById('impBg').style.display = 'block'; }
-function closeImport() { document.getElementById('impBg').style.display = 'none'; }
-
-const drop = document.getElementById('drop');
-['dragover','dragenter'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
-['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
-drop.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) handleFile(f); });
-
-function handleFile(file) {
-  if (!file) return;
-  if (/\.pdf$/i.test(file.name)) {
-    const res = document.getElementById('impRes');
-    res.className = 'imp-result ok';
-    res.innerHTML = '<b>✅ PDF-recept!</b> PDF:er behöver ingen kontroll – ladda upp direkt till recept-mappen så visas den automatiskt som kort på startsidan.' +
-      '<br><a class="btn sec" style="display:inline-block;text-decoration:none;margin-top:10px;" href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">📤 Öppna GitHub-uppladdning</a>';
-    return;
+  if (nR || nM) {
+    document.getElementById('heroStats').innerHTML =
+      (nR ? `<span class="stat">📖 ${nR} recept med verifierade program</span>` : '') +
+      (nM ? `<span class="stat">🔧 ${nM} maskiner dokumenterade</span>` : '') +
+      `<span class="stat">⚡ Kostnad &amp; energi per rätt</span>`;
   }
-  if (!/\.html?$/i.test(file.name)) { alert('Välj en .html- eller .pdf-fil.'); return; }
-  const reader = new FileReader();
-  reader.onload = () => {
-    let t = reader.result;
-    const fixes = [], warns = [];
-
-    // 1) site.js-raden
-    if (t.indexOf('assets/site.js') === -1) {
-      const snippet = '<script src="../assets/site.js"><\/script>';
-      t = t.includes('</body>') ? t.replace('</body>', snippet + '\n</body>') : t + '\n' + snippet;
-      fixes.push('La till site.js-raden (utskrift/delning/kockläge/energi)');
-    }
-    // 2) Metadata-kontroll
-    ['namn','emoji','beskrivning','taggar','maskiner'].forEach(n => {
-      if (t.indexOf('name="recept:' + n + '"') === -1) warns.push('Saknar metadata: recept:' + n);
-    });
-    // 3) PLATS-märkning
-    if (t.indexOf('PLATS:') === -1) {
-      t = t.replace('<!DOCTYPE html>', '<!DOCTYPE html>\n<!-- PLATS: /recept/' + file.name + '  (recept-mappen – läses in automatiskt) -->');
-      fixes.push('La till PLATS-märkning');
-    }
-    // 4) Kockläges-steg
-    if (!/<ol[\s>]/i.test(t)) warns.push('Inga <ol>-steg hittades – kockläget får inga steg');
-
-    const res = document.getElementById('impRes');
-    res.className = 'imp-result ' + (warns.length ? 'warn' : 'ok');
-    res.innerHTML = '<b>' + (warns.length ? '⚠️ Kontrollerad med anmärkningar' : '✅ Filen ser komplett ut!') + '</b>' +
-      (fixes.length ? '<ul>' + fixes.map(f => '<li>🔧 ' + f + '</li>').join('') + '</ul>' : '') +
-      (warns.length ? '<ul>' + warns.map(w => '<li>⚠️ ' + w + ' <span style="color:var(--muted);">(auto-fixas ej – visas utan detta på startsidan)</span></li>').join('') + '</ul>' : '') +
-      '<button class="btn" id="impDl">⬇️ Ladda ner ' + (fixes.length ? 'lagad' : 'kontrollerad') + ' fil</button> ' +
-      '<a class="btn sec" style="display:inline-block;text-decoration:none;" href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">📤 Öppna GitHub-uppladdning</a>';
-
-    document.getElementById('impDl').onclick = () => {
-      const blob = new Blob([t], { type: 'text/html' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = file.name;
-      a.click();
-    };
-  };
-  reader.readAsText(file);
-}
+})();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a21a4c7b7c4dc3b8',t:'MTc4NTE0MTIwMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
