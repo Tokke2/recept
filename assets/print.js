@@ -1,4 +1,7 @@
 /* ============================================================
+   PLATS: /assets/print.js  (assets-mappen i repo-roten)
+   ============================================================ */
+/* ============================================================
    CENTRAL UTSKRIFTSKNAPP – Mitt Maskinkök
    ============================================================
    Skapar automatiskt den flytande 🖨️-knappen på varje sida
@@ -12,6 +15,8 @@
    Ändra HÄR – alla sidor uppdateras samtidigt.
    ============================================================ */
 (function () {
+  if (window.__MK_PRINT_LOADED) return;
+  window.__MK_PRINT_LOADED = true;
   // Skapa inte dubblett om sidan redan har en knapp
   if (document.querySelector('.print-btn')) return;
 
