@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- PLATS: /index.html  (repo-roten – startsidan/portalen: beskrivning + länkar till allt) -->
+<!-- PLATS: /index.html  (repo-roten – startsidan/portalen v3: beskrivning + länkar till allt) -->
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
@@ -10,60 +10,100 @@
   :root {
     --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22;
     --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; --gold:#f1c40f;
-    --shadow:0 2px 10px rgba(0,0,0,.08); --shadow-lg:0 12px 32px rgba(0,0,0,.16);
+    --paper:#c9b99a;
+    --shadow:0 2px 10px rgba(0,0,0,.08); --shadow-lg:0 14px 38px rgba(0,0,0,.18);
   }
   * { box-sizing:border-box; margin:0; padding:0; }
   html { scroll-behavior:smooth; }
   body { font-family:'Segoe UI',system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--dark); }
-  .serif { font-family:Georgia,'Times New Roman',serif; }
+
+  /* ================= TOPPMENY (fast) ================= */
+  .topnav {
+    position:sticky; top:0; z-index:100; background:rgba(246,243,238,.92);
+    backdrop-filter:blur(8px); border-bottom:1px solid #e5ddd0;
+    display:flex; align-items:center; gap:6px; padding:10px 18px;
+  }
+  .topnav .brand { font-family:Georgia,serif; font-weight:700; font-size:1.05rem; color:var(--dark); text-decoration:none; margin-right:auto; display:flex; align-items:center; gap:8px; }
+  .topnav a.link { color:var(--dark); text-decoration:none; font-size:.88rem; font-weight:600; padding:8px 13px; border-radius:9px; transition:background .14s; }
+  .topnav a.link:hover { background:#eee5d6; }
+  .topnav a.link.hot { background:var(--accent); color:#fff; }
+  @media (max-width:640px){ .topnav a.link span{ display:none; } .topnav a.link{ padding:8px 10px; } }
 
   /* ================= HERO ================= */
   .hero {
-    background:linear-gradient(150deg,#7b241c 0%,#c0392b 40%,#e67e22 100%);
-    color:#fff; text-align:center; padding:64px 20px 100px; position:relative;
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(255,255,255,.14) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 110%, rgba(0,0,0,.22) 0%, transparent 55%),
+      linear-gradient(150deg,#7b241c 0%,#c0392b 42%,#e67e22 100%);
+    color:#fff; text-align:center; padding:70px 20px 108px; position:relative; overflow:hidden;
   }
-  .hero .kicker { font-size:.78rem; letter-spacing:.28em; text-transform:uppercase; opacity:.85; margin-bottom:14px; font-family:Georgia,serif; }
-  .hero h1 { font-family:Georgia,serif; font-size:clamp(2.2rem,6vw,3.4rem); margin-bottom:14px; letter-spacing:-.5px; }
-  .hero .sub { opacity:.95; font-size:1.12rem; max-width:640px; margin:0 auto; line-height:1.65; }
-  .hero .stats { margin-top:24px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-  .hero .stat { background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:8px 20px; font-size:.9rem; font-weight:600; }
-  .hero .cta-row { margin-top:30px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .hero::after {
+    content:'🍳'; position:absolute; font-size:22rem; opacity:.05; right:-3rem; bottom:-6rem; transform:rotate(-12deg); pointer-events:none;
+  }
+  .hero .est {
+    display:inline-block; border:1px solid rgba(255,255,255,.45); border-radius:999px;
+    font-family:Georgia,serif; font-size:.72rem; letter-spacing:.3em; text-transform:uppercase;
+    padding:6px 18px; opacity:.9; margin-bottom:18px;
+  }
+  .hero h1 { font-family:Georgia,serif; font-size:clamp(2.3rem,6.5vw,3.6rem); margin-bottom:6px; letter-spacing:-.5px; }
+  .hero .tagline { font-family:Georgia,serif; font-style:italic; opacity:.9; font-size:1.05rem; margin-bottom:16px; }
+  .hero .sub { opacity:.95; font-size:1.1rem; max-width:640px; margin:0 auto; line-height:1.65; }
+  .hero .stats { margin-top:26px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .hero .stat { background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.28); border-radius:999px; padding:9px 20px; font-size:.9rem; font-weight:600; }
+  .hero .stat b { font-size:1.05rem; }
+  .hero .cta-row { margin-top:32px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
   .hero .cta {
     background:#fff; color:var(--accent); text-decoration:none; font-weight:800;
-    border-radius:14px; padding:16px 34px; font-size:1.08rem; box-shadow:0 8px 24px rgba(0,0,0,.25);
-    transition:transform .16s;
+    border-radius:14px; padding:17px 36px; font-size:1.1rem; box-shadow:0 10px 28px rgba(0,0,0,.3);
+    transition:transform .16s, box-shadow .16s;
   }
-  .hero .cta:hover { transform:translateY(-3px); }
-  .hero .cta.ghost { background:rgba(255,255,255,.14); color:#fff; border:1px solid rgba(255,255,255,.4); }
+  .hero .cta:hover { transform:translateY(-3px) scale(1.02); box-shadow:0 16px 36px rgba(0,0,0,.35); }
+  .hero .cta.ghost { background:rgba(255,255,255,.13); color:#fff; border:1px solid rgba(255,255,255,.45); }
 
   .wrap { max-width:1020px; margin:0 auto; padding:0 20px 50px; }
 
   /* ================= HUVUDLÄNKAR ================= */
-  .main-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:18px; margin:-52px auto 0; position:relative; z-index:5; }
+  .main-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:18px; margin:-56px auto 0; position:relative; z-index:5; }
   .mcard {
     background:var(--card); border-radius:18px; padding:26px 24px; text-decoration:none;
     color:var(--dark); box-shadow:var(--shadow-lg); transition:transform .16s; display:block;
+    border-top:4px solid transparent;
   }
-  .mcard:hover { transform:translateY(-5px); }
+  .mcard:hover { transform:translateY(-6px); border-top-color:var(--accent); }
   .mcard .icon { font-size:2.3rem; display:block; margin-bottom:10px; }
   .mcard h2 { font-size:1.15rem; margin-bottom:7px; font-family:Georgia,serif; }
   .mcard p { color:var(--muted); font-size:.88rem; line-height:1.55; }
   .mcard .go { display:inline-block; margin-top:12px; color:var(--accent); font-weight:700; font-size:.88rem; }
 
-  /* ================= OM SAJTEN ================= */
-  section { margin-top:54px; }
-  section > h2 { font-family:Georgia,serif; font-size:1.6rem; margin-bottom:6px; }
-  section > .lede { color:var(--muted); font-size:1rem; margin-bottom:22px; max-width:640px; line-height:1.6; }
-  .divider { width:64px; border:none; border-top:3px double #c9b99a; margin:10px 0 18px; }
+  /* ================= MASKINPARKEN (bildband) ================= */
+  .machines-strip { margin-top:50px; }
+  .machines-strip .band {
+    display:flex; gap:14px; overflow-x:auto; padding:8px 2px 16px; scroll-snap-type:x mandatory;
+  }
+  .machines-strip .m {
+    scroll-snap-align:start; flex:0 0 150px; background:var(--card); border-radius:14px;
+    padding:12px; text-align:center; box-shadow:var(--shadow); text-decoration:none; color:var(--dark);
+    transition:transform .15s;
+  }
+  .machines-strip .m:hover { transform:translateY(-4px); }
+  .machines-strip .m img { width:100%; height:86px; object-fit:contain; }
+  .machines-strip .m span { display:block; font-size:.74rem; font-weight:700; margin-top:8px; line-height:1.3; }
+  .machines-strip .m small { color:var(--muted); font-size:.68rem; }
+
+  /* ================= SEKTIONER ================= */
+  section { margin-top:56px; }
+  section > h2 { font-family:Georgia,serif; font-size:1.65rem; margin-bottom:6px; }
+  section > .lede { color:var(--muted); font-size:1rem; margin-bottom:22px; max-width:660px; line-height:1.65; }
+  .divider { width:64px; border:none; border-top:3px double var(--paper); margin:10px 0 20px; }
 
   .feature-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
-  .feat { background:var(--card); border-radius:16px; padding:20px 22px; box-shadow:var(--shadow); }
-  .feat .fi { font-size:1.6rem; }
-  .feat h3 { font-size:1.02rem; margin:8px 0 6px; }
-  .feat p { color:var(--muted); font-size:.87rem; line-height:1.55; }
+  .feat { background:var(--card); border-radius:16px; padding:20px 22px; box-shadow:var(--shadow); transition:transform .15s; }
+  .feat:hover { transform:translateY(-3px); }
+  .feat .fi { font-size:1.7rem; }
+  .feat h3 { font-size:1.02rem; margin:8px 0 6px; font-family:Georgia,serif; }
+  .feat p { color:var(--muted); font-size:.87rem; line-height:1.58; }
   .feat a { color:var(--accent); font-weight:600; }
 
-  /* Så fungerar det */
   .how { counter-reset:hstep; }
   .how .step { display:flex; gap:16px; background:var(--card); border-radius:16px; padding:18px 22px; margin-bottom:12px; box-shadow:var(--shadow); align-items:flex-start; }
   .how .step::before {
@@ -76,7 +116,6 @@
   .how .step p { color:var(--muted); font-size:.88rem; line-height:1.55; }
   .how .step a { color:var(--accent); font-weight:600; }
 
-  /* Alla sidor-listan */
   .sitemap { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
   .sm-group { background:var(--card); border-radius:16px; padding:18px 22px; box-shadow:var(--shadow); }
   .sm-group h3 { font-size:.78rem; text-transform:uppercase; letter-spacing:.14em; color:#a5967e; margin-bottom:10px; font-family:Georgia,serif; }
@@ -85,26 +124,42 @@
   .sm-group a:hover { color:var(--accent); }
   .sm-group a small { color:var(--muted); font-weight:400; font-size:.78rem; }
 
+  /* Mjuk intoning vid scroll */
+  .reveal { opacity:0; transform:translateY(18px); transition:opacity .5s ease, transform .5s ease; }
+  .reveal.in { opacity:1; transform:none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity:1; transform:none; transition:none; } }
+
   footer {
-    text-align:center; color:var(--muted); font-size:.82rem; padding:36px 20px;
-    border-top:3px double #c9b99a; margin-top:56px; font-family:Georgia,serif;
+    text-align:center; color:var(--muted); font-size:.82rem; padding:38px 20px;
+    border-top:3px double var(--paper); margin-top:60px; font-family:Georgia,serif;
   }
+  footer .fbrand { font-size:1rem; color:var(--dark); font-weight:700; margin-bottom:6px; }
   footer a { color:var(--accent); }
 </style>
 <link rel="stylesheet" href="assets/print.css">
 </head>
 <body>
 
+<!-- ================= TOPPMENY ================= -->
+<nav class="topnav no-print">
+  <a class="brand" href="index.html">🍳 Mitt Maskinkök</a>
+  <a class="link hot" href="recept.html">📖 <span>Recept</span></a>
+  <a class="link" href="maskindatabas.html">🔧 <span>Maskiner</span></a>
+  <a class="link" href="generator.html">🧪 <span>Generator</span></a>
+  <a class="link" href="status.html">🩺 <span>Status</span></a>
+</nav>
+
 <!-- ================= HERO ================= -->
 <header class="hero">
-  <div class="kicker">Receptsamling · Maskindatabas · Kökshandbok</div>
+  <div class="est">Receptsamling · Est. 2026 · Västerås</div>
   <h1>Mitt Maskinkök</h1>
+  <div class="tagline">— rätt maskin, rätt program, varje gång —</div>
   <p class="sub">En komplett receptsajt byggd kring köksmaskinerna: varje recept anger exakt
   <b>vilken maskin</b>, <b>vilket program</b> och <b>vilken tid</b> som gäller – med kostnad
   per portion, energiförbrukning och steg-för-steg-läge vid spisen.</p>
   <div class="stats" id="heroStats">
     <span class="stat">📖 Recept med verifierade program</span>
-    <span class="stat">🔧 11 maskiner dokumenterade</span>
+    <span class="stat">🔧 <b>11</b> maskiner dokumenterade</span>
     <span class="stat">⚡ Kostnad &amp; energi per rätt</span>
   </div>
   <div class="cta-row">
@@ -126,7 +181,7 @@
     <a class="mcard" href="maskindatabas.html">
       <span class="icon">🔧</span>
       <h2>Maskindatabasen</h2>
-      <p>Alla maskiner med kompletta programlistor, tider verifierade mot bruksanvisningarna, köplänkar och manualer. Fråga "vad ska du laga?" och få programförslag.</p>
+      <p>Kompletta programlistor med tider verifierade mot bruksanvisningarna, köplänkar och manualer. Fråga "vad ska du laga?" och få programförslag.</p>
       <span class="go">Till maskinerna →</span>
     </a>
     <a class="mcard" href="generator.html">
@@ -143,8 +198,15 @@
     </a>
   </div>
 
+  <!-- ================= MASKINPARKEN ================= -->
+  <section class="machines-strip reveal no-print">
+    <h2>Maskinparken</h2>
+    <hr class="divider">
+    <div class="band" id="machineBand"></div>
+  </section>
+
   <!-- ================= VAD ÄR DETTA? ================= -->
-  <section>
+  <section class="reveal">
     <h2>Vad är Mitt Maskinkök?</h2>
     <hr class="divider">
     <p class="lede">De flesta recept säger "grädda i ugn 175°C". Men vad gör du med en riskokare,
@@ -169,7 +231,7 @@
   </section>
 
   <!-- ================= SÅ FUNGERAR DET ================= -->
-  <section>
+  <section class="reveal">
     <h2>Så fungerar det</h2>
     <hr class="divider">
     <div class="how">
@@ -187,7 +249,7 @@
   </section>
 
   <!-- ================= ALLA SIDOR & RESURSER ================= -->
-  <section>
+  <section class="reveal">
     <h2>Alla sidor &amp; resurser</h2>
     <hr class="divider">
     <div class="sitemap">
@@ -216,18 +278,40 @@
 </div>
 
 <footer>
-  Mitt Maskinkök · Receptsamlingen<br>
+  <div class="fbrand">🍳 Mitt Maskinkök</div>
   Alla program och tider verifierade mot maskinernas bruksanvisningar ·
-  Kostnadsberäkningar © Rickard Längkvist<br>
+  Kostnadsberäkningar © Rickard Längkvist<br><br>
   <a href="recept.html">Recept</a> · <a href="maskindatabas.html">Maskiner</a> ·
-  <a href="generator.html">Generator</a> · <a href="status.html">Status</a>
+  <a href="generator.html">Generator</a> · <a href="status.html">Status</a> ·
+  <a href="SPEC.md" download>Spec</a>
 </footer>
 
 <script>
-/* Uppdatera hero-statistiken med riktiga siffror (recept + maskiner) */
+/* ================= Livestatistik + maskinband ================= */
 (async function () {
-  let nM = 0, nR = 0;
-  try { nM = (await (await fetch('json/maskiner-index.json')).json()).length; } catch (e) {}
+  // Maskiner: räkna + bygg bildbandet
+  let machines = [];
+  try {
+    const idx = await (await fetch('json/maskiner-index.json')).json();
+    for (const f of idx) {
+      try { machines.push(await (await fetch('json/maskiner/' + f)).json()); } catch (e) {}
+    }
+  } catch (e) {}
+
+  const band = document.getElementById('machineBand');
+  if (band && machines.length) {
+    band.innerHTML = machines.map(m => `
+      <a class="m" href="maskindatabas.html" title="${m.namn}">
+        ${m.bild ? `<img src="${m.bild}" alt="${m.namn}" loading="lazy" onerror="this.style.display='none'">` : '<div style="font-size:3rem;">🔧</div>'}
+        <span>${m.varumarke} ${m.modellnamn || ''}</span>
+        <small>${(m.program || []).length} program</small>
+      </a>`).join('');
+  } else if (band) {
+    band.closest('section').style.display = 'none';
+  }
+
+  // Recept: räkna
+  let nR = 0;
   try {
     const parts = location.pathname.split('/').filter(Boolean);
     const user = location.hostname.split('.')[0];
@@ -235,12 +319,21 @@
     const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/recept?ref=main`);
     if (res.ok) nR = (await res.json()).filter(i => i.type === 'file' && /\.(html?|pdf)$/i.test(i.name)).length;
   } catch (e) {}
-  if (nR || nM) {
-    document.getElementById('heroStats').innerHTML =
-      (nR ? `<span class="stat">📖 ${nR} recept med verifierade program</span>` : '') +
-      (nM ? `<span class="stat">🔧 ${nM} maskiner dokumenterade</span>` : '') +
-      `<span class="stat">⚡ Kostnad &amp; energi per rätt</span>`;
-  }
+
+  document.getElementById('heroStats').innerHTML =
+    (nR ? `<span class="stat">📖 <b>${nR}</b> recept med verifierade program</span>` : `<span class="stat">📖 Recept med verifierade program</span>`) +
+    `<span class="stat">🔧 <b>${machines.length || 11}</b> maskiner dokumenterade</span>` +
+    `<span class="stat">⚡ Kostnad &amp; energi per rätt</span>`;
+})();
+
+/* ================= Mjuk intoning vid scroll ================= */
+(function () {
+  const els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { els.forEach(e => e.classList.add('in')); return; }
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, { threshold: .12 });
+  els.forEach(e => io.observe(e));
 })();
 </script>
 <script src="assets/site.js"></script>
