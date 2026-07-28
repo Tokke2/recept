@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!-- PLATS: /status.html  (repo-roten – hälsokontroll av hela sajten) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🩺 Hälsokontroll – Mitt Maskinkök</title>
+<style>
+  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:860px; margin:0 auto; }
+  header { background:linear-gradient(135deg,var(--dark),#34495e); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:18px; }
+  header h1 { font-size:1.5rem; margin-bottom:4px; }
+  header p { opacity:.9; font-size:.9rem; }
+  header a { color:#fff; opacity:.85; text-decoration:none; font-size:.9rem; }
+  .summary { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+  .sum { flex:1; min-width:140px; background:var(--card); border-radius:14px; padding:16px 18px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  .sum .n { font-size:1.9rem; font-weight:800; }
+  .sum .l { color:var(--muted); font-size:.8rem; }
+  .sum.ok .n { color:var(--green); } .sum.warn .n { color:var(--accent2); } .sum.err .n { color:var(--accent); }
+  .card { background:var(--card); border-radius:14px; padding:18px 22px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  .card h2 { font-size:1.05rem; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .item { display:flex; align-items:baseline; gap:10px; padding:7px 0; border-bottom:1px solid #f4efe7; font-size:.9rem; }
+  .item:last-child { border-bottom:none; }
+  .item .st { flex-shrink:0; width:22px; text-align:center; }
+  .item .what { flex:1; }
+  .item .detail { color:var(--muted); font-size:.8rem; }
+  .item a { color:var(--accent); }
+  .running { color:var(--muted); font-size:.9rem; padding:10px 0; }
+  .btn { background:var(--dark); color:#fff; border:none; border-radius:10px; padding:11px 20px; font-weight:700; font-size:.92rem; cursor:pointer; font-family:inherit; }
+  footer { text-align:center; color:var(--muted); font-size:.8rem; padding:24px; }
+</style>
+<link rel="stylesheet" href="assets/print.css">
+</head>
+<body>
+
+<header>
+  <div class="no-print" style="margin-bottom:8px;"><a href="index.html">← Till startsidan</a></div>
+  <h1>🩺 Hälsokontroll</h1>
+  <p>Testar hela sajten automatiskt: recept, metadata, bilder, energidata, maskiner och moduler.</p>
+</header>
+
+<div class="summary">
+  <div class="sum ok"><div class="n" id="nOk">–</div><div class="l">OK</div></div>
+  <div class="sum warn"><div class="n" id="nWarn">–</div><div class="l">Varningar</div></div>
+  <div class="sum err"><div class="n" id="nErr">–</div><div class="l">Fel</div></div>
+</div>
+
+<div style="margin-bottom:14px;" class="no-print">
+  <button class="btn" onclick="location.reload()">🔄 Kör om alla tester</button>
+</div>
+
+<div id="out"><div class="card"><div class="running">⏳ Kör tester…</div></div></div>
+
+<footer>Hälsokontrollen körs live i webbläsaren varje gång sidan öppnas.</footer>
+
+<script>
+let ok = 0, warn = 0, err = 0;
+const sections = [];
+
+function sec(title) { const s = { title, items: [] }; sections.push(s); return s; }
+function add(s, status, what, detail) {
+  s.items.push({ status, what, detail });
+  if (status === 'ok') ok++; else if (status === 'warn') warn++; else err++;
+  paint();
+}
+function icon(st) { return st === 'ok' ? '✅' : st === 'warn' ? '⚠️' : '❌'; }
+function paint() {
+  document.getElementById('nOk').textContent = ok;
+  document.getElementById('nWarn').textContent = warn;
+  document.getElementById('nErr').textContent = err;
+  document.getElementById('out').innerHTML = sections.map(s =>
+    `<div class="card"><h2>${s.title}</h2>` +
+    s.items.map(i => `<div class="item"><span class="st">${icon(i.status)}</span>
+      <span class="what">${i.what}<div class="detail">${i.detail || ''}</div></span></div>`).join('') +
+    `</div>`).join('');
+}
+async function exists(url) {
+  try { const r = await fetch(url, { method: 'GET', cache: 'no-store' }); return r.ok; }
+  catch (e) { return false; }
+}
+
+run();
+async function run() {
+  /* ---------- 1) Kärnfiler & moduler ---------- */
+  const s1 = sec('🧩 Kärnfiler & moduler');
+  const core = ['assets/site.js','assets/print.css','assets/print.js','assets/app.js',
+                'assets/recept.js','assets/energi.js','assets/sprak.js',
+                'json/maskindatabas.json','json/energi.json','json/maskiner-index.json',
+                'manifest.json','sw.js'];
+  for (const f of core) {
+    add(s1, (await exists(f)) ? 'ok' : 'err', f, (await exists(f)) ? '' : 'SAKNAS – ladda upp filen!');
+  }
+
+  /* ---------- 2) Maskiner ---------- */
+  const s2 = sec('🔧 Maskiner');
+  let machines = [];
+  try {
+    const idx = await (await fetch('json/maskiner-index.json', { cache:'no-store' })).json();
+    add(s2, 'ok', `maskiner-index.json: ${idx.length} maskiner listade`);
+    for (const f of idx) {
+      try {
+        const m = await (await fetch('json/maskiner/' + f)).json();
+        machines.push(m);
+        const probs = [];
+        if (!m.effekt_w) probs.push('effekt_w saknas (energiberäkning bryts)');
+        if (!m.program || !m.program.length) probs.push('inga program');
+        if (!m.bild) probs.push('bild-fält saknas');
+        else if (!(await exists(m.bild))) probs.push('bildfilen ' + m.bild + ' saknas');
+        add(s2, probs.length ? 'warn' : 'ok',
+          `${m.varumarke || '?'} ${m.modellnamn || m.id}`,
+          probs.join(' · ') || `${m.program.length} program · ${m.effekt_w} W`);
+      } catch (e) {
+        add(s2, 'err', f, 'Ogiltig JSON eller kunde inte läsas!');
+      }
+    }
+  } catch (e) {
+    add(s2, 'err', 'json/maskiner-index.json', 'Kunde inte läsas – maskinlistan är bruten!');
+  }
+
+  /* ---------- 3) Recept ---------- */
+  const s3 = sec('📖 Recept');
+  let files = [];
+  try {
+    const parts = location.pathname.split('/').filter(Boolean);
+    const user = location.hostname.split('.')[0];
+    const repo = parts.length ? parts[0] : user + '.github.io';
+    const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/recept?ref=main`);
+    if (res.ok) {
+      files = (await res.json()).filter(i => i.type === 'file' && /\.(html?|pdf)$/i.test(i.name)).map(i => i.name);
+      add(s3, 'ok', `Recept-mappen listad: ${files.length} filer`);
+    } else {
+      add(s3, 'warn', 'GitHub-listning svarade ' + res.status, 'Kan vara API-gränsen (60/h) – recepten kan ändå fungera.');
+    }
+  } catch (e) {
+    add(s3, 'err', 'Kunde inte lista recept-mappen', String(e));
+  }
+
+  let energiDb = {};
+  try { energiDb = (await (await fetch('json/energi.json')).json()).recept || {}; } catch (e) {}
+
+  for (const f of files) {
+    if (/\.pdf$/i.test(f)) {
+      add(s3, 'ok', '📄 ' + f, 'PDF-recept – visas som kort, ingen metadata behövs.');
+      continue;
+    }
+    try {
+      const html = await (await fetch('recept/' + encodeURIComponent(f))).text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const get = n => { const el = doc.querySelector(`meta[name="recept:${n}"]`); return el ? el.content : ''; };
+      const probs = [], warns = [];
+      ['namn','emoji','beskrivning','taggar','maskiner'].forEach(n => { if (!get(n)) warns.push('metadata: ' + n); });
+      if (html.indexOf('assets/site.js') === -1) probs.push('site.js-raden saknas (lagas av sw/Action, men fixa filen)');
+      if (!/<ol[\s>]/i.test(html)) warns.push('inga <ol>-steg (kockläget blir tomt)');
+      if (!energiDb[f]) warns.push('ingen energidata i json/energi.json');
+      const imgName = 'images/recept/' + f.replace(/\.html?$/i, '') + '.jpg';
+      if (!(await exists(imgName))) warns.push('ingen bild (' + imgName + ') – emoji-fallback visas');
+      add(s3, probs.length ? 'err' : warns.length ? 'warn' : 'ok',
+        (get('emoji') || '🍽️') + ' ' + (get('namn') || f),
+        [...probs, ...warns].join(' · ') || 'Komplett: metadata, steg, energi, bild ✓');
+    } catch (e) {
+      add(s3, 'err', f, 'Kunde inte läsas!');
+    }
+  }
+
+  /* ---------- 4) Energidata ---------- */
+  const s4 = sec('⚡ Energidata');
+  try {
+    const db = await (await fetch('json/maskindatabas.json')).json();
+    add(s4, db.elpris_kr_per_kwh ? 'ok' : 'warn', 'Elpris',
+      db.elpris_kr_per_kwh ? db.elpris_kr_per_kwh + ' kr/kWh' : 'elpris_kr_per_kwh saknas – 2,50 används som standard');
+  } catch (e) { add(s4, 'err', 'json/maskindatabas.json', 'Kunde inte läsas!'); }
+  const mIds = machines.map(m => m.id);
+  Object.entries(energiDb).forEach(([fil, rows]) => {
+    const bad = rows.filter(r => !mIds.includes(r.maskin));
+    add(s4, bad.length ? 'warn' : 'ok', fil,
+      bad.length ? 'Okänt maskin-id: ' + bad.map(r => r.maskin).join(', ') : rows.length + ' maskinsteg kopplade');
+    // Finns receptfilen?
+    if (files.length && !files.includes(fil)) {
+      add(s4, 'warn', fil, 'Energidata pekar på recept som inte finns i recept-mappen.');
+    }
+  });
+
+  /* ---------- 5) Språk ---------- */
+  const s5 = sec('🌐 Språk');
+  for (const l of ['en','de']) {
+    const okL = await exists('json/sprak/' + l + '.json');
+    add(s5, okL ? 'ok' : 'warn', 'json/sprak/' + l + '.json',
+      okL ? '' : 'Saknas – auto-översättning används som reserv.');
+  }
+
+  paint();
+}
+</script>
+<script src="assets/site.js"></script>
+</body>
+</html>
