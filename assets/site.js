@@ -249,7 +249,7 @@
     var bar = document.createElement('div');
     bar.className = 'no-print';
     bar.style.cssText =
-      'position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#c0392b;color:#fff;' +
+      'position:fixed;bottom:0;left:0;right:0;z-index:97;background:#c0392b;color:#fff;' +
       'font-family:Segoe UI,system-ui,sans-serif;font-size:.85rem;padding:10px 16px;text-align:center;' +
       'box-shadow:0 -4px 14px rgba(0,0,0,.2);';
     bar.innerHTML = '⚠️ En sidmodul kunde inte laddas (' + report.failed.join(', ') + '). ' +
