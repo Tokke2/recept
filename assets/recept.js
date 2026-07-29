@@ -32,13 +32,45 @@
   });
   if (!steps.length) return;
 
-  /* ================== INGREDIENSER (för panelen) ================== */
+  /* ================== INGREDIENSER (panel + per-steg-mängder) ================== */
   var ingHTML = '';
+  var ingList = [];   // [{namn, mangd}] för matchning mot stegtext
   var tables = document.querySelectorAll('.card table');
   for (var ti = 0; ti < tables.length; ti++) {
     var card = tables[ti].closest('.card');
     var h = card && card.querySelector('h2');
-    if (h && /ingrediens/i.test(h.textContent)) { ingHTML = tables[ti].outerHTML; break; }
+    if (h && /ingrediens/i.test(h.textContent)) {
+      ingHTML = tables[ti].outerHTML;
+      // Extrahera namn + mängd ur raderna (kol 1 = namn, kol 2 = mängd)
+      var rows = tables[ti].querySelectorAll('tr');
+      for (var ri = 0; ri < rows.length; ri++) {
+        var tds = rows[ri].querySelectorAll('td');
+        if (tds.length >= 2) {
+          var namn = tds[0].textContent.trim();
+          var mangd = tds[1].textContent.trim();
+          if (namn && mangd && !/^total/i.test(namn)) {
+            ingList.push({ namn: namn, mangd: mangd });
+          }
+        }
+      }
+      break;
+    }
+  }
+
+  /* Matcha ingredienser som nämns i en stegtext (ordstams-jämförelse) */
+  function ingredientsInStep(stepText) {
+    var st = stepText.toLowerCase();
+    return ingList.filter(function (ing) {
+      // Rensa namn: ta bort emoji/parenteser, jämför betydande ord (>3 tecken)
+      var clean = ing.namn.toLowerCase()
+        .replace(/[\u{1F300}-\u{1FAFF}]/gu, '')
+        .replace(/\([^)]*\)/g, '');
+      var words = clean.split(/[^a-zåäö0-9%-]+/i).filter(function (w) { return w.length > 3; });
+      return words.some(function (w) {
+        var stem = w.slice(0, Math.max(4, w.length - 2)); // tål böjningar
+        return st.indexOf(stem) !== -1;
+      });
+    });
   }
 
   /* ================== NYCKLAR & LÄGEN ================== */
@@ -86,7 +118,20 @@
   }
 
   /* ================== ÖPPNA/STÄNG ================== */
+  var ingStepAdded = false;
   function open() {
+    // Första steget = komplett ingredienslista (läggs till en gång)
+    if (!ingStepAdded && ingList.length) {
+      var listHtml = '<div style="font-size:.75em;opacity:.85;margin-bottom:10px;">Ställ fram allt innan du börjar:</div>' +
+        '<ul style="list-style:none;padding:0;font-size:.85em;line-height:1.8;">' +
+        ingList.map(function (ing) {
+          return '<li style="display:flex;justify-content:space-between;gap:14px;border-bottom:1px dashed rgba(255,255,255,.25);padding:2px 0;">' +
+            '<span>' + ing.namn + '</span><b style="white-space:nowrap;">' + ing.mangd + '</b></li>';
+        }).join('') + '</ul>';
+      steps.unshift({ text: listHtml, plain: 'Ingredienser: ' + ingList.map(function(i){return i.namn + ' ' + i.mangd;}).join(', '),
+                      section: '🧾 Ingredienser', done: false, isIngredients: true });
+      ingStepAdded = true;
+    }
     // Fortsätt där du var?
     idx = 0;
     if (saved.idx > 0 && saved.idx < steps.length) {
@@ -233,9 +278,20 @@
         '<span>Steg ' + (idx + 1) + ' av ' + steps.length + '</span>' +
         '<span id="cmTimer" style="font-weight:700;"></span>' +
       '</div>' +
-      /* Steget */
-      '<div style="flex:1;display:flex;align-items:center;overflow-y:auto;-webkit-overflow-scrolling:touch;">' +
+      /* Steget + ingrediensmängder som nämns i steget */
+      '<div style="flex:1;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;">' +
         '<div style="font-size:calc(clamp(1.5rem,4.5vw,2.5rem)*' + fontScale + ');line-height:1.45;font-weight:600;">' + s.text + '</div>' +
+        (function () {
+          if (s.isIngredients) return '';
+          var used = ingredientsInStep(s.plain);
+          if (!used.length) return '';
+          return '<div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;">' +
+            used.map(function (ing) {
+              return '<span style="background:rgba(39,174,96,.25);border:1px solid rgba(39,174,96,.6);' +
+                'border-radius:999px;padding:6px 14px;font-size:.95rem;font-weight:700;">' +
+                ing.namn.replace(/\([^)]*\)/g, '').trim() + ' · ' + ing.mangd + '</span>';
+            }).join('') + '</div>';
+        })() +
       '</div>' +
       /* Timers + uppläsning */
       '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;">' +
