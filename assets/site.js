@@ -263,7 +263,7 @@
      ============================================================ */
   ensureCss('print.css');
   var scripts = ['print.js', 'app.js', 'sprak.js'];
-  if (isRecipePage) scripts.push('recept.js', 'energi.js');
+  if (isRecipePage) scripts.push('recept.js', 'energi.js', 'receptnav.js');
 
   Promise.all(scripts.map(function (f) { return loadScript(f); }))
     .then(function () { printReport(checkMeta()); });
