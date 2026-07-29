@@ -76,7 +76,7 @@
     toastEl = document.createElement('div');
     toastEl.className = 'no-print';
     toastEl.style.cssText =
-      'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);z-index:10000;' +
+      'position:fixed;bottom:92px;left:50%;transform:translateX(-50%) translateY(8px);z-index:10000;' +
       'background:#2c3e50;color:#fff;border-radius:14px;padding:13px 20px;font-family:inherit;' +
       'font-size:.92rem;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.35);display:flex;' +
       'align-items:center;gap:12px;opacity:0;transition:opacity .25s,transform .25s;max-width:90vw;';
@@ -156,10 +156,11 @@
       if (!fab.contains(e.target)) fab.classList.remove('open');
     });
 
-    // Skriv ut
+    // Skriv ut (via print.js smarta dialog om den finns)
     fab.querySelectorAll('.fab-btn')[1].addEventListener('click', function () {
       fab.classList.remove('open');
-      window.print();
+      if (window.__MK_PRINT) window.__MK_PRINT();
+      else window.print();
     });
 
     // Dela
@@ -193,6 +194,23 @@
     // Dölj gamla fristående print-knappen om print.js hann skapa en
     var oldPrint = document.querySelector('.print-btn');
     if (oldPrint) oldPrint.style.display = 'none';
+
+    /* ---------- Publikt API: andra moduler lägger sina knappar HÄR
+       istället för egna flytande knappar → inga överlapp ---------- */
+    window.__MK_FAB_ADD = function (id, icon, label, color, handler) {
+      if (document.getElementById('mk-fab-' + id)) return;
+      var item = document.createElement('div');
+      item.className = 'fab-item';
+      item.id = 'mk-fab-' + id;
+      item.innerHTML = '<span class="fab-label">' + label + '</span>' +
+        '<button class="fab-btn" style="background:' + color + ';" title="' + label + '">' + icon + '</button>';
+      item.querySelector('.fab-btn').addEventListener('click', function () {
+        fab.classList.remove('open');
+        handler();
+      });
+      // Läggs överst i utfällningen (före install-posten)
+      fab.insertBefore(item, fab.firstChild);
+    };
   }
 
   if (document.body) buildFab();
