@@ -58,26 +58,56 @@ jobs:
               except Exception:
                   pass
 
+          # Alias: generiska ord → maskin-id (primärval när inget märke nämns)
+          ALIAS = {
+              'airfryer': 'cosori-twinfry-10l', 'air fryer': 'cosori-twinfry-10l',
+              'varmluftsfrit': 'cosori-twinfry-10l',
+              'bakmaskin': 'clatronic-bba3774', 'brödmaskin': 'clatronic-bba3774',
+              'riskokare': 'midea-mb-fs5017', 'multikokare': 'midea-mb-fs5017',
+              'slushmaskin': 'azmsary-fs306', 'slushie': 'azmsary-fs306',
+              'glassmaskin': 'greenpan-frost', 'frost': 'greenpan-frost',
+              'greenpan': 'greenpan-frost',
+              'pizzaugn': 'klaif-pizzaugn', 'pizzasten': 'klaif-pizzaugn',
+              'ismaskin': 'silonn-ismaskin',
+              'torkautomat': 'wmf-snacktogo', 'dehydrator': 'wmf-snacktogo',
+              'smörgåsgrill': 'krups-fdk452', 'sandwich': 'krups-fdk452',
+              'kaffekvarn': 'linkchef-grinder', 'kryddkvarn': 'linkchef-grinder'
+          }
+          by_id = {m['id']: m for m in machines}
+
+          def time_near(tl, anchor):
+              """Hitta X min inom 120 tecken efter anchor-ordet."""
+              i = tl.find(anchor)
+              if i == -1: return None
+              window = tl[i:i+160]
+              tm = re.search(r'(\d+)\s*(?:min|minuter)', window)
+              if tm: return int(tm.group(1))
+              hm = re.search(r'(\d+)[:.](\d+)\s*h', window)
+              if hm: return int(hm.group(1))*60 + int(hm.group(2))
+              return None
+
           def find_machines(text):
-              """Matcha maskiner som nämns i texten → (maskin, program, min)"""
               tl = text.lower()
-              hits = []
+              hits, seen = [], set()
+              # 1) Explicita märken/modeller (starkast)
               for m in machines:
-                  names = [m.get('modellnamn',''), m.get('varumarke','')]
-                  matched = any(n and n.lower() in tl for n in names if len(n) > 3)
-                  if not matched:
-                      continue
-                  # Försök hitta program + tid nära maskinnamnet
-                  prog, mins = None, None
-                  for p in m.get('program', []):
-                      pn = p['namn'].split('(')[0].strip().lower()
-                      if len(pn) > 3 and pn in tl:
-                          prog = p['namn']
-                          break
-                  tm = re.search(r'(\d+)\s*(?:min|minuter)', text)
-                  if tm:
-                      mins = int(tm.group(1))
-                  hits.append((m, prog, mins))
+                  names = [n for n in [m.get('modellnamn',''), m.get('varumarke','')] if len(n) > 3]
+                  anchor = next((n.lower() for n in names if n.lower() in tl), None)
+                  if not anchor: continue
+                  prog = next((p['namn'] for p in m.get('program', [])
+                               if len(p['namn'].split('(')[0].strip()) > 3
+                               and p['namn'].split('(')[0].strip().lower() in tl), None)
+                  mins = time_near(tl, (prog or anchor).split('(')[0].strip().lower()) or time_near(tl, anchor)
+                  hits.append((m, prog, mins)); seen.add(m['id'])
+              # 2) Alias (generiska ord) – bara om maskinen inte redan träffad
+              for word, mid in ALIAS.items():
+                  if word in tl and mid not in seen and mid in by_id:
+                      m = by_id[mid]
+                      prog = next((p['namn'] for p in m.get('program', [])
+                                   if len(p['namn'].split('(')[0].strip()) > 3
+                                   and p['namn'].split('(')[0].strip().lower() in tl), None)
+                      mins = time_near(tl, word)
+                      hits.append((m, prog, mins)); seen.add(mid)
               return hits
 
           MATORD = ['kaka','bröd','deg','pizza','glass','slush','soppa','gryta','kyckling',
@@ -95,9 +125,17 @@ jobs:
               clean = re.sub(r'<[^>]+>', '', raw_title)
               clean = re.sub(r'\s*[–-]\s*Recept.*$', '', clean).strip()
 
-              # Emoji ur titeln
+              # Emoji ur titeln, annars gissning från innehållet
               em = re.findall(r'[\U0001F300-\U0001FAFF\u2600-\u27BF]', clean)
-              emoji = em[0] if em else '🍽️'
+              emoji = em[0] if em else ''
+              if not emoji:
+                  EMOJI_MAP = [('pizza','🍕'),('glass','🍦'),('slush','🍹'),('shake','🥤'),
+                               ('pita','🫓'),('bröd','🍞'),('deg','🥖'),('kaka','🍰'),
+                               ('chips','🥨'),('snacks','🥨'),('soppa','🍲'),('gryta','🍲'),
+                               ('kyckling','🍗'),('fisk','🐟'),('ris','🍚'),('pasta','🍝'),
+                               ('hund','🐶'),('drink','🍹'),('sallad','🥗'),('protein','💪')]
+                  low = (clean + ' ' + fname).lower()
+                  emoji = next((e for w, e in EMOJI_MAP if w in low), '🍽️')
               namn = re.sub(r'[\U0001F300-\U0001FAFF\u2600-\u27BF]\s*', '', clean).strip() or fname
 
               # Beskrivning: första <p> eller header-underrubrik
@@ -127,7 +165,14 @@ jobs:
               if not has('emoji'): metas.append(('emoji', emoji)); added.append('emoji')
               if not has('beskrivning') and desc: metas.append(('beskrivning', desc)); added.append('beskrivning')
               if not has('taggar') and tags: metas.append(('taggar', ', '.join(tags))); added.append('taggar')
-              if not has('maskiner') and mask_meta: metas.append(('maskiner', mask_meta)); added.append('maskiner')
+              weak = re.search(r'name="recept:maskiner" content="[^"]*se recept[^"]*"', t)
+              if (not has('maskiner') or weak) and mask_meta:
+                  if weak:
+                      t = re.sub(r'<meta name="recept:maskiner" content="[^"]*">',
+                                 '<meta name="recept:maskiner" content="%s">' % H.escape(mask_meta, quote=True), t, count=1)
+                      added.append('maskiner (förbättrad)')
+                  else:
+                      metas.append(('maskiner', mask_meta)); added.append('maskiner')
 
               if metas:
                   block = '\n'.join('<meta name="recept:%s" content="%s">' % (n, H.escape(v, quote=True)) for n, v in metas)
