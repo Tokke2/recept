@@ -50,17 +50,37 @@
   var overlay = null, wakeLock = null, timerInt = null;
 
   /* ================== KNAPP ================== */
+  /* Kocklägesknappen: 1) verktygsraden om den finns, 2) FAB-menyn (via API,
+     inga egna flytande knappar = inga överlapp), 3) sista utväg: egen knapp
+     placerad OVANFÖR där FAB/print-knappen bor. */
   var toolbar = document.querySelector('.toolbar');
-  var btn = document.createElement('button');
-  btn.type = 'button';
-  btn.innerHTML = '👨‍🍳 Kockläge';
-  if (toolbar) { btn.className = 'tool-btn'; toolbar.appendChild(btn); }
-  else {
-    btn.className = 'no-print';
-    btn.style.cssText = 'position:fixed;bottom:130px;right:22px;z-index:99;background:#e67e22;color:#fff;border:none;border-radius:999px;padding:13px 20px;font-size:.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);';
-    document.body.appendChild(btn);
+  if (toolbar) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'tool-btn';
+    btn.innerHTML = '👨‍🍳 Kockläge';
+    btn.addEventListener('click', open);
+    toolbar.appendChild(btn);
+  } else {
+    // Vänta in FAB-menyn (app.js laddas parallellt)
+    var tries = 0;
+    (function hookFab() {
+      if (window.__MK_FAB_ADD) {
+        window.__MK_FAB_ADD('cook', '👨‍🍳', 'Kockläge', '#e67e22', open);
+      } else if (++tries < 25) {
+        setTimeout(hookFab, 200);
+      } else {
+        // FAB finns inte alls → egen knapp, säkert ovanför print-knappens plats
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'no-print';
+        b.innerHTML = '👨‍🍳 Kockläge';
+        b.style.cssText = 'position:fixed;bottom:82px;right:22px;z-index:99;background:#e67e22;color:#fff;border:none;border-radius:999px;padding:13px 20px;font-size:.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);';
+        b.addEventListener('click', open);
+        document.body.appendChild(b);
+      }
+    })();
   }
-  btn.addEventListener('click', open);
 
   /* ================== ÖPPNA/STÄNG ================== */
   function open() {
