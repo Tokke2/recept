@@ -14,6 +14,7 @@
 <meta name="recept:maskiner" content="Blanda degen: Clatronic BBA 3774 · 10. Cake (1:a knådfasen 6 min) | Gräddning (rek.): Midea MB-FS5017 · Kaka 50 min | Alternativ: COSORI TwinFry · Bake 160°C 30–35 min">
 <!-- ============================================================ -->
 
+<link rel="stylesheet" href="../assets/print.css">
 <style>
   :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -40,9 +41,6 @@
   .cols > div { flex:1; min-width:260px; }
   .badge { display:inline-block; background:#eaf7ef; color:var(--green); border-radius:6px; padding:2px 10px; font-size:.8rem; font-weight:600; margin-right:6px; }
   footer { text-align:center; color:var(--muted); font-size:.8rem; margin-top:20px; }
-  .toolbar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
-  .tool-btn { background:var(--dark); color:#fff; border:none; border-radius:10px; padding:10px 18px; font-size:.9rem; font-weight:600; cursor:pointer; text-decoration:none; display:inline-block; }
-  .tool-btn:hover { opacity:.85; }
   .stars { font-size:1.9rem; cursor:pointer; user-select:none; letter-spacing:4px; }
   .stars span { color:#ddd; transition:color .1s; }
   .stars span.on { color:#f1c40f; }
@@ -52,21 +50,11 @@
   .qr-box { text-align:center; }
   .qr-box img { border:8px solid #fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.1); }
   .qr-box p { color:var(--muted); font-size:.85rem; margin-top:8px; }
-
-  /* ===== UTSKRIFTSLÄGE ===== */
-  @media print {
-    body { background:#fff; padding:0; max-width:100%; }
-    header { background:#fff !important; color:#000; box-shadow:none; border:2px solid #000; -webkit-print-color-adjust:exact; }
-    header a, .toolbar, #betyg, footer .no-print, .no-print { display:none !important; }
-    .card, .machine-step, .warn, .alt { box-shadow:none; border:1px solid #ccc; page-break-inside:avoid; }
-    .hero-img { max-height:200px; }
-  }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="no-print" style="margin-bottom:8px;"><a href="../index.html" style="color:#fff; opacity:.85; text-decoration:none; font-size:.9rem;">← Till startsidan</a></div>
   <h1>🍍 Mjuk Ananaskaka</h1>
   <p>Saftig &amp; mjuk · ananasbitar · socker + honung · 12 bitar · ~176 kcal/bit · ~32 kr totalt</p>
   <p style="margin-top:6px;"><span style="background:rgba(255,255,255,.25); border-radius:6px; padding:2px 10px; font-size:.85rem;">Deg: Clatronic BBA 3774</span> <span style="background:rgba(255,255,255,.25); border-radius:6px; padding:2px 10px; font-size:.85rem;">Gräddning: Midea MB-FS5017 (rek.) eller COSORI TwinFry</span></p>
@@ -74,11 +62,6 @@
 
 <!-- EGEN BILD: lägg en bild i images/recept/ med samma namn som receptfilen (ananaskaka.jpg) så visas den här automatiskt -->
 <img class="hero-img" src="../images/recept/ananaskaka.jpg" alt="Mjuk ananaskaka" onerror="this.style.display='none'">
-
-<div class="toolbar no-print">
-  <button class="tool-btn" onclick="window.print()">🖨️ Skriv ut receptet</button>
-  <button class="tool-btn" onclick="document.getElementById('qr').scrollIntoView({behavior:'smooth'})">📱 QR-kod för köket</button>
-</div>
 
 <div class="warn">
   ⚠️ <b>Kör INTE hela kakan i bakmaskinen!</b> Cake-programmets fulla cykel (1:50 h) kör <b>två knådfaser (6 + 10 min) med knådkrok</b> – det slår in luft och river smeten, kakan blir skummig/fast istället för mjuk och fluffig (manualen medger själv att kakor blir "fastare" pga knådkroken). Använd bakmaskinen <b>endast för första blandningsfasen (~5–6 min)</b>, stoppa sedan med Start/Stop-knappen.
@@ -187,7 +170,7 @@
   <span class="no-print">Tips: klicka 🖨️ Skriv ut – QR-koden följer med på pappret.</span></p>
 </div>
 
-<footer>Recept kopplat till Maskindatabas v3.0 · Beräkningar baserade på ingrediensdatabas © Rickard Längkvist 2025–2026</footer>
+<footer>Recept kopplat till Maskindatabas · Beräkningar baserade på ingrediensdatabas © Rickard Längkvist 2025–2026</footer>
 
 <script>
 /* ===== Betyg & anteckningar (localStorage) ===== */
