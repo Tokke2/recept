@@ -3,104 +3,148 @@
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
-<title>Pizzadeg – Clatronic BBA 3774 – 4 × 250g</title>
-<meta name="recept:namn" content="Pizzadeg – Clatronic BBA 3774 – 4 × 250g">
-<meta name="recept:emoji" content="🍽️">
-<meta name="recept:beskrivning" content="Torrbas: 540 + 30 + 50 = 620 g &amp;nbsp;|&amp;nbsp; Vätska: 336 + 24 = 360 g">
-<meta name="recept:taggar" content="deg, pizza, ris, protein">
-<meta name="recept:maskiner" content="Tillagning: Clatronic BBA 3774 · se recept | Tillagning: KLAIF LMR (Röd) · Pizza (över + under max) 10 min">
-<script src="../assets/site.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍕 Pizzadeg – Bakmaskin 4 × 250 g – Recept</title>
+
+<!-- ===== RECEPT-METADATA (läses automatiskt av startsidan) ===== -->
+<meta name="recept:namn" content="Pizzadeg – Bakmaskin 4 × 250 g">
+<meta name="recept:emoji" content="🍕">
+<meta name="recept:beskrivning" content="Proteinrik pizzadeg i Clatronic BBA 3774: 4 bollar à 250 g, 58% hydrering, 24 g protein/boll, ~5 kr/boll. Bäst med 24–72 h kyljäsning.">
+<meta name="recept:taggar" content="pizza, pizzadeg, deg, protein, bakning, bakmaskin">
+<meta name="recept:maskiner" content="Deg &amp; jäsning: Clatronic BBA 3774 · 8. Dough 1:30 h | Gräddning: KLAIF Pizzaugn · max värme 60–120 sek">
+<!-- ============================================================ -->
+
+<link rel="stylesheet" href="../assets/print.css">
 <style>
-  @page { size: A4; margin: 8mm; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Arial, sans-serif; font-size: 10pt; line-height: 1.3; color: #222; }
-  h1 { font-size: 18pt; text-align: center; margin-bottom: 2pt; }
-  .subtitle { text-align: center; font-size: 9pt; color: #666; margin-bottom: 7pt; }
-  h2 { font-size: 11pt; margin-top: 7pt; margin-bottom: 3pt; border-bottom: 1.5px solid #222; }
-  table { width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 6pt; font-size: 10pt; border: 1px solid #999; }
-  th { background: #eee; font-weight: bold; padding: 4pt 6pt; text-align: left; border-bottom: 1.5px solid #999; }
-  td { padding: 4pt 6pt; border-bottom: 1px solid #ddd; }
-  tr:nth-child(even) td { background: #f9f9f9; }
-  .total-row td { font-weight: bold; border-top: 2px solid #222; border-bottom: none; background: #fff !important; }
-  .cols { display: flex; gap: 12pt; margin-top: 7pt; }
-  .col { flex: 1; }
-  .note { font-size: 8.5pt; color: #666; background: #fffde7; padding: 4pt 8pt; border-radius: 3px; margin-bottom: 6pt; }
-  .badge { display: inline-block; background: #27ae60; color: white; padding: 2pt 8pt; border-radius: 10pt; font-size: 9pt; font-weight: bold; }
-  .nutrition-box { background: #eafaf1; border: 2px solid #27ae60; border-radius: 4px; }
-  .nutrition-box th { background: #d5f5e3; text-align: center; border: none; padding: 3pt 5pt; }
-  .nutrition-box td { padding: 3pt 5pt; border: none; border-bottom: 1px solid #c8e6d0; }
-  .nutrition-box tr:last-child td { border-bottom: none; }
-  .highlight { background: #d5f5e3; font-weight: bold; }
-  ol { padding-left: 16pt; }
-  li { margin-bottom: 3pt; }
-  p { margin: 3pt 0; }
-  .box { border: 1.5px solid #222; padding: 6pt; margin-top: 6pt; border-radius: 4px; }
-  .footer { margin-top: 8pt; text-align: center; font-size: 7pt; color: #999; border-top: 1px solid #ccc; padding-top: 4pt; }
+  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:900px; margin:0 auto; }
+  header { background:linear-gradient(135deg,#c0392b,#e67e22); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:20px; box-shadow:0 4px 14px rgba(0,0,0,.12); }
+  header h1 { font-size:1.6rem; margin-bottom:4px; }
+  header p { opacity:.95; font-size:.92rem; }
+  .hero-img { width:100%; max-height:340px; object-fit:cover; border-radius:14px; margin-bottom:16px; box-shadow:0 2px 10px rgba(0,0,0,.1); }
+  .card { background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  h2 { font-size:1.1rem; margin-bottom:10px; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; }
+  th { text-align:left; padding:8px 10px; background:#f0ebe3; font-size:.78rem; text-transform:uppercase; color:var(--muted); }
+  td { padding:7px 10px; border-bottom:1px solid #eee; }
+  tr:last-child td { border-bottom:none; }
+  .total td { font-weight:700; background:#faf7f2; }
+  ol { padding-left:22px; line-height:1.7; }
+  .machine-step { border-left:5px solid var(--green); background:#f4fbf6; border-radius:10px; padding:14px 16px; margin-bottom:12px; }
+  .machine-step h3 { font-size:1rem; margin-bottom:4px; }
+  .machine-step .prog { color:var(--green); font-weight:700; }
+  .machine-step .why { color:var(--muted); font-size:.87rem; margin-top:4px; }
+  .warn { border-left:5px solid var(--accent2); background:#fdf6ee; border-radius:10px; padding:12px 16px; margin-bottom:12px; font-size:.9rem; }
+  .alt { border-left:5px solid #b0bec5; background:#f5f7f8; border-radius:10px; padding:12px 16px; margin-bottom:12px; font-size:.9rem; }
+  .cols { display:flex; gap:14px; flex-wrap:wrap; }
+  .cols > div { flex:1; min-width:260px; }
+  .badge { display:inline-block; background:#eaf7ef; color:var(--green); border-radius:6px; padding:2px 10px; font-size:.8rem; font-weight:600; margin-right:6px; }
+  footer { text-align:center; color:var(--muted); font-size:.8rem; margin-top:20px; }
 </style>
 </head>
 <body>
 
-<h1>🍕 Pizzadeg – Bakmaskin</h1>
-<div class="subtitle">Clatronic BBA 3774 · 4 × 250g · 58% hydrering · <span class="badge">546 kcal/boll</span></div>
+<header>
+  <h1>🍕 Pizzadeg – Bakmaskin</h1>
+  <p>Clatronic BBA 3774 · 4 × 250 g · 58% hydrering · 546 kcal/boll · ~5 kr/boll</p>
+  <p style="margin-top:6px;"><span style="background:rgba(255,255,255,.25); border-radius:6px; padding:2px 10px; font-size:.85rem;">Deg: Clatronic BBA 3774 · 8. Dough</span> <span style="background:rgba(255,255,255,.25); border-radius:6px; padding:2px 10px; font-size:.85rem;">Gräddning: KLAIF Pizzaugn</span></p>
+</header>
 
-<div class="note">30g yoghurt · inget strösocker · 30g majsmjöl · 50g proteinpulver · total deg 1000g</div>
+<!-- EGEN BILD: lägg images/recept/pizzadeg-bakmaskin-4x250g.jpg så visas den här -->
+<img class="hero-img" src="../images/recept/pizzadeg-bakmaskin-4x250g.jpg" alt="Pizzadeg" onerror="this.style.display='none'">
 
-<h2>🧾 Ingredienser</h2>
-<table>
-  <tr><th>Ingrediens</th><th style="text-align:right;">Mängd</th><th style="text-align:right;">Pris</th></tr>
-  <tr><td>Vetemjöl (Garant)</td><td style="text-align:right;">540 g</td><td style="text-align:right;">4 kr</td></tr>
-  <tr><td>Majsmjöl Finmalt (Favero)</td><td style="text-align:right;">30 g</td><td style="text-align:right;">0 kr</td></tr>
-  <tr><td>Whey-80 Natural / Proteinpulver</td><td style="text-align:right;">50 g</td><td style="text-align:right;">14 kr</td></tr>
-  <tr><td>Vatten</td><td style="text-align:right;">336 g</td><td style="text-align:right;">—</td></tr>
-  <tr><td>Turkisk Yoghurt 10%</td><td style="text-align:right;">30 g</td><td style="text-align:right;">1 kr</td></tr>
-  <tr><td>Falk Salt Mineral Salt</td><td style="text-align:right;">12 g</td><td style="text-align:right;">0 kr</td></tr>
-  <tr><td>Torrjäst (Kronjäst)</td><td style="text-align:right;">2 g</td><td style="text-align:right;">0 kr</td></tr>
-  <tr class="total-row"><td>Totalt</td><td style="text-align:right;">1000 g</td><td style="text-align:right;">20 kr</td></tr>
-</table>
+<div class="warn">
+  ⚠️ <b>Bakmaskinens gränser:</b> Mjöl 570 g av max 590 g · Jäst 2 g av max 7 g – receptet ligger nära maxgränsen, öka inte mängderna! <b>Använd inte fördröjd timer</b> – degen innehåller yoghurt (färskvara).
+</div>
 
-<h2>💧 Hydrering: 58%</h2>
-<p>Torrbas: 540 + 30 + 50 = <strong>620 g</strong> &nbsp;|&nbsp; Vätska: 336 + 24 = <strong>360 g</strong></p>
+<div class="card">
+  <h2>🧾 Ingredienser &amp; kostnad</h2>
+  <table>
+    <tr><th>Ingrediens</th><th>Mängd</th><th>Pris</th></tr>
+    <tr><td>Vetemjöl (Garant)</td><td>540 g</td><td>4,08 kr</td></tr>
+    <tr><td>Majsmjöl Finmalt (Favero)</td><td>30 g</td><td>0,48 kr</td></tr>
+    <tr><td>Whey-80 Natural / Proteinpulver</td><td>50 g</td><td>13,75 kr</td></tr>
+    <tr><td>Vatten</td><td>336 g</td><td>—</td></tr>
+    <tr><td>Turkisk Yoghurt 10%</td><td>30 g</td><td>0,99 kr</td></tr>
+    <tr><td>Falksalt Mineralsalt</td><td>12 g</td><td>0,45 kr</td></tr>
+    <tr><td>Torrjäst (Kronjäst)</td><td>2 g</td><td>0,13 kr</td></tr>
+    <tr class="total"><td>Totalt</td><td>1000 g</td><td>~19,88 kr</td></tr>
+  </table>
+  <p style="font-size:.82rem; color:var(--muted); margin-top:8px;">💧 <b>Hydrering 58%:</b> torrbas 540 + 30 + 50 = <b>620 g</b> · vätska 336 + 24 (yoghurtens vatten) = <b>360 g</b>. Fast men smidig deg – perfekt för utbakning.</p>
+</div>
 
-<div class="cols">
-  <div class="col">
-    <h2>🥣 Program 8 Dough</h2>
-    <ol>
-      <li>Vatten + yoghurt i formen.</li>
-      <li>Vetemjöl, majsmjöl och proteinpulver ovanpå.</li>
-      <li>Salt i ena hörnet, jäst i andra.</li>
-      <li>Kör <strong>Program 8 Dough</strong>.</li>
-      <li>Ta ut och bolla till <strong>4 × 250 g</strong>.</li>
-    </ol>
-
-    <h2>❄️ Jäsning</h2>
-    <p>Snabb: vila 20 min efter programmet.</p>
-    <p>Bäst: kyljäs 24–72 h, ta ut 2 h före bakning.</p>
-
-    <h2>🔥 Bakning</h2>
-    <p>Så varmt som möjligt på pizzastål/sten.</p>
-    <p>Pizzaugn: 60–120 sek · Ugn: 6–10 min.</p>
+<div class="card">
+  <h2>🥣 Steg 1 – Deg &amp; jäsning</h2>
+  <div class="machine-step">
+    <h3>⚙️ Clatronic BBA 3774 · <span class="prog">Program 8 "Dough" · 1:30 h</span></h3>
+    <div class="why">Knådar 20 min + jäser 30 + 40 min – UTAN bakning. Perfekt för pizzadeg som ska gräddas i pizzaugnen.</div>
   </div>
+  <ol>
+    <li>Häll <b>vatten + yoghurt</b> i bakformen</li>
+    <li>Tillsätt <b>vetemjöl, majsmjöl och proteinpulver</b> ovanpå</li>
+    <li>Lägg <b>salt i ena hörnet, jäst i andra</b> (får inte röra varandra före start)</li>
+    <li>Kör <b>Program 8 Dough</b> (1:30 h) och låt hela programmet gå klart</li>
+    <li>Stjälp ut degen och dela i <b>4 bitar à 250 g</b>, rulla till spända bollar</li>
+    <li>Lägg bollarna i lätt oljade burkar eller på oljad plåt under plast</li>
+  </ol>
+</div>
 
-  <div class="col">
-    <table class="nutrition-box">
-      <tr><th colspan="2">📊 Näring per 250g boll</th></tr>
-      <tr><td>Kcal</td><td class="highlight">546</td></tr>
-      <tr><td>Protein</td><td>24 g</td></tr>
-      <tr><td>Kolhydrat</td><td>102 g</td></tr>
-      <tr><td>Fett</td><td>4 g</td></tr>
-      <tr><td>Fiber</td><td>4 g</td></tr>
-      <tr><td><strong>Pris</strong></td><td><strong>5 kr</strong></td></tr>
-    </table>
-
-    <div class="box">
-      <p><strong>Mjöl:</strong> 570 g av max 590 g.</p>
-      <p><strong>Jäst:</strong> 2 g av max 7 g.</p>
-      <p><strong>Timer:</strong> ej fördröjd start med yoghurt.</p>
+<div class="card">
+  <h2>❄️ Steg 2 – Jäsning (välj väg)</h2>
+  <div class="cols">
+    <div>
+      <div class="alt"><b>⏱️ Snabb:</b> vila bollarna 20 min i rumstemperatur efter programmet → baka direkt. Funkar, men mindre smak.</div>
+    </div>
+    <div>
+      <div class="machine-step" style="margin-bottom:0;"><b>⭐ Bäst: kyljäsning 24–72 h</b><div class="why">Ställ bollarna i kylen. Ta ut <b>2 h före bakning</b> så de når rumstemperatur. Djupare smak och segare kanter.</div></div>
     </div>
   </div>
 </div>
 
-<div class="footer">Beräkningar baserade på ingrediensdatabas © Rickard Längkvist 2025–2026</div>
+<div class="card">
+  <h2>🔥 Steg 3 – Gräddning</h2>
+  <div class="machine-step">
+    <h3>⚙️ KLAIF Pizzaugn · <span class="prog">Båda vreden på max · 60–120 sek</span></h3>
+    <div class="why">Förvärm ugnen 10–15 min tills termometern når måltemp (~400°C). Skjut in pizzan på den heta stenen med spaden.</div>
+  </div>
+  <ol>
+    <li>Förvärm <b>KLAIF-ugnen på max</b> (över- + undervärme) i 10–15 min</li>
+    <li>Kavla/sträck ut en boll till ~30 cm, toppa snabbt</li>
+    <li>Grädda <b>60–120 sek</b> – vrid pizzan halvvägs för jämn färg</li>
+  </ol>
+  <div class="alt"><b>Alternativ – vanlig ugn:</b> så varmt ugnen går (250–275°C) med pizzastål/sten, <b>6–10 min</b>.</div>
+</div>
 
+<div class="card">
+  <h2>📊 Näringsvärde</h2>
+  <div class="cols">
+    <div>
+      <table>
+        <tr><th colspan="2">Per boll (250 g, 4 st)</th></tr>
+        <tr><td>Kcal</td><td><b>546</b></td></tr>
+        <tr><td>Protein</td><td>24 g</td></tr>
+        <tr><td>Kolhydrat</td><td>102 g</td></tr>
+        <tr><td>Fett</td><td>4 g</td></tr>
+        <tr><td>Fiber</td><td>4 g</td></tr>
+        <tr><td>Pris</td><td>~4,97 kr</td></tr>
+      </table>
+    </div>
+    <div>
+      <table>
+        <tr><th colspan="2">Hela degen (1000 g)</th></tr>
+        <tr><td>Kcal</td><td><b>~2184</b></td></tr>
+        <tr><td>Protein</td><td>~96 g</td></tr>
+        <tr><td>Kolhydrat</td><td>~408 g</td></tr>
+        <tr><td>Fett</td><td>~16 g</td></tr>
+        <tr><td>Pris</td><td><b>~19,88 kr</b></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer>Recept kopplat till Maskindatabas · Beräkningar baserade på ingrediensdatabas © Rickard Längkvist 2025–2026</footer>
+
+<script src="../assets/site.js"></script>
 </body>
 </html>
