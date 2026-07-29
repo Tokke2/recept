@@ -1,16 +1,43 @@
 {
-  "name": "Mitt Maskinkök",
+  "_plats": "/manifest.json  (repo-roten – PWA-manifest)",
+  "name": "Mitt Maskinkök – Recept & maskiner",
   "short_name": "Maskinkök",
-  "description": "Mina matlagningsmaskiner och recept – med programförslag för varje rätt.",
-  "start_url": "./index.html",
+  "description": "Recept byggda för mina köksmaskiner: rätt program, rätt tid, kostnad och kockläge vid spisen.",
+  "start_url": "./recept.html?source=pwa",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#f6f3ee",
   "theme_color": "#c0392b",
   "lang": "sv",
+  "categories": ["food", "lifestyle", "utilities"],
   "icons": [
-    { "src": "images/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "images/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "images/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "images/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "images/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "images/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Receptsamlingen",
+      "short_name": "Recept",
+      "description": "Öppna alla recept",
+      "url": "./recept.html?source=shortcut",
+      "icons": [{ "src": "images/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Maskindatabasen",
+      "short_name": "Maskiner",
+      "description": "Program och tider för alla maskiner",
+      "url": "./maskindatabas.html?source=shortcut",
+      "icons": [{ "src": "images/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Skapa nytt recept",
+      "short_name": "Generator",
+      "description": "Bygg recept av ingredienser",
+      "url": "./generator.html?source=shortcut",
+      "icons": [{ "src": "images/icon-192.png", "sizes": "192x192" }]
+    }
   ]
 }
