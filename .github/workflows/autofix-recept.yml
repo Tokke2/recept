@@ -25,6 +25,7 @@ on:
   push:
     paths:
       - 'recept/**.html'
+      - 'recept/**.txt'
       - 'json/maskiner/**.json'
   workflow_dispatch:
 
