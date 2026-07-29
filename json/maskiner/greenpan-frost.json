@@ -1,0 +1,84 @@
+{
+  "_plats": "/json/maskiner/greenpan-frost.json  (en maskinfil per maskin – läses in automatiskt)",
+  "id": "greenpan-frost",
+  "namn": "GreenPan Frost 6-i-1 Glass- & Frozen Drink-maskin",
+  "typ": "Glassmaskin / Slushmaskin / Frozen Drink Maker",
+  "varumarke": "GreenPan",
+  "modellnamn": "Frost",
+  "tillverkare": "The Cookware Company",
+  "kapacitet": "2 qt / 64 oz (~1,9 L), inbyggd kompressor – ingen förfrysning",
+  "effekt_w": 190,
+  "effekt_kalla": "typisk kompressormaskin i klassen ~190 W",
+  "egenskaper": [
+    "6 förinställda program",
+    "Texturreglage med 7 nivåer (1 = mjukast, 7 = fastast, standard 4)",
+    "Inbyggd kompressor – klar på ca 15–45 min utan förfrysning",
+    "Självrengöring (Extrude/Clean-läge med varmt vatten + diskmedel)",
+    "Tyst drift",
+    "Rengöringsborste, monteringsstav, lock och receptbok ingår"
+  ],
+  "viktigt": [
+    "Spiked Slushie: färdig dryck måste ha 2,8–16% alkohol",
+    "Klarar INTE fasta tillsatser som godisbitar eller frusen frukt – endast vätskor/baser",
+    "Kyl ingredienserna innan för snabbast resultat",
+    "Kolsyrade drycker: rör/skaka ur kolsyran först",
+    "Extrudera ut sköljvattnet INNAN skålen tas bort (annars sörja)",
+    "Töm och rengör direkt efter användning – intorkad bas kräver blötläggning"
+  ],
+  "lankar": {
+    "kop": "https://www.greenpan.us/products/frost-6-in-1-ice-cream-frozen-drink-maker",
+    "bruksanvisning": "https://www.greenpan.us/pages/product-manuals",
+    "tillverkare": "https://www.greenpan.us"
+  },
+  "program": [
+    {
+      "namn": "Soft Ice Cream (Mjukglass)",
+      "typ": "Förinställt program",
+      "standardtid": "ca 30–45 min (nivå 4)",
+      "beskrivning": "Mjukglass av kyld glassbas. Justera konsistens med texturreglaget 1–7.",
+      "bast_for": "Mjukglass, softis, proteinglass, frozen yoghurt",
+      "nyckelord": ["glass", "mjukglass", "softis", "soft serve", "proteinglass", "frozen yoghurt", "efterrätt"]
+    },
+    {
+      "namn": "Slushie",
+      "typ": "Förinställt program",
+      "standardtid": "ca 15–35 min",
+      "beskrivning": "Klassisk slush av saft, juice eller läsk. Kyl vätskan innan för snabbast resultat.",
+      "bast_for": "Slush av saft, läsk, juice, energidryck",
+      "nyckelord": ["slush", "slushie", "isdryck", "saft", "läsk", "fest"]
+    },
+    {
+      "namn": "Spiked Slushie",
+      "typ": "Förinställt program",
+      "standardtid": "ca 20–40 min",
+      "beskrivning": "Frusna drinkar med alkohol (2,8–16% i färdig dryck). Nivåreglage för konsistens.",
+      "bast_for": "Frozen margarita, daiquiri, vinslush, rom-slush",
+      "nyckelord": ["spiked", "drink", "cocktail", "alkohol", "margarita", "daiquiri", "rom", "vin"]
+    },
+    {
+      "namn": "Sorbet",
+      "typ": "Förinställt program",
+      "standardtid": "ca 25–40 min",
+      "beskrivning": "Silkeslen sorbet av fruktpuré/juice med tillräcklig sockerhalt.",
+      "bast_for": "Fruktsorbet, citronsorbet, mangosorbet",
+      "nyckelord": ["sorbet", "fruktglass", "citron", "mango", "vegansk glass"]
+    },
+    {
+      "namn": "Milkshake",
+      "typ": "Förinställt program",
+      "standardtid": "ca 15–30 min",
+      "beskrivning": "Tjocka milkshakes av mjölkbaserade drycker. Även proteinshakes!",
+      "bast_for": "Milkshake, proteinshake, frozen shake",
+      "nyckelord": ["milkshake", "shake", "proteinshake", "protein", "choklad", "vanilj"]
+    },
+    {
+      "namn": "Extrude/Clean (Självrengöring)",
+      "typ": "Funktion",
+      "standardtid": "några minuter",
+      "beskrivning": "Matar ut innehållet och rengör med varmt vatten + droppe diskmedel. Extrudera ut vattnet innan skålen tas loss!",
+      "bast_for": "Tömning och rengöring efter användning",
+      "nyckelord": ["rengöring", "clean", "extrude", "diska", "tömning"]
+    }
+  ],
+  "bild": "images/greenpan-frost.jpg"
+}
