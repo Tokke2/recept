@@ -52,6 +52,20 @@
     "min": 15,
     "moment": "Tillagning"
    }
+  ],
+  "Mjukglass MAX.html": [
+   {
+    "maskin": "greenpan-frost",
+    "min": 65,
+    "moment": "Soft Ice Cream"
+   }
+  ],
+  "recept_proteinshake_saft.html": [
+   {
+    "maskin": "greenpan-frost",
+    "min": 15,
+    "moment": "Slushie"
+   }
   ]
  }
 }
