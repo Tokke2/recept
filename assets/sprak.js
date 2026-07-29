@@ -51,7 +51,7 @@
      ============================================================ */
   var css = document.createElement('style');
   css.textContent =
-    '#mk-lang{position:fixed;top:14px;right:14px;z-index:120;font-family:Segoe UI,system-ui,sans-serif;}' +
+    '#mk-lang{position:fixed;top:var(--mk-lang-top,14px);right:14px;z-index:105;font-family:Segoe UI,system-ui,sans-serif;}' +
     '#mk-lang .pill{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.95);' +
       'backdrop-filter:blur(6px);border:none;border-radius:999px;padding:9px 15px;cursor:pointer;' +
       'font-size:.88rem;font-weight:700;color:#2c3e50;box-shadow:0 4px 14px rgba(0,0,0,.22);' +
@@ -93,6 +93,16 @@
       }).join('') +
     '</div><div class="prog"><i></i></div>';
   document.body.appendChild(widget);
+
+  /* Krockskydd: lägg pillret UNDER toppmenyn (site.js #mk-nav eller egen .topnav) */
+  function placeBelowNav() {
+    var nav = document.getElementById('mk-nav') || document.querySelector('.topnav');
+    var top = nav ? (nav.getBoundingClientRect().height + 10) : 14;
+    document.documentElement.style.setProperty('--mk-lang-top', top + 'px');
+  }
+  placeBelowNav();
+  setTimeout(placeBelowNav, 300);   // om nav skapas strax efter
+  window.addEventListener('resize', placeBelowNav, { passive: true });
 
   widget.querySelector('.pill').addEventListener('click', function (e) {
     e.stopPropagation();
