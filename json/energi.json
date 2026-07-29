@@ -66,6 +66,13 @@
     "min": 15,
     "moment": "Slushie"
    }
+  ],
+  "a4-makaronichips-airfryer-salt--peppar.html": [
+   {
+    "maskin": "cosori-twinfry-10l",
+    "min": 15,
+    "moment": "Air Fry"
+   }
   ]
  }
 }
