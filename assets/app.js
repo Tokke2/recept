@@ -18,8 +18,11 @@
       ✔ Knapparna får etiketter vid utfällning
    3) ✔ NYTT: Offline/online-toast ("📡 Offline – visar sparade
         recept" / "✅ Online igen")
-   4) ✔ NYTT: Toast-system (snygga meddelanden) – används av
+   4) ✔ Toast-system (snygga meddelanden) – används av
         delning, install och nätstatus
+   5) ✔ v3 APP-LÄGE: körs sajten som installerad app →
+        · "Fortsätt laga"-kort: senast öppnade recept ett tryck bort
+        · Snyggare install-inbjudan (kort banner, max 2 ggr, ej tjatig)
    ============================================================ */
 (function () {
   'use strict';
@@ -215,4 +218,68 @@
 
   if (document.body) buildFab();
   else document.addEventListener('DOMContentLoaded', buildFab);
+
+  /* ============================================================
+     5) APP-LÄGE – förbättringar när sajten körs som installerad app
+     ============================================================ */
+  var isApp = window.matchMedia('(display-mode: standalone)').matches ||
+              window.navigator.standalone === true ||
+              location.search.indexOf('source=pwa') !== -1;
+
+  /* ---------- Spåra senast öppnade recept (för Fortsätt laga) ---------- */
+  if (isSubPage) {
+    try {
+      var meta = document.querySelector('meta[name="recept:namn"]');
+      localStorage.setItem('mk-last-recipe', JSON.stringify({
+        url: location.pathname.split('/').pop(),
+        namn: meta ? meta.content : document.title,
+        emoji: (document.querySelector('meta[name="recept:emoji"]') || {}).content || '🍽️',
+        tid: Date.now()
+      }));
+    } catch (e) {}
+  }
+
+  /* ---------- "Fortsätt laga"-kort på recept-/startsidor i appläge ---------- */
+  function continueCard() {
+    if (!isApp || isSubPage) return;
+    var here = location.pathname.split('/').pop() || 'index.html';
+    if (here !== 'recept.html' && here !== 'index.html') return;
+    var last = null;
+    try { last = JSON.parse(localStorage.getItem('mk-last-recipe') || 'null'); } catch (e) {}
+    if (!last || Date.now() - last.tid > 3 * 24 * 3600 * 1000) return; // max 3 dagar
+    var card = document.createElement('a');
+    card.className = 'no-print';
+    card.href = 'recept/' + last.url;
+    card.style.cssText =
+      'position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:96;' +
+      'display:flex;align-items:center;gap:10px;background:#2c3e50;color:#fff;text-decoration:none;' +
+      'border-radius:999px;padding:11px 20px;font-size:.9rem;font-weight:700;font-family:inherit;' +
+      'box-shadow:0 8px 24px rgba(0,0,0,.35);max-width:80vw;white-space:nowrap;overflow:hidden;';
+    card.innerHTML = '<span style="font-size:1.2rem;">' + last.emoji + '</span>' +
+      '<span style="overflow:hidden;text-overflow:ellipsis;">Fortsätt: ' + last.namn + '</span>' +
+      '<span style="background:rgba(255,255,255,.2);border-radius:50%;width:24px;height:24px;' +
+      'display:flex;align-items:center;justify-content:center;flex-shrink:0;" ' +
+      'onclick="event.preventDefault();event.stopPropagation();this.parentNode.remove();">✕</span>';
+    document.body.appendChild(card);
+  }
+
+  /* ---------- Install-inbjudan: diskret banner (max 2 visningar) ---------- */
+  var promoShown = false;
+  window.addEventListener('beforeinstallprompt', function () {
+    if (isApp || promoShown) return;
+    var count = +(localStorage.getItem('mk-install-promo') || 0);
+    if (count >= 2) return;
+    promoShown = true;
+    setTimeout(function () {
+      if (!installEvent) return;
+      localStorage.setItem('mk-install-promo', count + 1);
+      toast('📱 Installera Maskinkök som app – recepten funkar offline i köket!', 'Installera', function () {
+        if (installEvent) { installEvent.prompt(); }
+      }, 9000);
+    }, 4000);
+  });
+
+  if (document.body) continueCard();
+  else document.addEventListener('DOMContentLoaded', continueCard);
+
 })();
