@@ -424,12 +424,96 @@ def convert_file(f, energi):
     return fname + '  [' + ', '.join(log) + ']'
 
 
+
+
+# ============================================================
+# TEXT-RECEPT: recept/*.txt -> HTML (v4.1)
+# Klistra in ratt text i en .txt-fil i recept/ sa byggs HTML:en.
+# Format som tolkas (flexibelt):
+#   Rad 1 = receptnamn (emoji valfri)
+#   Rader "Namn  120 g" eller "Namn, 120 g" eller "- Namn: 120 g"
+#     under rubrik som innehaller "ingredien" -> ingredienstabell
+#   Numrerade rader (1. / 1) / -) under "gor sa har/steg/instruktion"
+#     -> stegen. Ovriga stycken -> beskrivning/tips/varning.
+# ============================================================
+ING_LINE = re.compile(
+    r'^\s*(?:[-*\u2022]\s*)?(.+?)[\s,:\u2013-]+(\d+[.,]?\d*)\s*(g|gram|kg|dl|ml|msk|tsk|st|krm)\b\.?\s*$',
+    re.I)
+STEP_LINE = re.compile(r'^\s*(?:\d+[.)]|[-*\u2022])\s+(.+)$')
+
+
+def parse_text_recipe(raw, base):
+    lines = [l.rstrip() for l in raw.replace('\r', '').split('\n')]
+    lines = [l for l in lines if l.strip()]
+    if not lines:
+        return None
+    namn = lines[0].strip()
+    ings, steps, others = [], [], []
+    section = ''
+    for l in lines[1:]:
+        low = l.lower().strip().rstrip(':')
+        if 'ingredien' in low and len(low) < 40:
+            section = 'ing'
+            continue
+        if re.match(r'(gor sa har|g\u00f6r s\u00e5 h\u00e4r|steg|instruktion|tillagning)', low) and len(low) < 40:
+            section = 'steg'
+            continue
+        mi = ING_LINE.match(l)
+        ms = STEP_LINE.match(l)
+        if section == 'ing' and mi:
+            ings.append((mi.group(1).strip(' -\u2013'), mi.group(2) + ' ' + mi.group(3)))
+        elif section == 'steg' and ms:
+            steps.append(ms.group(1).strip())
+        elif mi and section != 'steg':
+            ings.append((mi.group(1).strip(' -\u2013'), mi.group(2) + ' ' + mi.group(3)))
+        elif ms and section != 'ing':
+            steps.append(ms.group(1).strip())
+        else:
+            others.append(l.strip())
+
+    if not ings and not steps:
+        return None
+
+    ing_rows = ''.join('<tr><td>%s</td><td>%s</td></tr>' % (H.escape(n), H.escape(m))
+                       for n, m in ings)
+    tbl = ('<table><tr><th>Ingrediens</th><th>M\u00e4ngd</th></tr>' + ing_rows + '</table>') if ings else ''
+    ol = ('<ol>' + ''.join('<li>%s</li>' % H.escape(s) for s in steps) + '</ol>') if steps else ''
+    paras = ''.join('<p>%s</p>' % H.escape(p) for p in others)
+
+    return ('<!DOCTYPE html><html><head><title>%s</title></head><body>'
+            '<h1>%s</h1>%s%s%s</body></html>') % (
+            H.escape(namn), H.escape(namn), paras, tbl, ol)
+
+
+def convert_text_files():
+    made = []
+    for txt in sorted(glob.glob('recept/*.txt')):
+        if 'MALL' in txt.upper():
+            continue
+        base = os.path.basename(txt)[:-4]
+        target = 'recept/' + base + '.html'
+        if os.path.exists(target):
+            os.remove(txt)
+            continue
+        try:
+            raw = open(txt, encoding='utf-8').read()
+        except Exception:
+            continue
+        html_doc = parse_text_recipe(raw, base)
+        if html_doc:
+            open(target, 'w', encoding='utf-8').write(html_doc)
+            os.remove(txt)
+            made.append(base + '.txt -> ' + base + '.html')
+    return made
+
 def main():
     try:
         energi = json.load(open('json/energi.json', encoding='utf-8'))
     except Exception:
         energi = {'_plats': '/json/energi.json  (central energidata per recept)', 'recept': {}}
     energi.setdefault('recept', {})
+
+    txt_made = convert_text_files()
 
     changed = []
     for f in sorted(glob.glob('recept/*.html')):
@@ -442,7 +526,9 @@ def main():
     idx = sorted(os.path.basename(x) for x in glob.glob('json/maskiner/*.json'))
     json.dump(idx, open('json/maskiner-index.json', 'w'), ensure_ascii=False, indent=1)
 
-    print('=== KONVERTERINGSRAPPORT v4 ===')
+    print('=== KONVERTERINGSRAPPORT v4.1 ===')
+    for tm_ in txt_made:
+        print(' TXT:', tm_)
     for c in changed:
         print(' -', c)
     if not changed:
