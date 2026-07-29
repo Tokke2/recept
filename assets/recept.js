@@ -50,6 +50,9 @@
   var overlay = null, wakeLock = null, timerInt = null;
 
   /* ================== KNAPP ================== */
+  /* Exponera kockläget för receptnav-verktygsraden */
+  window.__MK_COOK = open;
+
   /* Kocklägesknappen: 1) verktygsraden om den finns, 2) FAB-menyn (via API,
      inga egna flytande knappar = inga överlapp), 3) sista utväg: egen knapp
      placerad OVANFÖR där FAB/print-knappen bor. */
