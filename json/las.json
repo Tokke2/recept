@@ -1,4 +1,7 @@
 {
-  "losenord": "maskin123",     ← Hulken8617!
-  "las_redigering": true       ← false = stänger av skyddet helt
+ "_plats": "/json/las.json  (central låsfil för receptredigering)",
+ "kommentar": "Lösenordet lagras som SHA-256-hash – syns ALDRIG i klartext. Byt superenkelt via losenord.html på sajten (skriv nytt lösenord → kopiera → klistra in här). 'losenord' i klartext är bara reserv om hash saknas – lämna tomt. Sätt las_redigering till false för att stänga av skyddet helt.",
+ "losenord_hash": "5207b3fd9cc4c066898ca64f0d7d0d76a9d20736489830a3a89dbba9afdc013b",
+ "losenord": "",
+ "las_redigering": true
 }
