@@ -22,7 +22,7 @@
    ============================================================ */
 'use strict';
 
-const VERSION = 'maskinkok-v3';
+const VERSION = 'maskinkok-v4';
 const CACHE_CORE = VERSION + '-core';     // assets + startsida (förcachas)
 const CACHE_PAGES = VERSION + '-pages';   // recept & övriga sidor
 const CACHE_IMG = VERSION + '-img';       // bilder
@@ -39,8 +39,11 @@ const CORE = [
   'assets/print.js',
   'assets/app.js',
   'assets/recept.js',
+  'assets/receptnav.js',
+  'assets/redigera.js',
   'assets/energi.js',
   'assets/sprak.js',
+  'assets/betyg.js',
   'json/maskindatabas.json',
   'json/energi.json',
   'json/maskiner-index.json',
@@ -52,7 +55,8 @@ const NEVER_CACHE = [
   'api.github.com',
   'api.qrserver.com',
   'mymemory.translated.net',
-  'translate.googleapis.com'
+  'translate.googleapis.com',
+  'abacus.jasoncameron.dev'
 ];
 
 /* ================= INSTALL: förcacha kärnan ================= */
