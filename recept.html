@@ -278,6 +278,21 @@ async function init() {
 
   buildTabs();
   apply();
+  loadGlobalRatings();
+}
+
+/* ============ Globala betyg (alla besökare, via assets/betyg.js) ============ */
+async function loadGlobalRatings() {
+  // vänta tills betyg.js laddats av site.js
+  for (let i = 0; i < 40 && !window.__MK_BETYG; i++) await new Promise(r => setTimeout(r, 250));
+  if (!window.__MK_BETYG) return;
+  const map = await __MK_BETYG.getMany(RECIPES.map(r => r.file));
+  let changed = false;
+  RECIPES.forEach(r => {
+    const g = map[r.file];
+    if (g && g.count) { r.rating = g.avg; r.votes = g.count; changed = true; }
+  });
+  if (changed) apply();
 }
 
 /* ============ Flikar: Alla + per maskin ============ */
@@ -303,7 +318,9 @@ function setTab(id, el) {
 
 /* ============ Kort & filtrering ============ */
 function card(r) {
-  const stars = r.rating ? `<span class="stars">${'★'.repeat(r.rating)}</span>` : '';
+  const stars = r.rating
+    ? `<span class="stars">${'★'.repeat(Math.round(r.rating))}${r.votes ? ` ${r.rating.toFixed(1).replace('.', ',')} (${r.votes})` : ''}</span>`
+    : '';
   return `<a class="rcard" href="${r.file}"${r.isPdf ? ' target="_blank" rel="noopener"' : ''}>
     <div class="media"><span class="big-emoji">${r.emoji}</span>
       <img src="${r.bild}" alt="" loading="lazy" onerror="this.remove()">${stars}</div>
@@ -398,5 +415,5 @@ function handleFile(file) {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2227f9ade4d5bd9',t:'MTc4NTIyNzE4MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
