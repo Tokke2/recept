@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!-- PLATS: /losenord.html  (repo-roten – skapa nytt redigeringslösenord, hashat) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔑 Byt redigeringslösenord – Mitt Maskinkök</title>
+<style>
+  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:760px; margin:0 auto; }
+  header { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:18px; }
+  header h1 { font-size:1.5rem; margin-bottom:4px; }
+  header p { opacity:.92; font-size:.92rem; }
+  header a { color:#fff; opacity:.85; text-decoration:none; font-size:.9rem; }
+  .card { background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  .card h2 { font-size:1.05rem; margin-bottom:10px; }
+  input[type=text] { width:100%; padding:12px 14px; border:2px solid #e8e2d8; border-radius:10px; font-size:1rem; font-family:inherit; }
+  input[type=text]:focus { outline:none; border-color:var(--accent2); }
+  textarea { width:100%; min-height:170px; padding:14px; border:2px solid #e8e2d8; border-radius:10px; font-family:Consolas,monospace; font-size:.82rem; margin-top:10px; background:#fbfaf7; }
+  .btn { background:var(--green); color:#fff; border:none; border-radius:10px; padding:12px 22px; font-weight:700; font-size:.95rem; cursor:pointer; font-family:inherit; margin-top:10px; margin-right:8px; }
+  .btn.sec { background:var(--dark); }
+  .hint { background:#fff8ec; border-left:4px solid var(--accent2); border-radius:8px; padding:12px 16px; font-size:.88rem; margin-top:12px; }
+  ol { padding-left:22px; font-size:.92rem; } ol li { margin-bottom:8px; }
+  .hash { font-family:Consolas,monospace; font-size:.78rem; word-break:break-all; background:#f4f1ea; border-radius:8px; padding:10px 12px; margin-top:10px; display:none; }
+  footer { text-align:center; color:var(--muted); font-size:.8rem; padding:20px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div style="margin-bottom:8px;"><a href="index.html">← Till startsidan</a></div>
+  <h1>🔑 Byt redigeringslösenord</h1>
+  <p>Lösenordet lagras som SHA-256-hash – det syns aldrig i klartext på GitHub. Allt sker i din webbläsare, inget skickas någonstans.</p>
+</header>
+
+<div class="card">
+  <h2>1️⃣ Skriv ditt nya lösenord</h2>
+  <input type="text" id="pw" placeholder="Ditt nya lösenord..." oninput="build()" autocomplete="off">
+  <div class="hash" id="hashRow"></div>
+  <div class="hint">💡 Filen är publikt läsbar men hashen går inte att "läsa baklänges". Välj ändå ett lösenord du inte använder någon annanstans.</div>
+</div>
+
+<div class="card">
+  <h2>2️⃣ Färdig las.json</h2>
+  <textarea id="out" readonly onclick="this.select()">Skriv ett lösenord ovan så byggs filen här...</textarea>
+  <button class="btn" onclick="copyOut()">📋 Kopiera</button>
+  <a class="btn sec" style="display:inline-block;text-decoration:none;" href="https://github.com/Tokke2/recept/edit/main/json/las.json" target="_blank" rel="noopener">✏️ Öppna las.json på GitHub</a>
+</div>
+
+<div class="card">
+  <h2>3️⃣ Så byter du (30 sekunder)</h2>
+  <ol>
+    <li>Skriv nytt lösenord ovan → klicka <b>📋 Kopiera</b></li>
+    <li>Klicka <b>✏️ Öppna las.json på GitHub</b> → markera allt i filen → klistra in</li>
+    <li><b>Commit changes</b> (grön knapp) → vänta på grön bock i Actions → klart! ✅</li>
+  </ol>
+</div>
+
+<footer>Redigeringsknappen ✏️ på recepten frågar efter det nya lösenordet direkt.</footer>
+
+<script>
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+async function build() {
+  const pw = document.getElementById('pw').value;
+  const out = document.getElementById('out');
+  const hr = document.getElementById('hashRow');
+  if (!pw) { out.value = 'Skriv ett lösenord ovan så byggs filen här...'; hr.style.display = 'none'; return; }
+  const h = await sha256(pw);
+  hr.style.display = 'block';
+  hr.textContent = 'SHA-256: ' + h;
+  out.value = JSON.stringify({
+    "_plats": "/json/las.json  (central låsfil för receptredigering)",
+    "kommentar": "Lösenordet lagras som SHA-256-hash (syns ej i klartext). Byt via losenord.html på sajten. 'losenord' i klartext är bara reserv – lämna tomt. Sätt las_redigering till false för att stänga av skyddet helt.",
+    "losenord_hash": h,
+    "losenord": "",
+    "las_redigering": true
+  }, null, 1);
+}
+function copyOut() {
+  const out = document.getElementById('out');
+  if (out.value.indexOf('{') !== 0) { alert('Skriv ett lösenord först!'); return; }
+  out.select();
+  navigator.clipboard ? navigator.clipboard.writeText(out.value) : document.execCommand('copy');
+  alert('✅ Kopierat! Klistra in i las.json på GitHub.');
+}
+</script>
+<script src="assets/site.js"></script>
+</body>
+</html>
