@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<!-- PLATS: /maskin-import.html  (repo-roten – lägg till maskin via produktlänk) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔗 Lägg till maskin via länk – Mitt Maskinkök</title>
+<style>
+  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:860px; margin:0 auto; }
+  header { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:18px; }
+  header h1 { font-size:1.5rem; margin-bottom:4px; }
+  header p { opacity:.93; font-size:.9rem; }
+  .card { background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  h2 { font-size:1.1rem; margin-bottom:10px; }
+  label { font-size:.85rem; font-weight:600; color:var(--muted); display:block; margin:10px 0 4px; }
+  input[type=text], select {
+    width:100%; padding:11px 14px; border:2px solid #ddd; border-radius:10px; font-size:.95rem; font-family:inherit; }
+  input:focus, select:focus { outline:none; border-color:var(--accent2); }
+  .row { display:flex; gap:10px; flex-wrap:wrap; }
+  .row > div { flex:1; min-width:160px; }
+  .btn { background:var(--accent); color:#fff; border:none; border-radius:10px; padding:12px 20px; font-size:.95rem; font-weight:700; cursor:pointer; margin:10px 6px 0 0; font-family:inherit; }
+  .btn.sec { background:var(--dark); }
+  .btn:hover { opacity:.9; }
+  textarea { width:100%; min-height:280px; border:2px solid #ddd; border-radius:10px; padding:12px; font-size:.8rem; font-family:ui-monospace,Consolas,monospace; resize:vertical; }
+  .ok-box { border-left:5px solid var(--green); background:#f4fbf6; border-radius:10px; padding:14px 16px; margin-top:12px; font-size:.9rem; display:none; }
+  .info { border-left:5px solid var(--accent2); background:#fdf6ee; border-radius:10px; padding:12px 16px; margin-bottom:12px; font-size:.88rem; }
+  ol { padding-left:22px; line-height:1.8; font-size:.92rem; }
+  a { color:var(--accent); font-weight:600; }
+</style>
+<link rel="stylesheet" href="assets/print.css">
+</head>
+<body>
+
+<header>
+  <div class="no-print" style="margin-bottom:8px;"><a href="index.html" style="color:#fff;opacity:.85;text-decoration:none;font-size:.9rem;">← Till startsidan</a></div>
+  <h1>🔗 Lägg till maskin via länk</h1>
+  <p>Klistra in produktlänken (Amazon, Elgiganten, tillverkare...) → få en färdig maskinfil att ladda upp.</p>
+</header>
+
+<div class="card">
+  <h2>1️⃣ Produktlänk</h2>
+  <input type="text" id="url" placeholder="https://www.amazon.se/dp/XXXXXXXXXX  eller annan produktsida..." oninput="parseUrl()">
+  <div class="row" style="margin-top:10px;">
+    <div><label>Varumärke *</label><input type="text" id="brand" placeholder="t.ex. Philips" oninput="build()"></div>
+    <div><label>Modell *</label><input type="text" id="model" placeholder="t.ex. HD9285" oninput="build()"></div>
+  </div>
+  <div class="row">
+    <div><label>Typ av maskin *</label>
+      <select id="type" onchange="build()">
+        <option value="">– välj –</option>
+        <option>Airfryer / Varmluftsfritös</option>
+        <option>Riskokare / Multikokare</option>
+        <option>Bakmaskin / Brödbakningsmaskin</option>
+        <option>Glassmaskin / Frozen Drink Maker</option>
+        <option>Torkautomat / Dehydrator</option>
+        <option>Ismaskin</option>
+        <option>Pizzaugn</option>
+        <option>Blender / Mixer</option>
+        <option>Sous vide</option>
+        <option>Annan köksmaskin</option>
+      </select></div>
+    <div><label>Effekt (W, för energiberäkning)</label><input type="text" id="watt" placeholder="t.ex. 2000" oninput="build()"></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>2️⃣ Färdig maskinfil</h2>
+  <div class="info">💡 <b>Bästa vägen:</b> klistra in länken i en AI-chatt tillsammans med <a href="SPEC.md" download>SPEC.md</a> och be om "en komplett maskinfil med program verifierade mot bruksanvisningen". Mallen nedan är en snabbstart som fungerar direkt – programlistan kompletterar du (eller AI:n) sen.</div>
+  <textarea id="out" readonly onclick="this.select()">Fyll i fälten ovan så byggs maskinfilen här...</textarea>
+  <button class="btn" id="dl" onclick="download()">⬇️ Ladda ner maskinfilen</button>
+  <a class="btn sec" style="display:inline-block;text-decoration:none;" href="https://github.com/Tokke2/recept/upload/main/json/maskiner" target="_blank" rel="noopener">📤 Öppna GitHub-uppladdning (json/maskiner/)</a>
+  <div class="ok-box" id="okbox"></div>
+</div>
+
+<div class="card">
+  <h2>3️⃣ Så blir maskinen komplett</h2>
+  <ol>
+    <li>Ladda upp <b>json-filen</b> till <b>json/maskiner/</b> → maskinen syns automatiskt i databasen, receptflikarna och generatorn</li>
+    <li>Ladda upp en <b>produktbild</b> som <b>images/MASKIN-ID.jpg</b> (max 480 px)</li>
+    <li><b>Programlistan:</b> be en AI-chatt (med SPEC.md) söka upp bruksanvisningen och fylla i programmen med verifierade tider – eller redigera filen direkt på GitHub (✏️)</li>
+    <li>Kör <a href="status.html">🩺 hälsokontrollen</a> – den varnar om något saknas (effekt, bild, program)</li>
+  </ol>
+</div>
+
+<footer style="text-align:center; color:var(--muted); font-size:.8rem; padding:20px;">Maskinen läses in automatiskt när filen ligger i json/maskiner/</footer>
+
+<script>
+function slug(s) {
+  return s.toLowerCase().replace(/å/g,'a').replace(/ä/g,'a').replace(/ö/g,'o')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+
+function parseUrl() {
+  var u = document.getElementById('url').value.trim();
+  if (!u) return;
+  // Gissa varumärke ur kända mönster i URL:en
+  var brands = ['philips','ninja','cosori','tefal','bosch','electrolux','wilfa','kenwood',
+                'moulinex','russell hobbs','instant','xiaomi','severin','wmf','greenpan',
+                'midea','clatronic','princess','emerio','tristar','melissa','obh'];
+  var low = decodeURIComponent(u).toLowerCase().replace(/-/g,' ');
+  var b = document.getElementById('brand');
+  if (!b.value) {
+    for (var i = 0; i < brands.length; i++) {
+      if (low.indexOf(brands[i]) !== -1) {
+        b.value = brands[i].replace(/\b\w/g, function(c){return c.toUpperCase();});
+        break;
+      }
+    }
+  }
+  // Gissa typ
+  var t = document.getElementById('type');
+  if (!t.value) {
+    if (/airfry|air fryer|varmluft/.test(low)) t.value = 'Airfryer / Varmluftsfritös';
+    else if (/riskokare|rice cooker|multikok/.test(low)) t.value = 'Riskokare / Multikokare';
+    else if (/bakmaskin|bread maker|brotback/.test(low)) t.value = 'Bakmaskin / Brödbakningsmaskin';
+    else if (/glass|ice cream|slush/.test(low)) t.value = 'Glassmaskin / Frozen Drink Maker';
+    else if (/dehydrator|torkautomat|dörr/.test(low)) t.value = 'Torkautomat / Dehydrator';
+    else if (/ismaskin|ice maker/.test(low)) t.value = 'Ismaskin';
+    else if (/pizzaugn|pizza oven/.test(low)) t.value = 'Pizzaugn';
+    else if (/blender|mixer/.test(low)) t.value = 'Blender / Mixer';
+    else if (/sous vide/.test(low)) t.value = 'Sous vide';
+  }
+  build();
+}
+
+function build() {
+  var brand = document.getElementById('brand').value.trim();
+  var model = document.getElementById('model').value.trim();
+  var type = document.getElementById('type').value;
+  var watt = parseInt(document.getElementById('watt').value) || 0;
+  var url = document.getElementById('url').value.trim();
+  if (!brand || !model || !type) return;
+
+  var id = slug(brand + '-' + model);
+  var json = {
+    "_plats": "/json/maskiner/" + id + ".json  (en maskinfil per maskin – läses in automatiskt)",
+    "id": id,
+    "namn": brand + " " + model + " – " + type.split('/')[0].trim(),
+    "typ": type,
+    "varumarke": brand,
+    "modellnamn": model,
+    "kapacitet": "FYLL I (t.ex. 5 L)",
+    "effekt_w": watt || 1000,
+    "effekt_kalla": watt ? "från produktsidan" : "UPPSKATTAD – kontrollera!",
+    "egenskaper": ["FYLL I egenskaper från produktsidan"],
+    "viktigt": [],
+    "lankar": {
+      "kop": url || "FYLL I produktlänk",
+      "bruksanvisning": "SÖK UPP manualen (manuals.plus / manualslib.com / tillverkaren)",
+      "tillverkare": "FYLL I"
+    },
+    "program": [
+      {
+        "namn": "PROGRAM 1 – fyll i från bruksanvisningen",
+        "typ": "Program",
+        "standardtid": "XX min",
+        "beskrivning": "Verifiera mot manualen!",
+        "bast_for": "...",
+        "nyckelord": ["sökord1", "sökord2"]
+      }
+    ],
+    "bild": "images/" + id + ".jpg"
+  };
+  document.getElementById('out').value = JSON.stringify(json, null, 2);
+  document.getElementById('okbox').style.display = 'block';
+  document.getElementById('okbox').innerHTML =
+    '✅ Fil: <b>' + id + '.json</b> → laddas upp till <b>json/maskiner/</b>' +
+    '<br>🖼️ Bild: ladda upp <b>images/' + id + '.jpg</b>' +
+    '<br>🤖 Tips: be en AI-chatt (med SPEC.md + länken) fylla i programlistan med verifierade tider!';
+}
+
+function download() {
+  var out = document.getElementById('out').value;
+  if (out.indexOf('{') !== 0) { alert('Fyll i varumärke, modell och typ först!'); return; }
+  var id = JSON.parse(out).id;
+  var blob = new Blob([out], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = id + '.json';
+  a.click();
+}
+</script>
+<script src="assets/site.js"></script>
+</body>
+</html>
