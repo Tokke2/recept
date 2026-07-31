@@ -360,7 +360,14 @@
     var uniq = machines.filter(function (v, i) { return machines.indexOf(v) === i; });
 
     var parts = [];
-    parts.push(r.rating ? '<span style="color:#f1c40f;letter-spacing:2px;">' + '★'.repeat(r.rating) + '</span>' : '<span style="opacity:.55;">Ej betygsatt</span>');
+    /* Globalt betyg (alla besökare, via betyg.js) före lokalt */
+    var g = window.__MK_PROV_GLOBAL;
+    if (g && g.count) {
+      parts.push('<span style="color:#f1c40f;letter-spacing:2px;">' + '★'.repeat(Math.round(g.avg)) + '</span> ' +
+        g.avg.toFixed(1).replace('.', ',') + ' (' + g.count + ' ' + (g.count === 1 ? 'röst' : 'röster') + ')');
+    } else {
+      parts.push(r.rating ? '<span style="color:#f1c40f;letter-spacing:2px;">' + '★'.repeat(r.rating) + '</span>' : '<span style="opacity:.55;">Ej betygsatt</span>');
+    }
     parts.push(k.cooked ? 'Tillagad <b>' + k.cooked + '</b> ' + (k.cooked === 1 ? 'gång' : 'ggr') : 'Ännu inte provlagad');
     if (k.lastCooked) parts.push('Senast: ' + k.lastCooked);
     if (uniq.length) parts.push('Verifierad med <b>' + uniq.join('</b>, <b>') + '</b>');
@@ -378,6 +385,16 @@
     bar.style.cssText = 'font-size:.88rem;padding:14px 20px;border-top:3px double #c9b99a;border-bottom:3px double #c9b99a;border-radius:10px;';
     header.parentNode.insertBefore(bar, header.nextSibling);
     renderProvenance(bar);
+
+    /* Betyg.js anropar denna när globalt betyg hämtats/röstats */
+    window.__MK_PROV_REFRESH = function () {
+      if (window.__MK_BETYG) {
+        __MK_BETYG.get(location.pathname.split('/').pop()).then(function (g) {
+          window.__MK_PROV_GLOBAL = g;
+          renderProvenance(bar);
+        });
+      } else renderProvenance(bar);
+    };
   })();
 
   /* ============================================================
