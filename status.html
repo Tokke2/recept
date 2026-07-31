@@ -85,8 +85,9 @@ async function run() {
   /* ---------- 1) Kärnfiler & moduler ---------- */
   const s1 = sec('🧩 Kärnfiler & moduler');
   const core = ['assets/site.js','assets/print.css','assets/print.js','assets/app.js',
-                'assets/recept.js','assets/energi.js','assets/sprak.js',
-                'json/maskindatabas.json','json/energi.json','json/maskiner-index.json',
+                'assets/recept.js','assets/energi.js','assets/sprak.js','assets/betyg.js',
+                'assets/receptnav.js','assets/redigera.js','assets/maskinmatch.js','assets/kokbok.js',
+                'json/maskindatabas.json','json/energi.json','json/maskiner-index.json','json/las.json',
                 'manifest.json','sw.js'];
   for (const f of core) {
     add(s1, (await exists(f)) ? 'ok' : 'err', f, (await exists(f)) ? '' : 'SAKNAS – ladda upp filen!');
@@ -189,9 +190,17 @@ async function run() {
       okL ? '' : 'Saknas – auto-översättning används som reserv.');
   }
 
+  /* ---------- 6) Betygstjänst (Abacus) ---------- */
+  const s6 = sec('⭐ Betygstjänst');
+  try {
+    const r = await fetch('https://abacus.jasoncameron.dev/hit/mitt-maskinkok-tokke2/statuskoll');
+    add(s6, r.ok ? 'ok' : 'warn', 'abacus.jasoncameron.dev',
+      r.ok ? 'Svarar – globala betyg fungerar' : 'Svarar inte (' + r.status + ') – betyg visas inte just nu');
+  } catch (e) { add(s6, 'warn', 'abacus.jasoncameron.dev', 'Kunde inte nås – betyg visas inte just nu'); }
+
   paint();
 }
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a23a07ef7ea06a4d',t:'MTc4NTQ3MzkzNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
