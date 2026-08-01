@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<!-- PLATS: /generator.html  (repo-roten – receptgeneratorn) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧪 Receptgenerator – Mitt Maskinkök</title>
+<style>
+  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:950px; margin:0 auto; }
+  header { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:20px; }
+  header h1 { font-size:1.6rem; margin-bottom:4px; }
+  header p { opacity:.93; font-size:.92rem; }
+  header a { color:#fff; opacity:.85; text-decoration:none; font-size:.9rem; }
+  .card { background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  h2 { font-size:1.1rem; margin-bottom:12px; }
+  label { font-size:.85rem; font-weight:600; color:var(--muted); display:block; margin:10px 0 4px; }
+  input[type=text], input[type=number], select, textarea {
+    width:100%; padding:10px 12px; border:2px solid #ddd; border-radius:10px; font-size:.95rem; font-family:inherit; background:#fff; }
+  input:focus, select:focus, textarea:focus { outline:none; border-color:var(--accent2); }
+  textarea { min-height:80px; resize:vertical; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; }
+  .row > div { flex:1; min-width:140px; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; margin-top:8px; }
+  th { text-align:left; padding:7px 9px; background:#f0ebe3; font-size:.76rem; text-transform:uppercase; color:var(--muted); }
+  td { padding:6px 9px; border-bottom:1px solid #eee; }
+  .total td { font-weight:700; background:#faf7f2; }
+  .btn { background:var(--accent); color:#fff; border:none; border-radius:10px; padding:12px 20px; font-size:.95rem; font-weight:700; cursor:pointer; margin:4px 4px 0 0; }
+  .btn:hover { opacity:.9; }
+  .btn.sec { background:var(--dark); }
+  .btn.small { padding:6px 12px; font-size:.82rem; }
+  .del { background:none; border:none; color:var(--accent); cursor:pointer; font-size:1.05rem; }
+  .hint { font-size:.8rem; color:var(--muted); margin-top:6px; }
+  .stat { display:inline-block; background:#eaf7ef; color:var(--green); border-radius:8px; padding:4px 12px; font-weight:700; font-size:.88rem; margin:3px 4px 0 0; }
+  .ok-box { border-left:5px solid var(--green); background:#f4fbf6; border-radius:10px; padding:14px 16px; margin-top:12px; font-size:.9rem; }
+  .step-list li { margin-bottom:6px; }
+</style>
+<link rel="stylesheet" href="assets/print.css">
+</head>
+<body>
+
+<header>
+  <div class="no-print" style="margin-bottom:8px;"><a href="index.html">← Till startsidan</a></div>
+  <h1>🧪 Receptgenerator</h1>
+  <p>Bygg ett recept av ingredienserna i databasen – kostnad &amp; näring räknas automatiskt. Generatorn skapar en färdig receptfil + energirad.</p>
+</header>
+
+<!-- ============ 1. GRUNDINFO ============ -->
+<div class="card">
+  <h2>1️⃣ Grundinfo</h2>
+  <div class="row">
+    <div><label>Receptnamn *</label><input type="text" id="rName" placeholder="t.ex. Kladdig chokladkaka"></div>
+    <div style="max-width:90px;"><label>Emoji</label><input type="text" id="rEmoji" value="🍽️" maxlength="4"></div>
+    <div style="max-width:130px;"><label>Portioner/bitar</label><input type="number" id="rPort" value="4" min="1"></div>
+  </div>
+  <label>Kort beskrivning</label>
+  <input type="text" id="rDesc" placeholder="t.ex. Saftig och enkel – klar på under en timme">
+  <label>Taggar (kommaseparerade)</label>
+  <input type="text" id="rTags" placeholder="t.ex. kaka, choklad, fika">
+</div>
+
+<!-- ============ 2. INGREDIENSER ============ -->
+<div class="card">
+  <h2>2️⃣ Ingredienser <span style="font-weight:400;font-size:.8rem;color:var(--muted);">(från json/ingredienser.json)</span></h2>
+  <div class="row">
+    <div style="flex:2;"><label>Ingrediens</label><select id="ingSelect"></select></div>
+    <div style="max-width:120px;"><label>Gram</label><input type="number" id="ingGram" value="100" min="1"></div>
+    <div style="max-width:120px; display:flex; align-items:flex-end;"><button class="btn small" onclick="addIng()">+ Lägg till</button></div>
+  </div>
+  <table id="ingTable" style="display:none;">
+    <thead><tr><th>Ingrediens</th><th>Gram</th><th>Kostnad</th><th>Kcal</th><th></th></tr></thead>
+    <tbody id="ingRows"></tbody>
+    <tfoot><tr class="total"><td>Totalt</td><td id="tGram">0 g</td><td id="tCost">0 kr</td><td id="tKcal">0</td><td></td></tr></tfoot>
+  </table>
+  <div id="stats" style="margin-top:10px;"></div>
+</div>
+
+<!-- ============ 3. MASKIN & PROGRAM ============ -->
+<div class="card">
+  <h2>3️⃣ Maskin &amp; program</h2>
+  <div class="row">
+    <div><label>Maskin *</label><select id="mSelect" onchange="fillPrograms()"></select></div>
+    <div><label>Program *</label><select id="pSelect"></select></div>
+    <div style="max-width:120px;"><label>Tid (min)</label><input type="number" id="mMin" value="40" min="1"></div>
+  </div>
+  <button class="btn small sec" style="margin-top:10px;" onclick="addMachine()">+ Lägg till maskinsteg</button>
+  <div id="mList" style="margin-top:8px;"></div>
+  <div class="hint">Första maskinsteget blir huvudmaskin. Lägg till flera för t.ex. "blanda i bakmaskin → grädda i riskokare".</div>
+</div>
+
+<!-- ============ 4. STEG ============ -->
+<div class="card">
+  <h2>4️⃣ Gör så här (ett steg per rad)</h2>
+  <textarea id="rSteps" placeholder="Blanda alla torra ingredienser&#10;Tillsätt ägg och yoghurt&#10;Häll i smord form&#10;Kör valt program"></textarea>
+  <div class="hint">Varje rad blir ett steg – och automatiskt en sida i 👨‍🍳 Kockläget!</div>
+</div>
+
+<!-- ============ 5. GENERERA ============ -->
+<div class="card">
+  <h2>5️⃣ Generera &amp; spara</h2>
+  <button class="btn" onclick="generate()">⚙️ Generera recept</button>
+  <div id="result"></div>
+</div>
+
+<footer style="text-align:center; color:var(--muted); font-size:.8rem; padding:20px;">Receptgenerator · priser &amp; näring ur central ingrediensdatabas</footer>
+
+<script>
+/* ============ Data ============ */
+let ING = [], MACHINES = [], chosen = [], machineSteps = [];
+
+init();
+async function init() {
+  try {
+    const d = await (await fetch('json/ingredienser.json')).json();
+    ING = d.ingredienser || [];
+  } catch (e) { ING = []; }
+  const sel = document.getElementById('ingSelect');
+  sel.innerHTML = ING.map((x,i) => `<option value="${i}">${x.namn} (${x.pris_kr_per_kg} kr/kg)</option>`).join('');
+
+  // Maskiner
+  let files = [];
+  try { files = await (await fetch('json/maskiner-index.json')).json(); } catch (e) {}
+  for (const f of files) {
+    try { MACHINES.push(await (await fetch('json/maskiner/' + f)).json()); } catch (e) {}
+  }
+  const ms = document.getElementById('mSelect');
+  ms.innerHTML = MACHINES.map((m,i) => `<option value="${i}">${m.varumarke} ${m.modellnamn || ''} – ${m.typ.split('/')[0]}</option>`).join('');
+  fillPrograms();
+}
+
+function fillPrograms() {
+  const m = MACHINES[+document.getElementById('mSelect').value];
+  document.getElementById('pSelect').innerHTML = (m ? m.program : []).map((p,i) =>
+    `<option value="${i}">${p.namn} (${p.standardtid || '-'})</option>`).join('');
+}
+
+/* ============ Ingredienser ============ */
+function addIng() {
+  const ing = ING[+document.getElementById('ingSelect').value];
+  const g = +document.getElementById('ingGram').value || 0;
+  if (!ing || g <= 0) return;
+  chosen.push({ ing, g });
+  renderIngs();
+}
+function delIng(i) { chosen.splice(i,1); renderIngs(); }
+
+function calc() {
+  let t = { g:0, cost:0, kcal:0, prot:0, kolh:0, fett:0, fiber:0 };
+  chosen.forEach(c => {
+    const f = c.g / 100, fk = c.g / 1000;
+    t.g += c.g; t.cost += fk * c.ing.pris_kr_per_kg;
+    t.kcal += f * c.ing.kcal; t.prot += f * c.ing.protein;
+    t.kolh += f * c.ing.kolhydrat; t.fett += f * c.ing.fett; t.fiber += f * (c.ing.fiber||0);
+  });
+  return t;
+}
+
+function renderIngs() {
+  const tb = document.getElementById('ingRows');
+  document.getElementById('ingTable').style.display = chosen.length ? '' : 'none';
+  tb.innerHTML = chosen.map((c,i) => `<tr>
+    <td>${c.ing.namn}</td><td>${c.g} g</td>
+    <td>${(c.g/1000*c.ing.pris_kr_per_kg).toFixed(2)} kr</td>
+    <td>${Math.round(c.g/100*c.ing.kcal)}</td>
+    <td><button class="del" onclick="delIng(${i})">✕</button></td></tr>`).join('');
+  const t = calc(), port = +document.getElementById('rPort').value || 1;
+  document.getElementById('tGram').textContent = t.g + ' g';
+  document.getElementById('tCost').textContent = t.cost.toFixed(2) + ' kr';
+  document.getElementById('tKcal').textContent = Math.round(t.kcal);
+  document.getElementById('stats').innerHTML =
+    `<span class="stat">💰 ${(t.cost/port).toFixed(2)} kr/portion</span>` +
+    `<span class="stat">🔥 ${Math.round(t.kcal/port)} kcal/portion</span>` +
+    `<span class="stat">🥩 ${(t.prot/port).toFixed(1)} g protein/portion</span>`;
+}
+
+/* ============ Maskinsteg ============ */
+function addMachine() {
+  const m = MACHINES[+document.getElementById('mSelect').value];
+  const p = m.program[+document.getElementById('pSelect').value];
+  const min = +document.getElementById('mMin').value || 30;
+  machineSteps.push({ m, p, min });
+  document.getElementById('mList').innerHTML = machineSteps.map((s,i) =>
+    `<div class="stat" style="background:#f0ebe3;color:var(--dark);">⚙️ ${s.m.varumarke} ${s.m.modellnamn||''} · ${s.p.namn} · ${s.min} min
+     <button class="del" onclick="machineSteps.splice(${i},1);addMachine.caller||renderM()">✕</button></div>`).join('');
+}
+function renderM(){ document.getElementById('mList').innerHTML = machineSteps.map((s,i) =>
+  `<div class="stat" style="background:#f0ebe3;color:var(--dark);">⚙️ ${s.m.varumarke} ${s.m.modellnamn||''} · ${s.p.namn} · ${s.min} min
+   <button class="del" onclick="machineSteps.splice(${i},1);renderM()">✕</button></div>`).join(''); }
+
+/* ============ Generera ============ */
+function slug(s) {
+  return s.toLowerCase().replace(/å/g,'a').replace(/ä/g,'a').replace(/ö/g,'o')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40) || 'recept';
+}
+
+function generate() {
+  const name = document.getElementById('rName').value.trim();
+  if (!name) { alert('Ange receptnamn!'); return; }
+  if (!chosen.length) { alert('Lägg till minst en ingrediens!'); return; }
+  if (!machineSteps.length) addMachine(); // ta valt som default
+
+  const emoji = document.getElementById('rEmoji').value.trim() || '🍽️';
+  const port = +document.getElementById('rPort').value || 1;
+  const desc = document.getElementById('rDesc').value.trim();
+  const tags = document.getElementById('rTags').value.trim();
+  const steps = document.getElementById('rSteps').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const t = calc();
+  const file = slug(name) + '.html';
+
+  const maskMeta = machineSteps.map((s,i) =>
+    `${i===0?'Tillagning':'Steg '+(i+1)}: ${s.m.varumarke} ${s.m.modellnamn||''} · ${s.p.namn} ${s.min} min`).join(' | ');
+  const fullDesc = `${desc ? desc+' ' : ''}${port} portioner, ~${Math.round(t.kcal/port)} kcal/portion, ~${t.cost.toFixed(0)} kr.`;
+
+  const html = `<!DOCTYPE html>
+<!-- PLATS: /recept/${file}  (recept-mappen – läses in automatiskt av startsidan) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${emoji} ${name} – Recept</title>
+<meta name="recept:namn" content="${name}">
+<meta name="recept:emoji" content="${emoji}">
+<meta name="recept:beskrivning" content="${fullDesc}">
+<meta name="recept:taggar" content="${tags}">
+<meta name="recept:maskiner" content="${maskMeta}">
+<link rel="stylesheet" href="../assets/print.css">
+<style>
+  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:900px; margin:0 auto; }
+  header { background:linear-gradient(135deg,#e67e22,#f1c40f); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:20px; }
+  header h1 { font-size:1.6rem; margin-bottom:4px; }
+  header p { opacity:.95; font-size:.92rem; }
+  .hero-img { width:100%; max-height:340px; object-fit:cover; border-radius:14px; margin-bottom:16px; }
+  .card { background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  h2 { font-size:1.1rem; margin-bottom:10px; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; }
+  th { text-align:left; padding:8px 10px; background:#f0ebe3; font-size:.78rem; text-transform:uppercase; color:var(--muted); }
+  td { padding:7px 10px; border-bottom:1px solid #eee; }
+  tr:last-child td { border-bottom:none; }
+  .total td { font-weight:700; background:#faf7f2; }
+  ol { padding-left:22px; line-height:1.7; }
+  .machine-step { border-left:5px solid var(--green); background:#f4fbf6; border-radius:10px; padding:14px 16px; margin-bottom:12px; }
+  .machine-step h3 { font-size:1rem; margin-bottom:4px; }
+  .machine-step .prog { color:var(--green); font-weight:700; }
+  .cols { display:flex; gap:14px; flex-wrap:wrap; }
+  .cols > div { flex:1; min-width:260px; }
+  footer { text-align:center; color:var(--muted); font-size:.8rem; margin-top:20px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="no-print" style="margin-bottom:8px;"><a href="../index.html" style="color:#fff;opacity:.85;text-decoration:none;font-size:.9rem;">← Till startsidan</a></div>
+  <h1>${emoji} ${name}</h1>
+  <p>${fullDesc}</p>
+</header>
+<img class="hero-img" src="../images/recept/${slug(name)}.jpg" alt="" onerror="this.style.display='none'">
+<div class="card">
+  <h2>🧾 Ingredienser &amp; kostnad</h2>
+  <table>
+    <tr><th>Ingrediens</th><th>Mängd</th><th>Kostnad</th></tr>
+${chosen.map(c => `    <tr><td>${c.ing.namn}</td><td>${c.g} g</td><td>${(c.g/1000*c.ing.pris_kr_per_kg).toFixed(2)} kr</td></tr>`).join('\n')}
+    <tr class="total"><td>Totalt</td><td>${t.g} g</td><td>${t.cost.toFixed(2)} kr</td></tr>
+  </table>
+</div>
+<div class="card">
+  <h2>🥣 Så gör du</h2>
+${machineSteps.map(s => `  <div class="machine-step"><h3>⚙️ ${s.m.varumarke} ${s.m.modellnamn||''} · <span class="prog">${s.p.namn} · ${s.min} min</span></h3><div style="font-size:.87rem;color:var(--muted);">${s.p.beskrivning||''}</div></div>`).join('\n')}
+  <ol>
+${steps.map(s => `    <li>${s}</li>`).join('\n')}
+  </ol>
+</div>
+<div class="card">
+  <h2>📊 Näringsvärde</h2>
+  <div class="cols">
+    <div><table>
+      <tr><th colspan="2">Per portion (${Math.round(t.g/port)} g, ${port} st)</th></tr>
+      <tr><td>Kcal</td><td><b>~${Math.round(t.kcal/port)}</b></td></tr>
+      <tr><td>Protein</td><td>~${(t.prot/port).toFixed(1)} g</td></tr>
+      <tr><td>Kolhydrat</td><td>~${(t.kolh/port).toFixed(1)} g</td></tr>
+      <tr><td>Fett</td><td>~${(t.fett/port).toFixed(1)} g</td></tr>
+      <tr><td>Fiber</td><td>~${(t.fiber/port).toFixed(1)} g</td></tr>
+      <tr><td>Kostnad</td><td>~${(t.cost/port).toFixed(2)} kr</td></tr>
+    </table></div>
+    <div><table>
+      <tr><th colspan="2">Hela receptet (${t.g} g)</th></tr>
+      <tr><td>Kcal</td><td><b>~${Math.round(t.kcal)}</b></td></tr>
+      <tr><td>Protein</td><td>~${t.prot.toFixed(0)} g</td></tr>
+      <tr><td>Kolhydrat</td><td>~${t.kolh.toFixed(0)} g</td></tr>
+      <tr><td>Fett</td><td>~${t.fett.toFixed(0)} g</td></tr>
+      <tr><td>Kostnad</td><td><b>~${t.cost.toFixed(2)} kr</b></td></tr>
+    </table></div>
+  </div>
+</div>
+<footer>Recept genererat ${new Date().toLocaleDateString('sv-SE')} · priser &amp; näring ur central ingrediensdatabas © Rickard Längkvist</footer>
+<script src="../assets/site.js"><\/script>
+</body>
+</html>`;
+
+  // Spara för direkt-spar / nedladdning
+  LAST = { file, html, name,
+    energi: machineSteps.map(s => ({ maskin: s.m.id, min: s.min, moment: s.p.namn })) };
+
+  const energiRad = `"${file}": [\n` + machineSteps.map(s =>
+    `  { "maskin": "${s.m.id}", "min": ${s.min}, "moment": "${s.p.namn}" }`).join(',\n') + '\n]';
+
+  document.getElementById('result').innerHTML = `<div class="ok-box">
+    <b>✅ Receptet "${name}" är klart!</b><br><br>
+    <button class="btn" style="background:var(--accent2);" onclick="saveDirect()" id="genSaveBtn">💾 Spara direkt på sajten</button>
+    <button class="btn" onclick="downloadFile()">⬇️ Ladda ner filen</button>
+    <div id="saveResult"></div>
+    <details style="margin-top:12px;">
+      <summary style="cursor:pointer;font-size:.88rem;">📤 Manuell väg (reserv)</summary>
+      <ol class="step-list" style="margin:8px 0 0 18px;">
+        <li>Ladda upp filen till <b>recept/</b>-mappen på GitHub</li>
+        <li>Öppna <b>json/energi.json</b> på GitHub (✏️) och lägg till under "recept":<br>
+          <textarea readonly style="margin-top:6px;font-family:monospace;font-size:.8rem;" onclick="this.select()">${energiRad}</textarea></li>
+        <li>Valfritt: ladda upp bild som <b>images/recept/${slug(name)}.jpg</b></li>
+      </ol>
+    </details>
+  </div>`;
+}
+
+let LAST = null;
+
+function downloadFile() {
+  if (!LAST) return;
+  const blob = new Blob([LAST.html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = LAST.file;
+  a.click();
+}
+
+/* ============================================================
+   💾 SPARA DIREKT PÅ SAJTEN (assets/spara.js → GitHub API)
+   Sparar receptfilen OCH uppdaterar json/energi.json automatiskt!
+   ============================================================ */
+async function saveDirect() {
+  if (!LAST) return;
+  if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas – prova ⬇️ Ladda ner istället.'); return; }
+  const btn = document.getElementById('genSaveBtn');
+  const out = document.getElementById('saveResult');
+  btn.disabled = true; btn.textContent = '⏳ Sparar...';
+
+  // 1) Receptfilen
+  const res = await __MK_SPARA.save('recept/' + LAST.file, LAST.html, 'Nytt recept via generatorn: ' + LAST.name);
+  let energiOk = false;
+
+  // 2) energi.json – läs, uppdatera, spara tillbaka
+  if (res.ok && LAST.energi.length) {
+    try {
+      const raw = await __MK_SPARA.load('json/energi.json');
+      if (raw) {
+        const db = JSON.parse(raw);
+        db.recept = db.recept || {};
+        db.recept[LAST.file] = LAST.energi;
+        const r2 = await __MK_SPARA.save('json/energi.json', JSON.stringify(db, null, 1),
+          'Energidata: ' + LAST.file);
+        energiOk = r2.ok;
+      }
+    } catch (e) {}
+  }
+
+  btn.disabled = false; btn.textContent = '💾 Spara direkt på sajten';
+  if (res.ok) {
+    out.innerHTML = `<div style="margin-top:10px;padding:12px 16px;background:#eaf7ef;border-left:4px solid var(--green);border-radius:8px;font-size:.9rem;">
+      🎉 <b>Sparat!</b> Receptet ligger i recept-mappen${energiOk ? ' och <b>energidata är inlagd automatiskt</b>' : ' (energidata kunde inte skrivas – lägg in manuellt, se reserv nedan)'}.
+      Syns i <a href="recept.html">receptsamlingen</a> om ~1 minut (grön bock i Actions → Ctrl+Shift+R).<br>
+      📄 <a href="recept/${encodeURIComponent(LAST.file)}" target="_blank" rel="noopener">Öppna receptet</a></div>`;
+  } else {
+    out.innerHTML = `<div style="margin-top:10px;padding:12px 16px;background:#fdecea;border-left:4px solid var(--accent);border-radius:8px;font-size:.9rem;">
+      ⚠️ <b>Kunde inte spara:</b> ${res.error}<br>Använd ⬇️ Ladda ner + manuella vägen som reserv.</div>`;
+  }
+}
+</script>
+<script src="assets/site.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2441424a97bc6a0',t:'MTc4NTU3OTI5NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
