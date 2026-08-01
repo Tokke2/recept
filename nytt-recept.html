@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<!-- PLATS: /nytt-recept.html  (repo-roten – klistra in recept som text/HTML → färdig standardfil) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📝 Nytt recept – Mitt Maskinkök</title>
+<style>
+  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:980px; margin:0 auto; }
+  header { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:18px; }
+  header h1 { font-size:1.5rem; margin-bottom:4px; }
+  header p { opacity:.92; font-size:.92rem; }
+  header a { color:#fff; opacity:.85; text-decoration:none; font-size:.9rem; }
+  .card { background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  .card h2 { font-size:1.05rem; margin-bottom:10px; }
+  textarea { width:100%; min-height:220px; padding:14px; border:2px solid #e8e2d8; border-radius:10px; font-family:Consolas,monospace; font-size:.85rem; resize:vertical; }
+  textarea:focus, input:focus { outline:none; border-color:var(--accent2); }
+  input[type=text] { padding:10px 12px; border:2px solid #e8e2d8; border-radius:10px; font-size:.95rem; font-family:inherit; }
+  .row { display:flex; gap:12px; flex-wrap:wrap; margin-top:10px; }
+  .row > div { flex:1; min-width:180px; }
+  label { display:block; font-size:.8rem; font-weight:700; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:.04em; }
+  .btn { background:var(--green); color:#fff; border:none; border-radius:10px; padding:12px 22px; font-weight:700; font-size:.95rem; cursor:pointer; font-family:inherit; margin-top:10px; margin-right:8px; }
+  .btn.sec { background:var(--dark); }
+  .btn.orange { background:var(--accent2); }
+  .hint { background:#fff8ec; border-left:4px solid var(--accent2); border-radius:8px; padding:12px 16px; font-size:.88rem; margin-top:12px; }
+  .stat { display:inline-block; background:#eaf7ef; color:var(--green); border-radius:999px; padding:4px 14px; font-size:.85rem; font-weight:700; margin:4px 6px 0 0; }
+  .stat.warn { background:#fdf6ee; color:var(--accent2); }
+  .mrow { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid #f0ebe3; }
+  .mrow:last-child { border-bottom:none; }
+  .mrow img { width:46px; height:46px; object-fit:contain; border-radius:8px; background:#faf7f2; flex-shrink:0; }
+  .mrow input[type=checkbox] { width:20px; height:20px; accent-color: var(--green); flex-shrink:0; cursor:pointer; }
+  .mrow .prog { color:var(--green); font-weight:700; }
+  .mrow .why { color:var(--muted); font-size:.82rem; }
+  iframe { width:100%; height:520px; border:2px solid #e8e2d8; border-radius:12px; background:#fff; }
+  #resBox { display:none; }
+  footer { text-align:center; color:var(--muted); font-size:.8rem; padding:20px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div style="margin-bottom:8px;"><a href="index.html">← Till startsidan</a></div>
+  <h1>📝 Nytt recept – klistra in text eller HTML</h1>
+  <p>Klistra in ett recept precis som det är (från en AI-chatt, hemsida eller anteckning) → sidan bygger en färdig receptfil i sajtens standard och föreslår vilka av dina maskiner som klarar receptet.</p>
+</header>
+
+<div class="card">
+  <h2>1️⃣ Klistra in receptet (text eller HTML-kod – spelar ingen roll)</h2>
+  <textarea id="src" placeholder="Våfflor
+
+Ingredienser
+3 dl vetemjöl
+2 tsk bakpulver
+3 dl mjölk
+2 ägg
+75 g smör
+
+Gör så här
+1. Blanda mjöl och bakpulver.
+2. Vispa i mjölken och äggen.
+3. Smält smöret och rör ner.
+4. Grädda i våffeljärnet tills gyllene."></textarea>
+  <button class="btn orange" onclick="analyze()">🔍 Analysera receptet</button>
+  <div class="hint">💡 Funkar med vanlig text (rubrik + Ingredienser + Gör så här) OCH med inklistrad HTML-kod. Kopieringsskräp städas bort automatiskt.</div>
+</div>
+
+<div class="card" id="resBox">
+  <h2>2️⃣ Kontrollera &amp; justera</h2>
+  <div id="stats"></div>
+  <div class="row">
+    <div><label>Receptnamn</label><input type="text" id="fNamn" oninput="rebuild()"></div>
+    <div style="max-width:110px;"><label>Emoji</label><input type="text" id="fEmoji" oninput="rebuild()"></div>
+    <div><label>Filnamn</label><input type="text" id="fFil" oninput="rebuild()"></div>
+  </div>
+  <div class="row">
+    <div><label>Beskrivning (visas på receptkortet)</label><input type="text" id="fBeskr" oninput="rebuild()"></div>
+  </div>
+
+  <h2 style="margin-top:18px;">🔧 Föreslagna maskiner (bocka i de som ska ingå)</h2>
+  <p style="color:var(--muted);font-size:.85rem;margin-bottom:6px;">Matchade automatiskt mot din maskindatabas – programmens nyckelord vs receptets text.</p>
+  <div id="mList"><em style="color:var(--muted);">Inga maskiner matchade – receptet fungerar ändå, maskiner kan läggas till senare med ✏️.</em></div>
+
+  <h2 style="margin-top:18px;">3️⃣ Förhandsgranskning</h2>
+  <iframe id="prev"></iframe>
+  <button class="btn" onclick="download()">⬇️ Ladda ner receptfilen</button>
+  <a class="btn sec" style="display:inline-block;text-decoration:none;" href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">📤 Öppna GitHub-uppladdning (recept/)</a>
+  <div class="hint">✅ Filen är redan i standardutformningen (mk-std-v4) – roboten på GitHub rör den inte. Ladda upp → vänta på grön bock i Actions → Ctrl+Shift+R.</div>
+</div>
+
+<footer>Allt sker i din webbläsare – inget skickas någonstans förrän du själv laddar upp filen på GitHub.</footer>
+
+<script>
+/* ============================================================
+   PARSER: text ELLER html → {namn, ingredienser, steg, övrigt}
+   Samma logik som robotens konvertera.py, fast direkt på sidan.
+   ============================================================ */
+let PARSED = null, MACHINES = [], SUGGESTED = [];
+
+const EMOJI_MAP = [['pizza','🍕'],['glass','🍦'],['slush','🍹'],['shake','🥤'],['smoothie','🥤'],
+  ['pita','🫓'],['bröd','🍞'],['brod','🍞'],['deg','🥖'],['kaka','🍰'],['muffin','🧁'],['chips','🥨'],
+  ['soppa','🍲'],['gryta','🍲'],['kyckling','🍗'],['fisk','🐟'],['lax','🐟'],['ris','🍚'],
+  ['pasta','🍝'],['makaron','🍝'],['hund','🐶'],['drink','🍹'],['sallad','🥗'],['yoghurt','🥛'],
+  ['ägg','🍳'],['pannkak','🥞'],['våffl','🧇'],['kött','🥩'],['toast','🥪'],['macka','🥪']];
+
+const MATORD = ['kaka','bröd','deg','pizza','glass','slush','soppa','gryta','kyckling','fisk','ris',
+  'pasta','sallad','shake','smoothie','chips','snacks','efterrätt','fika','protein','airfryer',
+  'drink','frukost','vegetarisk','bakning','grill','våfflor','pannkakor'];
+
+const ALIAS = {'airfryer':'cosori-twinfry-10l','air fryer':'cosori-twinfry-10l','bakmaskin':'clatronic-bba3774',
+  'brödmaskin':'clatronic-bba3774','riskokare':'midea-mb-fs5017','multikokare':'midea-mb-fs5017',
+  'glassmaskin':'greenpan-frost','slushmaskin':'greenpan-frost','greenpan':'greenpan-frost','frost':'greenpan-frost',
+  'pizzaugn':'klaif-pizzaugn','ismaskin':'silonn-ismaskin','torkautomat':'wmf-snacktogo','dehydrator':'wmf-snacktogo',
+  'smörgåsgrill':'krups-fdk452','våffeljärn':'krups-fdk452','kaffekvarn':'linkchef-grinder'};
+
+const GENERIC = ['efterrätt','dessert','fika','fest','snack','mat'];
+
+const ING_RE = /^\s*[-•*·]?\s*((?:\d+[\d.,\/½¼¾]*|en|ett|några)\s*(?:g|kg|dl|cl|ml|l|msk|tsk|krm|st|påse|burk|kruka|skivor?|klyftor?)?)\s+([a-zåäöA-ZÅÄÖ].{1,60})$/;
+const ING_REV_RE = /^\s*[-•*·]?\s*([a-zåäöA-ZÅÄÖ].{1,45}?)[\s:]+(\d+[\d.,\/]*)\s*(g|kg|dl|cl|ml|l|msk|tsk|krm|st)\.?\s*$/i;
+const STEP_RE = /^\s*(?:\d+[.)]\s*|steg\s*\d+:?\s*)(.+)$/i;
+
+function clean(s) {
+  /* kopieringsartefakter: [x](http://...), **fet**, &lt; m.m. */
+  return s.replace(/\[([^\]]*)\]\((?:https?:\/\/)[^)]*\)/g, '$1')
+          .replace(/\*\*([^*]+)\*\*/g, '$1')
+          .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+          .replace(/[ \t]+/g, ' ');
+}
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function slug(s) {
+  return s.toLowerCase().replace(/å/g,'a').replace(/ä/g,'a').replace(/ö/g,'o')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+
+/* ---------- HTML-inklistring ---------- */
+function parseHtml(raw) {
+  const doc = new DOMParser().parseFromString(raw, 'text/html');
+  const namn = (doc.querySelector('h1') || doc.querySelector('title') || {}).textContent || 'Nytt recept';
+  const ings = [], steps = [], others = [];
+
+  /* Ingredienser: tabell med mängder, annars ul-lista med mängder */
+  let found = false;
+  doc.querySelectorAll('table').forEach(tbl => {
+    if (found) return;
+    const rows = [...tbl.querySelectorAll('tr')].map(tr => [...tr.querySelectorAll('td,th')].map(c => c.textContent.trim()));
+    const withAmount = rows.filter(r => r.some(c => /\d+\s*(g|kg|dl|cl|ml|l|msk|tsk|krm|st)\b/i.test(c)));
+    if (withAmount.length >= 2) {
+      found = true;
+      rows.forEach(r => {
+        if (r.length >= 2 && !/ingrediens|mängd/i.test(r[0])) ings.push([r[0], r.slice(1).join(' ')]);
+      });
+    }
+  });
+  if (!found) doc.querySelectorAll('ul').forEach(ul => {
+    if (found) return;
+    const lis = [...ul.querySelectorAll('li')].map(li => li.textContent.trim());
+    if (lis.filter(t => /\d+\s*(g|kg|dl|cl|ml|l|msk|tsk|krm|st)\b/i.test(t)).length >= 2) {
+      found = true;
+      lis.forEach(t => {
+        const m = t.match(ING_RE) || t.match(ING_REV_RE);
+        if (m && t.match(ING_RE)) ings.push([m[2].trim(), m[1].trim()]);
+        else if (m) ings.push([m[1].trim(), m[2] + ' ' + m[3]]);
+        else ings.push([t, '']);
+      });
+    }
+  });
+
+  const ol = doc.querySelector('ol');
+  if (ol) [...ol.querySelectorAll('li')].forEach(li => steps.push(li.textContent.trim()));
+  doc.querySelectorAll('p').forEach(p => { const t = p.textContent.trim(); if (t.length > 12) others.push(t); });
+
+  return { namn: namn.replace(/ – Recept.*$/i,'').replace(/^[\u{1F000}-\u{1FAFF}\u2600-\u27BF]\s*/u,'').trim(), ings, steps, others };
+}
+
+/* ---------- Text-inklistring ---------- */
+function parseText(raw) {
+  const lines = raw.split('\n').map(l => clean(l).trim()).filter(Boolean);
+  if (!lines.length) return null;
+  const namn = lines[0].replace(/^#+\s*/, '').replace(/^[\u{1F000}-\u{1FAFF}\u2600-\u27BF]\s*/u, '');
+  const ings = [], steps = [], others = [];
+  let section = '';
+  for (const l of lines.slice(1)) {
+    const low = l.toLowerCase().replace(/[:#]+/g, '').trim();
+    if (/ingredien/.test(low) && low.length < 40) { section = 'ing'; continue; }
+    if (/^(gör så här|gor sa har|steg|instruktion|tillagning|gör)$/.test(low) && low.length < 40) { section = 'steg'; continue; }
+    const mi = l.match(ING_RE), mr = l.match(ING_REV_RE), ms = l.match(STEP_RE);
+    if (section === 'ing') {
+      if (mi) ings.push([mi[2].trim(), mi[1].trim()]);
+      else if (mr) ings.push([mr[1].trim(), mr[2] + ' ' + mr[3]]);
+      else ings.push([l.replace(/^[-•*·]\s*/, ''), '']);
+    } else if (section === 'steg') {
+      steps.push(ms ? ms[1].trim() : l.replace(/^[-•*·]\s*/, ''));
+    } else if (mi && l.length < 65) ings.push([mi[2].trim(), mi[1].trim()]);
+    else if (mr) ings.push([mr[1].trim(), mr[2] + ' ' + mr[3]]);
+    else if (ms) steps.push(ms[1].trim());
+    else others.push(l);
+  }
+  return { namn, ings, steps, others };
+}
+
+/* ---------- Maskinförslag ---------- */
+async function loadMachines() {
+  if (MACHINES.length) return MACHINES;
+  try {
+    const idx = await (await fetch('json/maskiner-index.json')).json();
+    await Promise.all(idx.map(async f => {
+      try { MACHINES.push(await (await fetch('json/maskiner/' + f)).json()); } catch (e) {}
+    }));
+  } catch (e) {}
+  return MACHINES;
+}
+function wordHit(text, k) {
+  k = k.toLowerCase().trim();
+  if (k.length < 3 || GENERIC.includes(k)) return false;
+  return new RegExp('(^|[^a-zåäö])' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[^a-zåäö])').test(text);
+}
+function progName(p) {
+  /* "8. Dough (Deg)" → "dough" – siffra och parentes bort */
+  return String(p.namn || '').split('(')[0].replace(/^\s*\d+[.)]\s*/, '').trim();
+}
+function suggestMachines(text) {
+  const hits = [];
+  MACHINES.forEach(m => {
+    let best = null, bs = 0;
+    (m.program || []).forEach(p => {
+      if (/reng|clean|extrude/i.test(p.namn || '')) return;
+      let s = (p.nyckelord || []).filter(k => wordHit(text, k)).length;
+      /* Nämns programmets NAMN i texten? ("Air Fry", "Dough") → vinner */
+      const pn = progName(p);
+      if (pn.length > 3 && wordHit(text, pn)) s += 3;
+      if (s > bs) { bs = s; best = p; }
+    });
+    /* Alias: "bakmaskinen"/"airfryern" (även bestämd form) → stark träff */
+    for (const [w, id] of Object.entries(ALIAS)) {
+      const re = new RegExp('(^|[^a-zåäö])' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(s|n|en|ern)?($|[^a-zåäö])');
+      if (m.id === id && re.test(text)) {
+        bs += 3;
+        if (!best && (m.program || []).length) best = m.program[0];
+      }
+    }
+    /* Nämns maskinen vid namn? Stark träff */
+    if ((m.varumarke && wordHit(text, m.varumarke)) || (m.modellnamn && wordHit(text, String(m.modellnamn)))) bs += 3;
+    if (bs >= 1 && best) hits.push({ m, p: best, score: bs });
+  });
+  hits.sort((a, b) => b.score - a.score);
+  return hits.slice(0, 5);
+}
+
+/* ---------- Analys ---------- */
+async function analyze() {
+  const raw = document.getElementById('src').value.trim();
+  if (!raw) { alert('Klistra in ett recept först!'); return; }
+  PARSED = /<\s*(html|body|table|ol|ul|h1|p|div)[\s>]/i.test(raw) ? parseHtml(raw) : parseText(raw);
+  if (!PARSED || (!PARSED.ings.length && !PARSED.steps.length)) {
+    alert('Hittade varken ingredienser eller steg 🤔 Kontrollera att receptet har rader som "3 dl mjölk" och numrerade steg.');
+    return;
+  }
+  await loadMachines();
+  const allText = (PARSED.namn + ' ' + PARSED.others.join(' ') + ' ' + PARSED.steps.join(' ') + ' ' + PARSED.ings.map(i => i[0]).join(' ')).toLowerCase();
+  SUGGESTED = suggestMachines(allText);
+
+  /* Fyll i fälten */
+  document.getElementById('fNamn').value = PARSED.namn;
+  document.getElementById('fEmoji').value = (EMOJI_MAP.find(e => allText.includes(e[0])) || [,'🍽️'])[1];
+  document.getElementById('fFil').value = slug(PARSED.namn) + '.html';
+  document.getElementById('fBeskr').value = PARSED.others.find(o => o.length > 20 && o.length < 160) || (PARSED.ings.length + ' ingredienser · ' + PARSED.steps.length + ' steg');
+
+  document.getElementById('stats').innerHTML =
+    '<span class="stat">🧾 ' + PARSED.ings.length + ' ingredienser</span>' +
+    '<span class="stat">👣 ' + PARSED.steps.length + ' steg</span>' +
+    (SUGGESTED.length ? '<span class="stat">🔧 ' + SUGGESTED.length + ' maskinförslag</span>'
+                      : '<span class="stat warn">🔧 inga maskinträffar</span>');
+
+  document.getElementById('mList').innerHTML = SUGGESTED.length ? SUGGESTED.map((h, i) => {
+    const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
+    return '<div class="mrow">' +
+      '<input type="checkbox" id="mk' + i + '" ' + (i === 0 ? 'checked' : '') + ' onchange="rebuild()">' +
+      (h.m.bild ? '<img src="' + h.m.bild + '" onerror="this.remove()">' : '') +
+      '<div><b>' + esc(name) + '</b> · <span class="prog">' + esc(h.p.namn || '') +
+      (h.p.standardtid ? ' · ' + esc(h.p.standardtid) : '') + '</span>' +
+      (h.p.beskrivning ? '<div class="why">' + esc(h.p.beskrivning) + '</div>' : '') +
+      '</div></div>';
+  }).join('') : '<em style="color:var(--muted);">Inga maskiner matchade – receptet fungerar ändå, maskiner kan läggas till senare med ✏️.</em>';
+
+  document.getElementById('resBox').style.display = 'block';
+  rebuild();
+  try { document.getElementById('resBox').scrollIntoView({ behavior: 'smooth' }); } catch (e) {}
+}
+
+/* ---------- Bygg standard-HTML ---------- */
+function chosenMachines() {
+  return SUGGESTED.filter((h, i) => {
+    const c = document.getElementById('mk' + i);
+    return c && c.checked;
+  });
+}
+function buildHtml() {
+  const namn = document.getElementById('fNamn').value.trim() || 'Nytt recept';
+  const emoji = document.getElementById('fEmoji').value.trim() || '🍽️';
+  const fil = document.getElementById('fFil').value.trim() || 'nytt-recept.html';
+  const beskr = document.getElementById('fBeskr').value.trim();
+  const base = fil.replace(/\.html?$/i, '');
+  const machines = chosenMachines();
+
+  /* Taggar: ordet måste BÖRJA på ordgräns ("glass" träffar "glassmaskin",
+     men "ris" träffar inte "frisk"). Ingredienser räknas med. */
+  const taggText = (namn + ' ' + beskr + ' ' + PARSED.steps.join(' ') + ' ' +
+    PARSED.ings.map(i => i[0]).join(' ')).toLowerCase();
+  let taggar = MATORD.filter(w => new RegExp('(^|[^a-zåäö])' + w).test(taggText)).slice(0, 6);
+  if (!taggar.length) taggar = [namn.toLowerCase().split(' ')[0]];
+  const metaMask = machines.map((h, i) => {
+    const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
+    return (i === 0 ? 'Tillagning: ' : 'Alternativ: ') + name + ' · ' + (h.p.namn || '') + (h.p.standardtid ? ' ' + h.p.standardtid : '');
+  }).join(' | ');
+  const chips = machines.map(h => {
+    const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
+    return '<span style="background:rgba(255,255,255,.25); border-radius:6px; padding:2px 10px; font-size:.85rem;">' + esc(name) + ' · ' + esc(h.p.namn || '') + '</span>';
+  }).join(' ');
+
+  const ingRows = PARSED.ings.map(i => '    <tr><td>' + esc(i[0]) + '</td><td>' + esc(i[1]) + '</td></tr>').join('\n');
+  const machineBoxes = machines.map(h => {
+    const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
+    return '  <div class="machine-step">\n    <h3>⚙️ ' + esc(name) + ' · <span class="prog">' + esc(h.p.namn || '') +
+      (h.p.standardtid ? ' · ' + esc(h.p.standardtid) : '') + '</span></h3>\n' +
+      (h.p.beskrivning ? '    <div class="why">' + esc(h.p.beskrivning) + '</div>\n' : '') + '  </div>';
+  }).join('\n');
+  const stepItems = PARSED.steps.map(s => '    <li>' + esc(s) + '</li>').join('\n');
+
+  return '<!DOCTYPE html>\n' +
+'<!-- PLATS: /recept/' + fil + '  (recept-mappen - läses in automatiskt) -->\n' +
+'<!-- mk-std-v4 : skapad via nytt-recept.html i standardutformningen -->\n' +
+'<html lang="sv">\n<head>\n<meta charset="UTF-8">\n' +
+'<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+'<title>' + emoji + ' ' + esc(namn) + ' – Recept</title>\n\n' +
+'<!-- ===== RECEPT-METADATA ===== -->\n' +
+'<meta name="recept:namn" content="' + esc(namn) + '">\n' +
+'<meta name="recept:emoji" content="' + emoji + '">\n' +
+'<meta name="recept:beskrivning" content="' + esc(beskr) + '">\n' +
+'<meta name="recept:taggar" content="' + esc(taggar.join(', ')) + '">\n' +
+'<meta name="recept:maskiner" content="' + esc(metaMask) + '">\n' +
+'<!-- =========================== -->\n\n' +
+'<link rel="stylesheet" href="../assets/print.css">\n<style>\n' + STD_STYLE + '\n</style>\n</head>\n<body>\n\n' +
+'<header>\n  <h1>' + emoji + ' ' + esc(namn) + '</h1>\n  <p>' + esc(beskr) + '</p>\n' +
+(chips ? '  <p style="margin-top:6px;">' + chips + '</p>\n' : '') +
+'</header>\n\n' +
+'<img class="hero-img" src="../images/recept/' + base + '.jpg" alt="' + esc(namn) + '" onerror="this.style.display=\'none\'">\n\n' +
+'<div class="card">\n  <h2>🧾 Ingredienser</h2>\n  <table>\n    <tr><th>Ingrediens</th><th>Mängd</th></tr>\n' +
+ingRows + '\n  </table>\n</div>\n\n' +
+'<div class="card">\n  <h2>🥣 Gör så här</h2>\n' +
+(machineBoxes ? machineBoxes + '\n' : '') +
+'  <ol>\n' + stepItems + '\n  </ol>\n</div>\n\n' +
+'<footer>Recept kopplat till Maskindatabas · skapat via nytt-recept.html</footer>\n\n' +
+'<script src="../assets/site.js"><\/script>\n</body>\n</html>\n';
+}
+
+const STD_STYLE = `  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:900px; margin:0 auto; }
+  header { background:linear-gradient(135deg,#c0392b,#e67e22); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:20px; box-shadow:0 4px 14px rgba(0,0,0,.12); }
+  header h1 { font-size:1.6rem; margin-bottom:4px; }
+  header p { opacity:.95; font-size:.92rem; }
+  .hero-img { width:100%; max-height:340px; object-fit:cover; border-radius:14px; margin-bottom:16px; box-shadow:0 2px 10px rgba(0,0,0,.1); }
+  .card { background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  h2 { font-size:1.1rem; margin-bottom:10px; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; }
+  th { text-align:left; padding:8px 10px; background:#f0ebe3; font-size:.78rem; text-transform:uppercase; color:var(--muted); }
+  td { padding:7px 10px; border-bottom:1px solid #eee; }
+  tr:last-child td { border-bottom:none; }
+  ol { padding-left:22px; line-height:1.7; }
+  .machine-step { border-left:5px solid var(--green); background:#f4fbf6; border-radius:10px; padding:14px 16px; margin-bottom:12px; }
+  .machine-step h3 { font-size:1rem; margin-bottom:4px; }
+  .machine-step .prog { color:var(--green); font-weight:700; }
+  .machine-step .why { color:var(--muted); font-size:.87rem; margin-top:4px; }
+  .warn { border-left:5px solid var(--accent2); background:#fdf6ee; border-radius:10px; padding:12px 16px; margin-bottom:12px; font-size:.9rem; }
+  .tip { border-left:5px solid #f1c40f; background:#fefbea; border-radius:10px; padding:12px 16px; margin-bottom:12px; font-size:.9rem; }
+  footer { text-align:center; color:var(--muted); font-size:.8rem; margin-top:20px; }`;
+
+function rebuild() {
+  if (!PARSED) return;
+  const html = buildHtml();
+  /* Förhandsgranskning: site.js-raden tas bort (relativa sökvägar funkar ej i iframe) */
+  document.getElementById('prev').srcdoc = html.replace(/<script src="\.\.\/assets\/site\.js"><\/script>/, '')
+                                               .replace('../assets/print.css', 'assets/print.css')
+                                               .replace(/\.\.\/images\//g, 'images/');
+}
+
+function download() {
+  if (!PARSED) return;
+  const fil = document.getElementById('fFil').value.trim() || 'nytt-recept.html';
+  const blob = new Blob([buildHtml()], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fil;
+  a.click();
+}
+</script>
+<script src="assets/site.js"></script>
+</body>
+</html>
