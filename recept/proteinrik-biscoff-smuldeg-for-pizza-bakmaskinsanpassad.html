@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <!-- PLATS: /recept/proteinrik-biscoff-smuldeg-for-pizza-bakmaskinsanpassad.html  (recept-mappen - läses in automatiskt) -->
-<!-- mk-std-v4 : skapad via nytt-recept.html i standardutformningen -->
+<!-- mk-std-v4 : lagad manuellt (markdown-rester ur nytt-recept-inklistring städade) -->
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🍕 Proteinrik Biscoff-smuldeg för pizza – bakmaskinsanpassad – Recept</title>
+<title>🍕 Proteinrik Biscoff-smuldeg för pizza – Recept</title>
 
 <!-- ===== RECEPT-METADATA ===== -->
 <meta name="recept:namn" content="Proteinrik Biscoff-smuldeg för pizza – bakmaskinsanpassad">
 <meta name="recept:emoji" content="🍕">
-<meta name="recept:beskrivning" content="Endast smuldegen – utan fyllning.">
-<meta name="recept:taggar" content="deg, pizza, protein">
-<meta name="recept:maskiner" content="Tillagning: Clatronic BBA 3774 · 10. Cake (Kaka) 1:50 h totalt | Alternativ: KLAIF LMR (Röd) · Pizza (över + under max) Förvärm 10–15 min, grädda 4–6 min">
+<meta name="recept:beskrivning" content="Söt proteinsmula till pizzan – bakmaskinen blandar på 6 min. 12 portioner, ~213 kcal/port, ~37 kr.">
+<meta name="recept:taggar" content="deg, pizza, protein, biscoff, smuldeg, bakmaskin">
+<meta name="recept:maskiner" content="Blanda: Clatronic BBA 3774 · 10. Cake (endast 1:a knådfasen 6 min) | Gräddning: KLAIF Pizzaugn · på pizzan sista 2–6 min">
 <!-- =========================== -->
 
 <link rel="stylesheet" href="../assets/print.css">
@@ -30,6 +30,7 @@
   th { text-align:left; padding:8px 10px; background:#f0ebe3; font-size:.78rem; text-transform:uppercase; color:var(--muted); }
   td { padding:7px 10px; border-bottom:1px solid #eee; }
   tr:last-child td { border-bottom:none; }
+  .total td { font-weight:700; background:#faf7f2; }
   ol { padding-left:22px; line-height:1.7; }
   .machine-step { border-left:5px solid var(--green); background:#f4fbf6; border-radius:10px; padding:14px 16px; margin-bottom:12px; }
   .machine-step h3 { font-size:1rem; margin-bottom:4px; }
@@ -37,81 +38,102 @@
   .machine-step .why { color:var(--muted); font-size:.87rem; margin-top:4px; }
   .warn { border-left:5px solid var(--accent2); background:#fdf6ee; border-radius:10px; padding:12px 16px; margin-bottom:12px; font-size:.9rem; }
   .tip { border-left:5px solid #f1c40f; background:#fefbea; border-radius:10px; padding:12px 16px; margin-bottom:12px; font-size:.9rem; }
+  .cols { display:flex; gap:14px; flex-wrap:wrap; }
+  .cols > div { flex:1; min-width:260px; }
   footer { text-align:center; color:var(--muted); font-size:.8rem; margin-top:20px; }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🍕 Proteinrik Biscoff-smuldeg för pizza – bakmaskinsanpassad</h1>
-  <p>Endast smuldegen – utan fyllning.</p>
-  <p style="margin-top:6px;"><span style="background:rgba(255,255,255,.25); border-radius:6px; padding:2px 10px; font-size:.85rem;">Clatronic BBA 3774 · 10. Cake (Kaka)</span> <span style="background:rgba(255,255,255,.25); border-radius:6px; padding:2px 10px; font-size:.85rem;">KLAIF LMR (Röd) · Pizza (över + under max)</span></p>
+  <h1>🍕 Proteinrik Biscoff-smuldeg för pizza</h1>
+  <p>Endast smuldegen (utan fyllning) · 12 portioner · ~213 kcal/portion · ~37 kr totalt</p>
+  <p style="margin-top:6px;"><span style="background:rgba(255,255,255,.25); border-radius:6px; padding:2px 10px; font-size:.85rem;">Blanda: Clatronic BBA 3774 · Cake 6 min</span> <span style="background:rgba(255,255,255,.25); border-radius:6px; padding:2px 10px; font-size:.85rem;">Grädda: på pizzan, sista minuterna</span></p>
 </header>
 
-<img class="hero-img" src="../images/recept/proteinrik-biscoff-smuldeg-for-pizza-bakmaskinsanpassad.jpg" alt="Proteinrik Biscoff-smuldeg för pizza – bakmaskinsanpassad" onerror="this.style.display='none'">
+<img class="hero-img" src="../images/recept/proteinrik-biscoff-smuldeg-for-pizza-bakmaskinsanpassad.jpg" alt="Proteinrik Biscoff-smuldeg" onerror="this.style.display='none'">
+
+<div class="warn">
+  ⚠️ <b>Kör INTE hela Cake-programmet!</b> Smuldegen ska endast blandas kort – en hel bakmaskinscykel gör den för jämn och kan ge skummig konsistens. <b>Endast första knådfasen, 6 minuter</b>, sedan Start/Stop (håll in tills signal).
+</div>
 
 <div class="card">
-  <h2>🧾 Ingredienser</h2>
+  <h2>🧾 Ingredienser &amp; kostnad</h2>
   <table>
-    <tr><th>Ingrediens</th><th>Mängd</th></tr>
-    <tr><td>|------------------------------------|------:|--------:|</td><td></td></tr>
-    <tr><td>| Vetemjöl (Garant) | 450 g | 3,40 kr |</td><td></td></tr>
-    <tr><td>| Whey-80 Natural / Proteinpulver | 90 g | 24,73 kr |</td><td></td></tr>
-    <tr><td>| Turkisk Yoghurt 10% | 150 g | 4,95 kr |</td><td></td></tr>
-    <tr><td>| Biscoff Spread Creamy (Lotus) | 40 g | 3,29 kr |</td><td></td></tr>
-    <tr><td>| Rapsolja (Eldorado) | 25 g | 0,58 kr |</td><td></td></tr>
-    <tr><td>| Vatten | 120 g | 0,00 kr |</td><td></td></tr>
-    <tr><td>| TOTALT | 875 g | 36,95 kr |</td><td></td></tr>
-    <tr><td>🥣 GÖR SÅ HÄR</td><td></td></tr>
-    <tr><td>### ⚙️ Clatronic BBA 3774 – Program 10: Cake (endast första knådfasen, 6 min)</td><td></td></tr>
-    <tr><td>VIKTIGT: Kör inte hela Cake-programmet. Smuldegen ska endast blandas kort; en hel bakmaskinscykel gör den för jämn och kan ge en skummig konsistens.</td><td></td></tr>
-    <tr><td>Sätt i degkroken/paddeln i bakformen.</td><td>1.</td></tr>
-    <tr><td>2. Lägg i turkisk yoghurt, Biscoff-kräm, rapsolja och 120 g vatten. Fördela Biscoff-krämen i små klickar så att maskinen får lättare att blanda den.</td><td></td></tr>
-    <tr><td>3. Häll på vetemjöl och proteinpulver. Låt de torra ingredienserna täcka vätskan.</td><td></td></tr>
-    <tr><td>4. Starta Program 10: Cake. Kör bara första knådfasen i 6 minuter.</td><td></td></tr>
-    <tr><td>5. Öppna locket efter cirka 2 minuter och skrapa ner mjöl från kanterna med en mjuk slickepott. Gör samma sak efter cirka 4 minuter om det behövs.</td><td></td></tr>
-    <tr><td>6. Avbryt maskinen exakt när 6 minuter har gått. Degen ska vara samlad men lätt klibbig – inte helt slät.</td><td></td></tr>
-    <tr><td>7. Låt degen vila i formen i 5 minuter. Nyp sedan isär den med fingertopparna till grova, ojämna smulor. Pressa inte ihop den igen.</td><td></td></tr>
-    <tr><td>🍕 GRÄDDA PÅ PIZZAN</td><td></td></tr>
-    <tr><td>Fördela smulorna glest över pizzan precis före gräddning.</td><td>1.</td></tr>
-    <tr><td>2. Grädda pizzan enligt din vanliga pizzotid och temperatur, tills pizzan är klar och smulet är gyllene.</td><td></td></tr>
-    <tr><td>3. Vid mycket het eller snabb pizzagräddning: lägg på smulorna under de sista 2–4 minuterna. Biscoff innehåller socker och kan annars brännas.</td><td></td></tr>
-    <tr><td>📊 NÄRINGSVÄRDE</td><td></td></tr>
-    <tr><td>Hela smuldegen (875 g)</td><td></td></tr>
-    <tr><td>2 553 kcal</td><td></td></tr>
-    <tr><td>Protein</td><td>121,8 g</td></tr>
-    <tr><td>Kolhydrater</td><td>352,7 g</td></tr>
-    <tr><td>Fett</td><td>69,2 g</td></tr>
-    <tr><td>Fiber</td><td>13,8 g</td></tr>
-    <tr><td>Salt</td><td>0,77 g</td></tr>
-    <tr><td>Per portion (1/12 av smuldegen, ca 73 g)</td><td></td></tr>
-    <tr><td>kcal</td><td>213</td></tr>
-    <tr><td>Protein</td><td>10,1 g</td></tr>
-    <tr><td>Kolhydrater</td><td>29,4 g</td></tr>
-    <tr><td>Fett</td><td>5,8 g</td></tr>
-    <tr><td>Fiber</td><td>1,2 g</td></tr>
-    <tr><td>Salt</td><td>0,06 g</td></tr>
-    <tr><td>💡 VARFÖR DETTA FUNKAR BÄTTRE I BAKMASKIN</td><td></td></tr>
-    <tr><td>Mer vatten gör att paddeln kan få grepp om den stora satsen och blanda yoghurt, Biscoff och de torra ingredienserna jämnt. Den korta 6-minutersblandningen och den korta vilan gör att degen ändå enkelt kan nypas till smulor efteråt. Näringsvärdet avser endast smuldegen och inkluderar inte pizzabotten, ost, sås eller annan topping.</td><td></td></tr>
+    <tr><th>Ingrediens</th><th>Mängd</th><th>Kostnad</th></tr>
+    <tr><td>Vatten</td><td>120 g</td><td>0,00 kr</td></tr>
+    <tr><td>Turkisk Yoghurt 10%</td><td>150 g</td><td>4,95 kr</td></tr>
+    <tr><td>Rapsolja (Eldorado)</td><td>25 g</td><td>0,58 kr</td></tr>
+    <tr><td>Biscoff Spread Creamy (Lotus)</td><td>40 g</td><td>3,29 kr</td></tr>
+    <tr><td>Vetemjöl (Garant)</td><td>450 g</td><td>3,40 kr</td></tr>
+    <tr><td>Whey-80 Natural / Proteinpulver</td><td>90 g</td><td>24,73 kr</td></tr>
+    <tr class="total"><td>Totalt</td><td>875 g</td><td>36,95 kr</td></tr>
   </table>
 </div>
 
 <div class="card">
-  <h2>🥣 Gör så här</h2>
+  <h2>🥣 Steg 1 – Blanda smuldegen</h2>
   <div class="machine-step">
-    <h3>⚙️ Clatronic BBA 3774 · <span class="prog">10. Cake (Kaka) · 1:50 h totalt</span></h3>
-    <div class="why">Knåda 6 min → vila 5 min → knåda 10 min (signal) → vila 9 min → BAKA 80 min. För kakor med BAKPULVER (pound cake). Knådkrok ger fastare kaka än visp.</div>
-  </div>
-  <div class="machine-step">
-    <h3>⚙️ KLAIF LMR (Röd) · <span class="prog">Pizza (över + under max) · Förvärm 10–15 min, grädda 4–6 min</span></h3>
-    <div class="why">Båda vreden på max. Förvärm tills termometern når måltemp, skjut in pizzan på den heta stenen.</div>
+    <h3>⚙️ Clatronic BBA 3774 · <span class="prog">Program 10 "Cake" – ENDAST 1:a knådfasen (6 min)</span></h3>
+    <div class="why">Mer vatten gör att paddeln får grepp om den stora satsen och blandar yoghurt, Biscoff och torrvaror jämnt. Kort blandning + kort vila = degen kan enkelt nypas till smulor efteråt.</div>
   </div>
   <ol>
-
+    <li>Sätt i degkroken/paddeln i bakformen</li>
+    <li>Lägg i <b>turkisk yoghurt, Biscoff-kräm, rapsolja och vatten</b>. Fördela Biscoff-krämen i små klickar så maskinen lättare blandar in den</li>
+    <li>Häll på <b>vetemjöl och proteinpulver</b> så torrvarorna täcker vätskan</li>
+    <li>Starta <b>Program 10: Cake</b> – kör endast första knådfasen, <b>6 minuter</b></li>
+    <li>Öppna locket efter ca 2 min och skrapa ner mjöl från kanterna med slickepott (upprepa vid 4 min vid behov)</li>
+    <li><b>Avbryt exakt vid 6 min</b> (håll Start/Stop tills signal). Degen ska vara samlad men lätt klibbig – inte helt slät</li>
+    <li>Låt vila i formen <b>5 min</b>. Nyp isär till grova, ojämna smulor med fingertopparna – pressa inte ihop igen</li>
   </ol>
 </div>
 
-<footer>Recept kopplat till Maskindatabas · skapat via nytt-recept.html</footer>
+<div class="card">
+  <h2>🔥 Steg 2 – Grädda på pizzan</h2>
+  <div class="machine-step">
+    <h3>⚙️ KLAIF Pizzaugn · <span class="prog">På pizzan · sista 2–6 min av gräddningen</span></h3>
+    <div class="why">Biscoff innehåller socker och bränns lätt vid hög värme – lägg på smulorna sent!</div>
+  </div>
+  <ol>
+    <li>Fördela smulorna <b>glest</b> över pizzan precis före gräddning</li>
+    <li>Grädda enligt din vanliga pizzatid tills pizzan är klar och smulet gyllene</li>
+    <li>Vid mycket het/snabb gräddning (KLAIF på max): lägg på smulorna <b>de sista 2–4 minuterna</b> så de inte bränns</li>
+  </ol>
+</div>
+
+<div class="tip">
+  💡 Näringsvärdet avser endast smuldegen – pizzabotten, ost, sås och annan topping tillkommer.
+</div>
+
+<div class="card">
+  <h2>📊 Näringsvärde</h2>
+  <div class="cols">
+    <div>
+      <table>
+        <tr><th colspan="2">Per portion (1/12, ca 73 g)</th></tr>
+        <tr><td>Kcal</td><td><b>~213</b></td></tr>
+        <tr><td>Protein</td><td>~10,1 g</td></tr>
+        <tr><td>Kolhydrat</td><td>~29,4 g</td></tr>
+        <tr><td>Fett</td><td>~5,8 g</td></tr>
+        <tr><td>Fiber</td><td>~1,2 g</td></tr>
+        <tr><td>Salt</td><td>~0,06 g</td></tr>
+      </table>
+    </div>
+    <div>
+      <table>
+        <tr><th colspan="2">Hela smuldegen (875 g)</th></tr>
+        <tr><td>Kcal</td><td><b>~2553</b></td></tr>
+        <tr><td>Protein</td><td>~121,8 g</td></tr>
+        <tr><td>Kolhydrat</td><td>~352,7 g</td></tr>
+        <tr><td>Fett</td><td>~69,2 g</td></tr>
+        <tr><td>Fiber</td><td>~13,8 g</td></tr>
+        <tr><td>Kostnad</td><td><b>~36,95 kr</b></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer>Recept kopplat till Maskindatabas · Beräkningar baserade på ingrediensdatabas © Rickard Längkvist 2025–2026</footer>
 
 <script src="../assets/site.js"></script>
 </body>
