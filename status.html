@@ -86,7 +86,8 @@ async function run() {
   const s1 = sec('🧩 Kärnfiler & moduler');
   const core = ['assets/site.js','assets/print.css','assets/print.js','assets/app.js',
                 'assets/recept.js','assets/energi.js','assets/sprak.js','assets/betyg.js',
-                'assets/receptnav.js','assets/redigera.js','assets/maskinmatch.js','assets/kokbok.js',
+                'assets/receptnav.js','assets/redigera.js','assets/maskinmatch.js','assets/kokbok.js','assets/spara.js','assets/ingrediens.js',
+                'json/donation.json',
                 'json/maskindatabas.json','json/energi.json','json/maskiner-index.json','json/las.json',
                 'manifest.json','sw.js','nytt-recept.html'];
   for (const f of core) {
@@ -202,5 +203,5 @@ async function run() {
 }
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a24456d32b828de0',t:'MTc4NTU4MjAyNg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
