@@ -1,0 +1,10 @@
+# ============================================================
+# PLATS: /json/ingrediens-lankar.txt
+# ============================================================
+# KLISTRA IN PRODUKTLANKAR HAR - en per rad - och committa.
+# Roboten hamtar pris (kr/kg) + naring per 100 g automatiskt
+# och lagger in dem i json/ingredienser.json. Filen toms sen.
+#
+# Stodda butiker: willys.se och hemkop.se, t.ex:
+# https://www.willys.se/produkt/Turkisk-Yoghurt-10procent-100486886_ST
+# ============================================================
