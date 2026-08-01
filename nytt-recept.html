@@ -84,9 +84,11 @@ Gör så här
 
   <h2 style="margin-top:18px;">3️⃣ Förhandsgranskning</h2>
   <iframe id="prev"></iframe>
+  <button class="btn orange" onclick="saveDirect()" id="saveBtn">💾 Spara direkt på sajten</button>
   <button class="btn" onclick="download()">⬇️ Ladda ner receptfilen</button>
   <a class="btn sec" style="display:inline-block;text-decoration:none;" href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">📤 Öppna GitHub-uppladdning (recept/)</a>
-  <div class="hint">✅ Filen är redan i standardutformningen (mk-std-v4) – roboten på GitHub rör den inte. Ladda upp → vänta på grön bock i Actions → Ctrl+Shift+R.</div>
+  <div class="hint" id="saveHint">✅ <b>💾 Spara direkt</b> lägger filen i recept-mappen på GitHub åt dig – ingen nedladdning/uppladdning! (Första gången: en 2-minuters engångsinställning med GitHub-nyckel.) Filen är redan i standardutformningen (mk-std-v4) – roboten rör den inte.</div>
+  <div id="saveResult"></div>
 </div>
 
 <footer>Allt sker i din webbläsare – inget skickas någonstans förrän du själv laddar upp filen på GitHub.</footer>
@@ -402,7 +404,32 @@ function download() {
   a.download = fil;
   a.click();
 }
+
+/* ============================================================
+   💾 SPARA DIREKT PÅ SAJTEN (via assets/spara.js → GitHub API)
+   ============================================================ */
+async function saveDirect() {
+  if (!PARSED) return;
+  if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas – prova ⬇️ Ladda ner istället.'); return; }
+  const fil = (document.getElementById('fFil').value.trim() || 'nytt-recept.html').replace(/[^a-zA-Z0-9åäöÅÄÖ._ -]/g, '');
+  const btn = document.getElementById('saveBtn');
+  const out = document.getElementById('saveResult');
+  btn.disabled = true; btn.textContent = '⏳ Sparar...';
+  const res = await __MK_SPARA.save('recept/' + fil, buildHtml(),
+    'Nytt recept via sajten: ' + (document.getElementById('fNamn').value || fil));
+  btn.disabled = false; btn.textContent = '💾 Spara direkt på sajten';
+  if (res.ok) {
+    out.innerHTML = '<div class="hint" style="border-left-color:#27ae60;background:#eaf7ef;">🎉 <b>Sparat!</b> ' +
+      'Receptet ligger nu i recept-mappen och dyker upp i <a href="recept.html">receptsamlingen</a> inom ~1 minut ' +
+      '(GitHub Pages bygger om sajten – grön bock i Actions, sen Ctrl+Shift+R).<br>' +
+      '📄 <a href="recept/' + encodeURIComponent(fil) + '" target="_blank" rel="noopener">Öppna receptet</a>' +
+      (res.url ? ' · <a href="' + res.url + '" target="_blank" rel="noopener">Visa på GitHub</a>' : '') + '</div>';
+  } else {
+    out.innerHTML = '<div class="hint" style="border-left-color:#c0392b;background:#fdecea;">⚠️ <b>Kunde inte spara:</b> ' +
+      res.error + '<br>Prova igen, eller använd ⬇️ Ladda ner + 📤 GitHub-uppladdning som reserv.</div>';
+  }
+}
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a243e660cb17bb02',t:'MTc4NTU3NzQyMA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2441317acdec6a0',t:'MTc4NTU3OTI1Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
