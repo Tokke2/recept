@@ -73,6 +73,12 @@
       'header{page-break-after:avoid;break-after:avoid;}' +
       'h2,h3{page-break-after:avoid;break-after:avoid;}' +
       'ol li,tr{page-break-inside:avoid;break-inside:avoid;}' +
+      /* Kort HÖGRE än en sida får brytas inuti – annars uppstår
+         nästan tomma sidor (kortet skjuts till nästa sida). */
+      '.card.mk-tall{page-break-inside:auto!important;break-inside:auto!important;}' +
+      /* Receptnamnet följer med i ingrediens- & stegrubriken om de
+         hamnar på en annan sida än rubrikbandet. */
+      '.mk-print-name{display:inline!important;font-weight:400;color:#555;}' +
       /* Datumrad + auto-QR */
       'body::after{content:"Utskriven " attr(data-mk-date) " · Mitt Maskinkök";display:block;' +
         'text-align:center;font-size:7pt;color:#999;margin-top:6mm;font-family:Georgia,serif;order:100;}' +
@@ -85,6 +91,7 @@
         'transform-origin:top left;width:calc(100%/var(--mk-print-scale,1));}}' +
     '}' +
     '#mk-auto-qr{display:none;}' +
+    '.mk-print-name{display:none;}' +   /* receptnamn i rubriker: endast vid utskrift */
 
     /* ---------- Dialog v3: tvåkolumn med förhandsgranskning ---------- */
     '#mk-pd-bg{position:fixed;inset:0;background:rgba(30,41,54,.62);backdrop-filter:blur(4px);' +
@@ -209,6 +216,30 @@
     document.body.setAttribute('data-mk-date', new Date().toLocaleDateString('sv-SE'));
     markCards();
     if (isRecipePage) markKeep();
+
+    /* Receptnamnet med i Ingrediens-/Gör så här-rubrikerna på pappret
+       ("🧾 Ingredienser – Äppelsmulpaj") så sidor utan rubrikband
+       aldrig blir anonyma. Läggs bara till en gång. */
+    var nameMeta = document.querySelector('meta[name="recept:namn"]');
+    var rName = nameMeta ? nameMeta.content :
+      (document.querySelector('header h1') || { textContent: '' }).textContent
+        .replace(/^[\u{1F000}-\u{1FAFF}\u2600-\u27BF\uFE0F\s]+/u, '').trim();
+    if (rName) {
+      document.querySelectorAll('.card.mk-keep h2, .card.mk-ing-card h2, .card.mk-step-card h2').forEach(function (h) {
+        if (!h.querySelector('.mk-print-name')) {
+          var s = document.createElement('span');
+          s.className = 'mk-print-name';
+          s.textContent = ' – ' + rName;
+          h.appendChild(s);
+        }
+      });
+    }
+
+    /* Kort högre än ~en A4-sida måste få brytas inuti, annars skjuts
+       de till nästa sida och lämnar en nästan tom sida efter sig. */
+    document.querySelectorAll('.card').forEach(function (c) {
+      c.classList.toggle('mk-tall', c.scrollHeight > 900);
+    });
     /* v4: på receptsidor rensas gamla QR-kort bort av vitlistan,
        så auto-QR:n (liten, i sidfoten) behövs alltid där. */
     if (!document.getElementById('mk-auto-qr') && (isRecipePage || !document.querySelector('.qr-box'))) {
