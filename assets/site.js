@@ -106,6 +106,45 @@
   })();
 
   /* ============================================================
+     💚 SWISH-DONATION I SIDFOTEN (alla sidor, diskret)
+     Numret hämtas centralt ur json/donation.json – tomt = ingen rad.
+     ============================================================ */
+  (function donation() {
+    fetch(root + 'json/donation.json', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var nr = String(d.swish_nummer || '').trim();
+        if (!nr) return;
+        var msg = d.meddelande || 'Gillar du sajten? Bjud på en kaffe via Swish';
+        var el = document.createElement('div');
+        el.id = 'mk-donation';
+        el.className = 'no-print';
+        el.style.cssText = 'text-align:center;padding:10px 16px 18px;font-size:.8rem;color:#7f8c8d;font-family:Segoe UI,system-ui,sans-serif;';
+        el.innerHTML = msg + ' &nbsp;' +
+          '<button id="mk-swish-btn" style="background:none;border:1.5px solid #27ae60;color:#27ae60;' +
+            'border-radius:999px;padding:3px 14px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">' +
+            '💚 Swish ' + nr + '</button>';
+        var footer = document.querySelector('footer');
+        if (footer) footer.parentNode.insertBefore(el, footer.nextSibling);
+        else document.body.appendChild(el);
+        el.querySelector('#mk-swish-btn').addEventListener('click', function () {
+          var b = this;
+          function copied() {
+            b.textContent = '✅ Nummer kopierat!';
+            setTimeout(function () { b.textContent = '💚 Swish ' + nr; }, 2500);
+          }
+          if (navigator.clipboard) navigator.clipboard.writeText(nr).then(copied)['catch'](function () { prompt('Swish-nummer:', nr); });
+          else prompt('Swish-nummer:', nr);
+          /* På mobil: försök öppna Swish-appen */
+          if (/android|iphone|ipad/i.test(navigator.userAgent)) {
+            var data = encodeURIComponent(JSON.stringify({ version: 1, payee: { value: nr }, message: { value: 'Mitt Maskinkok' } }));
+            setTimeout(function () { location.href = 'swish://payment?data=' + data; }, 350);
+          }
+        });
+      })['catch'](function () {});
+  })();
+
+  /* ============================================================
      "TILL TOPPEN"-KNAPP
      ============================================================ */
   (function topBtn() {
@@ -263,7 +302,7 @@
      ============================================================ */
   ensureCss('print.css');
   var scripts = ['print.js', 'app.js', 'sprak.js', 'betyg.js'];
-  if (isRecipePage) scripts.push('recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js');
+  if (isRecipePage) scripts.push('ingrediens.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js');
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');
   if (/(nytt-recept|generator)\.html$/i.test(location.pathname)) scripts.push('spara.js');
 
