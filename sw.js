@@ -22,7 +22,7 @@
    ============================================================ */
 'use strict';
 
-const VERSION = 'maskinkok-v5';
+const VERSION = 'maskinkok-v6';
 const CACHE_CORE = VERSION + '-core';     // assets + startsida (förcachas)
 const CACHE_PAGES = VERSION + '-pages';   // recept & övriga sidor
 const CACHE_IMG = VERSION + '-img';       // bilder
@@ -46,6 +46,7 @@ const CORE = [
   'assets/betyg.js',
   'assets/maskinmatch.js',
   'assets/kokbok.js',
+  'assets/spara.js',
   'json/maskindatabas.json',
   'json/energi.json',
   'json/maskiner-index.json',
