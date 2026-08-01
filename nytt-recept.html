@@ -148,7 +148,9 @@ function parseHtml(raw) {
     if (withAmount.length >= 2) {
       found = true;
       rows.forEach(r => {
-        if (r.length >= 2 && !/ingrediens|mängd/i.test(r[0])) ings.push([r[0], r.slice(1).join(' ')]);
+        if (r.length < 2) return;
+        if (/^(ingrediens|mängd|totalt|summa|total)/i.test(r[0])) return;  // rubrik- & summeringsrader bort
+        ings.push([r[0], r[1]]);  // endast mängd-kolumnen (ev. kostnadskolumn ignoreras)
       });
     }
   });
@@ -260,11 +262,17 @@ async function analyze() {
   const allText = (PARSED.namn + ' ' + PARSED.others.join(' ') + ' ' + PARSED.steps.join(' ') + ' ' + PARSED.ings.map(i => i[0]).join(' ')).toLowerCase();
   SUGGESTED = suggestMachines(allText);
 
-  /* Fyll i fälten */
-  document.getElementById('fNamn').value = PARSED.namn;
-  document.getElementById('fEmoji').value = (EMOJI_MAP.find(e => allText.includes(e[0])) || [,'🍽️'])[1];
+  /* Fyll i fälten – finns recept:-metadata i inklistrad HTML återanvänds den */
+  const srcRaw = document.getElementById('src').value;
+  const metaOf = n => { const m = srcRaw.match(new RegExp('name="recept:' + n + '" content="([^"]*)"')); return m ? m[1].replace(/&amp;/g, '&') : ''; };
+  document.getElementById('fNamn').value = metaOf('namn') || PARSED.namn;
+  /* Emoji: ordSTART-matchning ("kaka" får inte träffa "skaka") */
+  const emojiHit = EMOJI_MAP.find(e => new RegExp('(^|[^a-zåäö])' + e[0]).test(allText));
+  document.getElementById('fEmoji').value = metaOf('emoji') || (emojiHit ? emojiHit[1] : '🍽️');
   document.getElementById('fFil').value = slug(PARSED.namn) + '.html';
-  document.getElementById('fBeskr').value = PARSED.others.find(o => o.length > 20 && o.length < 160) || (PARSED.ings.length + ' ingredienser · ' + PARSED.steps.length + ' steg');
+  document.getElementById('fBeskr').value = metaOf('beskrivning') ||
+    PARSED.others.find(o => o.length > 20 && o.length < 160) ||
+    (PARSED.ings.length + ' ingredienser · ' + PARSED.steps.length + ' steg');
 
   document.getElementById('stats').innerHTML =
     '<span class="stat">🧾 ' + PARSED.ings.length + ' ingredienser</span>' +
@@ -396,5 +404,5 @@ function download() {
 }
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a243e660cb17bb02',t:'MTc4NTU3NzQyMA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
