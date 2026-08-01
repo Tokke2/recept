@@ -74,6 +74,25 @@
     <tfoot><tr class="total"><td>Totalt</td><td id="tGram">0 g</td><td id="tCost">0 kr</td><td id="tKcal">0</td><td></td></tr></tfoot>
   </table>
   <div id="stats" style="margin-top:10px;"></div>
+
+  <!-- ============ NY INGREDIENS DIREKT PÅ SIDAN ============ -->
+  <details style="margin-top:14px;">
+    <summary style="cursor:pointer;font-weight:700;font-size:.92rem;">➕ Saknas en ingrediens? Lägg till den här (sparas direkt i databasen)</summary>
+    <div class="row" style="margin-top:10px;">
+      <div style="flex:2;"><label>Namn *</label><input type="text" id="niNamn" placeholder="t.ex. Kesella 10%"></div>
+      <div style="max-width:130px;"><label>Pris kr/kg *</label><input type="number" id="niPris" step="0.01" min="0"></div>
+    </div>
+    <div class="row">
+      <div><label>Kcal /100 g *</label><input type="number" id="niKcal" step="0.1" min="0"></div>
+      <div><label>Protein g</label><input type="number" id="niProt" step="0.1" min="0" value="0"></div>
+      <div><label>Kolhydrat g</label><input type="number" id="niKolh" step="0.1" min="0" value="0"></div>
+      <div><label>Fett g</label><input type="number" id="niFett" step="0.1" min="0" value="0"></div>
+      <div><label>Fiber g</label><input type="number" id="niFiber" step="0.1" min="0" value="0"></div>
+    </div>
+    <button class="btn small" style="margin-top:10px;" onclick="saveNewIng()" id="niBtn">💾 Spara i ingrediensdatabasen</button>
+    <div id="niResult"></div>
+    <p style="font-size:.78rem;color:var(--muted);margin-top:8px;">💡 Näringen står på förpackningen (per 100 g). Sparas direkt i json/ingredienser.json på GitHub – lösenordsskyddat. Tips: Willys/Hemköp-länkar kan också klistras in i json/ingrediens-lankar.txt så hämtar roboten allt automatiskt.</p>
+  </details>
 </div>
 
 <!-- ============ 3. MASKIN & PROGRAM ============ -->
@@ -133,6 +152,59 @@ function fillPrograms() {
   const m = MACHINES[+document.getElementById('mSelect').value];
   document.getElementById('pSelect').innerHTML = (m ? m.program : []).map((p,i) =>
     `<option value="${i}">${p.namn} (${p.standardtid || '-'})</option>`).join('');
+}
+
+/* ============================================================
+   ➕ NY INGREDIENS – sparas direkt i json/ingredienser.json
+   (lösenordsskyddat via spara.js, samma lösenord som las.json)
+   ============================================================ */
+async function saveNewIng() {
+  const namn = document.getElementById('niNamn').value.trim();
+  const pris = parseFloat(document.getElementById('niPris').value);
+  const kcal = parseFloat(document.getElementById('niKcal').value);
+  const out = document.getElementById('niResult');
+  if (!namn || isNaN(pris) || isNaN(kcal)) { alert('Fyll i namn, pris och kcal!'); return; }
+  if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas.'); return; }
+
+  const post = {
+    id: namn.toLowerCase().replace(/å/g,'a').replace(/ä/g,'a').replace(/ö/g,'o').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''),
+    namn: namn, pris_kr_per_kg: pris, kcal: kcal,
+    protein: +document.getElementById('niProt').value || 0,
+    kolhydrat: +document.getElementById('niKolh').value || 0,
+    fett: +document.getElementById('niFett').value || 0,
+    fiber: +document.getElementById('niFiber').value || 0,
+    kalla: 'tillagd via generatorn ' + new Date().toISOString().slice(0,10)
+  };
+
+  const btn = document.getElementById('niBtn');
+  btn.disabled = true; btn.textContent = '⏳ Sparar...';
+  let res = { ok: false, error: 'okänt fel' };
+  try {
+    const raw = await __MK_SPARA.load('json/ingredienser.json');
+    if (!raw) throw new Error('kunde inte läsa databasen');
+    const db = JSON.parse(raw);
+    db.ingredienser = db.ingredienser || [];
+    const idx = db.ingredienser.findIndex(i => i.id === post.id);
+    if (idx >= 0) db.ingredienser[idx] = post; else db.ingredienser.push(post);
+    res = await __MK_SPARA.save('json/ingredienser.json', JSON.stringify(db, null, 2),
+      'Ny ingrediens via generatorn: ' + namn);
+  } catch (e) { res = { ok: false, error: e.message }; }
+  btn.disabled = false; btn.textContent = '💾 Spara i ingrediensdatabasen';
+
+  if (res.ok) {
+    /* Lägg in direkt i listan så den kan användas på en gång */
+    const i = ING.findIndex(x => x.id === post.id);
+    if (i >= 0) ING[i] = post; else ING.push(post);
+    ING.sort((a,b) => a.namn.localeCompare(b.namn, 'sv'));
+    const sel = document.getElementById('ingSelect');
+    sel.innerHTML = ING.map((x,j) => `<option value="${j}">${x.namn} (${x.pris_kr_per_kg} kr/kg)</option>`).join('');
+    sel.value = ING.findIndex(x => x.id === post.id);
+    out.innerHTML = '<div style="margin-top:8px;padding:10px 14px;background:#eaf7ef;border-left:4px solid var(--green);border-radius:8px;font-size:.88rem;">🎉 <b>' + namn + '</b> sparad i databasen och vald i listan ovan – använd direkt!</div>';
+    ['niNamn','niPris','niKcal'].forEach(id => document.getElementById(id).value = '');
+    ['niProt','niKolh','niFett','niFiber'].forEach(id => document.getElementById(id).value = '0');
+  } else {
+    out.innerHTML = '<div style="margin-top:8px;padding:10px 14px;background:#fdecea;border-left:4px solid var(--accent);border-radius:8px;font-size:.88rem;">⚠️ Kunde inte spara: ' + res.error + '</div>';
+  }
 }
 
 /* ============ Ingredienser ============ */
@@ -376,5 +448,5 @@ async function saveDirect() {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2441424a97bc6a0',t:'MTc4NTU3OTI5NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2442bc44a333483',t:'MTc4NTU4MDI2Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
