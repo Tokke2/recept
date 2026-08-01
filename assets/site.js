@@ -265,6 +265,7 @@
   var scripts = ['print.js', 'app.js', 'sprak.js', 'betyg.js'];
   if (isRecipePage) scripts.push('recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js');
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');
+  if (/(nytt-recept|generator)\.html$/i.test(location.pathname)) scripts.push('spara.js');
 
   Promise.all(scripts.map(function (f) { return loadScript(f); }))
     .then(function () { printReport(checkMeta()); });
