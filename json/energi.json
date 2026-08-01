@@ -1,4 +1,5 @@
 {
+ "_plats": "/json/energi.json  (central energidata per recept)",
  "kommentar": "CENTRAL ENERGIDATA – ett recept per rad, nyckel = filnamnet i recept/. Ange maskin-id (från json/maskiner/) + minuter. Effekt (W) hämtas automatiskt ur maskinfilen, elpris ur json/maskindatabas.json. Recepten behöver INGEN egen energidata i HTML!",
  "recept": {
   "ananaskaka.html": [
@@ -15,56 +16,23 @@
   ],
   "Ananas_Rom_Yoghurt_Slush.html": [
    {
-    "maskin": "azmsary-fs306",
+    "maskin": "greenpan-frost",
     "min": 30,
     "moment": "Slush"
    }
   ],
-  "pizzadeg-5x200g.html": [
-   {
-    "maskin": "clatronic-bba3774",
-    "min": 90,
-    "moment": "Knådning & jäsning"
-   },
-   {
-    "maskin": "klaif-pizzaugn",
-    "min": 20,
-    "moment": "Förvärmning + gräddning"
-   }
-  ],
   "annanasglas_hund.html": [
    {
-    "maskin": "azmsary-fs306",
+    "maskin": "greenpan-frost",
     "min": 30,
     "moment": "Mjukglass"
-   }
-  ],
-  "pizzadeg-bakmaskin-4x250g.html": [
-   {
-    "maskin": "clatronic-bba3774",
-    "min": 20,
-    "moment": "Tillagning"
-   }
-  ],
-  "recept_pitabrod_airfryer.html": [
-   {
-    "maskin": "clatronic-bba3774",
-    "min": 15,
-    "moment": "Tillagning"
    }
   ],
   "Mjukglass MAX.html": [
    {
     "maskin": "greenpan-frost",
-    "min": 65,
+    "min": 40,
     "moment": "Soft Ice Cream"
-   }
-  ],
-  "recept_proteinshake_saft.html": [
-   {
-    "maskin": "greenpan-frost",
-    "min": 15,
-    "moment": "Slushie"
    }
   ],
   "a4-makaronichips-airfryer-salt--peppar.html": [
@@ -72,6 +40,56 @@
     "maskin": "cosori-twinfry-10l",
     "min": 15,
     "moment": "Air Fry"
+   }
+  ],
+  "recept_proteinshake_saft.html": [
+   {
+    "maskin": "greenpan-frost",
+    "min": 25,
+    "moment": "Milkshake"
+   }
+  ],
+  "recept_pitabrod_airfryer.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 90,
+    "moment": "Dough (deg + jäsning)"
+   },
+   {
+    "maskin": "cosori-twinfry-10l",
+    "min": 8,
+    "moment": "Air Fry (gräddning per omgång)"
+   }
+  ],
+  "pizzadeg-bakmaskin-4x250g.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 90,
+    "moment": "Dough"
+   }
+  ],
+  "smulpaj-lag-kcal-bakmaskin.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 4,
+    "moment": "Smula ihop degen"
+   },
+   {
+    "maskin": "cosori-twinfry-10l",
+    "min": 25,
+    "moment": "Gräddning (Bake 160°C)"
+   }
+  ],
+  "proteinrik-biscoff-smuldeg-for-pizza-bakmaskinsanpassad.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 6,
+    "moment": "Blanda smuldegen"
+   },
+   {
+    "maskin": "klaif-pizzaugn",
+    "min": 5,
+    "moment": "Gräddning på pizzan"
    }
   ]
  }
