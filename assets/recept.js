@@ -41,9 +41,16 @@
     var h = card && card.querySelector('h2');
     if (h && /ingrediens/i.test(h.textContent)) {
       ingHTML = tables[ti].outerHTML;
-      // Extrahera namn + mängd ur raderna (kol 1 = namn, kol 2 = mängd)
       var rows = tables[ti].querySelectorAll('tr');
       for (var ri = 0; ri < rows.length; ri++) {
+        /* v2-tabell (ingrediens.js): data-namn/data-mangd på raden */
+        var dn = rows[ri].getAttribute('data-namn');
+        if (dn) {
+          var dm = rows[ri].getAttribute('data-mangd') || '';
+          if (!/^total/i.test(dn)) ingList.push({ namn: dn, mangd: dm });
+          continue;
+        }
+        /* klassisk tabell: kol 1 = namn, kol 2 = mängd */
         var tds = rows[ri].querySelectorAll('td');
         if (tds.length >= 2) {
           var namn = tds[0].textContent.trim();
