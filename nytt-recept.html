@@ -179,7 +179,10 @@ function parseHtml(raw) {
 
 /* ---------- Text-inklistring ---------- */
 function parseText(raw) {
-  const lines = raw.split('\n').map(l => clean(l).trim()).filter(Boolean);
+  const lines = raw.split('\n').map(l => clean(l).trim()).filter(Boolean)
+    /* Markdown-städning: |---|-rader bort, # ur rubriker */
+    .filter(l => !/^\|?[\s|:-]+\|?$/.test(l))
+    .map(l => l.replace(/^#+\s*/, ''));
   if (!lines.length) return null;
   const namn = lines[0].replace(/^#+\s*/, '').replace(/^[\u{1F000}-\u{1FAFF}\u2600-\u27BF]\s*/u, '');
   const ings = [], steps = [], others = [];
@@ -188,6 +191,15 @@ function parseText(raw) {
     const low = l.toLowerCase().replace(/[:#]+/g, '').trim();
     if (/ingredien/.test(low) && low.length < 40) { section = 'ing'; continue; }
     if (/^(gör så här|gor sa har|steg|instruktion|tillagning|gör)$/.test(low) && low.length < 40) { section = 'steg'; continue; }
+    /* Markdown-tabellrad: | Vetemjöl (Garant) | 450 g | 3,40 kr | */
+    if (l.startsWith('|')) {
+      const celler = l.split('|').map(c => c.trim()).filter(Boolean);
+      if (celler.length >= 2 && !/^total/i.test(celler[0]) && !/ingrediens|mängd/i.test(celler[0])) {
+        ings.push([celler[0], celler[1]]);   /* ev. priskolumn (celler[2]) ignoreras */
+        continue;
+      }
+      if (celler.length >= 2) continue;      /* rubrik-/totalrad – hoppa */
+    }
     const mi = l.match(ING_RE), mr = l.match(ING_REV_RE), ms = l.match(STEP_RE);
     if (section === 'ing') {
       if (mi) ings.push([mi[2].trim(), mi[1].trim()]);
@@ -431,5 +443,5 @@ async function saveDirect() {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2441317acdec6a0',t:'MTc4NTU3OTI1Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a24455673fa88de0',t:'MTc4NTU4MTk2OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
