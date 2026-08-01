@@ -38,6 +38,11 @@
   css.id = 'mk-print-modes';
   css.textContent =
     '@media print{' +
+      /* ===== v4: ENDAST RECEPTET – vitlista. Allt som inte är själva
+         receptet (betyg, proveniens, maskinförslag, "Se även", energi-
+         tabeller, anteckningar, QR-kort, framtida moduler...) döljs
+         AUTOMATISKT eftersom bara .mk-keep-märkta element skrivs ut. */
+      'body.mk-print-clean > *:not(.mk-keep):not(#mk-auto-qr){display:none!important;}' +
       'body.mk-print-noimg img{display:none!important;}' +
       /* Inköpslista: endast ingredienskortet */
       'body.mk-print-ing .card{display:none!important;}' +
@@ -54,6 +59,8 @@
       'body.mk-print-cook header h1{font-size:14pt!important;}' +
       'body.mk-print-cook td{padding:1mm 2mm!important;}' +
       'body.mk-print-cook ol li{margin-bottom:1mm!important;}' +
+      /* QR bara på Hela/Utan bilder – kökskort & inköpslista = renast */
+      'body.mk-print-cook #mk-auto-qr,body.mk-print-ing #mk-auto-qr{display:none!important;}' +
       /* Ingredienser ALLTID överst på utskrift (flex-ordning) */
       'body.mk-print-ordered{display:flex!important;flex-direction:column!important;}' +
       'body.mk-print-ordered > *{order:10;}' +
@@ -62,6 +69,10 @@
       'body.mk-print-ordered > .hero-img{order:3!important;}' +
       'body.mk-print-ordered > .card.mk-ing-card{order:4!important;}' +
       'body.mk-print-ordered > footer{order:99!important;}' +
+      /* Snygga sidbrytningar: rubrik lämnas aldrig ensam, steg hålls ihop */
+      'header{page-break-after:avoid;break-after:avoid;}' +
+      'h2,h3{page-break-after:avoid;break-after:avoid;}' +
+      'ol li,tr{page-break-inside:avoid;break-inside:avoid;}' +
       /* Datumrad + auto-QR */
       'body::after{content:"Utskriven " attr(data-mk-date) " · Mitt Maskinkök";display:block;' +
         'text-align:center;font-size:7pt;color:#999;margin-top:6mm;font-family:Georgia,serif;order:100;}' +
@@ -156,10 +167,51 @@
     }
   }
 
+  /* ============================================================
+     v4-VITLISTA: märk det som ÄR receptet med .mk-keep.
+     Allt annat (betyg, proveniens, maskinförslag, "Se även",
+     anteckningar, QR-kort, energitabeller, framtida moduler...)
+     försvinner automatiskt ur utskriften – utan att någon
+     behöver underhålla en dölj-lista.
+     ============================================================ */
+  function markKeep(root) {
+    root = root || document;
+    var kids = root.body ? root.body.children : root.children;
+    for (var i = 0; i < kids.length; i++) {
+      var el = kids[i];
+      var keep = false;
+      var tag = el.tagName;
+      /* Modul-element (id "mk-...") är per definition INTE receptet
+         (energi, proveniens, betyg, maskinförslag, se-även...). */
+      if (el.id && el.id.indexOf('mk-') === 0 && el.id !== 'mk-auto-qr') { el.classList.remove('mk-keep'); continue; }
+      if (tag === 'HEADER') keep = true;                                /* rubrikband */
+      else if (el.classList.contains('hero-img')) keep = true;          /* receptbild */
+      else if (el.classList.contains('warn') || el.classList.contains('tip') ||
+               el.classList.contains('alt')) keep = true;               /* varning/tips */
+      else if (el.classList.contains('card')) {
+        /* Kort behålls ENDAST om de är recept-innehåll:
+           ingredienser, steg, näringsvärde eller maskinsteg.
+           Kort med interaktivt innehåll (textarea, stjärnor, knappar)
+           är per definition INTE receptet. */
+        if (el.querySelector('textarea, input, select, button, .stars, #stars')) keep = false;
+        else if (el.classList.contains('mk-ing-card') || el.classList.contains('mk-step-card')) keep = true;
+        else if (el.querySelector('.machine-step, ol, table')) keep = true;
+        else {
+          var h2 = el.querySelector('h2');
+          keep = !!(h2 && /(näring|gör så här|steg|ingrediens|kostnad)/i.test(h2.textContent));
+        }
+      }
+      el.classList.toggle('mk-keep', keep);
+    }
+  }
+
   function prepare() {
     document.body.setAttribute('data-mk-date', new Date().toLocaleDateString('sv-SE'));
     markCards();
-    if (!document.getElementById('mk-auto-qr') && !document.querySelector('.qr-box')) {
+    if (isRecipePage) markKeep();
+    /* v4: på receptsidor rensas gamla QR-kort bort av vitlistan,
+       så auto-QR:n (liten, i sidfoten) behövs alltid där. */
+    if (!document.getElementById('mk-auto-qr') && (isRecipePage || !document.querySelector('.qr-box'))) {
       var qr = document.createElement('div');
       qr.id = 'mk-auto-qr';
       qr.innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' +
@@ -184,11 +236,19 @@
   function measurePrintHeight(mode) {
     if (measureCache[mode] !== undefined) return measureCache[mode];
     markCards();
+    if (isRecipePage) markKeep();
     var clone = document.body.cloneNode(true);
     clone.style.cssText = 'position:absolute;left:-99999px;top:0;width:794px;visibility:hidden;';
     // Ta bort skärm-element ur klonen
     var sels = '.no-print,.toolbar,#mk-fab,#mk-nav,#mk-top,#mk-lang,.print-btn,.share-btn,#betyg,.tabbar,.search-wrap,#mk-rnav,#mk-pd-bg,script,style';
     clone.querySelectorAll(sels).forEach(function (el) { el.remove(); });
+    // v4: på receptsidor mäts ENDAST vitlistan (samma som skrivs ut)
+    if (isRecipePage) {
+      var kids = Array.prototype.slice.call(clone.children);
+      kids.forEach(function (el) {
+        if (!el.classList.contains('mk-keep') && el.id !== 'mk-auto-qr') el.remove();
+      });
+    }
     if (mode === 'noimg' || mode === 'cook') clone.querySelectorAll('img').forEach(function (el) { el.remove(); });
     if (mode === 'ing') {
       clone.querySelectorAll('.card:not(.mk-ing-card),.machine-step,.warn,.alt,.tip,.hero-img').forEach(function (el) { el.remove(); });
@@ -208,16 +268,20 @@
     var pages = measurePrintHeight(mode) / PAGE_H;
     if (pages <= 1.02) return 1;
     var overflow = pages - Math.floor(pages);
-    var wantOne = fitPref === 'always' || (pages < 2 && overflow > 0 && overflow < 0.5);
-    if (!wantOne) return 1;
-    var scale = Math.max(MIN_SCALE, Math.min(1, 1 / pages) - 0.01);
-    return (1 / pages) < MIN_SCALE && fitPref !== 'always' ? 1 : scale;
+    /* v4 AUTO: skala till närmaste HELA sidantal när sista sidan är
+       mindre än halvfull – 1,4 sidor→1, 2,3 sidor→2 osv. (50%-regeln
+       gällde tidigare bara 1–2 sidor, nu alla). */
+    var target = null;
+    if (fitPref === 'always') target = 1;
+    else if (overflow > 0.02 && overflow < 0.5) target = Math.floor(pages);
+    if (!target) return 1;
+    var scale = Math.max(MIN_SCALE, Math.min(1, target / pages) - 0.005);
+    return (target / pages) < MIN_SCALE && fitPref !== 'always' ? 1 : scale;
   }
 
   function pagesFor(mode, fitPref) {
     var scale = decideScale(mode, fitPref);
-    if (scale < 1) return 1;
-    return Math.max(1, Math.ceil(measurePrintHeight(mode) / PAGE_H - 0.02));
+    return Math.max(1, Math.ceil(measurePrintHeight(mode) * scale / PAGE_H - 0.02));
   }
 
   /* ============================================================
@@ -225,10 +289,11 @@
      ============================================================ */
   function doPrint(mode, fitPref) {
     prepare();
-    document.body.classList.remove('mk-print-noimg', 'mk-print-ing', 'mk-print-cook', 'mk-print-scaled', 'mk-print-ordered');
+    document.body.classList.remove('mk-print-noimg', 'mk-print-ing', 'mk-print-cook', 'mk-print-scaled', 'mk-print-ordered', 'mk-print-clean');
     if (mode === 'noimg') document.body.classList.add('mk-print-noimg');
     if (mode === 'ing') document.body.classList.add('mk-print-ing');
     if (mode === 'cook') document.body.classList.add('mk-print-cook');
+    if (isRecipePage) document.body.classList.add('mk-print-clean'); // v4: endast receptet (vitlista)
     document.body.classList.add('mk-print-ordered'); // ingredienser alltid överst
     var scale = decideScale(mode, fitPref || localStorage.getItem('mk-fit') || 'auto');
     if (scale < 1) {
@@ -240,7 +305,7 @@
   }
 
   window.addEventListener('afterprint', function () {
-    document.body.classList.remove('mk-print-noimg', 'mk-print-ing', 'mk-print-cook', 'mk-print-scaled', 'mk-print-ordered');
+    document.body.classList.remove('mk-print-noimg', 'mk-print-ing', 'mk-print-cook', 'mk-print-scaled', 'mk-print-ordered', 'mk-print-clean');
     document.documentElement.style.removeProperty('--mk-print-scale');
     measureCache = {};
   });
@@ -317,7 +382,9 @@
     var hasIng = !!document.querySelector('.mk-ing-card');
     var hasSteps = !!document.querySelector('.mk-step-card');
     var fitPref = localStorage.getItem('mk-fit') || 'auto';
-    var selMode = 'full';
+    /* Minns senaste läget – men bara om det finns på denna sida */
+    var selMode = localStorage.getItem('mk-print-mode') || 'full';
+    if ((selMode === 'cook' && !(hasIng && hasSteps)) || (selMode === 'ing' && !hasIng)) selMode = 'full';
 
     function badge(mode) {
       var p = pagesFor(mode, fitPref);
@@ -332,7 +399,7 @@
     dlg.innerHTML =
       '<div id="mk-pd" role="dialog" aria-label="Utskriftsval">' +
         '<div class="pd-head"><h3>🖨️ Skriv ut</h3>' +
-        '<div class="sub">A4 i kokboksstil · ingredienser alltid överst · förhandsgranskning till höger</div></div>' +
+        '<div class="sub">A4 i kokboksstil · ✨ endast receptet skrivs ut (betyg, förslag m.m. rensas automatiskt) · ingredienser överst</div></div>' +
         '<div class="pd-cols">' +
         '<div class="pd-body">' +
           '<div class="fitrow"><span class="fl">Sidanpassning</span><div class="seg">' +
@@ -340,8 +407,8 @@
             '<button data-fit="always"' + (fitPref === 'always' ? ' class="on"' : '') + ' title="Skala alltid till 1 sida">1 sida</button>' +
             '<button data-fit="never"' + (fitPref === 'never' ? ' class="on"' : '') + ' title="Aldrig skala">Av</button>' +
           '</div></div>' +
-          '<button class="opt sel" data-mode="full"><span class="ic">📖</span><span><b>Hela sidan</b>' +
-            '<small>Komplett med bilder – kokbokssida</small></span>' + badge('full') + '</button>' +
+          '<button class="opt" data-mode="full"><span class="ic">📖</span><span><b>Hela receptet</b>' +
+            '<small>Med bild – ren kokbokssida</small></span>' + badge('full') + '</button>' +
           '<button class="opt" data-mode="noimg"><span class="ic">🄼</span><span><b>Utan bilder</b>' +
             '<small>Sparar bläck – text och tabeller</small></span>' + badge('noimg') + '</button>' +
           (hasIng && hasSteps ? '<button class="opt" data-mode="cook"><span class="ic">👨‍🍳</span><span><b>Kökskort</b>' +
@@ -363,6 +430,7 @@
       '</div>';
     document.body.appendChild(dlg);
     requestAnimationFrame(function () { dlg.classList.add('in'); });
+    refresh();  /* markera ihågkommet läge + färska sidbadges direkt */
 
     function refresh() {
       dlg.querySelectorAll('.opt').forEach(function (o) {
@@ -386,7 +454,11 @@
         return;
       }
       var opt = e.target.closest('.opt');
-      if (opt) { selMode = opt.getAttribute('data-mode'); refresh(); return; }
+      if (opt) {
+        selMode = opt.getAttribute('data-mode');
+        try { localStorage.setItem('mk-print-mode', selMode); } catch (err) {}
+        refresh(); return;
+      }
       if (e.target.id === 'pd-go') doPrint(selMode, fitPref);
       if (e.target.id === 'pd-copy') { copyAsText(); }
       if (e.target.id === 'pd-cancel') closeDialog();
