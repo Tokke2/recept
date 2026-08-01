@@ -1,0 +1,6 @@
+{
+ "_plats": "/json/donation.json  (central donationsinställning – fyll i ditt Swish-nummer!)",
+ "kommentar": "Fyll i 'swish_nummer' (t.ex. 0701234567 eller 123 456 78 90) så visas en liten Swish-rad i sidfoten på ALLA sidor automatiskt. Lämna tomt = ingen knapp visas. 'meddelande' är texten som visas bredvid.",
+ "swish_nummer": "",
+ "meddelande": "Gillar du sajten? Bjud på en kaffe via Swish"
+}
