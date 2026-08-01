@@ -125,12 +125,7 @@
      ============================================================ */
   var myFile = decodeURIComponent(location.pathname.split('/').pop());
 
-  async function getList() {
-    // Sessionscache (delas med relaterade-recept-modulen om möjligt)
-    try {
-      var c = JSON.parse(sessionStorage.getItem('mk-rnav-list'));
-      if (c && c.length) return c;
-    } catch (e) {}
+  async function fetchList() {
     var files = [];
     try {
       var parts = location.pathname.split('/').filter(Boolean);
@@ -144,8 +139,29 @@
           .sort(function (a, b) { return a.localeCompare(b, 'sv'); });
       }
     } catch (e) {}
-    try { sessionStorage.setItem('mk-rnav-list', JSON.stringify(files)); } catch (e) {}
     return files;
+  }
+
+  async function getList() {
+    // Sessionscache (delas med relaterade-recept-modulen om möjligt)
+    var cached = null;
+    try { cached = JSON.parse(sessionStorage.getItem('mk-rnav-list')); } catch (e) {}
+    /* NYA RECEPT: om denna sida saknas i cachen är listan gammal
+       (t.ex. recept nyss sparat via nytt-recept.html) → hämta färskt. */
+    if (cached && cached.length && cached.indexOf(myFile) !== -1) return cached;
+
+    var files = await fetchList();
+    /* GitHub-API:t kan släpa efter någon minut efter en sparning –
+       lägg då in denna sida på rätt A–Ö-plats lokalt så bläddringen
+       fungerar direkt ändå. */
+    if (files.length && files.indexOf(myFile) === -1 && /\.html?$/i.test(myFile)) {
+      files.push(myFile);
+      files.sort(function (a, b) { return a.localeCompare(b, 'sv'); });
+    }
+    if (files.length) {
+      try { sessionStorage.setItem('mk-rnav-list', JSON.stringify(files)); } catch (e) {}
+    }
+    return files.length ? files : (cached || []);
   }
 
   var prevFile = null, nextFile = null;
