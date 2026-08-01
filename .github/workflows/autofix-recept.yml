@@ -27,6 +27,7 @@ on:
       - 'recept/**.html'
       - 'recept/**.txt'
       - 'json/maskiner/**.json'
+      - 'json/ingrediens-lankar.txt'
   workflow_dispatch:
 
 permissions:
@@ -40,6 +41,9 @@ jobs:
 
       - name: Konvertera nya recept till standardutformningen
         run: python3 .github/workflows/konvertera.py
+
+      - name: Hamta ingredienser fran produktlankar (Willys/Hemkop)
+        run: python3 .github/workflows/ingrediens-import.py
 
       - name: Committa
         run: |
