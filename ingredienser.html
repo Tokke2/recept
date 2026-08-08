@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<!-- PLATS: /ingredienser.html  (repo-roten – ingrediensdatabasen: se, sök & lägg till) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🥫 Ingredienser – Mitt Maskinkök</title>
+<style>
+  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:980px; margin:0 auto; }
+  header { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:18px; }
+  header h1 { font-size:1.5rem; margin-bottom:4px; }
+  header p { opacity:.92; font-size:.92rem; }
+  header a { color:#fff; opacity:.85; text-decoration:none; font-size:.9rem; }
+  .card { background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  .card h2 { font-size:1.05rem; margin-bottom:10px; }
+  input[type=text], input[type=number] { width:100%; padding:11px 13px; border:2px solid #e8e2d8; border-radius:10px; font-size:.95rem; font-family:inherit; }
+  input:focus { outline:none; border-color:var(--accent2); }
+  .row { display:flex; gap:12px; flex-wrap:wrap; margin-top:10px; }
+  .row > div { flex:1; min-width:130px; }
+  label { display:block; font-size:.78rem; font-weight:700; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:.04em; }
+  .btn { background:var(--green); color:#fff; border:none; border-radius:10px; padding:12px 22px; font-weight:700; font-size:.95rem; cursor:pointer; font-family:inherit; margin-top:10px; margin-right:8px; }
+  .btn.orange { background:var(--accent2); }
+  .btn:disabled { opacity:.6; cursor:wait; }
+  .hint { background:#fff8ec; border-left:4px solid var(--accent2); border-radius:8px; padding:12px 16px; font-size:.88rem; margin-top:12px; }
+  .okbox { border-left:4px solid var(--green); background:#eaf7ef; border-radius:8px; padding:12px 16px; font-size:.88rem; margin-top:10px; }
+  .errbox { border-left:4px solid var(--accent); background:#fdecea; border-radius:8px; padding:12px 16px; font-size:.88rem; margin-top:10px; }
+  table { width:100%; border-collapse:collapse; font-size:.88rem; }
+  th { text-align:left; padding:8px 10px; background:#f0ebe3; font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); position:sticky; top:0; }
+  th.num, td.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  td { padding:8px 10px; border-bottom:1.5px solid #f0ebe3; }
+  tr:hover td { background:#faf7f2; }
+  td .src { display:block; font-size:.72rem; color:#a5967e; }
+  td a { color:var(--accent); text-decoration:none; font-size:.78rem; }
+  .count { color:var(--muted); font-size:.82rem; margin:8px 0; }
+  footer { text-align:center; color:var(--muted); font-size:.8rem; padding:20px; }
+  details summary { cursor:pointer; font-weight:700; font-size:.95rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <div style="margin-bottom:8px;"><a href="index.html">← Till startsidan</a></div>
+  <h1>🥫 Ingrediensdatabasen</h1>
+  <p>Alla priser &amp; näringsvärden som recepten och generatorn räknar med – och två sätt att lägga till nya, direkt här på sidan.</p>
+</header>
+
+<!-- ============ 1. LÄGG TILL VIA BUTIKSLÄNK ============ -->
+<div class="card">
+  <h2>🛒 Lägg till via butikslänk (Willys / Hemköp)</h2>
+  <p style="font-size:.88rem;color:var(--muted);margin-bottom:8px;">Klistra in produktlänken → sparas direkt i databasen → roboten hämtar <b>riktigt jämförpris (kr/kg) och näring per 100 g</b> från butikens eget API inom ~1 minut.</p>
+  <input type="text" id="lank" placeholder="https://www.willys.se/produkt/Turkisk-Yoghurt-10procent-100486886_ST">
+  <button class="btn orange" id="lankBtn" onclick="sendLink()">💾 Spara länken i databasen</button>
+  <div id="lankResult"></div>
+  <div class="hint">💡 Fler länkar? Klistra in och spara en i taget – eller flera på samma gång separerade med mellanslag/radbrytning. Finns ingrediensen redan uppdateras pris &amp; näring.</div>
+</div>
+
+<!-- ============ 2. LÄGG TILL MANUELLT ============ -->
+<div class="card">
+  <details>
+    <summary>✍️ Lägg till manuellt (utan länk – näringen från förpackningen)</summary>
+    <div class="row">
+      <div style="flex:2;"><label>Namn *</label><input type="text" id="mNamn" placeholder="t.ex. Kesella 10%"></div>
+      <div><label>Pris kr/kg *</label><input type="number" id="mPris" step="0.01" min="0"></div>
+      <div><label>Kcal /100 g *</label><input type="number" id="mKcal" step="0.1" min="0"></div>
+    </div>
+    <div class="row">
+      <div><label>Protein g</label><input type="number" id="mProt" step="0.1" min="0" value="0"></div>
+      <div><label>Kolhydrat g</label><input type="number" id="mKolh" step="0.1" min="0" value="0"></div>
+      <div><label>Fett g</label><input type="number" id="mFett" step="0.1" min="0" value="0"></div>
+      <div><label>Fiber g</label><input type="number" id="mFiber" step="0.1" min="0" value="0"></div>
+    </div>
+    <button class="btn" id="mBtn" onclick="saveManual()">💾 Spara i databasen</button>
+    <div id="mResult"></div>
+  </details>
+</div>
+
+<!-- ============ 3. DATABASEN ============ -->
+<div class="card">
+  <h2>📦 Databasen</h2>
+  <input type="text" id="q" placeholder="🔍 Sök ingrediens..." oninput="renderList()">
+  <div class="count" id="count"></div>
+  <div style="max-height:60vh;overflow:auto;border-radius:10px;">
+    <table>
+      <thead><tr>
+        <th onclick="setSort('namn')" style="cursor:pointer;">Ingrediens ↕</th>
+        <th class="num" onclick="setSort('pris_kr_per_kg')" style="cursor:pointer;">Pris kr/kg ↕</th>
+        <th class="num" onclick="setSort('kcal')" style="cursor:pointer;">Kcal ↕</th>
+        <th class="num">Protein</th><th class="num">Kolh.</th><th class="num">Fett</th><th class="num">Fiber</th>
+      </tr></thead>
+      <tbody id="rows"><tr><td colspan="7">⏳ Laddar...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<footer>Priser &amp; näring per 100 g · används av recepten, generatorn och energiberäkningen · json/ingredienser.json</footer>
+
+<script>
+/* ============================================================
+   INGREDIENSDATABASEN – se, sök & lägg till direkt på sidan
+   · Butikslänk → sparas i json/ingrediens-lankar.txt via GitHub-
+     API (spara.js, lösenordsskyddat) → Actions-roboten
+     (ingrediens-import.py) hämtar pris + näring → ingredienser.json
+   · Manuellt → skrivs direkt in i json/ingredienser.json
+   ============================================================ */
+let ING = [], sortKey = 'namn', sortAsc = true;
+
+async function loadDb() {
+  try {
+    const d = await (await fetch('json/ingredienser.json', { cache: 'no-store' })).json();
+    ING = d.ingredienser || [];
+  } catch (e) { ING = []; }
+  renderList();
+}
+
+function setSort(k) {
+  if (sortKey === k) sortAsc = !sortAsc; else { sortKey = k; sortAsc = true; }
+  renderList();
+}
+
+function renderList() {
+  const q = (document.getElementById('q').value || '').trim().toLowerCase();
+  let list = ING.filter(i => !q || (i.namn + ' ' + (i.varumarke || '')).toLowerCase().includes(q));
+  list.sort((a, b) => {
+    const va = a[sortKey], vb = b[sortKey];
+    if (typeof va === 'number' && typeof vb === 'number') return sortAsc ? va - vb : vb - va;
+    return sortAsc ? String(va).localeCompare(String(vb), 'sv') : String(vb).localeCompare(String(va), 'sv');
+  });
+  document.getElementById('count').textContent = list.length === ING.length
+    ? ING.length + ' ingredienser' : list.length + ' av ' + ING.length + ' ingredienser';
+  document.getElementById('rows').innerHTML = list.map(i => `<tr>
+    <td>${i.namn}${i.varumarke ? ' <span class="src">' + i.varumarke + '</span>' : ''}${i.lank ? ' <a href="' + i.lank + '" target="_blank" rel="noopener">butiken ↗</a>' : ''}</td>
+    <td class="num"><b>${(+i.pris_kr_per_kg || 0).toLocaleString('sv-SE')}</b></td>
+    <td class="num">${i.kcal || 0}</td>
+    <td class="num">${i.protein || 0}</td>
+    <td class="num">${i.kolhydrat || 0}</td>
+    <td class="num">${i.fett || 0}</td>
+    <td class="num">${i.fiber || 0}</td>
+  </tr>`).join('') || '<tr><td colspan="7">🤔 Ingen träff.</td></tr>';
+}
+
+/* ---------- 1) Butikslänk → ingrediens-lankar.txt (roboten tar över) ---------- */
+async function sendLink() {
+  const raw = document.getElementById('lank').value.trim();
+  const out = document.getElementById('lankResult');
+  if (!raw) { alert('Klistra in en produktlänk först!'); return; }
+  /* Städa kopieringsartefakter + dela upp flera länkar */
+  const links = raw.replace(/\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g, '$2')
+    .split(/[\s\n]+/).filter(l => /^https?:\/\//.test(l));
+  if (!links.length) { alert('Hittade ingen giltig länk (ska börja med https://)'); return; }
+  const bad = links.filter(l => !/willys\.se|hemkop\.se/i.test(l));
+  if (bad.length) {
+    out.innerHTML = '<div class="errbox">⚠️ Endast <b>willys.se</b> och <b>hemkop.se</b> stöds (butikens API krävs). Ogiltig: ' + bad[0].slice(0, 60) + '…</div>';
+    return;
+  }
+  if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas – prova igen om en stund.'); return; }
+
+  const btn = document.getElementById('lankBtn');
+  btn.disabled = true; btn.textContent = '⏳ Sparar...';
+  let res = { ok: false, error: 'okänt fel' };
+  try {
+    let txt = await __MK_SPARA.load('json/ingrediens-lankar.txt');
+    if (txt === null) txt = '# ingrediens-lankar\n';
+    txt = txt.replace(/\s+$/, '') + '\n' + links.join('\n') + '\n';
+    res = await __MK_SPARA.save('json/ingrediens-lankar.txt', txt,
+      'Ingredienslänk via sajten (' + links.length + ' st)');
+  } catch (e) { res = { ok: false, error: e.message }; }
+  btn.disabled = false; btn.textContent = '💾 Spara länken i databasen';
+
+  if (res.ok) {
+    document.getElementById('lank').value = '';
+    out.innerHTML = '<div class="okbox">🎉 <b>' + links.length + (links.length === 1 ? ' länk sparad!' : ' länkar sparade!') +
+      '</b> Roboten hämtar pris &amp; näring nu – ingrediensen dyker upp i listan nedan om <b>~1 minut</b> ' +
+      '(grön bock i <a href="https://github.com/Tokke2/recept/actions" target="_blank" rel="noopener">Actions</a> → klicka 🔄 nedan).' +
+      '<br><button class="btn" style="margin-top:8px;padding:8px 16px;font-size:.85rem;" onclick="loadDb()">🔄 Uppdatera listan</button></div>';
+  } else {
+    out.innerHTML = '<div class="errbox">⚠️ <b>Kunde inte spara:</b> ' + res.error + '</div>';
+  }
+}
+
+/* ---------- 2) Manuellt → direkt in i ingredienser.json ---------- */
+async function saveManual() {
+  const namn = document.getElementById('mNamn').value.trim();
+  const pris = parseFloat(document.getElementById('mPris').value);
+  const kcal = parseFloat(document.getElementById('mKcal').value);
+  const out = document.getElementById('mResult');
+  if (!namn || isNaN(pris) || isNaN(kcal)) { alert('Fyll i namn, pris och kcal!'); return; }
+  if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas.'); return; }
+
+  const post = {
+    id: namn.toLowerCase().replace(/å/g,'a').replace(/ä/g,'a').replace(/ö/g,'o').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''),
+    namn: namn, pris_kr_per_kg: pris, kcal: kcal,
+    protein: +document.getElementById('mProt').value || 0,
+    kolhydrat: +document.getElementById('mKolh').value || 0,
+    fett: +document.getElementById('mFett').value || 0,
+    fiber: +document.getElementById('mFiber').value || 0,
+    kalla: 'tillagd via ingredienser.html ' + new Date().toISOString().slice(0, 10)
+  };
+  const btn = document.getElementById('mBtn');
+  btn.disabled = true; btn.textContent = '⏳ Sparar...';
+  let res = { ok: false, error: 'okänt fel' };
+  try {
+    const raw = await __MK_SPARA.load('json/ingredienser.json');
+    if (!raw) throw new Error('kunde inte läsa databasen');
+    const db = JSON.parse(raw);
+    db.ingredienser = db.ingredienser || [];
+    const idx = db.ingredienser.findIndex(i => i.id === post.id);
+    if (idx >= 0) db.ingredienser[idx] = post; else db.ingredienser.push(post);
+    res = await __MK_SPARA.save('json/ingredienser.json', JSON.stringify(db, null, 2),
+      'Ny ingrediens via sajten: ' + namn);
+  } catch (e) { res = { ok: false, error: e.message }; }
+  btn.disabled = false; btn.textContent = '💾 Spara i databasen';
+
+  if (res.ok) {
+    const i = ING.findIndex(x => x.id === post.id);
+    if (i >= 0) ING[i] = post; else ING.push(post);
+    renderList();
+    ['mNamn','mPris','mKcal'].forEach(id => document.getElementById(id).value = '');
+    ['mProt','mKolh','mFett','mFiber'].forEach(id => document.getElementById(id).value = '0');
+    out.innerHTML = '<div class="okbox">🎉 <b>' + namn + '</b> sparad – syns i listan nedan direkt!</div>';
+  } else {
+    out.innerHTML = '<div class="errbox">⚠️ Kunde inte spara: ' + res.error + '</div>';
+  }
+}
+
+loadDb();
+</script>
+<script src="assets/site.js"></script>
+</body>
+</html>
