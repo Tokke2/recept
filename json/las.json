@@ -1,7 +1,7 @@
 {
- "_plats": "/json/las.json  (central låsfil för receptredigering – ändras ENDAST här på GitHub)",
- "kommentar": "SÅ BYTER DU LÖSENORD (endast här på GitHub): ENKLAST – skriv nya lösenordet i 'losenord' nedan och töm 'losenord_hash'. SÄKRAST – fyll i 'losenord_hash' med SHA-256 av lösenordet (be valfri AI-chatt: 'ge mig SHA-256-hash av ordet X') och lämna 'losenord' tomt, då syns lösenordet aldrig i klartext. Sätt las_redigering till false för att stänga av skyddet helt.",
- "losenord_hash": "5207b3fd9cc4c066898ca64f0d7d0d76a9d20736489830a3a89dbba9afdc013b",
- "losenord": "",
+ "_plats": "/json/las.json  (central låsfil för redigering & uppladdning – ändras ENDAST här på GitHub)",
+ "kommentar": "Skriv ditt lösenord i 'losenord' nedan – gäller både ✏️ redigering och 💾 uppladdning på sajten. OBS: filen är publikt läsbar, välj ett lösenord du inte använder någon annanstans. Vill du dölja det senare: fyll i 'losenord_hash' med SHA-256 av lösenordet och töm 'losenord' (hash har företräde). Sätt las_redigering till false för att stänga av skyddet helt.",
+ "losenord": "Hulken8617!",
+ "losenord_hash": "",
  "las_redigering": true
 }
