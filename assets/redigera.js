@@ -162,7 +162,12 @@
         '<div class="pw-head"><div class="lock">🔒</div>' +
         '<h3>Redigering är låst</h3><p>Ange lösenordet för att ändra receptet</p></div>' +
         '<div class="pw-body">' +
-          '<input type="password" id="mk-pw-in" placeholder="Lösenord" autocomplete="off">' +
+          '<div style="position:relative;">' +
+            '<input type="password" id="mk-pw-in" placeholder="Lösenord" autocomplete="off" style="padding-right:44px;">' +
+            '<button type="button" id="mk-pw-eye" title="Visa/dölj lösenordet" aria-label="Visa lösenordet" ' +
+              'style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;' +
+              'font-size:1.15rem;cursor:pointer;padding:4px;line-height:1;">👁️</button>' +
+          '</div>' +
           '<div class="pw-msg" id="mk-pw-msg"></div>' +
           '<div class="pw-row">' +
             '<button class="pw-ok" id="mk-pw-ok">🔓 Lås upp</button>' +
@@ -174,6 +179,14 @@
     requestAnimationFrame(function () { bg.classList.add('in'); });
     var input = bg.querySelector('#mk-pw-in');
     setTimeout(function () { input.focus(); }, 150);
+
+    /* 👁️ Visa/dölj lösenordet */
+    bg.querySelector('#mk-pw-eye').addEventListener('click', function () {
+      var show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      this.textContent = show ? '🙈' : '👁️';
+      input.focus();
+    });
 
     function close() {
       bg.classList.remove('in');
