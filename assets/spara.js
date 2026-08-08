@@ -70,7 +70,12 @@
           '<div style="font-size:2rem;">🔒</div>' +
           '<h3 style="margin:6px 0 4px;">Uppladdning är låst</h3>' +
           '<p style="font-size:.88rem;color:#7f8c8d;margin:0 0 14px;">Ange lösenordet (samma som för ✏️ redigering – ligger i json/las.json)</p>' +
-          '<input type="password" id="mkSpIn" placeholder="Lösenord" autocomplete="off" style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1rem;box-sizing:border-box;">' +
+          '<div style="position:relative;">' +
+            '<input type="password" id="mkSpIn" placeholder="Lösenord" autocomplete="off" style="width:100%;padding:12px 44px 12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1rem;box-sizing:border-box;">' +
+            '<button type="button" id="mkSpEye" title="Visa/dölj lösenordet" aria-label="Visa lösenordet" ' +
+              'style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;' +
+              'font-size:1.15rem;cursor:pointer;padding:4px;line-height:1;">👁️</button>' +
+          '</div>' +
           '<div id="mkSpMsg" style="color:#c0392b;font-size:.82rem;min-height:18px;margin-top:6px;"></div>' +
           '<div style="display:flex;gap:10px;margin-top:10px;">' +
             '<button id="mkSpOk" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;">🔓 Lås upp</button>' +
@@ -80,6 +85,14 @@
       document.body.appendChild(bg);
       var input = bg.querySelector('#mkSpIn');
       setTimeout(function () { input.focus(); }, 120);
+
+      /* 👁️ Visa/dölj lösenordet */
+      bg.querySelector('#mkSpEye').addEventListener('click', function () {
+        var show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        this.textContent = show ? '🙈' : '👁️';
+        input.focus();
+      });
       async function attempt() {
         if (await checkPassword(input.value, lock)) {
           try { sessionStorage.setItem(UNLOCK_KEY, '1'); } catch (e) {}
@@ -136,7 +149,12 @@
             '<li><b>Permissions</b> → Repository permissions → <b>Contents</b> → <b>Read and write</b></li>' +
             '<li>Klicka gröna <b>Generate token</b> → kopiera koden (börjar med github_pat_...)</li>' +
           '</ol>' +
-          '<input type="password" id="mkGhTok" placeholder="Klistra in nyckeln här (github_pat_...)" style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:.95rem;box-sizing:border-box;">' +
+          '<div style="position:relative;">' +
+            '<input type="password" id="mkGhTok" placeholder="Klistra in nyckeln här (github_pat_...)" style="width:100%;padding:12px 44px 12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:.95rem;box-sizing:border-box;">' +
+            '<button type="button" id="mkGhEye" title="Visa/dölj nyckeln" aria-label="Visa nyckeln" ' +
+              'style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;' +
+              'font-size:1.15rem;cursor:pointer;padding:4px;line-height:1;">👁️</button>' +
+          '</div>' +
           '<div style="display:flex;gap:10px;margin-top:14px;">' +
             '<button id="mkGhOk" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;font-size:.95rem;cursor:pointer;">💾 Spara nyckeln</button>' +
             '<button id="mkGhAvbryt" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;font-size:.95rem;cursor:pointer;">Avbryt</button>' +
@@ -144,6 +162,14 @@
           '<p style="font-size:.78rem;color:#7f8c8d;margin:12px 0 0;">🔒 Nyckeln lagras endast i DIN webbläsare (localStorage) och skickas bara till api.github.com. Den kan bara ändra just detta repo.</p>' +
         '</div>';
       document.body.appendChild(bg);
+      /* 👁️ Visa/dölj nyckeln */
+      bg.querySelector('#mkGhEye').addEventListener('click', function () {
+        var inp = bg.querySelector('#mkGhTok');
+        var show = inp.type === 'password';
+        inp.type = show ? 'text' : 'password';
+        this.textContent = show ? '🙈' : '👁️';
+        inp.focus();
+      });
       bg.querySelector('#mkGhOk').onclick = function () {
         var t = bg.querySelector('#mkGhTok').value.trim();
         if (!t) { bg.querySelector('#mkGhTok').style.borderColor = '#c0392b'; return; }
