@@ -141,7 +141,12 @@ function renderList() {
     ? ING.length + ' ingredienser' : list.length + ' av ' + ING.length + ' ingredienser';
   document.getElementById('rows').innerHTML = list.map(i => `<tr>
     <td><input type="checkbox" class="rowChk" data-id="${i.id}" onclick="chkChanged()"></td>
-    <td>${i.namn}${i.varumarke ? ' <span class="src">' + i.varumarke + '</span>' : ''}${i.lank ? ' <a href="' + i.lank + '" target="_blank" rel="noopener" title="Länkad – priset kan auto-uppdateras">🔗</a>' : ''}${i.uppdaterad ? ' <span class="src">uppd. ' + i.uppdaterad + '</span>' : ''}</td>
+    <td>${i.namn}${i.varumarke ? ' <span class="src">' + i.varumarke + '</span>' : ''}
+      ${i.lank ? ' <a href="' + i.lank + '" target="_blank" rel="noopener" title="Butikslänk kopplad – priset kan auto-uppdateras">🔗</a>'
+               : ' <span title="Ingen butikslänk – klicka ✏️ för att klistra in en" style="opacity:.35;">⛓️‍💥</span>'}
+      ${i.uppdaterad ? ' <span class="src">uppd. ' + i.uppdaterad + '</span>' : ''}
+      <button class="editIng no-print" data-id="${i.id}" onclick="openEdit('${i.id}')" title="Redigera ingrediensen"
+        style="background:none;border:none;cursor:pointer;font-size:.9rem;padding:2px 4px;">✏️</button></td>
     <td class="num"><b>${(+i.pris_kr_per_kg || 0).toLocaleString('sv-SE')}</b></td>
     <td class="num">${i.kcal || 0}</td>
     <td class="num">${i.protein || 0}</td>
@@ -151,6 +156,87 @@ function renderList() {
   </tr>`).join('') || '<tr><td colspan="8">🤔 Ingen träff.</td></tr>';
   chkChanged();
   updateBtnInfo();
+}
+
+/* ============================================================
+   ✏️ REDIGERA INGREDIENS – dialog med alla fält + butikslänk.
+   Saknas länk kan den klistras in här (kopplas till varan).
+   Sparas lösenordsskyddat till json/ingredienser.json.
+   ============================================================ */
+function openEdit(id) {
+  const i = ING.find(x => x.id === id);
+  if (!i) return;
+  const old = document.getElementById('mk-ing-edit-bg');
+  if (old) old.remove();
+  const bg = document.createElement('div');
+  bg.id = 'mk-ing-edit-bg';
+  bg.className = 'no-print';
+  bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto;';
+  const f = (label, fid, val, step) =>
+    `<div><label>${label}</label><input type="${step ? 'number' : 'text'}" ${step ? 'step="' + step + '" min="0"' : ''} id="${fid}" value="${String(val === undefined || val === null ? '' : val).replace(/"/g, '&quot;')}"></div>`;
+  bg.innerHTML = `
+    <div style="background:#fff;border-radius:16px;max-width:560px;width:100%;padding:24px 26px;">
+      <h3 style="margin:0 0 4px;">✏️ Redigera: ${i.namn}</h3>
+      <p style="font-size:.8rem;color:var(--muted);margin:0 0 12px;">Ändringarna sparas i databasen och slår igenom i alla recepts live-kalkyl direkt.</p>
+      <div class="row">${f('Namn *', 'ei-namn', i.namn)}${f('Varumärke', 'ei-marke', i.varumarke || '')}</div>
+      <div class="row">${f('Pris kr/kg *', 'ei-pris', i.pris_kr_per_kg, '0.01')}${f('Kcal /100 g *', 'ei-kcal', i.kcal, '0.1')}</div>
+      <div class="row">${f('Protein g', 'ei-prot', i.protein || 0, '0.1')}${f('Kolhydrat g', 'ei-kolh', i.kolhydrat || 0, '0.1')}${f('Fett g', 'ei-fett', i.fett || 0, '0.1')}${f('Fiber g', 'ei-fiber', i.fiber || 0, '0.1')}</div>
+      <div class="row"><div style="flex:1;"><label>🔗 Butikslänk (Willys/Hemköp/ICA) ${i.lank ? '– kopplad ✅' : '– SAKNAS, klistra in!'}</label>
+        <input type="text" id="ei-lank" value="${(i.lank || '').replace(/"/g, '&quot;')}" placeholder="https://www.willys.se/produkt/... (ger månatlig prisuppdatering)"></div></div>
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+        <button class="btn" style="margin:0;" id="ei-save">💾 Spara ändringarna</button>
+        <button class="btn" style="margin:0;background:#ecf0f1;color:var(--dark);" id="ei-cancel">Avbryt</button>
+      </div>
+      <div id="ei-result"></div>
+    </div>`;
+  document.body.appendChild(bg);
+  bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
+  bg.querySelector('#ei-cancel').onclick = () => bg.remove();
+  bg.querySelector('#ei-save').onclick = async () => {
+    const g = fid => document.getElementById(fid).value.trim();
+    const namn = g('ei-namn');
+    const pris = parseFloat(g('ei-pris'));
+    const kcal = parseFloat(g('ei-kcal'));
+    if (!namn || isNaN(pris) || isNaN(kcal)) { alert('Namn, pris och kcal måste fyllas i!'); return; }
+    const lank = g('ei-lank');
+    if (lank && !/^https?:\/\/([^\/]*\.)?(willys\.se|hemkop\.se|handlaprivatkund\.ica\.se)\//i.test(lank)) {
+      alert('Länken måste vara en produktsida från willys.se, hemkop.se eller handlaprivatkund.ica.se'); return;
+    }
+    const post = {
+      id: i.id, namn: namn,
+      pris_kr_per_kg: pris, kcal: kcal,
+      protein: +g('ei-prot') || 0, kolhydrat: +g('ei-kolh') || 0,
+      fett: +g('ei-fett') || 0, fiber: +g('ei-fiber') || 0,
+      kalla: (i.kalla ? i.kalla + ' · ' : '') + 'redigerad ' + new Date().toISOString().slice(0, 10)
+    };
+    if (g('ei-marke')) post.varumarke = g('ei-marke');
+    if (lank) { post.lank = lank; post.uppdaterad = i.uppdaterad || ''; }
+    if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas.'); return; }
+    const btn = bg.querySelector('#ei-save');
+    btn.disabled = true; btn.textContent = '⏳ Sparar...';
+    let res = { ok: false, error: 'okänt fel' };
+    try {
+      const raw = await __MK_SPARA.load('json/ingredienser.json');
+      if (!raw) throw new Error('kunde inte läsa databasen');
+      const db = JSON.parse(raw);
+      const idx = (db.ingredienser || []).findIndex(x => x.id === i.id);
+      if (idx >= 0) db.ingredienser[idx] = post; else db.ingredienser.push(post);
+      res = await __MK_SPARA.save('json/ingredienser.json', JSON.stringify(db, null, 2),
+        'Ingrediens redigerad via sajten: ' + namn);
+    } catch (e) { res = { ok: false, error: e.message }; }
+    btn.disabled = false; btn.textContent = '💾 Spara ändringarna';
+    if (res.ok) {
+      const li = ING.findIndex(x => x.id === i.id);
+      if (li >= 0) ING[li] = post; else ING.push(post);
+      renderList();
+      bg.remove();
+      document.getElementById('actionResult').innerHTML =
+        '<div class="okbox">✅ <b>' + namn + '</b> uppdaterad!' +
+        (lank && !i.lank ? ' 🔗 Butikslänken kopplad – varan ingår nu i den månatliga prisuppdateringen.' : '') + '</div>';
+    } else {
+      bg.querySelector('#ei-result').innerHTML = '<div class="errbox">⚠️ Kunde inte spara: ' + res.error + '</div>';
+    }
+  };
 }
 
 /* ---------- Markera & ta bort ---------- */
@@ -335,5 +421,5 @@ async function saveManual() {
 loadDb();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a27e1598afeca0cd',t:'MTc4NjE4NzUyOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a28033cd5f81f375',t:'MTc4NjIwOTczNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
