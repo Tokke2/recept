@@ -94,6 +94,7 @@
     var pages = [
       { file: 'recept.html', ikon: '📖', namn: 'Recept' },
       { file: 'maskindatabas.html', ikon: '🔧', namn: 'Maskiner' },
+      { file: 'ingredienser.html', ikon: '🥫', namn: 'Ingredienser' },
       { file: 'generator.html', ikon: '🧪', namn: 'Generator' },
       { file: 'status.html', ikon: '🩺', namn: 'Status' }
     ];
@@ -350,7 +351,7 @@
   var scripts = ['print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js'];
   if (isRecipePage) scripts.push('ingrediens.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js');
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');
-  if (/(nytt-recept|generator|maskin-import)\.html$/i.test(location.pathname)) scripts.push('spara.js');
+  if (/(nytt-recept|generator|maskin-import|ingredienser)\.html$/i.test(location.pathname)) scripts.push('spara.js');
 
   Promise.all(scripts.map(function (f) { return loadScript(f); }))
     .then(function () { printReport(checkMeta()); });
