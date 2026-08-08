@@ -22,7 +22,7 @@
    ============================================================ */
 'use strict';
 
-const VERSION = 'maskinkok-v10';
+const VERSION = 'maskinkok-v19';
 const CACHE_CORE = VERSION + '-core';     // assets + startsida (förcachas)
 const CACHE_PAGES = VERSION + '-pages';   // recept & övriga sidor
 const CACHE_IMG = VERSION + '-img';       // bilder
@@ -48,7 +48,9 @@ const CORE = [
   'assets/kokbok.js',
   'assets/spara.js',
   'assets/ingrediens.js',
+  'assets/affiliate.js',
   'json/donation.json',
+  'json/affiliate.json',
   'json/maskindatabas.json',
   'json/energi.json',
   'json/maskiner-index.json',
@@ -61,7 +63,8 @@ const NEVER_CACHE = [
   'api.qrserver.com',
   'mymemory.translated.net',
   'translate.googleapis.com',
-  'abacus.jasoncameron.dev'
+  'abacus.jasoncameron.dev',
+  'mpc.getswish.net'
 ];
 
 /* ================= INSTALL: förcacha kärnan ================= */

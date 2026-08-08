@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- PLATS: /maskindatabas.html  (repo-roten) -->
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
@@ -131,6 +132,9 @@
   <div style="margin-bottom:8px;"><a href="index.html" style="color:#fff; opacity:.85; text-decoration:none; font-size:.9rem;">← Till startsidan</a></div>
   <h1>🍳 Maskindatabas</h1>
   <p>Mina matlagningsmaskiner – alla program och bästa programförslag vid receptlagning. Data lagras även i <b>Maskindatabas.json</b>.</p>
+  <p style="margin-top:10px;" class="no-print">
+    <a href="maskin-import.html" style="display:inline-block;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:7px 18px;font-size:.9rem;font-weight:700;">➕ Lägg till ny maskin <span style="font-weight:400;opacity:.85;">– klistra in produktlänk, sparas direkt</span></a>
+  </p>
 </header>
 
 <!-- ===================== REKOMMENDATION ===================== -->
@@ -145,11 +149,19 @@
 </div>
 
 <!-- ===================== MASKINER ===================== -->
-<h2 style="margin:24px 0 12px;">🔧 Mina maskiner</h2>
+<h2 style="margin:24px 0 12px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">🔧 Mina maskiner
+  <a href="maskin-import.html" class="no-print" style="font-size:.8rem; font-weight:700; background:#eaf7ef; color:#27ae60; border:1.5px solid #27ae60; border-radius:999px; padding:4px 14px; text-decoration:none;">➕ Lägg till maskin</a>
+</h2>
 <div class="tabs" id="tabs"></div>
 <div id="machineCards"></div>
 
-<footer>Maskindatabas v4.0 · Uppdaterad 2026-07-05 · 11 maskiner · Maskiner läses automatiskt från json/maskiner/ · Programdata från officiella bruksanvisningar</footer>
+<!-- Lägg till-kort sist bland maskinerna -->
+<a href="maskin-import.html" class="no-print" style="display:block; border:2px dashed #27ae60; border-radius:14px; padding:22px; text-align:center; text-decoration:none; color:#27ae60; font-weight:700; margin-bottom:16px; background:#fbfef9;">
+  ➕ Lägg till ny maskin<br>
+  <span style="font-weight:400; font-size:.85rem; color:#7f8c8d;">Klistra in produktlänk (Amazon m.fl.) → 💾 sparas direkt på sajten → syns här automatiskt</span>
+</a>
+
+<footer>Maskindatabas · Maskiner läses automatiskt från json/maskiner/ · Programdata från officiella bruksanvisningar</footer>
 
 <script>
 /* =========================================================
@@ -159,7 +171,17 @@
    2) annars via json/maskiner-index.json (reservlista)
    ========================================================= */
 let MACHINES = [];
-const linkLabels = { kop: "🛒 Köp / produktsida", bruksanvisning: "📖 Bruksanvisning", tillverkare: "🏭 Tillverkare" };
+const linkLabels = {
+  kop: "🛒 Köp / produktsida", bruksanvisning: "📖 Bruksanvisning", tillverkare: "🏭 Tillverkare",
+  video: "🎬 Video", recension: "⭐ Recension", tillbehor: "🧩 Tillbehör",
+  reservdelar: "🔩 Reservdelar", recept: "📖 Recept", support: "🛟 Support", forum: "💬 Forum"
+};
+/* Okänd länktyp → snyggt namn automatiskt: "min_egen-lank" → "🔗 Min egen lank" */
+function linkLabel(key) {
+  if (linkLabels[key]) return linkLabels[key];
+  const n = key.replace(/[-_]+/g, ' ').trim();
+  return '🔗 ' + n.charAt(0).toUpperCase() + n.slice(1);
+}
 
 init();
 
@@ -178,7 +200,7 @@ async function init() {
     shortName: (m.varumarke + ' ' + (m.modellnamn || '')).trim(),
     sub: [m.typ, m.modellnamn ? 'Modell ' + m.modellnamn : '', m.kapacitet || ''].filter(Boolean).join(' · '),
     specs: m.egenskaper || [],
-    links: Object.entries(m.lankar || {}).map(([k, v]) => ({ label: linkLabels[k] || k, url: v })),
+    links: Object.entries(m.lankar || {}).map(([k, v]) => ({ label: linkLabel(k), url: v })),
     image: m.bild || '',
     notes: (m.viktigt || []).join(' · ') || null,
     programs: (m.program || []).map(p => ({
@@ -190,22 +212,11 @@ async function init() {
 }
 
 async function listMachineFiles() {
-  if (location.hostname.endsWith('github.io')) {
-    try {
-      const parts = location.pathname.split('/').filter(Boolean);
-      const user = location.hostname.split('.')[0];
-      const repo = parts.length ? parts[0] : user + '.github.io';
-      const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/json/maskiner`);
-      if (res.ok) {
-        const items = await res.json();
-        return items.filter(i => i.name.endsWith('.json')).map(i => i.name);
-      }
-    } catch (e) { /* fall through */ }
-  }
+  // Statisk indexlista – byggs automatiskt av GitHub Action vid uppladdning
   try {
     const res = await fetch('json/maskiner-index.json');
     if (res.ok) return await res.json();
-  } catch (e) { /* fall through */ }
+  } catch (e) {}
   return [];
 }
 
@@ -309,7 +320,6 @@ function recommend() {
   </div>`;
 }
 </script>
-<script src="assets/print.js"></script>
-<script src="assets/app.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1706fa22d54f3c7',t:'MTc4MzM2MDA2MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script src="assets/site.js"></script>
+</body>
 </html>

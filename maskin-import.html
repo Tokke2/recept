@@ -69,9 +69,11 @@
   <h2>2️⃣ Färdig maskinfil</h2>
   <div class="info">💡 <b>Bästa vägen:</b> klistra in länken i en AI-chatt tillsammans med <a href="SPEC.md" download>SPEC.md</a> och be om "en komplett maskinfil med program verifierade mot bruksanvisningen". Mallen nedan är en snabbstart som fungerar direkt – programlistan kompletterar du (eller AI:n) sen.</div>
   <textarea id="out" readonly onclick="this.select()">Fyll i fälten ovan så byggs maskinfilen här...</textarea>
+  <button class="btn" id="saveBtn" style="background:#e67e22;" onclick="saveDirect()">💾 Spara direkt på sajten</button>
   <button class="btn" id="dl" onclick="download()">⬇️ Ladda ner maskinfilen</button>
   <a class="btn sec" style="display:inline-block;text-decoration:none;" href="https://github.com/Tokke2/recept/upload/main/json/maskiner" target="_blank" rel="noopener">📤 Öppna GitHub-uppladdning (json/maskiner/)</a>
   <div class="ok-box" id="okbox"></div>
+  <div id="saveResult"></div>
 </div>
 
 <div class="card">
@@ -180,6 +182,53 @@ function download() {
   a.href = URL.createObjectURL(blob);
   a.download = id + '.json';
   a.click();
+}
+
+/* ============================================================
+   💾 SPARA DIREKT PÅ SAJTEN (assets/spara.js → GitHub API)
+   Sparar maskinfilen i json/maskiner/ OCH uppdaterar
+   json/maskiner-index.json automatiskt → maskinen syns direkt
+   i maskindatabasen, receptflikarna, generatorn och alla recept
+   (maskinmatch). Lösenordsskyddat, samma lösenord som las.json.
+   ============================================================ */
+async function saveDirect() {
+  var out = document.getElementById('out').value;
+  if (out.indexOf('{') !== 0) { alert('Fyll i varumärke, modell och typ först!'); return; }
+  if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas – prova ⬇️ Ladda ner istället.'); return; }
+  var id = JSON.parse(out).id;
+  var btn = document.getElementById('saveBtn');
+  var res = document.getElementById('saveResult');
+  btn.disabled = true; btn.textContent = '⏳ Sparar...';
+
+  // 1) Maskinfilen
+  var r1 = await __MK_SPARA.save('json/maskiner/' + id + '.json', out, 'Ny maskin via sajten: ' + id);
+  var indexOk = false;
+
+  // 2) maskiner-index.json – lägg till filen (reservlistan, alfabetisk)
+  if (r1.ok) {
+    try {
+      var raw = await __MK_SPARA.load('json/maskiner-index.json');
+      var idx = raw ? JSON.parse(raw) : [];
+      if (idx.indexOf(id + '.json') === -1) {
+        idx.push(id + '.json');
+        idx.sort();
+        var r2 = await __MK_SPARA.save('json/maskiner-index.json', JSON.stringify(idx, null, 1), 'Index: + ' + id);
+        indexOk = r2.ok;
+      } else indexOk = true;
+    } catch (e) {}
+  }
+
+  btn.disabled = false; btn.textContent = '💾 Spara direkt på sajten';
+  if (r1.ok) {
+    res.innerHTML = '<div class="info" style="border-left-color:#27ae60;background:#eaf7ef;margin-top:10px;">' +
+      '🎉 <b>Maskinen är sparad!</b> ' + (indexOk ? 'Index uppdaterat automatiskt.' : '⚠️ Indexet kunde inte uppdateras – kör "Run workflow" i Actions eller ladda upp igen.') +
+      '<br>Den syns i <a href="maskindatabas.html">maskindatabasen</a>, receptflikarna och maskinförslagen på recepten inom ~1 minut (grön bock i Actions → Ctrl+Shift+R).' +
+      '<br>🖼️ Glöm inte bilden: ladda upp <b>images/' + id + '.jpg</b> (max 480 px).' +
+      '<br>💡 Programlistan: be en AI-chatt (med SPEC.md) fylla i verifierade program – redigera sedan filen på GitHub (✏️).</div>';
+  } else {
+    res.innerHTML = '<div class="info" style="border-left-color:#c0392b;background:#fdecea;margin-top:10px;">⚠️ <b>Kunde inte spara:</b> ' +
+      r1.error + '<br>Använd ⬇️ Ladda ner + 📤 GitHub-uppladdning som reserv.</div>';
+  }
 }
 </script>
 <script src="assets/site.js"></script>
