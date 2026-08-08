@@ -173,20 +173,16 @@
           document.body.appendChild(bg);
           bg.querySelector('#mk-swish-qr-close').onclick = function () { bg.remove(); };
           bg.addEventListener('click', function (e) { if (e.target === bg) bg.remove(); });
-          /* Officiella Swish-QR-API:t (POST -> PNG) */
-          fetch('https://mpc.getswish.net/qrg-swish/api/v1/prefilled', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ payee: { value: swish, editable: false }, message: { value: 'Mitt Maskinkok', editable: true }, format: 'png', size: 220 })
-          }).then(function (r) { if (!r.ok) throw 0; return r.blob(); })
-            .then(function (b) {
-              var box = document.getElementById('mk-swish-qr-box');
-              if (box) box.innerHTML = '<img src="' + URL.createObjectURL(b) + '" alt="Swish QR" width="220" height="220" style="border-radius:10px;">';
-            })
-            ['catch'](function () {
-              var box = document.getElementById('mk-swish-qr-box');
-              if (box) box.textContent = 'Kunde inte ladda QR-koden - prova igen senare.';
-            });
+          /* QR med Swish-betalformat (C<nummer>;;;) via qrserver-bildtjänsten.
+             (Swish egna QR-API saknar CORS-headers och kan inte anropas
+             från webbläsaren - bild-taggen behöver dock ingen CORS.) */
+          var qrData = encodeURIComponent('C' + swish.replace(/[^0-9]/g, '') + ';;;');
+          var box = document.getElementById('mk-swish-qr-box');
+          if (box) {
+            box.innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + qrData +
+              '" alt="Swish QR" width="220" height="220" style="border-radius:10px;" ' +
+              'onerror="this.parentNode.textContent=\'Kunde inte ladda QR-koden - prova igen senare.\'">';
+          }
         });
       })['catch'](function () {});
   })();
@@ -349,7 +345,7 @@
      ============================================================ */
   ensureCss('print.css');
   var scripts = ['print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js'];
-  if (isRecipePage) scripts.push('ingrediens.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js');
+  if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js');
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');
   if (/(nytt-recept|generator|maskin-import|ingredienser)\.html$/i.test(location.pathname)) scripts.push('spara.js');
 
