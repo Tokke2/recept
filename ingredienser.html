@@ -139,14 +139,16 @@ function renderList() {
   });
   document.getElementById('count').textContent = list.length === ING.length
     ? ING.length + ' ingredienser' : list.length + ' av ' + ING.length + ' ingredienser';
-  document.getElementById('rows').innerHTML = list.map(i => `<tr>
+  document.getElementById('rows').innerHTML = list.map(i => `<tr style="background:${i.lank ? 'rgba(39,174,96,.06)' : 'rgba(192,57,43,.05)'};">
     <td><input type="checkbox" class="rowChk" data-id="${i.id}" onclick="chkChanged()"></td>
-    <td>${i.namn}${i.varumarke ? ' <span class="src">' + i.varumarke + '</span>' : ''}
-      ${i.lank ? ' <a href="' + i.lank + '" target="_blank" rel="noopener" title="Butikslänk kopplad – priset kan auto-uppdateras">🔗</a>'
-               : ' <span title="Ingen butikslänk – klicka ✏️ för att klistra in en" style="opacity:.35;">⛓️‍💥</span>'}
-      ${i.uppdaterad ? ' <span class="src">uppd. ' + i.uppdaterad + '</span>' : ''}
-      <button class="editIng no-print" data-id="${i.id}" onclick="openEdit('${i.id}')" title="Redigera ingrediensen"
-        style="background:none;border:none;cursor:pointer;font-size:.9rem;padding:2px 4px;">✏️</button></td>
+    <td>
+      <button class="editIng no-print" data-id="${i.id}" onclick="openEdit('${i.id}')" title="Redigera ingrediensen (ändra värden eller klistra in butikslänk)"
+        style="background:#f0ebe3;border:none;border-radius:6px;cursor:pointer;font-size:.85rem;padding:3px 8px;margin-right:6px;">✏️</button>
+      ${i.namn}${i.varumarke ? ' <span class="src">' + i.varumarke + '</span>' : ''}
+      ${i.lank
+        ? ' <a href="' + i.lank + '" target="_blank" rel="noopener" title="Butikslänk kopplad – priset auto-uppdateras månadsvis. Klicka för att öppna butiken." style="display:inline-block;background:#eaf7ef;color:#27ae60;border:1px solid #27ae60;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;text-decoration:none;">🔗 Länkad</a>'
+        : ` <button onclick="openEdit('${i.id}')" title="Ingen butikslänk – klicka för att klistra in en" style="background:#fdecea;color:#c0392b;border:1px solid #c0392b;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit;">✖ Länk saknas</button>`}
+      ${i.uppdaterad ? ' <span class="src">uppd. ' + i.uppdaterad + '</span>' : ''}</td>
     <td class="num"><b>${(+i.pris_kr_per_kg || 0).toLocaleString('sv-SE')}</b></td>
     <td class="num">${i.kcal || 0}</td>
     <td class="num">${i.protein || 0}</td>
@@ -421,5 +423,5 @@ async function saveManual() {
 loadDb();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a28033cd5f81f375',t:'MTc4NjIwOTczNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a28047f8584bad45',t:'MTc4NjIxMDU2Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
