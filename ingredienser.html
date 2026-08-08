@@ -48,12 +48,13 @@
 
 <!-- ============ 1. LÄGG TILL VIA BUTIKSLÄNK ============ -->
 <div class="card">
-  <h2>🛒 Lägg till via butikslänk (Willys / Hemköp)</h2>
-  <p style="font-size:.88rem;color:var(--muted);margin-bottom:8px;">Klistra in produktlänken → sparas direkt i databasen → roboten hämtar <b>riktigt jämförpris (kr/kg) och näring per 100 g</b> från butikens eget API inom ~1 minut.</p>
-  <input type="text" id="lank" placeholder="https://www.willys.se/produkt/Turkisk-Yoghurt-10procent-100486886_ST">
+  <h2>🛒 Lägg till via butikslänk (Willys / Hemköp / ICA)</h2>
+  <p style="font-size:.88rem;color:var(--muted);margin-bottom:8px;">Klistra in produktlänken → sparas direkt i databasen → roboten hämtar <b>riktigt jämförpris (kr/kg) och näring per 100 g</b> inom ~1 minut.</p>
+  <input type="text" id="lank" placeholder="https://www.willys.se/produkt/...  eller  https://handlaprivatkund.ica.se/stores/.../products/...">
   <button class="btn orange" id="lankBtn" onclick="sendLink()">💾 Spara länken i databasen</button>
   <div id="lankResult"></div>
-  <div class="hint">💡 Fler länkar? Klistra in och spara en i taget – eller flera på samma gång separerade med mellanslag/radbrytning. Finns ingrediensen redan uppdateras pris &amp; näring.</div>
+  <div class="hint">💡 Fler länkar? Klistra in flera på samma gång (mellanslag/radbrytning emellan). Finns ingrediensen redan uppdateras pris &amp; näring.<br>
+  ⚠️ <b>ICA:</b> länkar från handlaprivatkund.ica.se funkar, men ICA visar inte näringsvärden publikt och har ibland botskydd – då hämtas bara namnet (ev. pris) och du fyller i resten i formuläret nedan. Willys/Hemköp ger alltid komplett data.</div>
 </div>
 
 <!-- ============ 2. LÄGG TILL MANUELLT ============ -->
@@ -151,9 +152,9 @@ async function sendLink() {
   const links = raw.replace(/\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g, '$2')
     .split(/[\s\n]+/).filter(l => /^https?:\/\//.test(l));
   if (!links.length) { alert('Hittade ingen giltig länk (ska börja med https://)'); return; }
-  const bad = links.filter(l => !/willys\.se|hemkop\.se/i.test(l));
+  const bad = links.filter(l => !/willys\.se|hemkop\.se|handlaprivatkund\.ica\.se/i.test(l));
   if (bad.length) {
-    out.innerHTML = '<div class="errbox">⚠️ Endast <b>willys.se</b> och <b>hemkop.se</b> stöds (butikens API krävs). Ogiltig: ' + bad[0].slice(0, 60) + '…</div>';
+    out.innerHTML = '<div class="errbox">⚠️ Stödda butiker: <b>willys.se</b>, <b>hemkop.se</b> och <b>handlaprivatkund.ica.se</b> (produktsidor). Ogiltig: ' + bad[0].slice(0, 60) + '…</div>';
     return;
   }
   if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas – prova igen om en stund.'); return; }
@@ -229,5 +230,5 @@ async function saveManual() {
 loadDb();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a27de3424afcd42a',t:'MTc4NjE4NTQ2Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a27df5e0ddd6aa08',t:'MTc4NjE4NjIyOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
