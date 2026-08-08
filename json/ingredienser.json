@@ -84,11 +84,14 @@
       "id": "margarin",
       "namn": "Margarin Mat & Bak",
       "pris_kr_per_kg": 29.9,
-      "kcal": 720,
-      "protein": 0.5,
-      "kolhydrat": 0.5,
-      "fett": 80,
-      "fiber": 0
+      "kcal": 707.0,
+      "protein": 0.1,
+      "kolhydrat": 0.0,
+      "fett": 80.0,
+      "fiber": 0,
+      "lank": "https://www.willys.se/produkt/Margarin-Mat-och-Bak-101662319_ST",
+      "kalla": "willys.se (jamforpris kr/kg)",
+      "uppdaterad": "2026-08-08"
     },
     {
       "id": "bikarbonat",
