@@ -58,6 +58,26 @@
       'display:flex;align-items:center;gap:10px;padding:10px 16px;font-family:Segoe UI,system-ui,sans-serif;' +
       'box-shadow:0 4px 16px rgba(0,0,0,.25);flex-wrap:wrap;}' +
     '#mk-editbar b{font-size:.95rem;}' +
+    /* Dubbelklicksmeny för mängd */
+    '#mk-qty{position:absolute;z-index:140;background:#fff;border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.3);' +
+      'padding:14px 16px;font-family:Segoe UI,system-ui,sans-serif;min-width:230px;}' +
+    '#mk-qty h4{margin:0 0 8px;font-size:.9rem;color:#2c3e50;}' +
+    '#mk-qty .qrow{display:flex;gap:6px;align-items:center;margin-bottom:8px;}' +
+    '#mk-qty .qbtn{border:none;border-radius:9px;padding:8px 12px;font-weight:800;cursor:pointer;font-family:inherit;font-size:.9rem;}' +
+    '#mk-qty .minus{background:#fdf6ee;color:#e67e22;}' +
+    '#mk-qty .plus{background:#eaf7ef;color:#27ae60;}' +
+    '#mk-qty input{width:80px;text-align:center;padding:8px;border:2px solid #e8e2d8;border-radius:9px;font-size:.95rem;font-weight:700;}' +
+    '#mk-qty .qdel{width:100%;background:#fdecea;color:#c0392b;border:none;border-radius:9px;padding:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85rem;}' +
+    '#mk-qty .qok{width:100%;background:#27ae60;color:#fff;border:none;border-radius:9px;padding:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.9rem;margin-bottom:6px;}' +
+    /* Kompensationsförslag */
+    '#mk-komp{position:fixed;left:50%;transform:translateX(-50%);bottom:86px;z-index:135;background:#2c3e50;color:#fff;' +
+      'border-radius:14px;padding:14px 18px;box-shadow:0 10px 30px rgba(0,0,0,.4);max-width:480px;width:calc(100%-32px);' +
+      'font-family:Segoe UI,system-ui,sans-serif;font-size:.9rem;}' +
+    '#mk-komp select{width:100%;padding:9px;border-radius:9px;border:none;margin:8px 0;font-family:inherit;font-size:.9rem;}' +
+    '#mk-komp .krow{display:flex;gap:8px;}' +
+    '#mk-komp button{flex:1;border:none;border-radius:9px;padding:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85rem;}' +
+    '#mk-komp .kja{background:#27ae60;color:#fff;}' +
+    '#mk-komp .knej{background:rgba(255,255,255,.18);color:#fff;}' +
     '#mk-editbar .eb{border:none;border-radius:10px;padding:9px 16px;font-size:.85rem;font-weight:700;' +
       'cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;}' +
     '#mk-editbar .save{background:#fff;color:#c0392b;}' +
@@ -231,6 +251,152 @@
   }
 
   /* ============================================================
+     MÄNGD-VERKTYG: dubbelklicka en ingrediensrad → meny för att
+     minska/öka/ta bort. Minskning → förslag att kompensera med
+     mellanskillnaden på en annan ingrediens (behåller totalvikten).
+     ============================================================ */
+  var dirty = false;   // osparade ändringar?
+
+  function parseQty(s) {
+    var m = String(s).replace(',', '.').match(/([\d.]+)\s*(kg|g|gram|dl|cl|ml|l|msk|tsk|krm|st)?/i);
+    if (!m || !m[1]) return null;
+    return { n: parseFloat(m[1]), unit: (m[2] || 'g').toLowerCase(), raw: String(s) };
+  }
+  function fmtQty(n, unit) {
+    var v = Math.round(n * 10) / 10;
+    return (v % 1 === 0 ? v.toFixed(0) : String(v).replace('.', ',')) + ' ' + unit;
+  }
+  function ingTable() {
+    var el = document.querySelector('.mk-ing-card table');
+    if (el) return el;
+    var cards = document.querySelectorAll('.card');
+    for (var i = 0; i < cards.length; i++) {
+      var h = cards[i].querySelector('h2');
+      if (h && /ingrediens/i.test(h.textContent)) return cards[i].querySelector('table');
+    }
+    return null;
+  }
+  function rowName(tr) {
+    var td = tr.querySelector('td');
+    return td ? td.textContent.replace(/✕/g, '').trim() : '';
+  }
+  function rowQtyCell(tr) {
+    /* v2-tabell: mängd i .mg-pastill, klassisk: andra kolumnen */
+    return tr.querySelector('.mg') || tr.querySelectorAll('td')[1] || null;
+  }
+
+  function closeQty() {
+    var el = document.getElementById('mk-qty');
+    if (el) el.remove();
+    document.removeEventListener('mousedown', qtyOutside, true);
+  }
+  function qtyOutside(e) {
+    var el = document.getElementById('mk-qty');
+    if (el && !el.contains(e.target)) closeQty();
+  }
+
+  function openQtyMenu(tr, x, y) {
+    closeQty();
+    var cell = rowQtyCell(tr);
+    if (!cell) return;
+    var q = parseQty(cell.textContent);
+    var namn = rowName(tr);
+    var menu = document.createElement('div');
+    menu.id = 'mk-qty';
+    menu.className = 'no-print';
+    menu.contentEditable = 'false';
+    var step = q && q.n >= 100 ? 10 : 1;
+    menu.innerHTML =
+      '<h4>' + namn.slice(0, 30) + '</h4>' +
+      (q ? '<div class="qrow">' +
+        '<button class="qbtn minus" data-d="-' + step + '">−' + step + '</button>' +
+        '<input type="text" id="mk-qty-in" value="' + q.n + '"><span style="font-size:.85rem;color:#7f8c8d;">' + q.unit + '</span>' +
+        '<button class="qbtn plus" data-d="' + step + '">+' + step + '</button></div>' +
+        '<button class="qok" id="mk-qty-ok">✔ Ändra mängden</button>'
+        : '<p style="font-size:.8rem;color:#7f8c8d;margin:0 0 8px;">Ingen mängd hittades på raden.</p>') +
+      '<button class="qdel" id="mk-qty-del">🗑️ Ta bort ingrediensen</button>';
+    document.body.appendChild(menu);
+    var mw = 240;
+    menu.style.left = Math.min(x, window.innerWidth - mw - 12) + 'px';
+    menu.style.top = (y + window.scrollY + 8) + 'px';
+    setTimeout(function () { document.addEventListener('mousedown', qtyOutside, true); }, 50);
+
+    if (q) {
+      var inp = menu.querySelector('#mk-qty-in');
+      menu.querySelectorAll('.qbtn').forEach(function (b) {
+        b.onclick = function () {
+          var v = parseFloat(String(inp.value).replace(',', '.')) || 0;
+          inp.value = Math.max(0, Math.round((v + parseFloat(b.dataset.d)) * 10) / 10);
+        };
+      });
+      menu.querySelector('#mk-qty-ok').onclick = function () {
+        var nyN = parseFloat(String(inp.value).replace(',', '.'));
+        if (isNaN(nyN) || nyN < 0) return;
+        var gammal = q.n;
+        cell.textContent = fmtQty(nyN, q.unit);
+        if (tr.hasAttribute('data-mangd')) tr.setAttribute('data-mangd', fmtQty(nyN, q.unit));
+        dirty = true;
+        closeQty();
+        var diff = Math.round((gammal - nyN) * 10) / 10;
+        if (diff > 0) offerCompensation(tr, diff, q.unit);
+        else if (window.__MK_TOAST) window.__MK_TOAST('✔ ' + namn + ': ' + fmtQty(gammal, q.unit) + ' → ' + fmtQty(nyN, q.unit));
+      };
+    }
+    menu.querySelector('#mk-qty-del').onclick = function () {
+      var cellq = q ? q.n : 0;
+      tr.remove();
+      dirty = true;
+      closeQty();
+      if (q && cellq > 0) offerCompensation(null, cellq, q.unit, namn);
+      else if (window.__MK_TOAST) window.__MK_TOAST('🗑️ ' + namn + ' borttagen');
+    };
+  }
+
+  /* ---------- Kompensationsförslag: öka annan ingrediens med diffen ---------- */
+  function offerCompensation(exceptTr, diff, unit, removedName) {
+    var old = document.getElementById('mk-komp');
+    if (old) old.remove();
+    var tbl = ingTable();
+    if (!tbl) return;
+    var cands = [];
+    tbl.querySelectorAll('tr').forEach(function (tr) {
+      if (tr === exceptTr || tr.classList.contains('tot') || tr.classList.contains('total')) return;
+      var c = rowQtyCell(tr);
+      if (!c) return;
+      var q = parseQty(c.textContent);
+      if (q && q.unit === unit && rowName(tr) && !/^total/i.test(rowName(tr))) {
+        cands.push({ tr: tr, cell: c, q: q, namn: rowName(tr) });
+      }
+    });
+    if (!cands.length) return;
+
+    var box = document.createElement('div');
+    box.id = 'mk-komp';
+    box.className = 'no-print';
+    box.contentEditable = 'false';
+    box.innerHTML =
+      '⚖️ ' + (removedName ? '<b>' + removedName + '</b> togs bort (' + fmtQty(diff, unit) + ').' :
+        'Du minskade med <b>' + fmtQty(diff, unit) + '</b>.') +
+      ' Kompensera genom att öka en annan ingrediens med mellanskillnaden?' +
+      '<select id="mk-komp-sel">' + cands.map(function (c, i) {
+        return '<option value="' + i + '">' + c.namn.slice(0, 40) + ' (' + fmtQty(c.q.n, unit) + ' → ' + fmtQty(c.q.n + diff, unit) + ')</option>';
+      }).join('') + '</select>' +
+      '<div class="krow"><button class="kja" id="mk-komp-ja">✔ Ja, öka med ' + fmtQty(diff, unit) + '</button>' +
+      '<button class="knej" id="mk-komp-nej">Nej tack</button></div>';
+    document.body.appendChild(box);
+    box.querySelector('#mk-komp-ja').onclick = function () {
+      var c = cands[+box.querySelector('#mk-komp-sel').value];
+      c.cell.textContent = fmtQty(c.q.n + diff, unit);
+      if (c.tr.hasAttribute('data-mangd')) c.tr.setAttribute('data-mangd', fmtQty(c.q.n + diff, unit));
+      dirty = true;
+      box.remove();
+      if (window.__MK_TOAST) window.__MK_TOAST('⚖️ ' + c.namn + ' ökad till ' + fmtQty(c.q.n + diff, unit) + ' – totalvikten behållen!');
+    };
+    box.querySelector('#mk-komp-nej').onclick = function () { box.remove(); };
+    setTimeout(function () { if (box.parentNode) box.remove(); }, 30000);
+  }
+
+  /* ============================================================
      STARTA REDIGERING
      ============================================================ */
   function startEdit() {
@@ -271,6 +437,15 @@
                 return null;
               })();
     if (ing) {
+      /* Dubbelklick på rad → mängd-meny (minska/öka/ta bort + kompensation) */
+      ing.addEventListener('dblclick', function (e) {
+        if (!editing) return;
+        var tr = e.target.closest('tr');
+        if (!tr || tr.classList.contains('tot') || tr.classList.contains('total')) return;
+        if (!tr.querySelector('td')) return;
+        e.preventDefault();
+        openQtyMenu(tr, e.clientX, e.clientY);
+      });
       ing.querySelectorAll('tr').forEach(function (tr) {
         var tds = tr.querySelectorAll('td');
         if (tds.length >= 2 && !tr.querySelector('.mk-rowbtn')) {
@@ -352,20 +527,49 @@
     bar.className = 'no-print';
     bar.innerHTML =
       '<b>✏️ Redigeringsläge</b>' +
-      '<button class="eb save" id="eb-save">💾 Ladda ner uppdaterad fil</button>' +
-      '<a class="eb gh" href="' + GH_EDIT + encodeURIComponent(fname) + '" target="_blank" rel="noopener">📤 Redigera på GitHub</a>' +
+      '<span id="eb-dirty" style="font-size:.78rem;opacity:.85;"></span>' +
+      '<button class="eb save" id="eb-save" style="background:#27ae60;color:#fff;">💾 Spara på sajten</button>' +
+      '<button class="eb" id="eb-dl" style="background:rgba(255,255,255,.2);color:#fff;" title="Reserv: ladda ner filen istället">⬇️</button>' +
       '<button class="eb exit" id="eb-exit">✕ Avsluta</button>';
     document.body.appendChild(bar);
-    document.getElementById('eb-save').onclick = saveFile;
-    document.getElementById('eb-exit').onclick = stopEdit;
+    document.getElementById('eb-save').onclick = saveToSite;
+    document.getElementById('eb-dl').onclick = saveFile;
+    document.getElementById('eb-exit').onclick = tryStopEdit;
 
-    if (window.__MK_TOAST) window.__MK_TOAST('✏️ Klicka på text för att ändra – t.ex. byt "mjöl" mot "vatten"');
+    /* Markera osparat + varna vid sidlämning */
+    document.body.addEventListener('input', markDirty, true);
+    window.addEventListener('beforeunload', warnUnload);
+
+    if (window.__MK_TOAST) window.__MK_TOAST('✏️ Klicka på text för att ändra · DUBBELKLICKA en ingrediens för mängd-menyn');
+  }
+
+  function markDirty() {
+    if (!editing) return;
+    dirty = true;
+    var el = document.getElementById('eb-dirty');
+    if (el) el.textContent = '● osparade ändringar';
+  }
+  function warnUnload(e) {
+    if (editing && dirty) { e.preventDefault(); e.returnValue = ''; }
+  }
+
+  /* Avsluta kräver sparning först (eller uttryckligt "släng ändringarna") */
+  function tryStopEdit() {
+    if (dirty) {
+      if (!confirm('Du har OSPARADE ändringar!\n\nTryck Avbryt och sedan 💾 Spara på sajten för att behålla dem.\nTryck OK för att SLÄNGA ändringarna och ladda om receptet.')) return;
+      window.removeEventListener('beforeunload', warnUnload);
+      location.reload();
+      return;
+    }
+    stopEdit();
   }
 
   /* ============================================================
      AVSLUTA (behåller ändringarna synligt på sidan)
      ============================================================ */
   function stopEdit() {
+    window.removeEventListener('beforeunload', warnUnload);
+    dirty = false;
     editing = false;
     document.body.classList.remove('mk-editing');
     document.querySelectorAll('[contenteditable="true"]').forEach(function (el) {
@@ -378,13 +582,41 @@
   }
 
   /* ============================================================
-     SPARA: bygg uppdaterad HTML-fil och ladda ner
+     💾 SPARA PÅ SAJTEN (huvudvägen) – via spara.js/GitHub API.
+     Lösenordsskyddad (spara.js frågar). Redigeringen avslutas
+     INTE förrän sparningen lyckats.
      ============================================================ */
-  function saveFile() {
+  async function saveToSite() {
+    if (!window.__MK_SPARA) {
+      if (window.__MK_TOAST) window.__MK_TOAST('Spara-modulen saknas – använder nedladdning istället');
+      return saveFile();
+    }
+    var btn = document.getElementById('eb-save');
+    btn.disabled = true; btn.textContent = '⏳ Sparar...';
+    var fname = decodeURIComponent(location.pathname.split('/').pop());
+    var res = await window.__MK_SPARA.save('recept/' + fname, buildCleanHtml(),
+      'Recept redigerat via sajten: ' + fname);
+    btn.disabled = false; btn.textContent = '💾 Spara på sajten';
+    if (res.ok) {
+      dirty = false;
+      var d = document.getElementById('eb-dirty');
+      if (d) d.textContent = '✅ sparat';
+      if (window.__MK_TOAST) window.__MK_TOAST('🎉 Sparat på GitHub! Live om ~1 minut (grön bock i Actions)');
+      stopEdit();
+    } else {
+      if (window.__MK_TOAST) window.__MK_TOAST('⚠️ Kunde inte spara: ' + res.error + ' – prova ⬇️ som reserv');
+    }
+  }
+
+  /* ============================================================
+     SPARA: bygg uppdaterad HTML-fil och ladda ner (RESERV)
+     ============================================================ */
+  function buildCleanHtml() {
     // Klona dokumentet och städa bort redigerings-artefakter
     var clone = document.documentElement.cloneNode(true);
-    clone.querySelectorAll('#mk-editbar, .mk-rowbtn, .mk-addrow, #mk-rnav, #mk-fab, #mk-top, ' +
-      '#mk-lang, #mk-auto-qr, #mk-provenance, .share-btn, .print-btn, [id^="mk-pd"]').forEach(function (el) { el.remove(); });
+    clone.querySelectorAll('#mk-editbar, .mk-rowbtn, .mk-addrow, #mk-rnav, #mk-fab, #mk-top, #mk-qty, #mk-komp, ' +
+      '#mk-lang, #mk-auto-qr, #mk-provenance, #mk-betyg, #mk-maskinmatch, #mk-kalkyl, #mk-donation, #mk-aff-disclosure, ' +
+      '.share-btn, .print-btn, [id^="mk-pd"], [id^="mk-pw"], [id^="mk-swish"]').forEach(function (el) { el.remove(); });
     clone.querySelectorAll('[contenteditable]').forEach(function (el) {
       el.removeAttribute('contenteditable');
     });
@@ -414,7 +646,11 @@
       if (txt) meta.setAttribute('content', txt);
     }
 
-    var html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    return '<!DOCTYPE html>\n' + clone.outerHTML;
+  }
+
+  function saveFile() {
+    var html = buildCleanHtml();
     var fname = decodeURIComponent(location.pathname.split('/').pop());
     var blob = new Blob([html], { type: 'text/html' });
     var a = document.createElement('a');
