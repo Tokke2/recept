@@ -29,8 +29,7 @@
   if (window.__MK_APP_LOADED) return;
   window.__MK_APP_LOADED = true;
 
-  var isSubPage = location.pathname.indexOf('/recept/') !== -1;
-  var base = isSubPage ? '../' : './';
+  var base = (window.__MK_ROOT || (document.querySelector('meta[name="recept:namn"]') ? '../' : './'));
 
   /* ============================================================
      1) PWA-GRUND: manifest, theme-color, service worker

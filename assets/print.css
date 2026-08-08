@@ -1,4 +1,7 @@
 /* ============================================================
+   PLATS: /assets/print.css  (assets-mappen i repo-roten)
+   ============================================================ */
+/* ============================================================
    CENTRAL UTSKRIFTSMODUL – Mitt Maskinkök
    ============================================================
    EN fil som hanterar A4-utskrift för ALLA sidor på sajten.
@@ -53,7 +56,7 @@
   }
 
   /* ---------- Dölj interaktiva element (alla sidor) ---------- */
-  .print-btn, .no-print, .toolbar,
+  .print-btn, .no-print, .toolbar, .mk-lang,
   .tabs, .chips, .reco-box, #recoResults,          /* maskindatabasen */
   .nav-cards, .search-row, .machine-filter,        /* startsidan */
   #noHit, #loading,
@@ -166,4 +169,111 @@
   .qr-box p { font-size: 8pt; }
 
   footer { font-size: 7.5pt; color: #666; }
+}
+
+/* ============================================================
+   #8 KOKBOKS-POLISH – utskrifter som ur en tryckt kokbok
+   ============================================================ */
+@media print {
+
+  /* Klassisk typografi: rubriker i serif */
+  header h1, h2, h3, .machine-title {
+    font-family: Georgia, 'Times New Roman', serif !important;
+    font-weight: 700;
+    letter-spacing: .2pt;
+  }
+
+  /* Receptets titelhuvud: kapitälrad + dubbellinje som i gamla kokböcker */
+  header, header.hero {
+    border-bottom: none !important;
+    text-align: center !important;
+    padding-bottom: 5mm !important;
+    position: relative;
+  }
+  header::before {
+    content: 'UR MITT MASKINKÖK · RECEPTSAMLINGEN';
+    display: block;
+    font-family: Georgia, serif;
+    font-size: 7.5pt;
+    letter-spacing: .25em;
+    color: #555;
+    margin-bottom: 3mm;
+  }
+  header::after {
+    content: '';
+    display: block;
+    margin: 4mm auto 0;
+    width: 60mm;
+    border-bottom: 1pt solid #000;
+    box-shadow: 0 2pt 0 -1pt #000;   /* dubbellinje-effekt */
+  }
+  header h1 { font-size: 20pt !important; }
+
+  /* Proveniensraden: elegant centrerad rad under titeln */
+  #mk-provenance {
+    border: none !important;
+    border-top: 1pt solid #999 !important;
+    border-bottom: 1pt solid #999 !important;
+    border-radius: 0 !important;
+    text-align: center;
+    font-family: Georgia, serif;
+    font-size: 8.5pt !important;
+    background: #fff !important;
+  }
+  #mk-provenance span[style*="uppercase"] { color: #555 !important; }
+
+  /* Ingredienser i klassisk stil: tunna linjer, ingen bakgrund */
+  table { border-collapse: collapse; }
+  th {
+    background: none !important;
+    border-bottom: 1.5pt solid #000;
+    font-family: Georgia, serif;
+    font-variant: small-caps;
+    letter-spacing: .08em;
+  }
+  td { border-bottom: .5pt dotted #999; }
+  .total td { border-top: 1pt solid #000; border-bottom: 2pt double #000; background: none !important; }
+
+  /* Steg: numrerade med serif-siffror, luftigare */
+  ol { counter-reset: step; list-style: none; padding-left: 0 !important; }
+  ol li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 9mm;
+    margin-bottom: 2.5mm;
+  }
+  ol li::before {
+    content: counter(step) '.';
+    position: absolute;
+    left: 0;
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 11pt;
+  }
+
+  /* Maskinrutor: ram med klassisk etikett istället för färgblock */
+  .machine-step {
+    background: #fff !important;
+    border: 1pt solid #000 !important;
+    border-left: 3pt solid #000 !important;
+  }
+
+  /* "Se även"-korsreferenser döljs inte – de trycks som i kokböcker,
+     men utan chip-design (ren textrad) – dock är .no-print satt, så
+     den utelämnas; kokböcker anger istället sidfot nedan. */
+
+  /* Sidfot på varje utskriftsida */
+  @page {
+    margin: 15mm 12mm 18mm 12mm;
+  }
+  footer {
+    font-family: Georgia, serif;
+    text-align: center;
+    border-top: 1pt solid #999;
+    padding-top: 2mm;
+    font-size: 7.5pt !important;
+  }
+  footer::after {
+    content: ' — Mitt Maskinkök, receptsamlingen';
+  }
 }

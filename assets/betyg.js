@@ -111,7 +111,7 @@
   /* ============================================================
      WIDGET på receptsidor: "⭐ Betygsätt receptet"
      ============================================================ */
-  var isRecipePage = location.pathname.indexOf('/recept/') !== -1;
+  var isRecipePage = (window.__MK_IS_RECIPE !== undefined ? window.__MK_IS_RECIPE : !!document.querySelector('meta[name="recept:namn"]'));
   if (!isRecipePage) return;
 
   var FILE = decodeURIComponent(location.pathname.split('/').pop());

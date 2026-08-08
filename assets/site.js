@@ -32,8 +32,13 @@
   var base = self ? self.getAttribute('src').replace(/site\.js.*$/, '') : 'assets/';
   var root = base.replace('assets/', ''); // './' eller '../'
 
-  var isRecipePage = location.pathname.indexOf('/recept/') !== -1 ||
-                     !!document.querySelector('meta[name="recept:namn"]');
+  /* RECEPTSIDA = sidan HAR recept-metadata. (Sökvägskoll funkar INTE
+     live: repot heter "recept" så ALLA adresser innehåller /recept/!) */
+  var isRecipePage = !!document.querySelector('meta[name="recept:namn"]');
+
+  /* Delas med alla moduler – EN källa till sanning */
+  window.__MK_ROOT = root;
+  window.__MK_IS_RECIPE = isRecipePage;
 
   var report = { loaded: [], present: [], failed: [] };
 
@@ -106,40 +111,81 @@
   })();
 
   /* ============================================================
-     💚 SWISH-DONATION I SIDFOTEN (alla sidor, diskret)
-     Numret hämtas centralt ur json/donation.json – tomt = ingen rad.
+     💚 DONATIONSRAD I SIDFOTEN (alla sidor, diskret)
+     Swish (QR-kod – numret visas ALDRIG i klartext) + Ko-fi.
+     Centralt ur json/donation.json. Ifyllda alternativ visas.
+     QR:n genereras av Swish officiella API forst vid klick.
      ============================================================ */
   (function donation() {
     fetch(root + 'json/donation.json', { cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (d) {
-        var nr = String(d.swish_nummer || '').trim();
-        if (!nr) return;
-        var msg = d.meddelande || 'Gillar du sajten? Bjud på en kaffe via Swish';
+        var swish = String(d.swish_nummer || '').trim();
+        var kofi = String(d.kofi || '').trim()
+          .replace(/^https?:\/\/(www\.)?ko-fi\.com\//i, '').replace(/\/+$/, '');
+        if (!swish && !kofi) return;
+
+        var msg = d.meddelande || 'Gillar du sajten? Stod utvecklingen - bjud pa en kaffe!';
+        var pill = 'display:inline-block;border-radius:999px;padding:3px 14px;font-size:.8rem;' +
+          'font-weight:700;cursor:pointer;font-family:inherit;text-decoration:none;margin:2px 3px;background:none;';
+        var btns = '';
+        if (swish) {
+          btns += '<button id="mk-swish-btn" style="' + pill +
+            'border:1.5px solid #27ae60;color:#27ae60;">\uD83D\uDC9A Swish</button>';
+        }
+        if (kofi) {
+          btns += '<a href="https://ko-fi.com/' + encodeURIComponent(kofi) + '" target="_blank" rel="noopener" style="' + pill +
+            'border:1.5px solid #ff5e5b;color:#e0413e;">\u2764\uFE0F Ko-fi</a>';
+        }
+
         var el = document.createElement('div');
         el.id = 'mk-donation';
         el.className = 'no-print';
         el.style.cssText = 'text-align:center;padding:10px 16px 18px;font-size:.8rem;color:#7f8c8d;font-family:Segoe UI,system-ui,sans-serif;';
-        el.innerHTML = msg + ' &nbsp;' +
-          '<button id="mk-swish-btn" style="background:none;border:1.5px solid #27ae60;color:#27ae60;' +
-            'border-radius:999px;padding:3px 14px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">' +
-            '💚 Swish ' + nr + '</button>';
+        el.innerHTML = msg + ' &nbsp;' + btns;
         var footer = document.querySelector('footer');
         if (footer) footer.parentNode.insertBefore(el, footer.nextSibling);
         else document.body.appendChild(el);
-        el.querySelector('#mk-swish-btn').addEventListener('click', function () {
-          var b = this;
-          function copied() {
-            b.textContent = '✅ Nummer kopierat!';
-            setTimeout(function () { b.textContent = '💚 Swish ' + nr; }, 2500);
-          }
-          if (navigator.clipboard) navigator.clipboard.writeText(nr).then(copied)['catch'](function () { prompt('Swish-nummer:', nr); });
-          else prompt('Swish-nummer:', nr);
-          /* På mobil: försök öppna Swish-appen */
+
+        /* ---- Swish: QR-dialog (numret visas aldrig i klartext) ---- */
+        var sb = el.querySelector('#mk-swish-btn');
+        if (sb) sb.addEventListener('click', function () {
+          /* Mobil: oppna Swish-appen direkt (smidigast dar) */
           if (/android|iphone|ipad/i.test(navigator.userAgent)) {
-            var data = encodeURIComponent(JSON.stringify({ version: 1, payee: { value: nr }, message: { value: 'Mitt Maskinkok' } }));
-            setTimeout(function () { location.href = 'swish://payment?data=' + data; }, 350);
+            var data = encodeURIComponent(JSON.stringify({ version: 1, payee: { value: swish, editable: false }, message: { value: 'Mitt Maskinkok', editable: true } }));
+            location.href = 'swish://payment?data=' + data;
+            return;
           }
+          /* Dator: visa QR att skanna med mobilen */
+          if (document.getElementById('mk-swish-qr-bg')) return;
+          var bg = document.createElement('div');
+          bg.id = 'mk-swish-qr-bg';
+          bg.className = 'no-print';
+          bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:320;display:flex;align-items:center;justify-content:center;padding:16px;';
+          bg.innerHTML =
+            '<div style="background:#fff;border-radius:18px;padding:26px 30px;text-align:center;max-width:320px;font-family:Segoe UI,system-ui,sans-serif;">' +
+              '<h3 style="margin:0 0 4px;color:#2c3e50;">\uD83D\uDC9A Swisha en slant</h3>' +
+              '<p style="font-size:.85rem;color:#7f8c8d;margin:0 0 14px;">Skanna med Swish-appen i mobilen</p>' +
+              '<div id="mk-swish-qr-box" style="min-height:220px;display:flex;align-items:center;justify-content:center;color:#7f8c8d;font-size:.85rem;">Laddar QR-kod...</div>' +
+              '<button id="mk-swish-qr-close" style="margin-top:14px;background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:10px 22px;font-weight:700;cursor:pointer;font-family:inherit;">Stang</button>' +
+            '</div>';
+          document.body.appendChild(bg);
+          bg.querySelector('#mk-swish-qr-close').onclick = function () { bg.remove(); };
+          bg.addEventListener('click', function (e) { if (e.target === bg) bg.remove(); });
+          /* Officiella Swish-QR-API:t (POST -> PNG) */
+          fetch('https://mpc.getswish.net/qrg-swish/api/v1/prefilled', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ payee: { value: swish, editable: false }, message: { value: 'Mitt Maskinkok', editable: true }, format: 'png', size: 220 })
+          }).then(function (r) { if (!r.ok) throw 0; return r.blob(); })
+            .then(function (b) {
+              var box = document.getElementById('mk-swish-qr-box');
+              if (box) box.innerHTML = '<img src="' + URL.createObjectURL(b) + '" alt="Swish QR" width="220" height="220" style="border-radius:10px;">';
+            })
+            ['catch'](function () {
+              var box = document.getElementById('mk-swish-qr-box');
+              if (box) box.textContent = 'Kunde inte ladda QR-koden - prova igen senare.';
+            });
         });
       })['catch'](function () {});
   })();
@@ -301,10 +347,10 @@
      KÖR – allt parallellt
      ============================================================ */
   ensureCss('print.css');
-  var scripts = ['print.js', 'app.js', 'sprak.js', 'betyg.js'];
+  var scripts = ['print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js'];
   if (isRecipePage) scripts.push('ingrediens.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js');
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');
-  if (/(nytt-recept|generator)\.html$/i.test(location.pathname)) scripts.push('spara.js');
+  if (/(nytt-recept|generator|maskin-import)\.html$/i.test(location.pathname)) scripts.push('spara.js');
 
   Promise.all(scripts.map(function (f) { return loadScript(f); }))
     .then(function () { printReport(checkMeta()); });

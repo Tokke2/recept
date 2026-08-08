@@ -38,8 +38,7 @@
     de: { flagga: '🇩🇪', namn: 'Deutsch' }
   };
 
-  var isSub = location.pathname.indexOf('/recept/') !== -1;
-  var base = isSub ? '../' : './';
+  var base = (window.__MK_ROOT || (document.querySelector('meta[name="recept:namn"]') ? '../' : './'));
   var lang = localStorage.getItem('mk-lang') || 'sv';
   if (!LANGS[lang]) lang = 'sv';
 

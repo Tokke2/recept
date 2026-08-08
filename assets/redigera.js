@@ -30,7 +30,7 @@
   if (window.__MK_EDIT_LOADED) return;
   window.__MK_EDIT_LOADED = true;
 
-  var isRecipePage = location.pathname.indexOf('/recept/') !== -1;
+  var isRecipePage = (window.__MK_IS_RECIPE !== undefined ? window.__MK_IS_RECIPE : !!document.querySelector('meta[name="recept:namn"]'));
   if (!isRecipePage) return;
 
   var editing = false;

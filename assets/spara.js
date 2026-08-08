@@ -25,6 +25,84 @@
 
   var OWNER = 'Tokke2', REPO = 'recept', BRANCH = 'main';
   var TOKEN_KEY = 'mk-gh-token';
+  var UNLOCK_KEY = 'mk-edit-unlocked';   // samma upplåsning som ✏️-redigering
+
+  /* ============================================================
+     🔒 LÖSENORDSGATE – samma lösenord som i json/las.json
+     (byts på GitHub – ETT ställe för allt: redigering + uppladdning)
+     ============================================================ */
+  async function sha256(text) {
+    var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+      return b.toString(16).padStart(2, '0');
+    }).join('');
+  }
+
+  async function getLock() {
+    var paths = ['json/las.json', '../json/las.json'];
+    for (var i = 0; i < paths.length; i++) {
+      try {
+        var d = await (await fetch(paths[i], { cache: 'no-store' })).json();
+        return {
+          pw: String(d.losenord || ''),
+          hash: String(d.losenord_hash || '').toLowerCase().trim(),
+          on: d.las_redigering !== false
+        };
+      } catch (e) {}
+    }
+    return { pw: '', hash: '', on: false };  // ingen låsfil = inget lås
+  }
+
+  async function checkPassword(input, lock) {
+    if (lock.hash) {
+      try { return (await sha256(input)) === lock.hash; } catch (e) {}
+    }
+    return lock.pw ? input === lock.pw : false;
+  }
+
+  function askPassword(lock) {
+    return new Promise(function (resolve) {
+      var bg = document.createElement('div');
+      bg.className = 'no-print';
+      bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:310;display:flex;align-items:center;justify-content:center;padding:16px;';
+      bg.innerHTML =
+        '<div id="mkSpPw" style="background:#fff;border-radius:16px;max-width:380px;width:100%;padding:26px 28px;text-align:center;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
+          '<div style="font-size:2rem;">🔒</div>' +
+          '<h3 style="margin:6px 0 4px;">Uppladdning är låst</h3>' +
+          '<p style="font-size:.88rem;color:#7f8c8d;margin:0 0 14px;">Ange lösenordet (samma som för ✏️ redigering – ligger i json/las.json)</p>' +
+          '<input type="password" id="mkSpIn" placeholder="Lösenord" autocomplete="off" style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1rem;box-sizing:border-box;">' +
+          '<div id="mkSpMsg" style="color:#c0392b;font-size:.82rem;min-height:18px;margin-top:6px;"></div>' +
+          '<div style="display:flex;gap:10px;margin-top:10px;">' +
+            '<button id="mkSpOk" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;">🔓 Lås upp</button>' +
+            '<button id="mkSpNej" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;">Avbryt</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(bg);
+      var input = bg.querySelector('#mkSpIn');
+      setTimeout(function () { input.focus(); }, 120);
+      async function attempt() {
+        if (await checkPassword(input.value, lock)) {
+          try { sessionStorage.setItem(UNLOCK_KEY, '1'); } catch (e) {}
+          bg.remove(); resolve(true);
+        } else {
+          bg.querySelector('#mkSpMsg').textContent = 'Fel lösenord – försök igen';
+          input.select();
+        }
+      }
+      bg.querySelector('#mkSpOk').onclick = attempt;
+      bg.querySelector('#mkSpNej').onclick = function () { bg.remove(); resolve(false); };
+      input.addEventListener('keydown', function (e) { if (e.key === 'Enter') attempt(); });
+    });
+  }
+
+  async function requireUnlock() {
+    var unlocked = false;
+    try { unlocked = sessionStorage.getItem(UNLOCK_KEY) === '1'; } catch (e) {}
+    if (unlocked) return true;
+    var lock = await getLock();
+    if (!lock.on || (!lock.pw && !lock.hash)) return true;  // lås avstängt
+    return askPassword(lock);
+  }
 
   function getToken() {
     try { return localStorage.getItem(TOKEN_KEY) || ''; } catch (e) { return ''; }
@@ -90,6 +168,8 @@
 
   /* ---------- Spara (skapa eller uppdatera) en fil ---------- */
   async function save(path, content, message) {
+    /* 🔒 Lösenord först (samma som las.json), sedan GitHub-nyckel */
+    if (!(await requireUnlock())) return { ok: false, error: 'Avbrutet – lösenord krävs.' };
     if (!getToken()) {
       var t = await askToken();
       if (!t) return { ok: false, error: 'Ingen nyckel angiven' };

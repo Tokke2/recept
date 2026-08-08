@@ -28,8 +28,7 @@
   if (window.__MK_PRINT_LOADED) return;
   window.__MK_PRINT_LOADED = true;
 
-  var isRecipePage = location.pathname.indexOf('/recept/') !== -1 ||
-                     !!document.querySelector('meta[name="recept:namn"]');
+  var isRecipePage = (window.__MK_IS_RECIPE !== undefined ? window.__MK_IS_RECIPE : !!document.querySelector('meta[name="recept:namn"]'));
 
   /* ============================================================
      CSS: utskriftslägen + dialog v3
