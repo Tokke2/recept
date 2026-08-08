@@ -1,6 +1,7 @@
 {
- "_plats": "/json/donation.json  (central donationsinställning – fyll i ditt Swish-nummer!)",
- "kommentar": "Fyll i 'swish_nummer' (t.ex. 0701234567 eller 123 456 78 90) så visas en liten Swish-rad i sidfoten på ALLA sidor automatiskt. Lämna tomt = ingen knapp visas. 'meddelande' är texten som visas bredvid.",
+ "_plats": "/json/donation.json  (central donationsinställning – fyll i dina konton!)",
+ "kommentar": "Två alternativ: 'swish_nummer' = ditt Swish-nummer (t.ex. 0701234567) – klick kopierar numret och öppnar Swish-appen på mobil. 'kofi' = ditt användarnamn på ko-fi.com (skapa gratis konto, 0% avgift på tips) – skriv BARA namnet, inte hela adressen. Endast ifyllda visas som knappar i sidfoten på alla sidor. Båda tomma = ingen donationsrad.",
  "swish_nummer": "",
- "meddelande": "Gillar du sajten? Bjud på en kaffe via Swish"
+ "kofi": "",
+ "meddelande": "Gillar du sajten? Stöd utvecklingen av Mitt Maskinkök – bjud på en kaffe!"
 }

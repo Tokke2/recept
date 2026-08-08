@@ -1,0 +1,7 @@
+{
+ "_plats": "/json/forslag.json  (central inställning för Förslagslådan)",
+ "kommentar": "Styr HUR besökare skickar in förslag på forslag.html. 'metod': 'github' (standard – förslag blir GitHub Issues, kräver GH-konto) eller 'epost' (förslag skickas som mail till 'epost'-adressen nedan, inget konto krävs – används när sajten flyttar från GitHub). Fyll i 'epost' redan nu om du vill – den används INTE förrän metod byts till 'epost'.",
+ "metod": "github",
+ "epost": "",
+ "epost_amne": "Förslag till Mitt Maskinkök"
+}

@@ -1,0 +1,6 @@
+{
+ "_plats": "/json/affiliate.json  (central affiliateinställning – fyll i din Amazon-tag!)",
+ "kommentar": "Fyll i 'amazon_tag' med ditt Associates Store ID från affiliate-program.amazon.se (t.ex. 'mittmaskinkok-21'). Då görs ALLA amazon.se-länkar på sajten automatiskt om till affiliatelänkar (?tag=...), märks '(betald länk)' enligt svensk lag och den obligatoriska Amazon-texten visas i sidfoten. Tomt = av, vanliga länkar visas.",
+ "amazon_tag": "",
+ "visa_disclosure": true
+}
