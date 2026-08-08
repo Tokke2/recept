@@ -203,12 +203,15 @@
     {
       "id": "havregryn",
       "namn": "Havregryn",
-      "pris_kr_per_kg": 15.0,
-      "kcal": 370,
-      "protein": 13,
-      "kolhydrat": 58,
-      "fett": 7,
-      "fiber": 10
+      "pris_kr_per_kg": 11.93,
+      "kcal": 370.0,
+      "protein": 13.0,
+      "kolhydrat": 58.0,
+      "fett": 7.0,
+      "fiber": 10.0,
+      "lank": "https://www.willys.se/produkt/Havregryn-101833307_ST",
+      "kalla": "willys.se (jamforpris kr/kg)",
+      "uppdaterad": "2026-08-08"
     },
     {
       "id": "ris-jasmin",
