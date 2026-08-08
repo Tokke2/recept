@@ -84,15 +84,22 @@
   </h2>
   <input type="text" id="q" placeholder="🔍 Sök ingrediens..." oninput="renderList()">
   <div class="count" id="count"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px;" class="no-print">
+    <button class="btn" id="delBtn" style="background:#c0392b;margin:0;padding:8px 16px;font-size:.85rem;display:none;" onclick="deleteChecked()">🗑️ Ta bort markerade</button>
+    <button class="btn" id="updBtn" style="background:#2c3e50;margin:0;padding:8px 16px;font-size:.85rem;" onclick="updatePrices()">🔄 Uppdatera priser via länkarna</button>
+    <span id="updInfo" style="font-size:.78rem;color:var(--muted);"></span>
+  </div>
+  <div id="actionResult"></div>
   <div style="max-height:60vh;overflow:auto;border-radius:10px;">
     <table>
       <thead><tr>
+        <th style="width:34px;"><input type="checkbox" id="chkAll" onclick="toggleAll(this)" title="Markera alla synliga"></th>
         <th onclick="setSort('namn')" style="cursor:pointer;">Ingrediens ↕</th>
         <th class="num" onclick="setSort('pris_kr_per_kg')" style="cursor:pointer;">Pris kr/kg ↕</th>
         <th class="num" onclick="setSort('kcal')" style="cursor:pointer;">Kcal ↕</th>
         <th class="num">Protein</th><th class="num">Kolh.</th><th class="num">Fett</th><th class="num">Fiber</th>
       </tr></thead>
-      <tbody id="rows"><tr><td colspan="7">⏳ Laddar...</td></tr></tbody>
+      <tbody id="rows"><tr><td colspan="8">⏳ Laddar...</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -133,14 +140,112 @@ function renderList() {
   document.getElementById('count').textContent = list.length === ING.length
     ? ING.length + ' ingredienser' : list.length + ' av ' + ING.length + ' ingredienser';
   document.getElementById('rows').innerHTML = list.map(i => `<tr>
-    <td>${i.namn}${i.varumarke ? ' <span class="src">' + i.varumarke + '</span>' : ''}${i.lank ? ' <a href="' + i.lank + '" target="_blank" rel="noopener">butiken ↗</a>' : ''}</td>
+    <td><input type="checkbox" class="rowChk" data-id="${i.id}" onclick="chkChanged()"></td>
+    <td>${i.namn}${i.varumarke ? ' <span class="src">' + i.varumarke + '</span>' : ''}${i.lank ? ' <a href="' + i.lank + '" target="_blank" rel="noopener" title="Länkad – priset kan auto-uppdateras">🔗</a>' : ''}${i.uppdaterad ? ' <span class="src">uppd. ' + i.uppdaterad + '</span>' : ''}</td>
     <td class="num"><b>${(+i.pris_kr_per_kg || 0).toLocaleString('sv-SE')}</b></td>
     <td class="num">${i.kcal || 0}</td>
     <td class="num">${i.protein || 0}</td>
     <td class="num">${i.kolhydrat || 0}</td>
     <td class="num">${i.fett || 0}</td>
     <td class="num">${i.fiber || 0}</td>
-  </tr>`).join('') || '<tr><td colspan="7">🤔 Ingen träff.</td></tr>';
+  </tr>`).join('') || '<tr><td colspan="8">🤔 Ingen träff.</td></tr>';
+  chkChanged();
+  updateBtnInfo();
+}
+
+/* ---------- Markera & ta bort ---------- */
+function toggleAll(box) {
+  document.querySelectorAll('.rowChk').forEach(c => c.checked = box.checked);
+  chkChanged();
+}
+function chkChanged() {
+  const n = document.querySelectorAll('.rowChk:checked').length;
+  const btn = document.getElementById('delBtn');
+  btn.style.display = n ? 'inline-block' : 'none';
+  btn.textContent = '🗑️ Ta bort ' + (n === 1 ? '1 markerad' : n + ' markerade');
+}
+
+async function deleteChecked() {
+  const ids = [...document.querySelectorAll('.rowChk:checked')].map(c => c.dataset.id);
+  if (!ids.length) return;
+  const namn = ING.filter(i => ids.includes(i.id)).map(i => i.namn);
+  if (!confirm('Ta bort ' + ids.length + ' ingrediens(er)?\n\n' + namn.join('\n') + '\n\nOBS: recept som använder dem tappar sin live-kalkyl för de raderna.')) return;
+  if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas.'); return; }
+  const out = document.getElementById('actionResult');
+  const btn = document.getElementById('delBtn');
+  btn.disabled = true; btn.textContent = '⏳ Tar bort...';
+  let res = { ok: false, error: 'okänt fel' };
+  try {
+    const raw = await __MK_SPARA.load('json/ingredienser.json');
+    if (!raw) throw new Error('kunde inte läsa databasen');
+    const db = JSON.parse(raw);
+    db.ingredienser = (db.ingredienser || []).filter(i => !ids.includes(i.id));
+    res = await __MK_SPARA.save('json/ingredienser.json', JSON.stringify(db, null, 2),
+      'Borttagna ingredienser via sajten: ' + namn.join(', ').slice(0, 80));
+  } catch (e) { res = { ok: false, error: e.message }; }
+  btn.disabled = false;
+  if (res.ok) {
+    ING = ING.filter(i => !ids.includes(i.id));
+    renderList();
+    document.getElementById('chkAll').checked = false;
+    out.innerHTML = '<div class="okbox">🗑️ <b>' + ids.length + '</b> ingrediens(er) borttagna ur databasen.</div>';
+  } else {
+    out.innerHTML = '<div class="errbox">⚠️ Kunde inte ta bort: ' + res.error + '</div>';
+    chkChanged();
+  }
+}
+
+/* ---------- Prisuppdatering via sparade länkar (max 1 gång/månad) ---------- */
+function monthKey() { return new Date().toISOString().slice(0, 7); }  /* "2026-08" */
+
+function updateBtnInfo() {
+  const linked = ING.filter(i => i.lank).length;
+  const info = document.getElementById('updInfo');
+  const btn = document.getElementById('updBtn');
+  if (!linked) { btn.style.display = 'none'; info.textContent = ''; return; }
+  btn.style.display = 'inline-block';
+  let last = '';
+  try { last = localStorage.getItem('mk-ing-priceupdate') || ''; } catch (e) {}
+  if (last === monthKey()) {
+    btn.disabled = true;
+    info.textContent = '✅ Redan uppdaterat denna månad (' + linked + ' länkade varor) – nästa körning möjlig nästa månad.';
+  } else {
+    btn.disabled = false;
+    info.textContent = linked + ' varor har sparad butikslänk och kan prisuppdateras (1 gång/månad).';
+  }
+}
+
+async function updatePrices() {
+  const linked = ING.filter(i => i.lank);
+  if (!linked.length) return;
+  let last = '';
+  try { last = localStorage.getItem('mk-ing-priceupdate') || ''; } catch (e) {}
+  if (last === monthKey()) { alert('Priserna är redan uppdaterade denna månad – för att inte belasta butikerna körs detta max 1 gång/månad.'); return; }
+  if (!confirm('Uppdatera priser för ' + linked.length + ' länkade varor?\n\nLänkarna läggs i importkön och roboten hämtar färska priser + näring (~1 minut). Kan köras 1 gång per månad.')) return;
+  if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas.'); return; }
+  const out = document.getElementById('actionResult');
+  const btn = document.getElementById('updBtn');
+  btn.disabled = true; btn.textContent = '⏳ Lägger länkarna i kön...';
+  let res = { ok: false, error: 'okänt fel' };
+  try {
+    let txt = await __MK_SPARA.load('json/ingrediens-lankar.txt');
+    if (txt === null) txt = '# ingrediens-lankar\n';
+    txt = txt.replace(/\s+$/, '') + '\n' + linked.map(i => i.lank).join('\n') + '\n';
+    res = await __MK_SPARA.save('json/ingrediens-lankar.txt', txt,
+      'Månatlig prisuppdatering: ' + linked.length + ' varor');
+  } catch (e) { res = { ok: false, error: e.message }; }
+  btn.textContent = '🔄 Uppdatera priser via länkarna';
+  if (res.ok) {
+    try { localStorage.setItem('mk-ing-priceupdate', monthKey()); } catch (e) {}
+    out.innerHTML = '<div class="okbox">🔄 <b>' + linked.length + ' länkar i kön!</b> Roboten hämtar färska priser nu – ' +
+      'ändrade priser slår igenom i databasen och ALLA recepts live-kalkyl om ~1 minut ' +
+      '(<a href="https://github.com/Tokke2/recept/actions" target="_blank" rel="noopener">följ i Actions</a>).' +
+      '<br><button class="btn" style="margin-top:8px;padding:8px 16px;font-size:.85rem;" onclick="loadDb()">🔄 Uppdatera listan</button></div>';
+    updateBtnInfo();
+  } else {
+    out.innerHTML = '<div class="errbox">⚠️ Kunde inte starta uppdateringen: ' + res.error + '</div>';
+    btn.disabled = false;
+  }
 }
 
 /* ---------- 1) Butikslänk → ingrediens-lankar.txt (roboten tar över) ---------- */
@@ -230,5 +335,5 @@ async function saveManual() {
 loadDb();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a27df5e0ddd6aa08',t:'MTc4NjE4NjIyOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a27e1598afeca0cd',t:'MTc4NjE4NzUyOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
