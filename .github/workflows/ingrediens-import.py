@@ -12,9 +12,12 @@
 # Finns ingrediensen redan (samma lank eller samma namn) UPPDATERAS
 # den istallet for att dubbleras. Lankfilen toms efter lyckad import.
 #
-# Stodda butiker (samma Axfood-API):
-#   https://www.willys.se/produkt/..._ST
-#   https://www.hemkop.se/produkt/..._ST
+# Stodda butiker:
+#   https://www.willys.se/produkt/..._ST      (pris + naring, Axfood-API)
+#   https://www.hemkop.se/produkt/..._ST      (pris + naring, Axfood-API)
+#   https://handlaprivatkund.ica.se/stores/.../products/...  (ICA: namn +
+#       jamforpris kr/kg lases ur produktsidan; naring visas inte publikt
+#       hos ICA - fyll i efterat pa sajten eller lamna 0)
 # ============================================================
 import json
 import os
@@ -46,8 +49,94 @@ def slug(s):
     return s or 'okand'
 
 
+def ica_name_from_url(url):
+    """Reserv: lasbart namn ur ICA-lankens slug.
+    .../products/salladsl%C3%B6k-ca-125g-klass-1-ica/1131028 -> Salladslok ca 125g klass 1 ica"""
+    from urllib.parse import unquote
+    m = re.search(r'/products/([^/]+)/\d+', url)
+    if not m:
+        return ''
+    n = unquote(m.group(1)).replace('-', ' ').strip()
+    return (n[:1].upper() + n[1:]) if n else ''
+
+
+def fetch_ica(url):
+    """ICA-produktsida (handlaprivatkund.ica.se) -> (post, varning).
+    Namn/varumarke ur ld+json, jamforpris kr/kg ur inbaddad state.
+    OBS: ICA har AWS-WAF-botskydd som ibland blockerar - da anvands
+    namnet ur lanken som reserv (pris 0, fylls i pa sajten).
+    Naring finns inte publikt hos ICA -> 0 + varning."""
+    import time
+    html = ''
+    for forsok in range(3):
+        try:
+            req = urllib.request.Request(url, headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml',
+                'Accept-Language': 'sv-SE,sv;q=0.9'})
+            html = urllib.request.urlopen(req, timeout=25).read().decode('utf-8', 'ignore')
+            if 'awsWaf' not in html and len(html) > 10000:
+                break  # riktig produktsida
+        except Exception:
+            pass
+        time.sleep(3)
+
+    namn, brand = '', ''
+    m = re.search(r'type="application/ld\+json">(\{.*?\})</script>', html, re.S)
+    if m:
+        try:
+            ld = json.loads(m.group(1))
+            namn = (ld.get('name') or '').strip()
+            brand = (ld.get('brand') or '').strip()
+        except Exception:
+            pass
+    if not namn:
+        # WAF-blockerad eller okand sida -> namn ur lanken, pris fylls i manuellt
+        namn = ica_name_from_url(url)
+        if not namn:
+            return None, 'ICA blockerade hamtningen och lanken innehov inget produktnamn'
+        return {
+            'id': slug(namn), 'namn': namn, 'pris_kr_per_kg': 0,
+            'kcal': 0, 'protein': 0, 'kolhydrat': 0, 'fett': 0, 'fiber': 0,
+            'lank': url, 'kalla': 'ica.se (botskydd blockerade - fyll i pris & naring!)',
+            'uppdaterad': date.today().isoformat()
+        }, 'ICA:s botskydd blockerade hamtningen - namnet togs ur lanken, fyll i pris & naring pa ingredienser.html'
+
+    # Jamforpris: "unitPrice":{"price":{"amount":"159.20",...},"unit":"fop.price.per.kg"}
+    pris, enhet = None, 'kg'
+    mp = re.search(r'"unitPrice":\{"price":\{"amount":"([\d.]+)"[^}]*\},"unit":"fop\.price\.per\.(\w+)"', html)
+    if mp:
+        pris = round(float(mp.group(1)), 2)
+        enhet = mp.group(2)
+    else:
+        mp2 = re.search(r'([\d\s]+,\d+)\s*kr/(kg|l)', html)
+        if mp2:
+            pris = round(float(mp2.group(1).replace(' ', '').replace(',', '.')), 2)
+            enhet = mp2.group(2)
+    if pris is None:
+        return None, 'Hittade inget jamforpris pa ICA-sidan'
+
+    post = {
+        'id': slug(namn),
+        'namn': namn,
+        'pris_kr_per_kg': pris,
+        'kcal': 0, 'protein': 0, 'kolhydrat': 0, 'fett': 0, 'fiber': 0,
+        'lank': url,
+        'kalla': 'ica.se (jamforpris kr/%s)' % enhet,
+        'uppdaterad': date.today().isoformat()
+    }
+    if brand:
+        post['varumarke'] = brand
+    varning = 'ICA visar inte naring publikt - kcal/protein m.m. ar 0, fyll i pa sajten (ingredienser.html)'
+    if enhet not in ('kg',):
+        varning += ' + jamforpris per %s (inte kg)' % enhet
+    return post, varning
+
+
 def fetch_product(url):
     """Produktlank -> (post, felmeddelande)."""
+    if 'ica.se' in url:
+        return fetch_ica(url)
     m = re.search(r'(\d+_(?:ST|KG|EA))\b', url)
     if not m:
         return None, 'Ingen produktkod (..._ST) hittades i lanken'
