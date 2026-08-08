@@ -78,7 +78,9 @@
 
 <!-- ============ 3. DATABASEN ============ -->
 <div class="card">
-  <h2>📦 Databasen</h2>
+  <h2 style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">📦 Databasen
+    <button class="btn orange" style="margin:0;padding:6px 16px;font-size:.82rem;" onclick="document.getElementById('lank').scrollIntoView({behavior:'smooth'});document.getElementById('lank').focus();">🛒 Importera vara via butikslänk</button>
+  </h2>
   <input type="text" id="q" placeholder="🔍 Sök ingrediens..." oninput="renderList()">
   <div class="count" id="count"></div>
   <div style="max-height:60vh;overflow:auto;border-radius:10px;">
@@ -227,5 +229,5 @@ async function saveManual() {
 loadDb();
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a27de3424afcd42a',t:'MTc4NjE4NTQ2Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
