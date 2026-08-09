@@ -259,7 +259,7 @@
   /* ============================================================
      SIDMÄTNING v3 – via osynlig KLON (inget blink på sidan!)
      ============================================================ */
-  var PAGE_H = 1010;      // px innehållshöjd per A4-sida (96dpi, 15mm marginal)
+  var PAGE_H = 1009;      // px innehållshöjd per A4-sida: 297mm-2x15mm=267mm @96dpi
   var MIN_SCALE = 0.62;
   var measureCache = {};
 
@@ -268,7 +268,7 @@
     markCards();
     if (isRecipePage) markKeep();
     var clone = document.body.cloneNode(true);
-    clone.style.cssText = 'position:absolute;left:-99999px;top:0;width:794px;visibility:hidden;';
+    clone.style.cssText = 'position:absolute;left:-99999px;top:0;width:703px;visibility:hidden;'; /* 186mm A4-innehållsbredd @96dpi */
     // Ta bort skärm-element ur klonen
     var sels = '.no-print,.toolbar,#mk-fab,#mk-nav,#mk-top,#mk-lang,.print-btn,.share-btn,#betyg,.tabbar,.search-wrap,#mk-rnav,#mk-pd-bg,script,style';
     clone.querySelectorAll(sels).forEach(function (el) { el.remove(); });
