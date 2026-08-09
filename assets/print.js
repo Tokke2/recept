@@ -85,7 +85,7 @@
       '#mk-auto-qr img{width:22mm;height:22mm;}' +
       '#mk-auto-qr p{font-size:7pt;color:#666;margin-top:1mm;}' +
       /* Skalning (zoom för Chrome/Edge, transform-reserv) */
-      'body.mk-print-scaled{zoom:var(--mk-print-scale,1);}' +
+      'body.mk-print-scaled{zoom:var(--mk-print-scale,1);width:calc(186mm / var(--mk-print-scale,1))!important;max-width:none!important;}' +
       '@supports not (zoom:1){body.mk-print-scaled{transform:scale(var(--mk-print-scale,1));' +
         'transform-origin:top left;width:calc(100%/var(--mk-print-scale,1));}}' +
     '}' +
