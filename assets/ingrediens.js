@@ -57,22 +57,19 @@
     '.mk-ing2 { width:100%; border-collapse:collapse; font-size:.92rem; }' +
     '.mk-ing2 th { text-align:left; padding:8px 10px; background:#f0ebe3; font-size:.75rem;' +
       'text-transform:uppercase; letter-spacing:.05em; color:#7f8c8d; }' +
-    '.mk-ing2 th.pris { text-align:right; }' +
+    '.mk-ing2 th.matt, .mk-ing2 td.matt { text-align:right; white-space:nowrap; width:1%; }' +
+    '.mk-ing2 th.pris, .mk-ing2 td.pris { text-align:right; white-space:nowrap; width:1%; }' +
     '.mk-ing2 td { padding:9px 10px; border-bottom:1.5px solid #e8e2d8; vertical-align:middle; }' +
     '.mk-ing2 tr:last-child td { border-bottom:none; }' +
-    '.mk-ing2 .mg { display:inline-block; background:#eaf7ef; color:#27ae60; font-weight:700;' +
-      'border-radius:999px; padding:1px 10px; margin-left:8px; font-size:.85em; white-space:nowrap; }' +
-    '.mk-ing2 .pris { text-align:right; color:#a5967e; font-size:.85em; white-space:nowrap;' +
-      'font-variant-numeric:tabular-nums; width:1%; }' +
+    '.mk-ing2 td.matt { font-weight:700; color:#27ae60; font-variant-numeric:tabular-nums; }' +
+    '.mk-ing2 td.pris { color:#a5967e; font-size:.88em; font-variant-numeric:tabular-nums; }' +
     '.mk-ing2 .drop { margin-right:5px; }' +
     '.mk-ing2 tr.tot td { background:#faf7f2; font-weight:700; border-top:2px solid #d5cbb8; }' +
-    '.mk-ing2 tr.tot .mg { background:#f0ebe3; color:#2c3e50; }' +
-    '.mk-ing2 tr.tot .pris { color:#2c3e50; font-weight:700; }' +
+    '.mk-ing2 tr.tot td.matt, .mk-ing2 tr.tot td.pris { color:#2c3e50; }' +
     '@media print{' +
       '.mk-ing2 td{border-bottom:.5pt solid #999!important;padding:1.8mm 2mm!important;}' +
-      '.mk-ing2 .mg{background:none!important;color:#000!important;border:.5pt solid #999;' +
-        'border-radius:2mm;padding:0 2mm;-webkit-print-color-adjust:exact;}' +
-      '.mk-ing2 .pris{color:#555!important;}' +
+      '.mk-ing2 td.matt{color:#000!important;}' +
+      '.mk-ing2 td.pris{color:#555!important;}' +
       '.mk-ing2 tr.tot td{background:#eee!important;-webkit-print-color-adjust:exact;}' +
     '}';
   document.head.appendChild(css);
@@ -126,25 +123,27 @@
         .concat(inG.filter(function (x) { return !x.vatska; })) });
     });
 
-    /* ---------- Bygg nya tabellen ---------- */
-    var h = '<tr><th>Ingrediens &amp; mängd' +
+    /* ---------- Bygg nya tabellen: TRE tydliga kolumner ---------- */
+    var h = '<tr><th>Ingrediens' +
       (ordered.some(function (g) { return g.rader.some(function (r) { return r.vatska; }); })
-        ? ' <span style="font-weight:400;text-transform:none;letter-spacing:0;">(💧 vätskor överst – i maskinen först)</span>' : '') +
-      '</th>' + (hasPris ? '<th class="pris">Pris</th>' : '') + '</tr>';
+        ? ' <span style="font-weight:400;text-transform:none;letter-spacing:0;">(💧 blöta överst – i maskinen först)</span>' : '') +
+      '</th><th class="matt">Mått</th>' + (hasPris ? '<th class="pris">Pris</th>' : '') + '</tr>';
 
+    var cols = hasPris ? 3 : 2;
     ordered.forEach(function (g) {
       if (g.grupp) {
-        h += '<tr><td colspan="' + (hasPris ? 2 : 1) + '" style="background:#faf7f2;font-weight:700;border-bottom:2px solid #d5cbb8;">' + g.grupp + '</td></tr>';
+        h += '<tr><td colspan="' + cols + '" style="background:#faf7f2;font-weight:700;border-bottom:2px solid #d5cbb8;">' + g.grupp + '</td></tr>';
       }
       g.rader.forEach(function (r) {
         h += '<tr data-namn="' + r.namn.replace(/"/g, '&quot;') + '" data-mangd="' + r.mangd.replace(/"/g, '&quot;') + '">' +
-          '<td>' + (r.vatska ? '<span class="drop">💧</span>' : '') + r.namn +
-          (r.mangd ? '<span class="mg">' + r.mangd + '</span>' : '') + '</td>' +
+          '<td>' + (r.vatska ? '<span class="drop">💧</span>' : '') + r.namn + '</td>' +
+          '<td class="matt">' + (r.mangd || '–') + '</td>' +
           (hasPris ? '<td class="pris">' + (r.pris || '') + '</td>' : '') + '</tr>';
       });
     });
     tot.forEach(function (r) {
-      h += '<tr class="tot"><td>' + r.namn + (r.mangd ? '<span class="mg">' + r.mangd + '</span>' : '') + '</td>' +
+      h += '<tr class="tot"><td>' + r.namn + '</td>' +
+        '<td class="matt">' + (r.mangd || '') + '</td>' +
         (hasPris ? '<td class="pris">' + (r.pris || '') + '</td>' : '') + '</tr>';
     });
 
