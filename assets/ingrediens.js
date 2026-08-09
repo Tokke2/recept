@@ -86,9 +86,98 @@
     return null;
   }
 
+  /* ============================================================
+     SJÄLVLÄKNING: vissa inklistrade recept har hamnat med STEG,
+     NÄRINGSVÄRDE och TIPS inuti ingredienstabellen. Detta lagas
+     här AUTOMATISKT i webbläsaren – källfilen röres aldrig:
+     · stegen flyttas till "Gör så här"-kortets lista
+     · näringsraderna till ett Näringsvärde-kort
+     · tips till en 💡-ruta
+     ============================================================ */
+  function repair(table) {
+    var rows = Array.prototype.slice.call(table.querySelectorAll('tr'));
+    var mode = 'ing', steps = [], naring = [], tips = [], remove = [];
+    rows.forEach(function (tr) {
+      var tds = tr.querySelectorAll('td');
+      if (!tds.length) return;
+      var a = (tds[0].textContent || '').trim();
+      var b = (tds[1] ? tds[1].textContent : '').trim();
+      if (/G\u00d6R S\u00c5 H\u00c4R|TILLAGNING|INSTRUKTION/i.test(a) && a.length < 30) { mode = 'steg'; remove.push(tr); return; }
+      if (/N\u00c4RINGSV\u00c4RDE/i.test(a) && a.length < 30) { mode = 'naring'; remove.push(tr); return; }
+      if ((/^\uD83D\uDCA1/.test(a) || /^TIPS$/i.test(a.replace(/^\uD83D\uDCA1\s*/, ''))) && a.length < 20) { mode = 'tips'; remove.push(tr); return; }
+      if (mode === 'steg') {
+        var txt = a.replace(/^\d+[.)]\s*/, '').trim();
+        if (txt) steps.push(txt);
+        remove.push(tr);
+      } else if (mode === 'naring') {
+        if (a) naring.push([a, b]);
+        remove.push(tr);
+      } else if (mode === 'tips') {
+        if (a) tips.push(a);
+        remove.push(tr);
+      }
+    });
+    if (!remove.length) return;
+    remove.forEach(function (tr) { tr.remove(); });
+
+    /* Steg → "Gör så här"-kortets (tomma) lista, annars nytt kort */
+    if (steps.length) {
+      var ol = null;
+      var cards = document.querySelectorAll('.card');
+      for (var i = 0; i < cards.length; i++) {
+        var h = cards[i].querySelector('h2');
+        if (h && /(g\u00f6r s\u00e5 h\u00e4r|steg|instruktion)/i.test(h.textContent)) { ol = cards[i].querySelector('ol'); break; }
+      }
+      if (ol && !ol.querySelector('li')) {
+        steps.forEach(function (s) {
+          var li = document.createElement('li');
+          li.textContent = s;
+          ol.appendChild(li);
+        });
+      } else if (!ol) {
+        var sc = document.createElement('div');
+        sc.className = 'card';
+        sc.innerHTML = '<h2>\uD83E\uDD63 G\u00f6r s\u00e5 h\u00e4r</h2><ol>' +
+          steps.map(function (s) { return '<li></li>'; }).join('') + '</ol>';
+        var lis = sc.querySelectorAll('li');
+        steps.forEach(function (s, j) { lis[j].textContent = s; });
+        table.closest('.card').parentNode.insertBefore(sc, table.closest('.card').nextSibling);
+      }
+    }
+    /* Näringsrader → eget kort om inget finns */
+    if (naring.length) {
+      var harNaring = false;
+      document.querySelectorAll('.card h2').forEach(function (h) { if (/n\u00e4ring/i.test(h.textContent)) harNaring = true; });
+      if (!harNaring) {
+        var nc = document.createElement('div');
+        nc.className = 'card';
+        var rowsHtml = naring.map(function (p) {
+          return '<tr><td></td><td style="text-align:right;font-weight:700;"></td></tr>';
+        }).join('');
+        nc.innerHTML = '<h2>\uD83D\uDCCA N\u00e4ringsv\u00e4rde</h2><table>' + rowsHtml + '</table>';
+        var tds2 = nc.querySelectorAll('td');
+        naring.forEach(function (p, j) { tds2[j * 2].textContent = p[0]; tds2[j * 2 + 1].textContent = p[1]; });
+        var footer = document.querySelector('footer');
+        if (footer) footer.parentNode.insertBefore(nc, footer);
+        else document.body.appendChild(nc);
+      }
+    }
+    /* Tips → 💡-ruta */
+    if (tips.length && !document.querySelector('.tip')) {
+      var tip = document.createElement('div');
+      tip.className = 'tip';
+      tip.textContent = '\uD83D\uDCA1 ' + tips.join(' ');
+      var footer2 = document.querySelector('footer');
+      if (footer2) footer2.parentNode.insertBefore(tip, footer2);
+      else document.body.appendChild(tip);
+    }
+    if (window.__MK_TOAST) window.__MK_TOAST('\uD83D\uDD27 Receptet visades r\u00f6rigt och har auto-lagats p\u00e5 sk\u00e4rmen');
+  }
+
   function build() {
     var table = findIngTable();
     if (!table || table.classList.contains('mk-ing2')) return;
+    repair(table);   /* självläkning av trasiga inklistringar */
 
     /* ---------- Läs ut raderna ur befintlig tabell ---------- */
     var items = [], grupp = null, hasPris = false;
