@@ -228,6 +228,36 @@
     }
   }
 
+  /* ---------- Ta bort en fil (lösenord + nyckel krävs) ---------- */
+  async function remove(path, message) {
+    if (!(await requireUnlock())) return { ok: false, error: 'Avbrutet – lösenord krävs.' };
+    if (!getToken()) {
+      var t = await askToken();
+      if (!t) return { ok: false, error: 'Ingen nyckel angiven' };
+    }
+    try {
+      var head = await api('contents/' + encodeURIComponent(path).replace(/%2F/g, '/') + '?ref=' + BRANCH);
+      if (head.status === 401 || head.status === 403) {
+        clearToken();
+        return { ok: false, error: 'Nyckeln är ogiltig eller saknar behörighet.' };
+      }
+      if (!head.ok) return { ok: false, error: 'Filen hittades inte på GitHub (' + head.status + ')' };
+      var sha = (await head.json()).sha;
+      var res = await api('contents/' + encodeURIComponent(path).replace(/%2F/g, '/'), {
+        method: 'DELETE',
+        body: JSON.stringify({ message: message || ('Borttagen via sajten: ' + path), sha: sha, branch: BRANCH })
+      });
+      if (!res.ok) {
+        var err = await res.json().catch(function () { return {}; });
+        if (res.status === 401 || res.status === 403) clearToken();
+        return { ok: false, error: 'GitHub svarade ' + res.status + ': ' + (err.message || 'okänt fel') };
+      }
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: 'Nätverksfel: ' + e.message };
+    }
+  }
+
   /* ---------- Läs en fil (för t.ex. energi.json-uppdatering) ---------- */
   async function load(path) {
     try {
@@ -241,6 +271,7 @@
   window.__MK_SPARA = {
     save: save,
     load: load,
+    remove: remove,
     hasToken: function () { return !!getToken(); },
     clearToken: clearToken
   };
