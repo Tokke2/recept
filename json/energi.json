@@ -91,6 +91,13 @@
     "min": 5,
     "moment": "Gräddning på pizzan"
    }
+  ],
+  "klassisk-havresmuldeg-lagom-sot.html": [
+   {
+    "maskin": "cosori-twinfry-10l",
+    "min": 25,
+    "moment": "Gräddning (Bake 200°C)"
+   }
   ]
  }
 }
