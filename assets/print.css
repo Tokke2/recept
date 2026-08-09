@@ -45,10 +45,10 @@
 
   /* ---------- Grundformat: A4 210x297mm, pt-typografi, svart pa vitt ---------- */
   html, body {
-    width: 186mm;               /* A4-bredd 210mm minus 2x12mm marginal */
-    max-width: 186mm;
-    margin: 0;
-    padding: 0;
+    width: 186mm !important;    /* A4-bredd 210mm minus 2x12mm marginal */
+    max-width: 186mm !important;
+    margin: 0 !important;
+    padding: 0 !important;      /* !important: receptens egna <style> laddas efter denna fil */
     background: #fff !important;
     color: #000;
     font-size: 10pt;
