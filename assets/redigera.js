@@ -530,10 +530,12 @@
       '<span id="eb-dirty" style="font-size:.78rem;opacity:.85;"></span>' +
       '<button class="eb save" id="eb-save" style="background:#27ae60;color:#fff;">💾 Spara på sajten</button>' +
       '<button class="eb" id="eb-dl" style="background:rgba(255,255,255,.2);color:#fff;" title="Reserv: ladda ner filen istället">⬇️</button>' +
+      '<button class="eb" id="eb-del" style="background:#c0392b;color:#fff;" title="Ta bort hela receptet från sajten">🗑️ Ta bort receptet</button>' +
       '<button class="eb exit" id="eb-exit">✕ Avsluta</button>';
     document.body.appendChild(bar);
     document.getElementById('eb-save').onclick = saveToSite;
     document.getElementById('eb-dl').onclick = saveFile;
+    document.getElementById('eb-del').onclick = deleteRecipe;
     document.getElementById('eb-exit').onclick = tryStopEdit;
 
     /* Markera osparat + varna vid sidlämning */
@@ -579,6 +581,54 @@
     var bar = document.getElementById('mk-editbar');
     if (bar) bar.remove();
     if (window.__MK_TOAST) window.__MK_TOAST('Ändringarna syns på sidan – ladda upp filen för att spara permanent');
+  }
+
+  /* ============================================================
+     🗑️ TA BORT HELA RECEPTET – från recept-mappen + energi.json.
+     Lösenordsskyddat (spara.js). Dubbel bekräftelse med namn.
+     ============================================================ */
+  async function deleteRecipe() {
+    if (!window.__MK_SPARA || !window.__MK_SPARA.remove) {
+      alert('Spara-modulen saknas – ta bort filen manuellt på GitHub.'); return;
+    }
+    var fname = decodeURIComponent(location.pathname.split('/').pop());
+    var rNamn = ((document.querySelector('meta[name="recept:namn"]') || {}).content || fname)
+      .replace(/[\u{1F300}-\u{1FAFF}\uFE0F]/gu, '').trim();
+    if (!confirm('⚠️ TA BORT HELA RECEPTET?\n\n"' + rNamn + '"\n\nDet raderas permanent från sajten (recept-mappen på GitHub). Detta går INTE att ångra härifrån.')) return;
+    var svar = prompt('Säkerhetskontroll: skriv TA BORT för att bekräfta raderingen av "' + rNamn + '":');
+    if (!svar || svar.trim().toUpperCase() !== 'TA BORT') {
+      if (window.__MK_TOAST) window.__MK_TOAST('Raderingen avbröts – receptet är kvar.');
+      return;
+    }
+    var btn = document.getElementById('eb-del');
+    btn.disabled = true; btn.textContent = '⏳ Tar bort...';
+
+    var res = await window.__MK_SPARA.remove('recept/' + fname, 'Recept borttaget via sajten: ' + rNamn);
+    if (res.ok) {
+      /* Städa energidata också (fel i den stoppar inte flödet) */
+      try {
+        var raw = await window.__MK_SPARA.load('json/energi.json');
+        if (raw) {
+          var db = JSON.parse(raw);
+          if (db.recept && db.recept[fname]) {
+            delete db.recept[fname];
+            await window.__MK_SPARA.save('json/energi.json', JSON.stringify(db, null, 1),
+              'Energidata borttagen: ' + fname);
+          }
+        }
+      } catch (e) {}
+      dirty = false;
+      window.removeEventListener('beforeunload', warnUnload);
+      document.body.innerHTML =
+        '<div style="max-width:520px;margin:15vh auto;text-align:center;font-family:Segoe UI,system-ui,sans-serif;padding:20px;">' +
+        '<div style="font-size:3rem;">🗑️</div>' +
+        '<h2 style="color:#2c3e50;margin:10px 0;">Receptet är borttaget</h2>' +
+        '<p style="color:#7f8c8d;">"' + rNamn + '" raderades från sajten. Det försvinner ur receptsamlingen om ~1 minut (grön bock i Actions).</p>' +
+        '<a href="../recept.html" style="display:inline-block;margin-top:16px;background:#c0392b;color:#fff;text-decoration:none;border-radius:12px;padding:12px 26px;font-weight:700;">📖 Till receptsamlingen</a></div>';
+    } else {
+      btn.disabled = false; btn.textContent = '🗑️ Ta bort receptet';
+      alert('⚠️ Kunde inte ta bort: ' + res.error);
+    }
   }
 
   /* ============================================================
