@@ -292,7 +292,34 @@
   }
   function qtyOutside(e) {
     var el = document.getElementById('mk-qty');
-    if (el && !el.contains(e.target)) closeQty();
+    if (!el || el.contains(e.target)) return;
+    /* Klick utanför: har mängden ÄNDRATS? Då frågar vi först –
+       menyn stängs aldrig av misstag. Oförändrad = stäng tyst. */
+    var inp = el.querySelector('#mk-qty-in');
+    var orig = el.getAttribute('data-orig');
+    if (inp && orig !== null && String(inp.value).replace(',', '.') !== orig) {
+      e.preventDefault();
+      e.stopPropagation();
+      var fr = el.querySelector('#mk-qty-fraga');
+      if (!fr) {
+        fr = document.createElement('div');
+        fr.id = 'mk-qty-fraga';
+        fr.contentEditable = 'false';
+        fr.style.cssText = 'margin-top:8px;padding:8px 10px;background:#fdf6ee;border:1.5px solid #e67e22;border-radius:9px;font-size:.8rem;color:#2c3e50;';
+        fr.innerHTML = '\u26A0\uFE0F Osparad \u00e4ndring \u2013 vad vill du g\u00f6ra?' +
+          '<div style="display:flex;gap:6px;margin-top:6px;">' +
+          '<button id="mk-qty-fja" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:7px;padding:7px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.8rem;">\u2714 Spara</button>' +
+          '<button id="mk-qty-fnej" style="flex:1;background:#ecf0f1;color:#2c3e50;border:none;border-radius:7px;padding:7px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.8rem;">Sl\u00e4ng</button></div>';
+        el.appendChild(fr);
+        fr.querySelector('#mk-qty-fja').onclick = function () {
+          var ok = el.querySelector('#mk-qty-ok');
+          if (ok) ok.click(); else closeQty();
+        };
+        fr.querySelector('#mk-qty-fnej').onclick = closeQty;
+      }
+      return;
+    }
+    closeQty();
   }
 
   function openQtyMenu(tr, x, y) {
@@ -314,12 +341,15 @@
         '<button class="qbtn plus" data-d="' + step + '">+' + step + '</button></div>' +
         '<button class="qok" id="mk-qty-ok">✔ Ändra mängden</button>'
         : '<p style="font-size:.8rem;color:#7f8c8d;margin:0 0 8px;">Ingen mängd hittades på raden.</p>') +
-      '<button class="qdel" id="mk-qty-del">🗑️ Ta bort ingrediensen</button>';
+      '<button class="qdel" id="mk-qty-del">🗑️ Ta bort ingrediensen</button>' +
+      '<button id="mk-qty-avbryt" style="width:100%;margin-top:6px;background:#ecf0f1;color:#2c3e50;border:none;border-radius:9px;padding:8px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.82rem;">✕ Avbryt</button>';
+    if (q) menu.setAttribute('data-orig', String(q.n));
     document.body.appendChild(menu);
     var mw = 240;
     menu.style.left = Math.min(x, window.innerWidth - mw - 12) + 'px';
     menu.style.top = (y + window.scrollY + 8) + 'px';
     setTimeout(function () { document.addEventListener('mousedown', qtyOutside, true); }, 50);
+    menu.querySelector('#mk-qty-avbryt').onclick = closeQty;
 
     if (q) {
       var inp = menu.querySelector('#mk-qty-in');
