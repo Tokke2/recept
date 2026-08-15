@@ -45,6 +45,15 @@
   section.recept > h2 { font-size:1.45rem; margin-bottom:14px; }
 
   .tabbar { display:flex; gap:6px; flex-wrap:wrap; border-bottom:3px solid #e5ddd0; margin-bottom:4px; }
+  .katbar { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 4px; }
+  .kat { background:#f0ebe3; border:2px solid transparent; border-radius:999px; padding:5px 14px;
+         font-size:.85rem; font-weight:600; cursor:pointer; font-family:inherit; color:var(--dark); }
+  .kat:hover { border-color:var(--accent2); }
+  .kat.active { background:var(--accent); color:#fff; }
+  .kat .n { opacity:.7; font-size:.78rem; }
+  .kat-rubrik { grid-column:1/-1; font-family:Georgia,serif; font-size:1.15rem; color:var(--dark);
+                border-bottom:2px solid #e5ddd0; padding:14px 2px 6px; display:flex; align-items:baseline; gap:8px; }
+  .kat-rubrik small { color:var(--muted); font-size:.78rem; font-family:'Segoe UI',sans-serif; }
   .tab {
     display:flex; align-items:center; gap:7px; background:none; border:none; cursor:pointer;
     font-family:inherit; font-size:.92rem; font-weight:700; color:var(--muted);
@@ -153,6 +162,7 @@
   <section class="recept" id="recept">
     <h2>📖 Recept</h2>
     <div class="tabbar" id="tabbar"></div>
+    <div class="katbar no-print" id="katbar"></div>
     <div class="toolrow no-print">
       <input type="text" id="q" placeholder="🔍 Sök i fliken..." oninput="apply()">
       <select id="sort" onchange="apply()">
@@ -207,7 +217,53 @@
    Recept läses ENBART från main/recept/*.html
    Flikar: Alla recept + en flik per maskin (byggs automatiskt)
    ============================================================ */
-let DB = { maskiner: [] }, RECIPES = [], activeTab = 'all';
+let DB = { maskiner: [] }, RECIPES = [], activeTab = 'all', activeKat = 'all';
+
+/* ============ KATEGORIER (central prioriterad lista) ============
+   Första träffen (taggar + namn) vinner – specifikt före generellt. */
+const KATEGORIER = [
+  { id:'husdjur',   namn:'Husdjur',         emoji:'🐶' },
+  { id:'sylt',      namn:'Sylt & marmelad', emoji:'🫙' },
+  { id:'saft',      namn:'Saft & dryck',    emoji:'🧃' },
+  { id:'glass',     namn:'Glass & fryst',   emoji:'🍦' },
+  { id:'snacks',    namn:'Snacks',          emoji:'🥨' },
+  { id:'brod',      namn:'Bröd',            emoji:'🍞' },
+  { id:'deg',       namn:'Deg',             emoji:'🥖' },
+  { id:'bakning',   namn:'Bakning & fika',  emoji:'🍰' },
+  { id:'efterratt', namn:'Efterrätt',       emoji:'🍮' },
+  { id:'varmratt',  namn:'Varmrätter',      emoji:'🍲' },
+  { id:'ovrigt',    namn:'Övrigt',          emoji:'🍽️' }
+];
+/* PRIORITERAD ordlista (som emoji.js): första träffen vinner.
+   Specifikt före generellt: smulpaj→bakning FÖRE deg, pizzadeg→deg FÖRE pizza→varmrätt. */
+const KAT_ORD = [
+  ['hund','husdjur'],['husdjur','husdjur'],['katt','husdjur'],
+  ['sylt','sylt'],['marmelad','sylt'],['chutney','sylt'],['inlagd','sylt'],
+  ['smulpaj','bakning'],['smuldeg','bakning'],['paj','bakning'],
+  ['glass','glass'],['sorbet','glass'],['frozen','glass'],
+  ['milkshake','saft'],['proteinshake','saft'],['shake','saft'],['smoothie','saft'],
+  ['slush','saft'],['drink','saft'],['cocktail','saft'],['lemonad','saft'],
+  ['saft','saft'],['juice','saft'],['dryck','saft'],
+  ['snacks','snacks'],['chips','snacks'],['popcorn','snacks'],['tilltugg','snacks'],['jerky','snacks'],
+  ['pizzadeg','deg'],['jäsning','deg'],
+  ['bröd','brod'],['limpa','brod'],['pita','brod'],['tortilla','brod'],['baguette','brod'],['toast','brod'],
+  ['deg','deg'],
+  ['kaka','bakning'],['tårta','bakning'],['muffin','bakning'],['bulle','bakning'],
+  ['kex','bakning'],['cookie','bakning'],['bakning','bakning'],['fika','bakning'],
+  ['våffl','bakning'],['pannkak','bakning'],
+  ['efterrätt','efterratt'],['dessert','efterratt'],['pudding','efterratt'],['mousse','efterratt'],
+  ['gryta','varmratt'],['soppa','varmratt'],['curry','varmratt'],['kött','varmratt'],
+  ['kyckling','varmratt'],['fisk','varmratt'],['lax','varmratt'],['pasta','varmratt'],
+  ['lasagne','varmratt'],['risotto','varmratt'],['middag','varmratt'],['varmrätt','varmratt'],['pizza','varmratt']
+];
+function kategoriFor(r) {
+  /* "saftig/saftigt" får inte trigga saft-kategorin */
+  const text = (r.taggar.join(' ') + ' ' + r.namn).toLowerCase().replace(/saftig\w*/g, '');
+  for (const [ord, kat] of KAT_ORD) {
+    if (text.includes(ord)) return kat;
+  }
+  return 'ovrigt';
+}
 
 init();
 
@@ -300,6 +356,8 @@ async function loadGlobalRatings() {
 
 /* ============ Flikar: Alla + per maskin ============ */
 function buildTabs() {
+  RECIPES.forEach(r => { r.kat = kategoriFor(r); });
+  buildKats();
   const used = new Set();
   RECIPES.forEach(r => r.maskin_ids.forEach(id => used.add(id)));
   let h = `<button class="tab active" data-id="all" onclick="setTab('all',this)">🍽️ Alla recept <span class="n">(${RECIPES.length})</span></button>`;
@@ -315,6 +373,23 @@ function buildTabs() {
 function setTab(id, el) {
   activeTab = id;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  apply();
+}
+
+/* ============ Kategoripiller ============ */
+function buildKats() {
+  let h = `<button class="kat active" data-k="all" onclick="setKat('all',this)">🍽️ Alla kategorier</button>`;
+  KATEGORIER.forEach(k => {
+    const n = RECIPES.filter(r => r.kat === k.id).length;
+    if (!n) return;
+    h += `<button class="kat" data-k="${k.id}" onclick="setKat('${k.id}',this)">${k.emoji} ${k.namn} <span class="n">(${n})</span></button>`;
+  });
+  document.getElementById('katbar').innerHTML = h;
+}
+function setKat(id, el) {
+  activeKat = id;
+  document.querySelectorAll('.kat').forEach(k => k.classList.remove('active'));
   el.classList.add('active');
   apply();
 }
@@ -345,10 +420,23 @@ function apply() {
 
   const filtered = list.filter(r => {
     const text = (r.namn + ' ' + r.beskrivning + ' ' + r.taggar.join(' ') + ' ' + r.maskiner.join(' ')).toLowerCase();
-    return (!q || text.includes(q)) && (activeTab === 'all' || r.maskin_ids.includes(activeTab));
+    return (!q || text.includes(q)) && (activeTab === 'all' || r.maskin_ids.includes(activeTab)) &&
+           (activeKat === 'all' || r.kat === activeKat);
   });
 
-  document.getElementById('grid').innerHTML = filtered.map(card).join('');
+  /* Alla kategorier + namnsortering → GRUPPERAT med rubriker per kategori */
+  if (activeKat === 'all' && sort === 'name' && !q) {
+    let h = '';
+    KATEGORIER.forEach(k => {
+      const inK = filtered.filter(r => r.kat === k.id);
+      if (!inK.length) return;
+      h += `<div class="kat-rubrik">${k.emoji} ${k.namn} <small>${inK.length} recept</small></div>`;
+      h += inK.map(card).join('');
+    });
+    document.getElementById('grid').innerHTML = h;
+  } else {
+    document.getElementById('grid').innerHTML = filtered.map(card).join('');
+  }
   document.getElementById('noHit').style.display = filtered.length ? 'none' : 'block';
   document.getElementById('count').textContent =
     filtered.length === RECIPES.length ? `${RECIPES.length} recept` : `${filtered.length} av ${RECIPES.length} recept`;
