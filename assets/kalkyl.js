@@ -83,12 +83,26 @@
   }
 
   /* ---------- Läs receptets ingrediensrader ---------- */
+  function liveName(tr) {
+    /* Namn ur cellens LEVANDE text (användaren kan ha redigerat den) –
+       utan våra märken (✖ saknas / 🛒 / ✓) och utan 💧-droppen */
+    var td = tr.querySelector('td');
+    if (!td) return '';
+    var c = td.cloneNode(true);
+    c.querySelectorAll('.mk-saknas, .mk-prodlank, .drop, .mk-rowbtn').forEach(function (x) { x.remove(); });
+    return c.textContent.replace(/💧/g, '').trim();
+  }
   function readRows() {
     var rows = [];
     var t = document.querySelector('.mk-ing2');
     if (t) {
       t.querySelectorAll('tr[data-namn]').forEach(function (tr) {
-        rows.push({ namn: tr.getAttribute('data-namn'), mangd: tr.getAttribute('data-mangd'), el: tr });
+        var mattCell = tr.querySelector('.matt') || tr.querySelectorAll('td')[1];
+        rows.push({
+          namn: liveName(tr) || tr.getAttribute('data-namn'),
+          mangd: (mattCell ? mattCell.textContent.trim() : '') || tr.getAttribute('data-mangd'),
+          el: tr
+        });
       });
     } else {
       var cards = document.querySelectorAll('.card');
@@ -112,19 +126,39 @@
     return n.toLocaleString('sv-SE', { minimumFractionDigits: dec === undefined ? 0 : dec, maximumFractionDigits: dec === undefined ? 1 : dec });
   }
 
+  var dbCache = null;
+
   async function run() {
+    /* Riv gammalt (så omkörning efter redigering ger färska värden) */
+    var oldBox = document.getElementById('mk-kalkyl');
+    if (oldBox) oldBox.remove();
+    document.querySelectorAll('.mk-saknas, .mk-prodlank').forEach(function (x) { x.remove(); });
+
     var rows = readRows();
     if (rows.length < 2) return;
 
-    var db = [];
-    try {
-      var d = await (await fetch('../json/ingredienser.json', { cache: 'no-store' })).json();
-      db = d.ingredienser || [];
-    } catch (e) { return; }
+    var db = dbCache;
+    if (!db) {
+      try {
+        var d = await (await fetch('../json/ingredienser.json', { cache: 'no-store' })).json();
+        db = dbCache = d.ingredienser || [];
+      } catch (e) { return; }
+    }
     if (!db.length) return;
 
     var tot = { g: 0, kr: 0, kcal: 0, prot: 0, kolh: 0, fett: 0, fiber: 0 };
     var matched = 0, missed = [];
+    /* Hydrering (bagerimått): vätska / mjöl. Yoghurt/ägg räknas delvis. */
+    var hyd = { mjol: 0, vatska: 0 };
+    function hydKlass(namn) {
+      var n = String(namn).toLowerCase();
+      if (/mj[öo]l|havregryn|gryn(?!ing)/.test(n) && !/mj[öo]lk/.test(n)) return 'mjol';
+      if (/vatten|mj[öo]lk|juice|saft(?!ig)|[öo]l\b/.test(n)) return 'vatska';
+      if (/yoghurt|kvarg|keso|gr[äa]dde/.test(n)) return 'vatska80';   /* ~80% vatten */
+      if (/[äa]gg/.test(n)) return 'vatska75';                        /* ~75% vatten */
+      if (/olja|hon[uo]ng|sirap/.test(n)) return 'vatska20';          /* bidrar lite */
+      return null;
+    }
 
     rows.forEach(function (r) {
       var ing = match(r.namn, db);
@@ -177,6 +211,12 @@
       if (g === null) { missed.push(r.namn); return; }  /* finns men okänd mängd-enhet */
       matched++;
       tot.g += g;
+      var hk = hydKlass(r.namn);
+      if (hk === 'mjol') hyd.mjol += g;
+      else if (hk === 'vatska') hyd.vatska += g;
+      else if (hk === 'vatska80') hyd.vatska += g * 0.8;
+      else if (hk === 'vatska75') hyd.vatska += g * 0.75;
+      else if (hk === 'vatska20') hyd.vatska += g * 0.2;
       var kr = g / 1000 * (+ing.pris_kr_per_kg || 0);
       tot.kr += kr;
       tot.kcal += g / 100 * (+ing.kcal || 0);
@@ -241,6 +281,16 @@
       rad('🧈 Fett', fmt(tot.fett) + ' g', fmt(tot.fett / (port || 1)) + ' g') +
       rad('🌾 Fiber', fmt(tot.fiber) + ' g', fmt(tot.fiber / (port || 1)) + ' g') +
       '</table>' +
+      (hyd.mjol >= 50 ? (function () {
+        var pct = Math.round(hyd.vatska / hyd.mjol * 100);
+        var beskr = pct < 50 ? 'fast deg (bagels, kex)' :
+                    pct < 60 ? 'normal bröddeg' :
+                    pct < 70 ? 'mjuk deg (pizza, focaccia)' :
+                    pct < 85 ? 'lös deg (ciabatta, lantbröd)' : 'smet (våfflor, pannkakor)';
+        return '<div id="mk-hydrering" style="margin-top:10px;padding:9px 12px;background:#eef7fb;border-left:3px solid #3498db;border-radius:8px;font-size:.85rem;">' +
+          '💧 <b>Hydrering: ' + pct + '%</b> <span style="color:#7f8c8d;">(' +
+          fmt(hyd.vatska, 0) + ' g vätska / ' + fmt(hyd.mjol, 0) + ' g mjöl & gryn – ' + beskr + ')</span></div>';
+      })() : '') +
       (missed.length ? '<p style="font-size:.78rem;color:#a5967e;margin-top:8px;">⚠️ Ej i databasen (räknas inte med): ' +
         missed.join(' · ') + ' – <a href="../ingredienser.html" style="color:#c0392b;">lägg till dem här</a> så blir kalkylen komplett!</p>' : '') +
       '<button id="mk-recept2ing" class="no-print" style="margin-top:10px;background:#eaf7ef;color:#27ae60;' +
@@ -312,6 +362,19 @@
       }
     });
   }
+
+  /* Omkörning utifrån (redigera.js anropar efter varje ändring) */
+  var omTimer = null;
+  window.__MK_KALKYL_REFRESH = function () {
+    clearTimeout(omTimer);
+    omTimer = setTimeout(run, 400);
+  };
+
+  /* Auto-omräkning under redigeringsläget: text ändras / rad tas bort */
+  document.addEventListener('input', function (e) {
+    if (!document.body.classList.contains('mk-editing')) return;
+    if (e.target.closest && e.target.closest('.mk-ing2, .mk-ing-card')) window.__MK_KALKYL_REFRESH();
+  }, true);
 
   /* Vänta in ingrediens.js (bygger mk-ing2-tabellen) */
   function start() { setTimeout(run, 250); }
