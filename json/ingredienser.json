@@ -352,7 +352,10 @@
       "protein": 0.3,
       "kolhydrat": 12,
       "fett": 0.2,
-      "fiber": 2.4
+      "fiber": 2.4,
+      "kalla": "redigerad 2026-08-15",
+      "lank": "https://www.willys.se/produkt/apple-Royal-Gala-Klass-1-100144504_KG",
+      "uppdaterad": ""
     },
     {
       "id": "jordgubbar-frysta",
