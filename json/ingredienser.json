@@ -134,9 +134,7 @@
       "kolhydrat": 12,
       "fett": 0,
       "fiber": 1.2,
-      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-15",
-      "lank": "https://www.willys.se/produkt/Ananas-Fryst-101762268_ST",
-      "uppdaterad": ""
+      "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "krossad-ananas",
@@ -335,13 +333,16 @@
     },
     {
       "id": "banan",
-      "namn": "Banan (skalad)",
+      "namn": "Banan",
       "pris_kr_per_kg": 25,
       "kcal": 90,
       "protein": 1.1,
       "kolhydrat": 21,
       "fett": 0.3,
-      "fiber": 2.6
+      "fiber": 2.6,
+      "kalla": "redigerad 2026-08-15",
+      "lank": "https://www.willys.se/produkt/Banan-Klass-1-100254920_KG",
+      "uppdaterad": ""
     },
     {
       "id": "apple",
