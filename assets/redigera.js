@@ -366,6 +366,7 @@
         cell.textContent = fmtQty(nyN, q.unit);
         if (tr.hasAttribute('data-mangd')) tr.setAttribute('data-mangd', fmtQty(nyN, q.unit));
         dirty = true;
+        if (window.__MK_KALKYL_REFRESH) window.__MK_KALKYL_REFRESH();
         closeQty();
         var diff = Math.round((gammal - nyN) * 10) / 10;
         if (diff > 0) offerCompensation(tr, diff, q.unit);
@@ -376,6 +377,7 @@
       var cellq = q ? q.n : 0;
       tr.remove();
       dirty = true;
+      if (window.__MK_KALKYL_REFRESH) window.__MK_KALKYL_REFRESH();
       closeQty();
       if (q && cellq > 0) offerCompensation(null, cellq, q.unit, namn);
       else if (window.__MK_TOAST) window.__MK_TOAST('🗑️ ' + namn + ' borttagen');
@@ -419,6 +421,7 @@
       c.cell.textContent = fmtQty(c.q.n + diff, unit);
       if (c.tr.hasAttribute('data-mangd')) c.tr.setAttribute('data-mangd', fmtQty(c.q.n + diff, unit));
       dirty = true;
+      if (window.__MK_KALKYL_REFRESH) window.__MK_KALKYL_REFRESH();
       box.remove();
       if (window.__MK_TOAST) window.__MK_TOAST('⚖️ ' + c.namn + ' ökad till ' + fmtQty(c.q.n + diff, unit) + ' – totalvikten behållen!');
     };
@@ -484,7 +487,7 @@
           del.textContent = '✕';
           del.title = 'Ta bort raden';
           del.contentEditable = 'false';
-          del.onclick = function () { tr.remove(); };
+          del.onclick = function () { tr.remove(); markDirty(); if (window.__MK_KALKYL_REFRESH) window.__MK_KALKYL_REFRESH(); };
           tds[tds.length - 1].appendChild(del);
         }
       });
