@@ -418,8 +418,10 @@
       "kolhydrat": 9,
       "fett": 0.5,
       "fiber": 3.1,
+      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-15",
       "varumarke": "Eldorado",
-      "kalla": "import ingredienser.json v5.1.1"
+      "lank": "https://www.willys.se/produkt/Blabar-Frysta-101821169_ST",
+      "uppdaterad": ""
     },
     {
       "id": "bobmjol-vita-bonor",
