@@ -1,0 +1,5 @@
+# PLATS: /robots.txt (repo-roten - sökmotorernas regler)
+User-agent: *
+Allow: /
+
+Sitemap: https://tokke2.github.io/recept/sitemap.xml
