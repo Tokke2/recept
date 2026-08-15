@@ -200,8 +200,13 @@ function openEdit(id) {
   /* Ursprungsvärden – för att veta om något ändrats vid klick utanför */
   const eiOrig = ['ei-namn','ei-marke','ei-pris','ei-kcal','ei-prot','ei-kolh','ei-fett','ei-fiber','ei-lank']
     .map(id => document.getElementById(id).value).join('|') + '|' + document.getElementById('ei-nollok').checked;
+  /* "Hårt klick" krävs: markerar man text i ett fält och släpper musen
+     utanför rutan blir click-target = bakgrunden – det ska INTE räknas.
+     Endast nedtryck + släpp direkt på bakgrunden = medvetet klick utanför. */
+  let eiDownOnBg = false;
+  bg.addEventListener('mousedown', e => { eiDownOnBg = (e.target === bg); });
   bg.addEventListener('click', e => {
-    if (e.target !== bg || !document.getElementById('ei-namn')) return;
+    if (e.target !== bg || !eiDownOnBg || !document.getElementById('ei-namn')) return;
     const nu = ['ei-namn','ei-marke','ei-pris','ei-kcal','ei-prot','ei-kolh','ei-fett','ei-fiber','ei-lank']
       .map(id => document.getElementById(id).value).join('|') + '|' + document.getElementById('ei-nollok').checked;
     if (nu === eiOrig) { bg.remove(); return; }   /* inget ändrat = stäng tyst */
@@ -302,7 +307,9 @@ async function deleteChecked() {
     document.body.appendChild(bg);
     bg.querySelector('#dc-ja').onclick = () => { bg.remove(); resolve(true); };
     bg.querySelector('#dc-nej').onclick = () => { bg.remove(); resolve(false); };
-    bg.addEventListener('click', e => { if (e.target === bg) { bg.remove(); resolve(false); } });
+    let dcDown = false;
+    bg.addEventListener('mousedown', e => { dcDown = (e.target === bg); });
+    bg.addEventListener('click', e => { if (e.target === bg && dcDown) { bg.remove(); resolve(false); } });
   });
   if (!ok) return;
   if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas.'); return; }
@@ -486,5 +493,5 @@ async function saveManual() {
 loadDb();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2b882577adb37b3',t:'MTc4NjgwMDE1Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2b8a4b4fbd637b3',t:'MTc4NjgwMTU2NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
