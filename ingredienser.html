@@ -193,7 +193,29 @@ function openEdit(id) {
       <div id="ei-result"></div>
     </div>`;
   document.body.appendChild(bg);
-  bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
+  /* Ursprungsvärden – för att veta om något ändrats vid klick utanför */
+  const eiOrig = ['ei-namn','ei-marke','ei-pris','ei-kcal','ei-prot','ei-kolh','ei-fett','ei-fiber','ei-lank']
+    .map(id => document.getElementById(id).value).join('|');
+  bg.addEventListener('click', e => {
+    if (e.target !== bg || !document.getElementById('ei-namn')) return;
+    const nu = ['ei-namn','ei-marke','ei-pris','ei-kcal','ei-prot','ei-kolh','ei-fett','ei-fiber','ei-lank']
+      .map(id => document.getElementById(id).value).join('|');
+    if (nu === eiOrig) { bg.remove(); return; }   /* inget ändrat = stäng tyst */
+    /* Ändringar finns → fråga i dialogen (stängs ALDRIG av misstag) */
+    let fr = bg.querySelector('#ei-fraga');
+    if (!fr) {
+      fr = document.createElement('div');
+      fr.id = 'ei-fraga';
+      fr.style.cssText = 'margin-top:10px;padding:10px 14px;background:#fdf6ee;border:1.5px solid #e67e22;border-radius:10px;font-size:.88rem;';
+      fr.innerHTML = '⚠️ <b>Du har osparade ändringar!</b> Vill du spara dem?' +
+        '<div style="display:flex;gap:8px;margin-top:8px;">' +
+        '<button id="ei-fja" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:8px;padding:9px;font-weight:700;cursor:pointer;font-family:inherit;">💾 Spara</button>' +
+        '<button id="ei-fnej" style="flex:1;background:#ecf0f1;color:var(--dark);border:none;border-radius:8px;padding:9px;font-weight:700;cursor:pointer;font-family:inherit;">Släng & stäng</button></div>';
+      bg.querySelector('div').appendChild(fr);
+      fr.querySelector('#ei-fja').onclick = () => bg.querySelector('#ei-save').click();
+      fr.querySelector('#ei-fnej').onclick = () => bg.remove();
+    }
+  });
   bg.querySelector('#ei-cancel').onclick = () => bg.remove();
   bg.querySelector('#ei-save').onclick = async () => {
     const g = fid => document.getElementById(fid).value.trim();
@@ -424,5 +446,5 @@ async function saveManual() {
 loadDb();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2862671eb2bbd27',t:'MTc4NjI3MjEwNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2b778caca10f9aa',t:'MTc4Njc4OTI4MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
