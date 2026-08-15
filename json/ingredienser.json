@@ -10,7 +10,7 @@
       "protein": 10,
       "kolhydrat": 71,
       "fett": 1.5,
-      "fiber": 3,
+      "fiber": 3.0,
       "varumarke": "Garant",
       "kalla": "import ingredienser.json v5.1.1"
     },
@@ -34,7 +34,7 @@
       "protein": 77,
       "kolhydrat": 3,
       "fett": 8,
-      "fiber": 0,
+      "fiber": 0.0,
       "kalla": "import ingredienser.json v5.1.1"
     },
     {
@@ -56,13 +56,13 @@
       "protein": 0.5,
       "kolhydrat": 79,
       "fett": 0.5,
-      "fiber": 0,
+      "fiber": 0.0,
       "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "agg",
       "namn": "Ägg",
-      "pris_kr_per_kg": 36,
+      "pris_kr_per_kg": 36.0,
       "kcal": 143,
       "protein": 12.5,
       "kolhydrat": 0.7,
@@ -77,31 +77,29 @@
       "protein": 4.2,
       "kolhydrat": 5.1,
       "fett": 10,
-      "fiber": 0,
+      "fiber": 0.0,
       "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "margarin",
       "namn": "Margarin Mat & Bak",
       "pris_kr_per_kg": 29.9,
-      "kcal": 707,
-      "protein": 0.1,
-      "kolhydrat": 0,
+      "kcal": 720,
+      "protein": 0.5,
+      "kolhydrat": 0.5,
       "fett": 80,
-      "fiber": 0,
-      "lank": "https://www.willys.se/produkt/Margarin-Mat-och-Bak-101662319_ST",
-      "kalla": "willys.se (jamforpris kr/kg)",
-      "uppdaterad": "2026-08-08"
+      "fiber": 0
     },
     {
       "id": "bikarbonat",
       "namn": "Bikarbonat",
-      "pris_kr_per_kg": 40,
+      "pris_kr_per_kg": 40.0,
       "kcal": 0,
       "protein": 0,
       "kolhydrat": 0,
       "fett": 0,
-      "fiber": 0
+      "fiber": 0,
+      "noll_ok": true
     },
     {
       "id": "salt",
@@ -112,7 +110,8 @@
       "kolhydrat": 0,
       "fett": 0,
       "fiber": 0,
-      "kalla": "import ingredienser.json v5.1.1"
+      "kalla": "import ingredienser.json v5.1.1",
+      "noll_ok": true
     },
     {
       "id": "torrjast",
@@ -133,16 +132,14 @@
       "kcal": 52,
       "protein": 0.5,
       "kolhydrat": 12,
-      "fett": 0,
+      "fett": 0.0,
       "fiber": 1.2,
-      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-15",
-      "lank": "https://www.willys.se/produkt/Ananas-Fryst-101762268_ST",
-      "uppdaterad": ""
+      "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "krossad-ananas",
       "namn": "Krossad ananas (konserv)",
-      "pris_kr_per_kg": 35,
+      "pris_kr_per_kg": 35.0,
       "kcal": 60,
       "protein": 0.4,
       "kolhydrat": 14,
@@ -152,7 +149,7 @@
     {
       "id": "rom",
       "namn": "Captain Morgan Spiced Rum",
-      "pris_kr_per_kg": 327,
+      "pris_kr_per_kg": 327.0,
       "kcal": 230,
       "protein": 0,
       "kolhydrat": 0.5,
@@ -162,13 +159,14 @@
     {
       "id": "vatten",
       "namn": "vatten",
-      "pris_kr_per_kg": 0,
+      "pris_kr_per_kg": 0.0,
       "kcal": 0,
       "protein": 0,
       "kolhydrat": 0,
       "fett": 0,
       "fiber": 0,
-      "kalla": "import ingredienser.json v5.1.1"
+      "kalla": "import ingredienser.json v5.1.1",
+      "noll_ok": true
     },
     {
       "id": "mjolk",
@@ -177,15 +175,15 @@
       "kcal": 59,
       "protein": 3.5,
       "kolhydrat": 4.6,
-      "fett": 3,
-      "fiber": 0,
+      "fett": 3.0,
+      "fiber": 0.0,
       "varumarke": "Garant",
       "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "smor",
       "namn": "Smör",
-      "pris_kr_per_kg": 110,
+      "pris_kr_per_kg": 110.0,
       "kcal": 740,
       "protein": 0.6,
       "kolhydrat": 0.7,
@@ -195,9 +193,9 @@
     {
       "id": "gradde",
       "namn": "Vispgrädde 40%",
-      "pris_kr_per_kg": 55,
+      "pris_kr_per_kg": 55.0,
       "kcal": 380,
-      "protein": 2,
+      "protein": 2.0,
       "kolhydrat": 2.8,
       "fett": 40,
       "fiber": 0
@@ -205,20 +203,17 @@
     {
       "id": "havregryn",
       "namn": "Havregryn",
-      "pris_kr_per_kg": 11.93,
+      "pris_kr_per_kg": 15.0,
       "kcal": 370,
       "protein": 13,
       "kolhydrat": 58,
       "fett": 7,
-      "fiber": 10,
-      "lank": "https://www.willys.se/produkt/Havregryn-101833307_ST",
-      "kalla": "willys.se (jamforpris kr/kg)",
-      "uppdaterad": "2026-08-08"
+      "fiber": 10
     },
     {
       "id": "ris-jasmin",
       "namn": "Jasminris (okokt)",
-      "pris_kr_per_kg": 30,
+      "pris_kr_per_kg": 30.0,
       "kcal": 355,
       "protein": 7,
       "kolhydrat": 79,
@@ -228,17 +223,17 @@
     {
       "id": "risgryn",
       "namn": "Risgryn (grötris)",
-      "pris_kr_per_kg": 25,
+      "pris_kr_per_kg": 25.0,
       "kcal": 350,
       "protein": 6.5,
       "kolhydrat": 78,
       "fett": 0.5,
-      "fiber": 1
+      "fiber": 1.0
     },
     {
       "id": "kycklingfile",
       "namn": "Kycklingfilé",
-      "pris_kr_per_kg": 110,
+      "pris_kr_per_kg": 110.0,
       "kcal": 106,
       "protein": 23,
       "kolhydrat": 0,
@@ -248,7 +243,7 @@
     {
       "id": "notfars",
       "namn": "Nötfärs 12%",
-      "pris_kr_per_kg": 120,
+      "pris_kr_per_kg": 120.0,
       "kcal": 190,
       "protein": 19,
       "kolhydrat": 0,
@@ -258,7 +253,7 @@
     {
       "id": "hogrev",
       "namn": "Högrev",
-      "pris_kr_per_kg": 140,
+      "pris_kr_per_kg": 140.0,
       "kcal": 160,
       "protein": 20,
       "kolhydrat": 0,
@@ -268,7 +263,7 @@
     {
       "id": "laxfile",
       "namn": "Laxfilé",
-      "pris_kr_per_kg": 180,
+      "pris_kr_per_kg": 180.0,
       "kcal": 200,
       "protein": 20,
       "kolhydrat": 0,
@@ -278,7 +273,7 @@
     {
       "id": "potatis",
       "namn": "Potatis",
-      "pris_kr_per_kg": 12,
+      "pris_kr_per_kg": 12.0,
       "kcal": 80,
       "protein": 2,
       "kolhydrat": 17,
@@ -293,13 +288,13 @@
       "protein": 0.7,
       "kolhydrat": 6.6,
       "fett": 0.2,
-      "fiber": 0,
+      "fiber": 0.0,
       "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "gul-lok",
       "namn": "Gul lök",
-      "pris_kr_per_kg": 14,
+      "pris_kr_per_kg": 14.0,
       "kcal": 40,
       "protein": 1.2,
       "kolhydrat": 8,
@@ -309,7 +304,7 @@
     {
       "id": "vitlok",
       "namn": "Vitlök",
-      "pris_kr_per_kg": 70,
+      "pris_kr_per_kg": 70.0,
       "kcal": 140,
       "protein": 6.5,
       "kolhydrat": 30,
@@ -319,7 +314,7 @@
     {
       "id": "tomatkross",
       "namn": "Tomatkross",
-      "pris_kr_per_kg": 18,
+      "pris_kr_per_kg": 18.0,
       "kcal": 30,
       "protein": 1.3,
       "kolhydrat": 4.5,
@@ -329,7 +324,7 @@
     {
       "id": "kokosmjolk",
       "namn": "Kokosmjölk",
-      "pris_kr_per_kg": 35,
+      "pris_kr_per_kg": 35.0,
       "kcal": 180,
       "protein": 1.8,
       "kolhydrat": 3,
@@ -339,7 +334,7 @@
     {
       "id": "banan",
       "namn": "Banan (skalad)",
-      "pris_kr_per_kg": 25,
+      "pris_kr_per_kg": 25.0,
       "kcal": 90,
       "protein": 1.1,
       "kolhydrat": 21,
@@ -349,7 +344,7 @@
     {
       "id": "apple",
       "namn": "Äpple",
-      "pris_kr_per_kg": 25,
+      "pris_kr_per_kg": 25.0,
       "kcal": 52,
       "protein": 0.3,
       "kolhydrat": 12,
@@ -359,17 +354,17 @@
     {
       "id": "jordgubbar-frysta",
       "namn": "Jordgubbar frysta",
-      "pris_kr_per_kg": 55,
+      "pris_kr_per_kg": 55.0,
       "kcal": 35,
       "protein": 0.7,
       "kolhydrat": 7,
       "fett": 0.3,
-      "fiber": 2
+      "fiber": 2.0
     },
     {
       "id": "kakao",
       "namn": "Kakao",
-      "pris_kr_per_kg": 120,
+      "pris_kr_per_kg": 120.0,
       "kcal": 340,
       "protein": 20,
       "kolhydrat": 12,
@@ -379,7 +374,7 @@
     {
       "id": "citron",
       "namn": "Citron (saft)",
-      "pris_kr_per_kg": 40,
+      "pris_kr_per_kg": 40.0,
       "kcal": 25,
       "protein": 0.4,
       "kolhydrat": 8,
@@ -389,7 +384,7 @@
     {
       "id": "olivolja",
       "namn": "Olivolja",
-      "pris_kr_per_kg": 120,
+      "pris_kr_per_kg": 120.0,
       "kcal": 884,
       "protein": 0,
       "kolhydrat": 0,
@@ -401,10 +396,10 @@
       "namn": "Rapsolja",
       "pris_kr_per_kg": 23.14,
       "kcal": 900,
-      "protein": 0,
-      "kolhydrat": 0,
+      "protein": 0.0,
+      "kolhydrat": 0.0,
       "fett": 100,
-      "fiber": 0,
+      "fiber": 0.0,
       "varumarke": "Eldorado",
       "kalla": "import ingredienser.json v5.1.1"
     },
@@ -413,14 +408,12 @@
       "namn": "Blåbär Frysta",
       "pris_kr_per_kg": 83.91,
       "kcal": 46,
-      "protein": 0,
+      "protein": 0.0,
       "kolhydrat": 9,
       "fett": 0.5,
       "fiber": 3.1,
-      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-15",
       "varumarke": "Eldorado",
-      "lank": "https://www.willys.se/produkt/Blabar-Frysta-101821169_ST",
-      "uppdaterad": ""
+      "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "bobmjol-vita-bonor",
@@ -436,16 +429,14 @@
     {
       "id": "falukorv-garant",
       "namn": "Falukorv (Garant)",
-      "pris_kr_per_kg": 0,
+      "pris_kr_per_kg": 0.0,
       "kcal": 260,
       "protein": 8.9,
       "kolhydrat": 4.2,
       "fett": 23,
-      "fiber": 0,
-      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-15",
+      "fiber": 0.0,
       "varumarke": "Garant",
-      "lank": "https://www.willys.se/produkt/Falukorv-101190071_ST",
-      "uppdaterad": ""
+      "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "gouda-riven-28",
@@ -455,7 +446,7 @@
       "protein": 22,
       "kolhydrat": 2.3,
       "fett": 28,
-      "fiber": 0,
+      "fiber": 0.0,
       "varumarke": "Eldorado",
       "kalla": "import ingredienser.json v5.1.1"
     },
@@ -465,9 +456,9 @@
       "pris_kr_per_kg": 74.9,
       "kcal": 337,
       "protein": 25,
-      "kolhydrat": 0,
+      "kolhydrat": 0.0,
       "fett": 26,
-      "fiber": 0,
+      "fiber": 0.0,
       "varumarke": "Arla",
       "kalla": "import ingredienser.json v5.1.1"
     },
@@ -479,7 +470,7 @@
       "protein": 24,
       "kolhydrat": 12,
       "fett": 52,
-      "fiber": 8,
+      "fiber": 8.0,
       "varumarke": "Dazzley",
       "kalla": "import ingredienser.json v5.1.1"
     },
@@ -514,7 +505,7 @@
       "protein": 19,
       "kolhydrat": 0.5,
       "fett": 49,
-      "fiber": 0,
+      "fiber": 0.0,
       "varumarke": "Tulip",
       "kalla": "import ingredienser.json v5.1.1"
     },
@@ -526,7 +517,7 @@
       "protein": 18,
       "kolhydrat": 0.5,
       "fett": 39,
-      "fiber": 0,
+      "fiber": 0.0,
       "varumarke": "Tulip",
       "kalla": "import ingredienser.json v5.1.1"
     },
@@ -549,7 +540,7 @@
       "protein": 19,
       "kolhydrat": 0.9,
       "fett": 3.6,
-      "fiber": 0,
+      "fiber": 0.0,
       "varumarke": "Tulip",
       "kalla": "import ingredienser.json v5.1.1"
     },
@@ -560,7 +551,7 @@
       "kcal": 34,
       "protein": 1.4,
       "kolhydrat": 5.8,
-      "fett": 0,
+      "fett": 0.0,
       "fiber": 1.9,
       "varumarke": "Santa Maria",
       "kalla": "import ingredienser.json v5.1.1"
