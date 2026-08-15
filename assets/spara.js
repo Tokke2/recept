@@ -200,32 +200,42 @@
       var t = await askToken();
       if (!t) return { ok: false, error: 'Ingen nyckel angiven' };
     }
-    try {
-      /* Finns filen redan? Då behövs dess sha (= uppdatering) */
-      var sha = null;
-      var head = await api('contents/' + encodeURIComponent(path).replace(/%2F/g, '/') + '?ref=' + BRANCH);
-      if (head.status === 401 || head.status === 403) {
-        clearToken();
-        return { ok: false, error: 'Nyckeln är ogiltig eller saknar behörighet – ange en ny (sidan frågar igen).' };
-      }
-      if (head.ok) sha = (await head.json()).sha;
+    /* Upp till 3 försök – vid 409 (sha-konflikt: roboten hann ändra
+       filen emellan) hämtas färsk sha och sparningen görs om. */
+    for (var forsok = 1; forsok <= 3; forsok++) {
+      try {
+        var sha = null;
+        var head = await api('contents/' + encodeURIComponent(path).replace(/%2F/g, '/') + '?ref=' + BRANCH + '&_=' + Date.now());
+        if (head.status === 401 || head.status === 403) {
+          clearToken();
+          return { ok: false, error: 'Nyckeln är ogiltig eller saknar behörighet – ange en ny (sidan frågar igen).' };
+        }
+        if (head.ok) sha = (await head.json()).sha;
 
-      var body = { message: message || ('Sparad via sajten: ' + path), content: b64(content), branch: BRANCH };
-      if (sha) body.sha = sha;
+        var body = { message: message || ('Sparad via sajten: ' + path), content: b64(content), branch: BRANCH };
+        if (sha) body.sha = sha;
 
-      var res = await api('contents/' + encodeURIComponent(path).replace(/%2F/g, '/'), {
-        method: 'PUT', body: JSON.stringify(body)
-      });
-      if (!res.ok) {
+        var res = await api('contents/' + encodeURIComponent(path).replace(/%2F/g, '/'), {
+          method: 'PUT', body: JSON.stringify(body)
+        });
+        if (res.ok) {
+          var data = await res.json();
+          return { ok: true, url: (data.content && data.content.html_url) || '' };
+        }
         var err = await res.json().catch(function () { return {}; });
-        if (res.status === 401 || res.status === 403) clearToken();
+        if (res.status === 401 || res.status === 403) { clearToken(); return { ok: false, error: 'GitHub svarade ' + res.status + ': ' + (err.message || 'okänt fel') }; }
+        if (res.status === 409 && forsok < 3) {
+          /* sha-konflikt → vänta lite och försök igen med färsk sha */
+          await new Promise(function (r) { setTimeout(r, 800 * forsok); });
+          continue;
+        }
         return { ok: false, error: 'GitHub svarade ' + res.status + ': ' + (err.message || 'okänt fel') };
+      } catch (e) {
+        if (forsok < 3) { await new Promise(function (r) { setTimeout(r, 800); }); continue; }
+        return { ok: false, error: 'Nätverksfel: ' + e.message };
       }
-      var data = await res.json();
-      return { ok: true, url: (data.content && data.content.html_url) || '' };
-    } catch (e) {
-      return { ok: false, error: 'Nätverksfel: ' + e.message };
     }
+    return { ok: false, error: 'Gick inte efter 3 försök – prova igen om en stund.' };
   }
 
   /* ---------- Ta bort en fil (lösenord + nyckel krävs) ---------- */
