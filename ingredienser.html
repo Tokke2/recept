@@ -22,7 +22,7 @@
   label { display:block; font-size:.78rem; font-weight:700; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:.04em; }
   .btn { background:var(--green); color:#fff; border:none; border-radius:10px; padding:12px 22px; font-weight:700; font-size:.95rem; cursor:pointer; font-family:inherit; margin-top:10px; margin-right:8px; }
   .btn.orange { background:var(--accent2); }
-  .btn:disabled { opacity:.6; cursor:wait; }
+  .btn:disabled { opacity:.6; cursor:not-allowed; }
   .hint { background:#fff8ec; border-left:4px solid var(--accent2); border-radius:8px; padding:12px 16px; font-size:.88rem; margin-top:12px; }
   .okbox { border-left:4px solid var(--green); background:#eaf7ef; border-radius:8px; padding:12px 16px; font-size:.88rem; margin-top:10px; }
   .errbox { border-left:4px solid var(--accent); background:#fdecea; border-radius:8px; padding:12px 16px; font-size:.88rem; margin-top:10px; }
@@ -351,11 +351,10 @@ function updateBtnInfo() {
   btn.style.display = 'inline-block';
   let last = '';
   try { last = localStorage.getItem('mk-ing-priceupdate') || ''; } catch (e) {}
+  btn.disabled = false;   /* alltid klickbar – låset förklaras i dialogen */
   if (last === monthKey()) {
-    btn.disabled = true;
-    info.textContent = '✅ Redan uppdaterat denna månad (' + linked + ' länkade varor) – nästa körning möjlig nästa månad.';
+    info.textContent = '✅ Uppdaterat denna månad (' + linked + ' länkade varor).';
   } else {
-    btn.disabled = false;
     info.textContent = linked + ' varor har sparad butikslänk och kan prisuppdateras (1 gång/månad).';
   }
 }
@@ -366,8 +365,30 @@ async function updatePrices() {
   if (!linked.length) return;
   let last = '';
   try { last = localStorage.getItem('mk-ing-priceupdate') || ''; } catch (e) {}
-  if (last === monthKey()) { alert('Priserna är redan uppdaterade denna månad – för att inte belasta butikerna körs detta max 1 gång/månad.'); return; }
-  if (!confirm('Uppdatera priser för ' + linked.length + ' länkade varor?\n\nLänkarna läggs i importkön och roboten hämtar färska priser + näring (~1 minut). Kan köras 1 gång per månad.')) return;
+  const redan = (last === monthKey());
+
+  /* Egen dialog (confirm/alert blockeras av t.ex. Brave → "inget händer") */
+  const ok = await new Promise(resolve => {
+    const bg = document.createElement('div');
+    bg.className = 'no-print';
+    bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;display:flex;align-items:center;justify-content:center;padding:16px;';
+    bg.innerHTML = `<div style="background:#fff;border-radius:16px;max-width:440px;width:100%;padding:24px 26px;text-align:center;">
+      <div style="font-size:2rem;">🔄</div>
+      <h3 style="margin:6px 0;">Uppdatera priser?</h3>
+      <p style="font-size:.88rem;color:var(--muted);margin:0 0 8px;"><b>${linked.length}</b> varor med Willys/Hemköp/ICA-länk läggs i importkön – roboten hämtar färska priser & näring (~1 minut).${refOnly ? '<br><span style="font-size:.78rem;">(' + refOnly + ' referenslänkar från andra butiker hoppar över.)</span>' : ''}</p>
+      ${redan ? '<p style="font-size:.82rem;background:#fdf6ee;border-left:3px solid var(--accent2);border-radius:8px;padding:8px 12px;text-align:left;">⚠️ <b>Redan uppdaterat denna månad.</b> Rekommendationen är 1 gång/månad (skonar butikerna) – men du kan köra ändå om priserna behöver vara färska.</p>' : ''}
+      <div style="display:flex;gap:10px;margin-top:12px;">
+        <button id="up-ja" style="flex:1;background:${redan ? '#e67e22' : '#27ae60'};color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-family:inherit;">${redan ? '🔄 Kör ändå' : '🔄 Uppdatera'}</button>
+        <button id="up-nej" style="background:#ecf0f1;color:var(--dark);border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-family:inherit;">Avbryt</button>
+      </div></div>`;
+    document.body.appendChild(bg);
+    bg.querySelector('#up-ja').onclick = () => { bg.remove(); resolve(true); };
+    bg.querySelector('#up-nej').onclick = () => { bg.remove(); resolve(false); };
+    let dn = false;
+    bg.addEventListener('mousedown', e => { dn = (e.target === bg); });
+    bg.addEventListener('click', e => { if (e.target === bg && dn) { bg.remove(); resolve(false); } });
+  });
+  if (!ok) return;
   if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas.'); return; }
   const out = document.getElementById('actionResult');
   const btn = document.getElementById('updBtn');
@@ -493,5 +514,5 @@ async function saveManual() {
 loadDb();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2b8a4b4fbd637b3',t:'MTc4NjgwMTU2NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2b8ea1eba6b2aa5',t:'MTc4NjgwNDQwOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
