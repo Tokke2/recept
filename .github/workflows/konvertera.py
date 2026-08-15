@@ -77,16 +77,39 @@ ALIAS = {'airfryer': 'cosori-twinfry-10l', 'air fryer': 'cosori-twinfry-10l',
          'torkautomat': 'wmf-snacktogo', 'dehydrator': 'wmf-snacktogo',
          'smorgasgrill': 'krups-fdk452', 'kaffekvarn': 'linkchef-grinder'}
 
-EMOJI_MAP = [('pizza', '\U0001F355'), ('glass', '\U0001F366'), ('slush', '\U0001F379'),
-             ('shake', '\U0001F964'), ('smoothie', '\U0001F964'), ('pita', '\U0001FAD3'),
-             ('brod', '\U0001F35E'), ('bröd', '\U0001F35E'), ('deg', '\U0001F956'),
-             ('kaka', '\U0001F370'), ('chips', '\U0001F968'), ('snacks', '\U0001F968'),
-             ('soppa', '\U0001F372'), ('gryta', '\U0001F372'), ('kyckling', '\U0001F357'),
-             ('fisk', '\U0001F41F'), ('lax', '\U0001F41F'), ('ris', '\U0001F35A'),
-             ('pasta', '\U0001F35D'), ('makaron', '\U0001F35D'), ('hund', '\U0001F436'),
-             ('drink', '\U0001F379'), ('sallad', '\U0001F957'), ('yoghurt', '\U0001F95B'),
-             ('agg', '\U0001F373'), ('ägg', '\U0001F373'), ('pannkak', '\U0001F95E'),
-             ('vaffl', '\U0001F9C7'), ('kott', '\U0001F969'), ('kött', '\U0001F969')]
+EMOJI_MAP = [
+    # PRIORITERAD: specifika ord forst - sylt->syltburk, saft->flaska, kott->kottbit
+    ('sylt', '\U0001FAD9'), ('marmelad', '\U0001FAD9'), ('chutney', '\U0001FAD9'),
+    ('saft', '\U0001F9C3'), ('juice', '\U0001F9C3'),
+    ('smoothie', '\U0001F964'), ('proteinshake', '\U0001F964'), ('shake', '\U0001F964'),
+    ('slush', '\U0001F379'), ('drink', '\U0001F379'), ('cocktail', '\U0001F378'),
+    ('hundglass', '\U0001F436'), ('mjukglass', '\U0001F366'), ('glass', '\U0001F366'), ('sorbet', '\U0001F367'),
+    ('kottbulle', '\U0001F9C6'), ('köttbulle', '\U0001F9C6'),
+    ('kottfars', '\U0001F969'), ('köttfärs', '\U0001F969'), ('biff', '\U0001F969'),
+    ('stek', '\U0001F969'), ('kott', '\U0001F969'), ('kött', '\U0001F969'),
+    ('flask', '\U0001F953'), ('fläsk', '\U0001F953'), ('bacon', '\U0001F953'),
+    ('korv', '\U0001F32D'), ('hamburg', '\U0001F354'), ('kyckling', '\U0001F357'), ('revben', '\U0001F356'),
+    ('lax', '\U0001F41F'), ('torsk', '\U0001F41F'), ('fisk', '\U0001F41F'), ('rak', '\U0001F990'), ('räk', '\U0001F990'),
+    ('pizzadeg', '\U0001F355'), ('pizza', '\U0001F355'),
+    ('pitabrod', '\U0001FAD3'), ('pitabröd', '\U0001FAD3'), ('pita', '\U0001FAD3'), ('tortilla', '\U0001FAD3'),
+    ('toastbrod', '\U0001F35E'), ('toastbröd', '\U0001F35E'), ('majsbrod', '\U0001F35E'), ('majsbröd', '\U0001F35E'),
+    ('brod', '\U0001F35E'), ('bröd', '\U0001F35E'), ('limpa', '\U0001F35E'),
+    ('baguette', '\U0001F956'), ('deg', '\U0001F956'), ('bulle', '\U0001F950'), ('croissant', '\U0001F950'),
+    ('smulpaj', '\U0001F967'), ('smuldeg', '\U0001F967'), ('paj', '\U0001F967'), ('tarta', '\U0001F382'), ('tårta', '\U0001F382'),
+    ('muffin', '\U0001F9C1'), ('kladdkaka', '\U0001F36B'), ('brownie', '\U0001F36B'),
+    ('kaka', '\U0001F370'), ('kex', '\U0001F36A'), ('cookie', '\U0001F36A'),
+    ('vaffl', '\U0001F9C7'), ('våffl', '\U0001F9C7'), ('pannkak', '\U0001F95E'),
+    ('soppa', '\U0001F372'), ('gryta', '\U0001F372'), ('curry', '\U0001F35B'),
+    ('risotto', '\U0001F35A'), ('ris', '\U0001F35A'), ('grot', '\U0001F963'), ('gröt', '\U0001F963'),
+    ('pasta', '\U0001F35D'), ('lasagne', '\U0001F35D'), ('makaron', '\U0001F35D'), ('nudl', '\U0001F35C'),
+    ('taco', '\U0001F32E'), ('sushi', '\U0001F363'),
+    ('omelett', '\U0001F373'), ('agg', '\U0001F373'), ('ägg', '\U0001F373'),
+    ('potatis', '\U0001F954'), ('pommes', '\U0001F35F'), ('toast', '\U0001F96A'), ('macka', '\U0001F96A'), ('sallad', '\U0001F957'),
+    ('chips', '\U0001F968'), ('snacks', '\U0001F968'), ('popcorn', '\U0001F37F'),
+    ('granola', '\U0001F963'), ('yoghurt', '\U0001F95B'), ('sas', '\U0001F96B'), ('sås', '\U0001F96B'),
+    ('ananas', '\U0001F34D'), ('apple', '\U0001F34E'), ('äpple', '\U0001F34E'),
+    ('jordgubb', '\U0001F353'), ('blabar', '\U0001FAD0'), ('blåbär', '\U0001FAD0'),
+    ('banan', '\U0001F34C'), ('citron', '\U0001F34B'), ('mango', '\U0001F96D'), ('hund', '\U0001F436')]
 
 MATORD = ['kaka', 'bröd', 'deg', 'pizza', 'glass', 'slush', 'soppa', 'gryta',
           'kyckling', 'fisk', 'ris', 'pasta', 'sallad', 'shake', 'smoothie',
@@ -525,6 +548,31 @@ def main():
               ensure_ascii=False, indent=1)
     idx = sorted(os.path.basename(x) for x in glob.glob('json/maskiner/*.json'))
     json.dump(idx, open('json/maskiner-index.json', 'w'), ensure_ascii=False, indent=1)
+
+    # ---- SITEMAP: byggs om automatiskt (SEO) ----
+    try:
+        bas = 'https://tokke2.github.io/recept/'
+        sidor = ['', 'recept.html', 'maskindatabas.html', 'ingredienser.html',
+                 'generator.html', 'forslag.html', 'nytt-recept.html',
+                 'maskin-import.html', 'status.html']
+        urls = [bas + s for s in sidor]
+        for f in sorted(glob.glob('recept/*.html')):
+            namn = os.path.basename(f)
+            if 'MALL' in namn.upper():
+                continue
+            urls.append(bas + 'recept/' + namn.replace(' ', '%20'))
+        from datetime import date as _d
+        idag = _d.today().isoformat()
+        xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        for u in urls:
+            xml += '  <url><loc>%s</loc><lastmod>%s</lastmod></url>\n' % (
+                u.replace('&', '&amp;'), idag)
+        xml += '</urlset>\n'
+        open('sitemap.xml', 'w', encoding='utf-8').write(xml)
+        print('SITEMAP:', len(urls), 'adresser')
+    except Exception as e:
+        print('sitemap-fel:', e)
 
     print('=== KONVERTERINGSRAPPORT v4.1 ===')
     for tm_ in txt_made:
