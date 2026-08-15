@@ -238,7 +238,9 @@
       if (e.key === 'Enter') attempt();
       input.classList.remove('err');
     });
-    bg.addEventListener('click', function (e) { if (e.target === bg) close(); });
+    var pwDown = false;
+    bg.addEventListener('mousedown', function (e) { pwDown = (e.target === bg); });
+    bg.addEventListener('click', function (e) { if (e.target === bg && pwDown) close(); });
   }
 
   async function requestEdit() {
@@ -661,7 +663,9 @@
       bg.remove();
       if (window.__MK_TOAST) window.__MK_TOAST('Raderingen avbr\u00f6ts \u2013 receptet \u00e4r kvar.');
     };
-    bg.addEventListener('click', function (e) { if (e.target === bg) bg.remove(); });
+    var delDown = false;
+    bg.addEventListener('mousedown', function (e) { delDown = (e.target === bg); });
+    bg.addEventListener('click', function (e) { if (e.target === bg && delDown) bg.remove(); });
 
     okBtn.onclick = async function () {
       if (!chk.checked) return;
