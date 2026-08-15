@@ -69,6 +69,10 @@
   .cols { flex-wrap: wrap !important; }
   .cols > div { min-width: 0 !important; }
 
+  /* Kalkylens rad-markeringar (grön/röd) neutraliseras på papper */
+  .mk-ing2 tr[style] { background: none !important; border-left: none !important; }
+  #mk-byt-notis { background: none !important; border-left: 2pt solid #999 !important; font-size: 8pt; }
+
   /* ---------- Dölj interaktiva element (alla sidor) ---------- */
   .print-btn, .no-print, .toolbar, .mk-lang,
   .tabs, .chips, .reco-box, #recoResults,          /* maskindatabasen */
