@@ -256,16 +256,6 @@
       "fiber": 0
     },
     {
-      "id": "hogrev",
-      "namn": "Högrev",
-      "pris_kr_per_kg": 140,
-      "kcal": 160,
-      "protein": 20,
-      "kolhydrat": 0,
-      "fett": 9,
-      "fiber": 0
-    },
-    {
       "id": "laxfile",
       "namn": "Laxfilé",
       "pris_kr_per_kg": 180,
