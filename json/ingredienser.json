@@ -122,8 +122,10 @@
       "kolhydrat": 6,
       "fett": 1.7,
       "fiber": 8.1,
+      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-16",
       "varumarke": "Kronjäst",
-      "kalla": "import ingredienser.json v5.1.1"
+      "lank": "https://www.willys.se/produkt/Jast-Sot-Deg-Farsk-100394146_ST",
+      "uppdaterad": ""
     },
     {
       "id": "ananas-fryst",
