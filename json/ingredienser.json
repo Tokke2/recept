@@ -304,7 +304,10 @@
       "protein": 1.2,
       "kolhydrat": 8,
       "fett": 0.1,
-      "fiber": 1.7
+      "fiber": 1.7,
+      "kalla": "redigerad 2026-08-16",
+      "lank": "https://www.willys.se/produkt/Lok-Gul-Klass-1-100269139_KG",
+      "uppdaterad": ""
     },
     {
       "id": "vitlok",
@@ -457,10 +460,8 @@
       "kolhydrat": 2.3,
       "fett": 28,
       "fiber": 0,
-      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-16",
       "varumarke": "Eldorado",
-      "lank": "https://www.willys.se/produkt/Gouda-Riven-28procent-101224595_ST",
-      "uppdaterad": ""
+      "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "hushallsost-26",
