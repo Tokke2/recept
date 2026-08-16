@@ -11,8 +11,10 @@
       "kolhydrat": 71,
       "fett": 1.5,
       "fiber": 3,
+      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-16",
       "varumarke": "Garant",
-      "kalla": "import ingredienser.json v5.1.1"
+      "lank": "https://www.willys.se/produkt/Vetemjol-101178991_ST",
+      "uppdaterad": ""
     },
     {
       "id": "majsmjol",
