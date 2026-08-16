@@ -1,0 +1,109 @@
+# ============================================================
+# PLATS: /.github/workflows/backup-ingredienser.yml  (EXAKT denna sökväg krävs av GitHub Actions)
+# ============================================================
+# 🗄️ VECKOBACKUP AV INGREDIENSDATABASEN – Mitt Maskinkök
+# ============================================================
+# Körs automatiskt varje söndag kl 04:00 svensk tid (03:00 UTC)
+# och kan även startas manuellt (Actions → "Veckobackup ingredienser"
+# → Run workflow).
+#
+# Vad den gör:
+#   1. KONTROLLERAR att json/ingredienser.json är giltig JSON med
+#      minst 1 ingrediens – en trasig databas arkiveras ALDRIG.
+#   2. Kopierar json/ingredienser.json  → backup/ingredienser/ingredienser-ÅÅÅÅ-MM-DD.json
+#      och     json/ingrediens-lankar.txt → backup/ingredienser/ingrediens-lankar-ÅÅÅÅ-MM-DD.txt
+#   3. Om innehållet är HELT oförändrat sedan senaste arkivkopian
+#      skapas ingen dubblett – men körningen antecknas alltid i
+#      backup/ingredienser/LOGG.md så man ser att backupen gått.
+#   4. Gamla arkivkopior raderas ALDRIG av roboten.
+#
+# Återställning (manuellt, om olyckan är framme):
+#   Öppna backup/ingredienser/ på GitHub, välj datumfilen du vill ha,
+#   kopiera innehållet till json/ingredienser.json och committa.
+# ============================================================
+name: Veckobackup ingredienser
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'      # söndagar 03:00 UTC ≈ 04:00/05:00 svensk tid
+  workflow_dispatch: {}       # manuell körning via Actions-fliken
+
+permissions:
+  contents: write
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hämta repot
+        uses: actions/checkout@v4
+
+      - name: Kontrollera att databasen är hel (arkivera aldrig trasig fil)
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          try:
+              with open('json/ingredienser.json', encoding='utf-8') as f:
+                  d = json.load(f)
+          except Exception as e:
+              sys.exit(f'❌ AVBRYTER: json/ingredienser.json är trasig JSON: {e}')
+          antal = len(d.get('ingredienser', []))
+          if antal < 1:
+              sys.exit('❌ AVBRYTER: databasen innehåller 0 ingredienser – misstänkt fel, ingen backup tas.')
+          print(f'✅ Databasen är hel: {antal} ingredienser.')
+          PY
+
+      - name: Skapa datumstämplad arkivkopia
+        run: |
+          set -euo pipefail
+          DATUM=$(TZ=Europe/Stockholm date +%F)
+          MAPP=backup/ingredienser
+          mkdir -p "$MAPP"
+
+          # Loggfil med rubrik (skapas första gången)
+          if [ ! -f "$MAPP/LOGG.md" ]; then
+            {
+              echo '<!-- PLATS: /backup/ingredienser/LOGG.md (skrivs av backup-ingredienser.yml – redigera ej för hand) -->'
+              echo '# 🗄️ Backuplogg – ingrediensdatabasen'
+              echo ''
+              echo '| Datum | Fil | Resultat |'
+              echo '|---|---|---|'
+            } > "$MAPP/LOGG.md"
+          fi
+
+          arkivera () {
+            KALLA="$1"; PREFIX="$2"; ANDELSE="$3"
+            if [ ! -f "$KALLA" ]; then
+              echo "| $DATUM | $KALLA | ⚠️ Källfilen saknas – hoppades över |" >> "$MAPP/LOGG.md"
+              echo "⚠️  $KALLA saknas – hoppar över"
+              return 0
+            fi
+            MAL="$MAPP/$PREFIX-$DATUM.$ANDELSE"
+            SENASTE=$(ls -1 "$MAPP/$PREFIX"-????-??-??."$ANDELSE" 2>/dev/null | sort | tail -n 1 || true)
+            if [ -n "$SENASTE" ] && [ "$SENASTE" != "$MAL" ] && cmp -s "$KALLA" "$SENASTE"; then
+              echo "| $DATUM | $KALLA | ⏭️ Oförändrad sedan $(basename "$SENASTE") – ingen ny kopia behövdes |" >> "$MAPP/LOGG.md"
+              echo "⏭️  $KALLA oförändrad sedan $(basename "$SENASTE")"
+            else
+              cp "$KALLA" "$MAL"
+              echo "| $DATUM | $KALLA | ✅ Arkiverad som $(basename "$MAL") |" >> "$MAPP/LOGG.md"
+              echo "✅ Arkiverade $KALLA → $MAL"
+            fi
+          }
+
+          arkivera json/ingredienser.json      ingredienser      json
+          arkivera json/ingrediens-lankar.txt  ingrediens-lankar txt
+
+      - name: Spara backupen i repot
+        run: |
+          set -euo pipefail
+          git config user.name  "Backup-robot"
+          git config user.email "actions@users.noreply.github.com"
+          git add backup/
+          if git diff --cached --quiet; then
+            echo "Inget nytt att committa."
+          else
+            DATUM=$(TZ=Europe/Stockholm date +%F)
+            git commit -m "🗄️ Veckobackup av ingrediensdatabasen ($DATUM)"
+            git pull --rebase origin main || true
+            git push
+          fi
