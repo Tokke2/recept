@@ -23,8 +23,10 @@
       "kolhydrat": 73,
       "fett": 1.3,
       "fiber": 3.6,
+      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-16",
       "varumarke": "Favero",
-      "kalla": "import ingredienser.json v5.1.1"
+      "lank": "https://www.willys.se/produkt/Majsmjol-Finmalet-100272483_ST",
+      "uppdaterad": ""
     },
     {
       "id": "whey80",
@@ -122,10 +124,8 @@
       "kolhydrat": 6,
       "fett": 1.7,
       "fiber": 8.1,
-      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-16",
       "varumarke": "Kronjäst",
-      "lank": "https://www.willys.se/produkt/Jast-Sot-Deg-Farsk-100394146_ST",
-      "uppdaterad": ""
+      "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "ananas-fryst",
