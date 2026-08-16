@@ -117,10 +117,24 @@
 let ING = [], sortKey = 'namn', sortAsc = true;
 
 async function loadDb() {
+  ING = [];
+  /* Vänta in spara.js (laddas asynkront av site.js) så API-läsningen kan användas */
+  for (let i = 0; i < 10 && !window.__MK_SPARA; i++) await new Promise(r => setTimeout(r, 200));
+  /* Färskast möjliga data: ägare med GitHub-nyckel läser direkt via API:t
+     (sparningar syns OMEDELBART). Besökare läser via Pages (upp till ~1 min
+     efter en ändring innan Pages byggt om). */
   try {
-    const d = await (await fetch('json/ingredienser.json', { cache: 'no-store' })).json();
-    ING = d.ingredienser || [];
-  } catch (e) { ING = []; }
+    if (window.__MK_SPARA && window.__MK_SPARA.hasToken && window.__MK_SPARA.hasToken()) {
+      const raw = await window.__MK_SPARA.load('json/ingredienser.json');
+      if (raw) ING = (JSON.parse(raw).ingredienser) || [];
+    }
+  } catch (e) {}
+  if (!ING.length) {
+    try {
+      const d = await (await fetch('json/ingredienser.json', { cache: 'no-store' })).json();
+      ING = d.ingredienser || [];
+    } catch (e) { ING = []; }
+  }
   renderList();
 }
 
@@ -267,7 +281,8 @@ function openEdit(id) {
       bg.remove();
       document.getElementById('actionResult').innerHTML =
         '<div class="okbox">✅ <b>' + namn + '</b> uppdaterad!' +
-        (lank && !i.lank ? ' 🔗 Butikslänken kopplad – varan ingår nu i den månatliga prisuppdateringen.' : '') + '</div>';
+        (lank && !i.lank ? ' 🔗 Länken kopplad.' : '') +
+        ' <span style="font-size:.78rem;color:var(--muted);">Sparat på GitHub direkt – syns i listan här nu; för besökare/omladdning inom ~1 min (Pages bygger om).</span></div>';
     } else {
       bg.querySelector('#ei-result').innerHTML = '<div class="errbox">⚠️ Kunde inte spara: ' + res.error + '</div>';
     }
@@ -514,5 +529,5 @@ async function saveManual() {
 loadDb();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2b8ea1eba6b2aa5',t:'MTc4NjgwNDQwOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2bdd843ba482d6f',t:'MTc4Njg1NjEwNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
