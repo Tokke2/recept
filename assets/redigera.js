@@ -919,10 +919,11 @@
       '#mk-lang, #mk-auto-qr, #mk-provenance, #mk-betyg, #mk-maskinmatch, #mk-kalkyl, #mk-donation, #mk-aff-disclosure, ' +
       '.share-btn, .print-btn, [id^="mk-pd"], [id^="mk-pw"], [id^="mk-swish"], ' +
       '.mk-saknas, .mk-prodlank, .mk-ingsub, #mk-byt-notis, .mk-ingsok').forEach(function (el) { el.remove(); });
-    /* 🌡️ Enhets-spans → tillbaka till exakt originaltext (metriskt) */
-    clone.querySelectorAll('span.mk-enh').forEach(function (s) {
+    /* 🌡️ Enhets-spans + ⚖️ skalnings-spans → tillbaka till exakt originaltext */
+    clone.querySelectorAll('span.mk-enh, span.mk-skala').forEach(function (s) {
       s.parentNode.replaceChild(clone.ownerDocument.createTextNode(s.getAttribute('data-orig') || s.textContent), s);
     });
+    clone.querySelectorAll('#mk-skala-badge, #mk-skala-bg, #mk-etikett-ark, #mk-etikett-bg, #mk-etikett-css').forEach(function (el) { el.remove(); });
     /* 🖼️ Auto-genererad hero-SVG → återställ riktiga bildsökvägen */
     clone.querySelectorAll('img.mk-hero-auto').forEach(function (im) {
       var fn = decodeURIComponent(location.pathname.split('/').pop()).replace(/\.html?$/i, '');
