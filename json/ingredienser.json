@@ -332,7 +332,10 @@
       "protein": 1.8,
       "kolhydrat": 3,
       "fett": 18,
-      "fiber": 0
+      "fiber": 0,
+      "kalla": "redigerad 2026-08-22",
+      "lank": "https://www.willys.se/produkt/Kokosmjolk-18procent-101552948_ST",
+      "uppdaterad": ""
     },
     {
       "id": "banan",
@@ -494,10 +497,8 @@
       "kolhydrat": 12,
       "fett": 52,
       "fiber": 7.8,
-      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-22",
       "varumarke": "Dazzley",
-      "lank": "https://www.willys.se/produkt/Peanut-Butter-Creamy-Jordnotssmor-101314290_ST",
-      "uppdaterad": ""
+      "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "mango-fryst",
