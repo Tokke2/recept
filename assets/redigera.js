@@ -558,8 +558,9 @@
     editing = true;
     document.body.classList.add('mk-editing');
 
-    /* ✨ Steg-markeringar (tydlig.js) packas upp – ren text redigeras */
+    /* ✨ Steg-markeringar + 🔗 maskinlänkar packas upp – ren text redigeras */
     if (window.__MK_STEGMARK_RESET) window.__MK_STEGMARK_RESET();
+    if (window.__MK_MASKLANK_RESET) window.__MK_MASKLANK_RESET();
 
     /* Gör innehåll redigerbart */
     // Rubrik + beskrivning
@@ -790,8 +791,9 @@
     document.querySelectorAll('.mk-rowbtn, .mk-addrow').forEach(function (el) { el.remove(); });
     var bar = document.getElementById('mk-editbar');
     if (bar) bar.remove();
-    /* ✨ Kör om steg-markeringarna på de (ev. nya) stegtexterna */
+    /* ✨ Kör om steg-markeringar + 🔗 maskinlänkar på de (ev. nya) texterna */
     if (window.__MK_STEGMARK_KOR) setTimeout(window.__MK_STEGMARK_KOR, 200);
+    if (window.__MK_MASKLANK_KOR) setTimeout(window.__MK_MASKLANK_KOR, 300);
     if (window.__MK_TOAST) window.__MK_TOAST('Ändringarna syns på sidan – ladda upp filen för att spara permanent');
   }
 
@@ -927,6 +929,10 @@
     /* 🌡️ Enhets-spans + ⚖️ skalnings-spans + ✨ steg-markeringar → exakt originaltext */
     clone.querySelectorAll('span.mk-enh, span.mk-skala, span.mk-stegmark').forEach(function (s) {
       s.parentNode.replaceChild(clone.ownerDocument.createTextNode(s.getAttribute('data-orig') || s.textContent), s);
+    });
+    /* 🔗 Maskinlänkar → ren text */
+    clone.querySelectorAll('a.mk-masklank').forEach(function (a) {
+      a.parentNode.replaceChild(clone.ownerDocument.createTextNode(a.textContent), a);
     });
     clone.querySelectorAll('#mk-skala-badge, #mk-skala-bg, #mk-etikett-ark, #mk-etikett-bg, #mk-etikett-css, #mk-oversikt').forEach(function (el) { el.remove(); });
     /* 🖼️ Auto-genererad hero-SVG → återställ riktiga bildsökvägen */
