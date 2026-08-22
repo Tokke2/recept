@@ -317,6 +317,7 @@ async function init() {
         emoji: get('emoji') || '🍽️',
         beskrivning: get('beskrivning') || 'Öppna receptet för detaljer.',
         taggar: get('taggar') ? get('taggar').split(',').map(t => t.trim()).filter(Boolean) : [],
+        kategori: get('kategori'),   /* ✏️ manuellt vald i redigeringsläget – vinner över gissningen */
         maskiner,
         maskin_ids: DB.maskiner.filter(m =>
           maskiner.join(' ').toLowerCase().includes((m.modellnamn || '§').toLowerCase()) ||
@@ -356,7 +357,7 @@ async function loadGlobalRatings() {
 
 /* ============ Flikar: Alla + per maskin ============ */
 function buildTabs() {
-  RECIPES.forEach(r => { r.kat = kategoriFor(r); });
+  RECIPES.forEach(r => { r.kat = (r.kategori && KATEGORIER.some(k => k.id === r.kategori)) ? r.kategori : kategoriFor(r); });
   buildKats();
   const used = new Set();
   RECIPES.forEach(r => r.maskin_ids.forEach(id => used.add(id)));
@@ -401,7 +402,7 @@ function card(r) {
     : '';
   return `<a class="rcard" href="${r.file}"${r.isPdf ? ' target="_blank" rel="noopener"' : ''}>
     <div class="media"><span class="big-emoji">${r.emoji}</span>
-      <img src="${r.bild}" alt="" loading="lazy" onerror="this.remove()">${stars}</div>
+      <img src="${r.bild}" alt="" loading="lazy" data-namn="${(r.namn || '').replace(/"/g, '&quot;')}" data-emoji="${r.emoji || ''}" onerror="window.__MK_HERO_SVG ? (this.onerror=null, this.src=window.__MK_HERO_SVG(this.dataset.namn, this.dataset.emoji, 600, 320)) : this.remove()">${stars}</div>
     <div class="body">
       <h3>${r.namn}</h3>
       <div class="desc">${r.beskrivning}</div>
