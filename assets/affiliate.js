@@ -57,6 +57,9 @@
   }
 
   function disclosure() {
+    /* ENDAST på maskindatabasen – det är där Amazon-knapparna finns.
+       Övriga sidor (recept, ingredienser...) ska inte ha bannern. */
+    if (!/maskindatabas\.html$/i.test(location.pathname)) return;
     if (document.getElementById('mk-aff-disclosure')) return;
     var el = document.createElement('div');
     el.id = 'mk-aff-disclosure';
