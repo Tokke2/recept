@@ -194,13 +194,33 @@ async function init() {
       machines.push(m);
     } catch (e) { /* skip broken file */ }
   }
+  /* 🛒 AMAZON-LÄNK ur ASIN: renaste källan. Har maskinen "asin"
+     byggs https://www.amazon.se/dp/ASIN/ och ersätter kop-länken.
+     Affiliate-taggen (?tag=...) läggs på centralt av assets/
+     affiliate.js utifrån json/affiliate.json – aldrig hårdkodad. */
+  function byggLankar(m) {
+    const links = Object.entries(m.lankar || {})
+      .map(([k, v]) => ({ label: linkLabel(k), url: v, affiliate: false, key: k }));
+    const asin = String(m.asin || '').trim().toUpperCase();
+    if (/^[A-Z0-9]{10}$/.test(asin)) {
+      const i = links.findIndex(l => l.key === 'kop');
+      if (i !== -1) links.splice(i, 1);          /* ersätt gamla kop-länken */
+      links.unshift({
+        label: '🛒 Köp på Amazon',
+        url: 'https://www.amazon.se/dp/' + asin + '/',
+        affiliate: true, key: 'kop'
+      });
+    }
+    return links;
+  }
+
   MACHINES = machines.map(m => ({
     id: m.id,
     name: m.namn,
     shortName: (m.varumarke + ' ' + (m.modellnamn || '')).trim(),
     sub: [m.typ, m.modellnamn ? 'Modell ' + m.modellnamn : '', m.kapacitet || ''].filter(Boolean).join(' · '),
     specs: m.egenskaper || [],
-    links: Object.entries(m.lankar || {}).map(([k, v]) => ({ label: linkLabel(k), url: v })),
+    links: byggLankar(m),
     image: m.bild || '',
     notes: (m.viktigt || []).join(' · ') || null,
     programs: (m.program || []).map(p => ({
@@ -242,7 +262,9 @@ function renderAll() {
       <div class="machine-sub">${m.sub}</div>
       <div class="specs">${(m.specs||[]).map(s => `<span class="spec">${s}</span>`).join("")}</div>
       ${(m.links && m.links.length) ? `<div class="links">${m.links.map(l =>
-        `<a class="link-btn" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join("")}</div>` : ""}
+        l.affiliate
+          ? `<a class="link-btn amazon-link" href="${l.url}" target="_blank" rel="noopener sponsored" style="background:linear-gradient(135deg,#ff9900,#e67e22);color:#fff;font-weight:700;">${l.label}</a>`
+          : `<a class="link-btn" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join("")}</div>` : ""}
       ${m.notes ? `<div class="notes">${m.notes}</div>` : ""}
       <table>
         <tr><th>Program</th><th>Tid</th><th>Beskrivning</th><th>Bäst för</th></tr>
@@ -321,5 +343,5 @@ function recommend() {
 }
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f40ac56e88c8c4',t:'MTc4NzQyNDQwNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
