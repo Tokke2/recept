@@ -8,3 +8,13 @@
 # Stodda butiker: willys.se och hemkop.se, t.ex:
 # https://www.willys.se/produkt/Turkisk-Yoghurt-10procent-100486886_ST
 # ============================================================
+https://www.willys.se/produkt/Vetemjol-101178991_ST
+https://www.willys.se/produkt/Majsmjol-Finmalet-100272483_ST
+https://www.willys.se/produkt/agg-24p-Frigaende-Inomhus-Medium-101718037_ST
+https://www.willys.se/produkt/Ananas-Fryst-101762268_ST
+https://www.willys.se/produkt/Grotris-101258095_ST
+https://www.willys.se/produkt/Lok-Gul-Klass-1-100269139_KG
+https://www.willys.se/produkt/Banan-Klass-1-100254920_KG
+https://www.willys.se/produkt/apple-Royal-Gala-Klass-1-100144504_KG
+https://www.willys.se/produkt/Blabar-Frysta-101821169_ST
+https://www.willys.se/produkt/Falukorv-101190071_ST
