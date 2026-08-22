@@ -87,91 +87,209 @@
   }
 
   /* ============================================================
-     SJÄLVLÄKNING: vissa inklistrade recept har hamnat med STEG,
-     NÄRINGSVÄRDE och TIPS inuti ingredienstabellen. Detta lagas
-     här AUTOMATISKT i webbläsaren – källfilen röres aldrig:
-     · stegen flyttas till "Gör så här"-kortets lista
-     · näringsraderna till ett Näringsvärde-kort
-     · tips till en 💡-ruta
+     SJÄLVLÄKNING v2: vissa inklistrade recept har hamnat med STEG,
+     SEKTIONSRUBRIKER, VARNINGAR och NÄRINGSTEXT inuti ingrediens-
+     tabellen. Detta lagas här AUTOMATISKT i webbläsaren – käll-
+     filen röres aldrig:
+     · VERSAL-rubriker (🥣 FÖRBERED..., ⚙️ RISKOKARE..., 🍕 ANVÄNDNING,
+       ❄️ FÖRVARING...) upptäcks generiskt och startar en sektion
+     · sektioner där raderna saknar riktiga mängder = STEG → flyttas
+       till "Gör så här"-kortet med rubriken som mellanrubrik
+     · sektioner där raderna HAR mängder = ingrediensgrupp → behålls
+       i tabellen som äkta grupprubrik
+     · ⚠️ VIKTIGT/VARNING → egen varningsruta
+     · 📊 NÄRING → näringskort (par) eller infotext
+     · TIPS → 💡-ruta
+     · lösa stegrader bland ingredienserna ("1. Gör...", nummer i
+       måttkolumnen, lång text utan mått) flyttas också till stegen
      ============================================================ */
   function repair(table) {
-    var rows = Array.prototype.slice.call(table.querySelectorAll('tr'));
-    var mode = 'ing', steps = [], naring = [], tips = [], remove = [];
-    rows.forEach(function (tr) {
+    var trs = Array.prototype.slice.call(table.querySelectorAll('tr'));
+    function txt(td) { return (td ? td.textContent : '').trim(); }
+    function ledText(s) { return s.replace(/^[^0-9A-Za-zÅÄÖåäö]+/, '').trim(); }
+    function arRubrik(a, b) {
+      if (b && !/^\d+[.)]?$/.test(b)) return false;
+      if (!a || a.length > 60) return false;
+      var t = ledText(a);
+      var letters = t.replace(/[^A-Za-zÅÄÖåäö]/g, '');
+      if (letters.length < 3) return false;
+      var upper = letters.replace(/[^A-ZÅÄÖ]/g, '');
+      return upper.length / letters.length >= 0.8;   /* nästan bara VERSALER */
+    }
+    function riktigMangd(b) {
+      if (!b) return false;
+      if (/^\d+[.)]?$/.test(b)) return false;        /* bara ett stegnummer */
+      return /\d/.test(b);
+    }
+    function serUtSomSteg(a, b) {
+      if (/^\d+[.)]\s/.test(a)) return true;         /* "1. Diska..." */
+      if (/^\d+[.)]?$/.test(b)) return true;          /* nummer i måttkolumnen */
+      if (!b && a.length > 40) return true;           /* lång text utan mått */
+      return false;
+    }
+
+    /* Dela upp raderna i sektioner vid VERSAL-rubriker */
+    var sektioner = [{ rubrik: null, rubrikTr: null, rader: [] }];
+    var harRubriker = false;
+    trs.forEach(function (tr) {
       var tds = tr.querySelectorAll('td');
-      if (!tds.length) return;
-      var a = (tds[0].textContent || '').trim();
-      var b = (tds[1] ? tds[1].textContent : '').trim();
-      if (/G\u00d6R S\u00c5 H\u00c4R|TILLAGNING|INSTRUKTION/i.test(a) && a.length < 30) { mode = 'steg'; remove.push(tr); return; }
-      if (/N\u00c4RINGSV\u00c4RDE/i.test(a) && a.length < 30) { mode = 'naring'; remove.push(tr); return; }
-      if ((/^\uD83D\uDCA1/.test(a) || /^TIPS$/i.test(a.replace(/^\uD83D\uDCA1\s*/, ''))) && a.length < 20) { mode = 'tips'; remove.push(tr); return; }
-      if (mode === 'steg') {
-        var txt = a.replace(/^\d+[.)]\s*/, '').trim();
-        if (txt) steps.push(txt);
-        remove.push(tr);
-      } else if (mode === 'naring') {
-        if (a) naring.push([a, b]);
-        remove.push(tr);
-      } else if (mode === 'tips') {
-        if (a) tips.push(a);
-        remove.push(tr);
+      if (!tds.length) return;                                        /* th-raden */
+      if (tds.length === 1 || tds[0].getAttribute('colspan')) return; /* äkta grupprubrik – rörs ej */
+      var a = txt(tds[0]), b = txt(tds[1]);
+      if (arRubrik(a, b)) {
+        sektioner.push({ rubrik: ledText(a) ? a : a, rubrikTr: tr, rader: [] });
+        harRubriker = true;
+        return;
+      }
+      sektioner[sektioner.length - 1].rader.push({ tr: tr, a: a, b: b });
+    });
+
+    var steg0 = sektioner[0].rader.filter(function (r) { return serUtSomSteg(r.a, r.b) && !/^total/i.test(r.a); });
+    if (!harRubriker && !steg0.length) return;        /* tabellen är frisk */
+
+    var stegSektioner = [], naringPar = [], naringText = [], varningar = [], tipsar = [];
+
+    sektioner.forEach(function (s, idx) {
+      if (idx === 0) return;
+      var R = s.rubrik;
+      var antalMangd = s.rader.filter(function (r) { return riktigMangd(r.b); }).length;
+      var typ;
+      if (s.rader.length && antalMangd / s.rader.length >= 0.5 &&
+          !/NÄRING|TIPS|VIKTIGT|VARNING/i.test(R)) {
+        typ = 'grupp';                                /* ingrediensgrupp – stannar i tabellen */
+      } else if (/NÄRING/i.test(R)) typ = 'naring';
+      else if (/^TIPS/i.test(ledText(R))) typ = 'tips';
+      else if (/VIKTIGT|VARNING|OBS!/i.test(R)) typ = 'warn';
+      else typ = 'steg';                              /* FÖRBERED/ANVÄNDNING/FÖRVARING/maskin... */
+
+      if (typ === 'grupp') {
+        /* gör om rubrikraden till äkta colspan-grupprubrik som build() förstår */
+        var gtd = document.createElement('td');
+        gtd.setAttribute('colspan', '3');
+        gtd.textContent = R;
+        s.rubrikTr.innerHTML = '';
+        s.rubrikTr.appendChild(gtd);
+        return;
+      }
+      s.rubrikTr.remove();
+      if (typ === 'steg') {
+        var steg = [];
+        s.rader.forEach(function (r) {
+          var t = r.a.replace(/^\d+[.)]\s*/, '').trim();
+          if (t) steg.push(t);
+          r.tr.remove();
+        });
+        if (steg.length) stegSektioner.push({ rubrik: R, steg: steg });
+      } else if (typ === 'naring') {
+        s.rader.forEach(function (r) {
+          if (r.b && !/^\d+[.)]?$/.test(r.b)) naringPar.push([r.a, r.b]);
+          else if (r.a) naringText.push(r.a);
+          r.tr.remove();
+        });
+      } else if (typ === 'warn') {
+        s.rader.forEach(function (r) { if (r.a) varningar.push(r.a); r.tr.remove(); });
+      } else {
+        s.rader.forEach(function (r) { if (r.a) tipsar.push(r.a); r.tr.remove(); });
       }
     });
-    if (!remove.length) return;
-    remove.forEach(function (tr) { tr.remove(); });
 
-    /* Steg → "Gör så här"-kortets (tomma) lista, annars nytt kort */
-    if (steps.length) {
-      var ol = null;
+    /* Lösa stegrader bland ingredienserna (utan egen rubrik) */
+    var losa = [];
+    steg0.forEach(function (r) {
+      var t = r.a.replace(/^\d+[.)]\s*/, '').trim();
+      if (t) losa.push(t);
+      r.tr.remove();
+    });
+    if (losa.length) stegSektioner.unshift({ rubrik: null, steg: losa });
+
+    /* STEG → "Gör så här"-kortet (mellanrubriker per sektion) */
+    if (stegSektioner.length) {
+      var kort = null;
       var cards = document.querySelectorAll('.card');
       for (var i = 0; i < cards.length; i++) {
         var h = cards[i].querySelector('h2');
-        if (h && /(g\u00f6r s\u00e5 h\u00e4r|steg|instruktion)/i.test(h.textContent)) { ol = cards[i].querySelector('ol'); break; }
+        if (h && /(gör så här|steg|instruktion)/i.test(h.textContent)) { kort = cards[i]; break; }
       }
-      if (ol && !ol.querySelector('li')) {
-        steps.forEach(function (s) {
+      if (!kort) {
+        kort = document.createElement('div');
+        kort.className = 'card';
+        kort.innerHTML = '<h2>🥣 Gör så här</h2>';
+        var ingKort = table.closest('.card');
+        ingKort.parentNode.insertBefore(kort, ingKort.nextSibling);
+      }
+      var huvudOl = kort.querySelector('ol');
+      stegSektioner.forEach(function (s) {
+        var mal;
+        if (!s.rubrik && huvudOl && !huvudOl.querySelector('li')) {
+          mal = huvudOl;
+        } else {
+          if (s.rubrik) {
+            var h3 = document.createElement('h3');
+            h3.textContent = s.rubrik;
+            h3.style.cssText = 'font-size:.95rem;margin:14px 0 6px;color:#2c3e50;';
+            kort.appendChild(h3);
+          }
+          mal = document.createElement('ol');
+          kort.appendChild(mal);
+        }
+        s.steg.forEach(function (t) {
           var li = document.createElement('li');
-          li.textContent = s;
-          ol.appendChild(li);
+          li.textContent = t;
+          mal.appendChild(li);
         });
-      } else if (!ol) {
-        var sc = document.createElement('div');
-        sc.className = 'card';
-        sc.innerHTML = '<h2>\uD83E\uDD63 G\u00f6r s\u00e5 h\u00e4r</h2><ol>' +
-          steps.map(function (s) { return '<li></li>'; }).join('') + '</ol>';
-        var lis = sc.querySelectorAll('li');
-        steps.forEach(function (s, j) { lis[j].textContent = s; });
-        table.closest('.card').parentNode.insertBefore(sc, table.closest('.card').nextSibling);
-      }
+      });
+      if (huvudOl && !huvudOl.querySelector('li')) huvudOl.remove();  /* tom rest-lista bort */
     }
-    /* Näringsrader → eget kort om inget finns */
-    if (naring.length) {
+
+    /* ⚠️ Varningar → egna rutor före footern */
+    var footer = document.querySelector('footer');
+    varningar.forEach(function (t) {
+      var w = document.createElement('div');
+      w.className = 'warn';
+      w.textContent = '⚠️ ' + t;
+      if (footer) footer.parentNode.insertBefore(w, footer);
+      else document.body.appendChild(w);
+    });
+
+    /* 📊 Näring → kort (par som tabell, lös text som stycken) */
+    if (naringPar.length || naringText.length) {
       var harNaring = false;
-      document.querySelectorAll('.card h2').forEach(function (h) { if (/n\u00e4ring/i.test(h.textContent)) harNaring = true; });
+      document.querySelectorAll('.card h2').forEach(function (h) { if (/näring/i.test(h.textContent)) harNaring = true; });
       if (!harNaring) {
         var nc = document.createElement('div');
         nc.className = 'card';
-        var rowsHtml = naring.map(function (p) {
-          return '<tr><td></td><td style="text-align:right;font-weight:700;"></td></tr>';
-        }).join('');
-        nc.innerHTML = '<h2>\uD83D\uDCCA N\u00e4ringsv\u00e4rde</h2><table>' + rowsHtml + '</table>';
-        var tds2 = nc.querySelectorAll('td');
-        naring.forEach(function (p, j) { tds2[j * 2].textContent = p[0]; tds2[j * 2 + 1].textContent = p[1]; });
-        var footer = document.querySelector('footer');
+        nc.innerHTML = '<h2>📊 Näringsvärde</h2>';
+        if (naringPar.length) {
+          var nt = document.createElement('table');
+          naringPar.forEach(function (p) {
+            var tr2 = document.createElement('tr');
+            var td1 = document.createElement('td'); td1.textContent = p[0];
+            var td2 = document.createElement('td'); td2.textContent = p[1];
+            td2.style.cssText = 'text-align:right;font-weight:700;';
+            tr2.appendChild(td1); tr2.appendChild(td2); nt.appendChild(tr2);
+          });
+          nc.appendChild(nt);
+        }
+        naringText.forEach(function (t) {
+          var p = document.createElement('p');
+          p.textContent = t;
+          p.style.cssText = 'font-size:.85rem;color:#7f8c8d;margin-top:8px;';
+          nc.appendChild(p);
+        });
         if (footer) footer.parentNode.insertBefore(nc, footer);
         else document.body.appendChild(nc);
       }
     }
-    /* Tips → 💡-ruta */
-    if (tips.length && !document.querySelector('.tip')) {
+
+    /* 💡 Tips → gul ruta */
+    if (tipsar.length && !document.querySelector('.tip')) {
       var tip = document.createElement('div');
       tip.className = 'tip';
-      tip.textContent = '\uD83D\uDCA1 ' + tips.join(' ');
-      var footer2 = document.querySelector('footer');
-      if (footer2) footer2.parentNode.insertBefore(tip, footer2);
+      tip.textContent = '💡 ' + tipsar.join(' ');
+      if (footer) footer.parentNode.insertBefore(tip, footer);
       else document.body.appendChild(tip);
     }
-    if (window.__MK_TOAST) window.__MK_TOAST('\uD83D\uDD27 Receptet visades r\u00f6rigt och har auto-lagats p\u00e5 sk\u00e4rmen');
+    if (window.__MK_TOAST) window.__MK_TOAST('🔧 Receptet visades rörigt och har auto-lagats på skärmen');
   }
 
   function build() {
