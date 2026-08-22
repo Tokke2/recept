@@ -61,14 +61,14 @@
     var el = document.createElement('div');
     el.id = 'mk-aff-disclosure';
     el.className = 'no-print';
-    el.style.cssText = 'text-align:center;padding:4px 16px 14px;font-size:.72rem;color:#a5967e;font-family:Segoe UI,system-ui,sans-serif;';
+    /* HÖGST UPP på sidan (Amazons riktlinje: tydligt avslöjande nära
+       länkarna, inte gömt i sidfoten) – diskret men synlig rad. */
+    el.style.cssText = 'text-align:center;padding:7px 16px;font-size:.74rem;color:#8a7a60;' +
+      'background:#faf7f2;border-bottom:1px solid #eee5d6;font-family:Segoe UI,system-ui,sans-serif;';
     el.textContent = 'Som Amazon-associate tjänar jag pengar på kvalificerade köp.';
-    /* Under ev. Swish-raden, annars efter footern */
-    var don = document.getElementById('mk-donation');
-    var footer = document.querySelector('footer');
-    if (don) don.parentNode.insertBefore(el, don.nextSibling);
-    else if (footer) footer.parentNode.insertBefore(el, footer.nextSibling);
-    else document.body.appendChild(el);
+    var nav = document.getElementById('mk-nav');
+    if (nav && nav.parentNode) nav.parentNode.insertBefore(el, nav.nextSibling);
+    else document.body.insertBefore(el, document.body.firstChild);
   }
 
   fetch(base + 'json/affiliate.json', { cache: 'no-store' })
