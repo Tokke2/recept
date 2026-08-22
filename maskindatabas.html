@@ -229,6 +229,8 @@ async function init() {
     }))
   }));
   renderAll();
+  oppnaFranHash();      /* 🔗 recepten länkar hit med #maskin-id */
+  byggMaskinRecept();   /* 🔗 tillhörande recept på varje kort */
 }
 
 async function listMachineFiles() {
@@ -266,6 +268,7 @@ function renderAll() {
           ? `<a class="link-btn amazon-link" href="${l.url}" target="_blank" rel="noopener sponsored" style="background:linear-gradient(135deg,#ff9900,#e67e22);color:#fff;font-weight:700;">${l.label}</a>`
           : `<a class="link-btn" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join("")}</div>` : ""}
       ${m.notes ? `<div class="notes">${m.notes}</div>` : ""}
+      <div class="mk-maskinrecept" id="mrec-${m.id}"></div>
       <table>
         <tr><th>Program</th><th>Tid</th><th>Beskrivning</th><th>Bäst för</th></tr>
         ${m.programs.map(p => `
@@ -285,6 +288,77 @@ function showMachine(id, btn) {
   btn.classList.add("active");
   MACHINES.forEach(m => {
     document.getElementById("card-" + m.id).classList.toggle("hidden", m.id !== id);
+  });
+}
+
+/* ============ 🔗 Hash-stöd: maskindatabas.html#maskin-id ============
+   Recepten länkar hit (assets/maskinlank.js) – rätt kort öppnas
+   automatiskt och scrollas fram. Funkar även vid hash-byte. */
+function oppnaFranHash() {
+  const id = decodeURIComponent(location.hash.replace('#', '')).trim();
+  if (!id) return;
+  const i = MACHINES.findIndex(m => m.id === id);
+  if (i === -1) return;
+  const btn = document.querySelectorAll('.tab-btn')[i];
+  if (btn) {
+    showMachine(id, btn);
+    setTimeout(() => document.getElementById('card-' + id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }
+}
+window.addEventListener('hashchange', oppnaFranHash);
+
+/* ============ 🔗 Tillhörande recept per maskin ============
+   Läser receptlistan (GitHub API → reservindex), matchar varje
+   recepts "recept:maskiner"-meta + innehåll mot maskinens namn/
+   modell/varumärke (samma logik som receptflikarna i recept.html)
+   och listar recepten som länkar på maskinkortet. */
+async function byggMaskinRecept() {
+  let files = [];
+  try {
+    const res = await fetch('https://api.github.com/repos/Tokke2/recept/contents/recept?ref=main');
+    if (res.ok) files = (await res.json())
+      .filter(i => i.type === 'file' && /\.html?$/i.test(i.name))
+      .map(i => i.name);
+  } catch (e) {}
+  if (!files.length) return;
+
+  const receptData = [];
+  await Promise.all(files.map(async f => {
+    try {
+      const html = await (await fetch('recept/' + encodeURIComponent(f))).text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const g = n => { const el = doc.querySelector(`meta[name="recept:${n}"]`); return el ? el.content : ''; };
+      if (!g('namn')) return;
+      receptData.push({
+        fil: f,
+        namn: g('namn'),
+        emoji: g('emoji') || '🍽️',
+        text: (g('maskiner') + ' ' + html).toLowerCase()
+      });
+    } catch (e) {}
+  }));
+
+  MACHINES.forEach(m => {
+    const namnLC = (m.shortName || '').toLowerCase();
+    const helLC = (m.name || '').toLowerCase();
+    const modell = (m.sub.match(/Modell ([^·]+)/) || [])[1]?.trim().toLowerCase() || '';
+    const träffar = receptData.filter(r =>
+      (namnLC && r.text.includes(namnLC)) ||
+      (helLC && r.text.includes(helLC)) ||
+      (modell && modell.length >= 4 && r.text.includes(modell))
+    );
+    const box = document.getElementById('mrec-' + m.id);
+    if (!box || !träffar.length) return;
+    box.innerHTML =
+      `<div style="margin:4px 0 14px;padding:12px 16px;background:#f4fbf6;border-left:4px solid #27ae60;border-radius:10px;">
+        <b style="font-size:.9rem;">📖 Recept för den här maskinen (${träffar.length})</b>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+          ${träffar.map(r =>
+            `<a href="recept/${encodeURIComponent(r.fil)}" style="background:#fff;border:1.5px solid #27ae60;color:#1e8449;
+              border-radius:999px;padding:4px 13px;font-size:.82rem;font-weight:700;text-decoration:none;">
+              ${r.emoji} ${r.namn}</a>`).join('')}
+        </div>
+      </div>`;
   });
 }
 
@@ -343,5 +417,5 @@ function recommend() {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f40ac56e88c8c4',t:'MTc4NzQyNDQwNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f4ec5ade35bc2f',t:'MTc4NzQzMzY0NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
