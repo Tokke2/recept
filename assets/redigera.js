@@ -434,6 +434,125 @@
   /* ============================================================
      STARTA REDIGERING
      ============================================================ */
+  /* ============================================================
+     ✍️ AUTOCOMPLETE: dropdown ur ingrediensdatabasen när man
+     skriver i namncellen. "Re" → alla som börjar på "Re" överst,
+     sedan de som innehåller "re". Fritext funkar alltid – listan
+     är bara ett hjälpmedel. Piltangenter + Enter, Esc stänger.
+     ============================================================ */
+  var ingDb = null;
+  function loadIngDb() {
+    if (ingDb) return Promise.resolve(ingDb);
+    return fetch('../json/ingredienser.json', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { ingDb = d.ingredienser || []; return ingDb; })
+      .catch(function () { ingDb = []; return ingDb; });
+  }
+  function sokNorm(s) {
+    return String(s).toLowerCase().replace(/å/g, 'a').replace(/ä/g, 'a').replace(/ö/g, 'o').trim();
+  }
+  function cellText(td) {
+    var c = td.cloneNode(true);
+    c.querySelectorAll('.mk-rowbtn, .mk-saknas, .mk-prodlank, .drop').forEach(function (x) { x.remove(); });
+    return c.textContent.replace(/💧/g, '').trim();
+  }
+  var sokBox = null, sokTd = null, sokIdx = -1;
+  function closeSok() {
+    if (sokBox) { sokBox.remove(); sokBox = null; }
+    sokTd = null; sokIdx = -1;
+  }
+  function renderSok(td, list) {
+    if (!sokBox) {
+      sokBox = document.createElement('div');
+      sokBox.className = 'mk-ingsok no-print';
+      sokBox.style.cssText = 'position:absolute;z-index:160;background:#fff;border-radius:12px;' +
+        'box-shadow:0 10px 34px rgba(0,0,0,.28);padding:6px;min-width:230px;max-width:340px;' +
+        'max-height:260px;overflow-y:auto;font-family:Segoe UI,system-ui,sans-serif;';
+      /* mousedown får inte stjäla fokus från cellen */
+      sokBox.addEventListener('mousedown', function (e) { e.preventDefault(); });
+      document.body.appendChild(sokBox);
+    }
+    sokTd = td; sokIdx = -1;
+    sokBox.innerHTML = '<div style="font-size:.68rem;color:#a5967e;padding:3px 8px 5px;">🥫 Ur databasen – eller skriv fritt</div>';
+    list.forEach(function (ing, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'mk-sokval';
+      b.setAttribute('data-i', i);
+      b.style.cssText = 'display:block;width:100%;text-align:left;border:none;background:none;' +
+        'border-radius:8px;padding:6px 9px;cursor:pointer;font-family:inherit;font-size:.84rem;color:#2c3e50;';
+      b.innerHTML = '<b>' + ing.namn + '</b> <span style="font-size:.72rem;color:#7f8c8d;">' +
+        (+ing.kcal || 0) + ' kcal · ' + (+ing.pris_kr_per_kg || 0) + ' kr/kg</span>';
+      b.onmouseenter = function () { markSok(i); };
+      b.onclick = function () { pickSok(ing); };
+      sokBox.appendChild(b);
+    });
+    var r = td.getBoundingClientRect();
+    sokBox.style.left = Math.max(8, r.left + window.scrollX) + 'px';
+    sokBox.style.top = (r.bottom + window.scrollY + 2) + 'px';
+  }
+  function markSok(i) {
+    if (!sokBox) return;
+    sokIdx = i;
+    sokBox.querySelectorAll('.mk-sokval').forEach(function (b, j) {
+      b.style.background = (j === i) ? '#fdf6ee' : 'none';
+      b.style.outline = (j === i) ? '2px solid #e67e22' : 'none';
+    });
+    var akt = sokBox.querySelector('.mk-sokval[data-i="' + i + '"]');
+    if (akt && akt.scrollIntoView) akt.scrollIntoView({ block: 'nearest' });
+  }
+  function pickSok(ing) {
+    if (!sokTd) return;
+    var td = sokTd;
+    closeSok();
+    td.textContent = ing.namn;   /* rensar även gamla märken – kalkylen sätter nya */
+    markDirty();
+    if (window.__MK_KALKYL_REFRESH) window.__MK_KALKYL_REFRESH();
+    /* markören sist i cellen så man kan fortsätta direkt */
+    try {
+      var rng = document.createRange();
+      rng.selectNodeContents(td); rng.collapse(false);
+      var sel = window.getSelection();
+      sel.removeAllRanges(); sel.addRange(rng);
+    } catch (e) {}
+  }
+  function updateSok(td) {
+    loadIngDb().then(function (db) {
+      if (!db.length || document.activeElement !== td) return;
+      var q = sokNorm(cellText(td).replace(/^ny ingrediens$/i, ''));
+      var borjar = [], innehaller = [];
+      db.forEach(function (ing) {
+        var n = sokNorm(ing.namn);
+        if (!q) borjar.push(ing);
+        else if (n.indexOf(q) === 0) borjar.push(ing);
+        else if (n.indexOf(q) !== -1) innehaller.push(ing);
+      });
+      var list = borjar.concat(innehaller).slice(0, 12);
+      if (!list.length) { closeSok(); return; }
+      renderSok(td, list);
+    });
+  }
+  function attachSok(td) {
+    if (!td || td.__mkSok) return;
+    td.__mkSok = true;
+    td.addEventListener('focus', function () { if (editing) updateSok(td); });
+    td.addEventListener('input', function () { if (editing) updateSok(td); });
+    td.addEventListener('blur', function () { setTimeout(closeSok, 150); });
+    td.addEventListener('keydown', function (e) {
+      if (!sokBox || sokTd !== td) return;
+      var n = sokBox.querySelectorAll('.mk-sokval').length;
+      if (e.key === 'ArrowDown') { e.preventDefault(); markSok((sokIdx + 1) % n); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); markSok((sokIdx - 1 + n) % n); }
+      else if (e.key === 'Enter' && sokIdx >= 0) {
+        e.preventDefault();
+        var b = sokBox.querySelector('.mk-sokval[data-i="' + sokIdx + '"]');
+        if (b) b.click();
+      }
+      else if (e.key === 'Escape') { e.stopPropagation(); closeSok(); }
+      else if (e.key === 'Tab') closeSok();
+    });
+  }
+
   function startEdit() {
     if (editing) return;
     editing = true;
@@ -448,6 +567,7 @@
 
     // Alla tabellceller (ingredienser, näring)
     document.querySelectorAll('.card table td').forEach(function (td) {
+      if (td.closest('.mk-ingsub')) return;   /* variant-underrader ägs av kalkylen */
       td.contentEditable = 'true';
     });
 
@@ -492,6 +612,8 @@
           del.onclick = function () { tr.remove(); markDirty(); if (window.__MK_KALKYL_REFRESH) window.__MK_KALKYL_REFRESH(); };
           tds[tds.length - 1].appendChild(del);
         }
+        /* ✍️ Autocomplete ur databasen på namncellen */
+        if (tds.length >= 2 && !tr.classList.contains('total') && !tr.classList.contains('tot')) attachSok(tds[0]);
       });
       var card = ing.closest('.card');
       if (card && !card.querySelector('.mk-addrow')) {
@@ -514,7 +636,15 @@
           del.contentEditable = 'false';
           del.onclick = function () { tr.remove(); };
           tr.lastElementChild.appendChild(del);
+          attachSok(tr.firstElementChild);   /* ✍️ dropdown ur databasen även på nya raden */
           tr.firstElementChild.focus();
+          /* markera platshållartexten så första tecknet ersätter den */
+          try {
+            var rng = document.createRange();
+            rng.selectNodeContents(tr.firstElementChild);
+            var sel = window.getSelection();
+            sel.removeAllRanges(); sel.addRange(rng);
+          } catch (e) {}
         };
         card.appendChild(add);
       }
@@ -605,6 +735,7 @@
      AVSLUTA (behåller ändringarna synligt på sidan)
      ============================================================ */
   function stopEdit() {
+    closeSok();
     window.removeEventListener('beforeunload', warnUnload);
     dirty = false;
     editing = false;
@@ -736,7 +867,8 @@
     var clone = document.documentElement.cloneNode(true);
     clone.querySelectorAll('#mk-editbar, .mk-rowbtn, .mk-addrow, #mk-rnav, #mk-fab, #mk-top, #mk-qty, #mk-komp, ' +
       '#mk-lang, #mk-auto-qr, #mk-provenance, #mk-betyg, #mk-maskinmatch, #mk-kalkyl, #mk-donation, #mk-aff-disclosure, ' +
-      '.share-btn, .print-btn, [id^="mk-pd"], [id^="mk-pw"], [id^="mk-swish"]').forEach(function (el) { el.remove(); });
+      '.share-btn, .print-btn, [id^="mk-pd"], [id^="mk-pw"], [id^="mk-swish"], ' +
+      '.mk-saknas, .mk-prodlank, .mk-ingsub, #mk-byt-notis, .mk-ingsok').forEach(function (el) { el.remove(); });
     clone.querySelectorAll('[contenteditable]').forEach(function (el) {
       el.removeAttribute('contenteditable');
     });
