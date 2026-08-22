@@ -69,7 +69,10 @@
       "protein": 12.5,
       "kolhydrat": 0.7,
       "fett": 10,
-      "fiber": 0
+      "fiber": 0,
+      "kalla": "redigerad 2026-08-22",
+      "lank": "https://www.willys.se/produkt/agg-24p-Frigaende-Inomhus-Medium-101718037_ST",
+      "uppdaterad": ""
     },
     {
       "id": "turkisk-yoghurt",
