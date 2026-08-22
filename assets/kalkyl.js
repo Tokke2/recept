@@ -373,17 +373,10 @@
        receptets live-kalkyl. Kan sedan användas i andra recept
        och generatorn som vilken vara som helst.
        ============================================================ */
-    box.querySelector('#mk-recept2ing').addEventListener('click', async function () {
-      var out = box.querySelector('#mk-r2i-result');
-      if (!window.__MK_SPARA) { out.innerHTML = '<p style="color:#c0392b;font-size:.85rem;">Spara-modulen kunde inte laddas – ladda om sidan.</p>'; return; }
-      var rNamn = (document.querySelector('meta[name="recept:namn"]') || {}).content ||
-        (document.querySelector('header h1') || { textContent: 'Recept' }).textContent.trim();
-      rNamn = rNamn.replace(/[\u{1F300}-\u{1FAFF}\uFE0F]/gu, '').trim();
-      var namn = prompt('Namn på ingrediensen (så den hittas i andra recept):', rNamn + ' (hemgjord)');
-      if (!namn) return;
-      /* Per 100 g ur kalkylen */
+    /* Bygg ingrediensposten ur kalkylens totaler (delas med API:t nedan) */
+    function byggIngrediensPost(namn, rNamn) {
       var per100 = function (v) { return Math.round(v / tot.g * 100 * 10) / 10; };
-      var post = {
+      return {
         id: namn.toLowerCase().replace(/å/g, 'a').replace(/ä/g, 'a').replace(/ö/g, 'o')
           .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
         namn: namn,
@@ -393,18 +386,44 @@
         recept: decodeURIComponent(location.pathname.split('/').pop()),
         kalla: 'eget recept (' + rNamn + ') ' + new Date().toISOString().slice(0, 10)
       };
+    }
+    async function sparaIngrediensPost(post, namn) {
+      var raw = await window.__MK_SPARA.load('json/ingredienser.json');
+      if (!raw) throw new Error('kunde inte läsa databasen');
+      var db2 = JSON.parse(raw);
+      db2.ingredienser = db2.ingredienser || [];
+      /* matcha på id ELLER samma käll-recept (namnbyte ger ingen dubblett) */
+      var fil = post.recept;
+      var idx = db2.ingredienser.findIndex(function (x) { return x.id === post.id || (fil && x.recept === fil); });
+      if (idx >= 0) db2.ingredienser[idx] = post; else db2.ingredienser.push(post);
+      return window.__MK_SPARA.save('json/ingredienser.json', JSON.stringify(db2, null, 2),
+        'Recept sparat som ingrediens: ' + namn);
+    }
+    /* 🫙 API för redigera.js: tyst sparning vid "Även ingrediens"-kryss */
+    window.__MK_RECEPT_TILL_ING = async function () {
+      if (!window.__MK_SPARA || !tot.g) return { ok: false, error: 'kalkylen saknas' };
+      var rN = (document.querySelector('meta[name="recept:namn"]') || {}).content ||
+        (document.querySelector('header h1') || { textContent: 'Recept' }).textContent.trim();
+      rN = rN.replace(/[\u{1F300}-\u{1FAFF}\uFE0F]/gu, '').trim();
+      var n = rN + ' (hemgjord)';
+      try { return await sparaIngrediensPost(byggIngrediensPost(n, rN), n); }
+      catch (e) { return { ok: false, error: e.message }; }
+    };
+
+    box.querySelector('#mk-recept2ing').addEventListener('click', async function () {
+      var out = box.querySelector('#mk-r2i-result');
+      if (!window.__MK_SPARA) { out.innerHTML = '<p style="color:#c0392b;font-size:.85rem;">Spara-modulen kunde inte laddas – ladda om sidan.</p>'; return; }
+      var rNamn = (document.querySelector('meta[name="recept:namn"]') || {}).content ||
+        (document.querySelector('header h1') || { textContent: 'Recept' }).textContent.trim();
+      rNamn = rNamn.replace(/[\u{1F300}-\u{1FAFF}\uFE0F]/gu, '').trim();
+      var namn = prompt('Namn på ingrediensen (så den hittas i andra recept):', rNamn + ' (hemgjord)');
+      if (!namn) return;
+      var post = byggIngrediensPost(namn, rNamn);
       var btn = this;
       btn.disabled = true; btn.textContent = '⏳ Sparar i ingrediensdatabasen...';
       var res = { ok: false, error: 'okänt fel' };
       try {
-        var raw = await window.__MK_SPARA.load('json/ingredienser.json');
-        if (!raw) throw new Error('kunde inte läsa databasen');
-        var db2 = JSON.parse(raw);
-        db2.ingredienser = db2.ingredienser || [];
-        var idx = db2.ingredienser.findIndex(function (x) { return x.id === post.id; });
-        if (idx >= 0) db2.ingredienser[idx] = post; else db2.ingredienser.push(post);
-        res = await window.__MK_SPARA.save('json/ingredienser.json', JSON.stringify(db2, null, 2),
-          'Recept sparat som ingrediens: ' + namn);
+        res = await sparaIngrediensPost(post, namn);
       } catch (e) { res = { ok: false, error: e.message }; }
       btn.disabled = false; btn.textContent = '🫙 Spara receptet som INGREDIENS (sylt, saft, buljong...)';
       if (res.ok) {
