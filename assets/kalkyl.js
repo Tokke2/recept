@@ -288,6 +288,7 @@
     });
 
     /* ♻️ UTBYTES-NOTIS – alltid, på alla recept (även utan kalkyl) */
+    window.__MK_KALKYL_TOT = tot;   /* delas med etikett.js (burketiketter) m.fl. */
     (function bytesNotis() {
       if (document.getElementById('mk-byt-notis')) return;
       var ingCard0 = document.querySelector('.mk-ing-card') ||
