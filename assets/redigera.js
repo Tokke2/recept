@@ -558,6 +558,9 @@
     editing = true;
     document.body.classList.add('mk-editing');
 
+    /* ✨ Steg-markeringar (tydlig.js) packas upp – ren text redigeras */
+    if (window.__MK_STEGMARK_RESET) window.__MK_STEGMARK_RESET();
+
     /* Gör innehåll redigerbart */
     // Rubrik + beskrivning
     var h1 = document.querySelector('header h1');
@@ -787,6 +790,8 @@
     document.querySelectorAll('.mk-rowbtn, .mk-addrow').forEach(function (el) { el.remove(); });
     var bar = document.getElementById('mk-editbar');
     if (bar) bar.remove();
+    /* ✨ Kör om steg-markeringarna på de (ev. nya) stegtexterna */
+    if (window.__MK_STEGMARK_KOR) setTimeout(window.__MK_STEGMARK_KOR, 200);
     if (window.__MK_TOAST) window.__MK_TOAST('Ändringarna syns på sidan – ladda upp filen för att spara permanent');
   }
 
@@ -919,11 +924,11 @@
       '#mk-lang, #mk-auto-qr, #mk-provenance, #mk-betyg, #mk-maskinmatch, #mk-kalkyl, #mk-donation, #mk-aff-disclosure, ' +
       '.share-btn, .print-btn, [id^="mk-pd"], [id^="mk-pw"], [id^="mk-swish"], ' +
       '.mk-saknas, .mk-prodlank, .mk-ingsub, #mk-byt-notis, .mk-ingsok').forEach(function (el) { el.remove(); });
-    /* 🌡️ Enhets-spans + ⚖️ skalnings-spans → tillbaka till exakt originaltext */
-    clone.querySelectorAll('span.mk-enh, span.mk-skala').forEach(function (s) {
+    /* 🌡️ Enhets-spans + ⚖️ skalnings-spans + ✨ steg-markeringar → exakt originaltext */
+    clone.querySelectorAll('span.mk-enh, span.mk-skala, span.mk-stegmark').forEach(function (s) {
       s.parentNode.replaceChild(clone.ownerDocument.createTextNode(s.getAttribute('data-orig') || s.textContent), s);
     });
-    clone.querySelectorAll('#mk-skala-badge, #mk-skala-bg, #mk-etikett-ark, #mk-etikett-bg, #mk-etikett-css').forEach(function (el) { el.remove(); });
+    clone.querySelectorAll('#mk-skala-badge, #mk-skala-bg, #mk-etikett-ark, #mk-etikett-bg, #mk-etikett-css, #mk-oversikt').forEach(function (el) { el.remove(); });
     /* 🖼️ Auto-genererad hero-SVG → återställ riktiga bildsökvägen */
     clone.querySelectorAll('img.mk-hero-auto').forEach(function (im) {
       var fn = decodeURIComponent(location.pathname.split('/').pop()).replace(/\.html?$/i, '');
