@@ -42,6 +42,11 @@
 <div class="card">
   <h2>1️⃣ Produktlänk</h2>
   <input type="text" id="url" placeholder="https://www.amazon.se/dp/XXXXXXXXXX  eller annan produktsida..." oninput="parseUrl()">
+  <div id="asinbox" style="display:none;margin-top:10px;border:2px solid #27ae60;background:#eaf7ef;border-radius:12px;padding:12px 16px;font-size:.9rem;">
+    ✅ <b>Amazon-produkt hittad!</b>
+    <div style="margin-top:4px;">ASIN: <b id="asinval" style="font-family:monospace;"></b> · <span id="asinmarket"></span></div>
+    <div style="font-size:.8rem;color:#7f8c8d;margin-top:4px;">Länken normaliseras till ren produktlänk (amazon.se/dp/ASIN). Affiliate-taggen läggs på automatiskt av sajten när <code>json/affiliate.json</code> har din Associates-tag – den sparas ALDRIG i maskinfilen.</div>
+  </div>
   <div class="row" style="margin-top:10px;">
     <div><label>Varumärke *</label><input type="text" id="brand" placeholder="t.ex. Philips" oninput="build()"></div>
     <div><label>Modell *</label><input type="text" id="model" placeholder="t.ex. HD9285" oninput="build()"></div>
@@ -94,9 +99,43 @@ function slug(s) {
     .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 }
 
+/* ============================================================
+   🛒 AMAZON-IGENKÄNNING: hittar ASIN i alla vanliga länkformat
+     amazon.se/dp/B0XXXXXXXX
+     amazon.se/gp/product/B0XXXXXXXX
+     amazon.se/Ninja-Foodi-XYZ/dp/B0XXXXXXXX?ref=...
+   ASIN = 10 tecken (B0... eller ISBN). Sparas i maskinfilen som
+   "asin" + normaliserad ren URL. Affiliate-taggen läggs ALDRIG i
+   filen – den appliceras centralt av assets/affiliate.js utifrån
+   json/affiliate.json (amazon_tag).
+   ============================================================ */
+function amazonInfo(u) {
+  try {
+    var url = new URL(u);
+    if (!/(^|\.)amazon\.[a-z.]+$/.test(url.hostname)) return null;
+    var m = url.pathname.match(/\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})(?:[/?]|$)/i) ||
+            url.pathname.match(/\/([A-Z0-9]{10})(?:[/?]|$)/);
+    if (!m) return null;
+    var asin = m[1].toUpperCase();
+    if (!/^[A-Z0-9]{10}$/.test(asin)) return null;
+    return { asin: asin, marketplace: url.hostname.replace(/^www\./, ''), ren: 'https://' + url.hostname + '/dp/' + asin + '/' };
+  } catch (e) { return null; }
+}
+
 function parseUrl() {
   var u = document.getElementById('url').value.trim();
   if (!u) return;
+  // 🛒 Amazon? Visa ASIN-rutan
+  var az = amazonInfo(u);
+  var box = document.getElementById('asinbox');
+  if (az) {
+    box.style.display = 'block';
+    document.getElementById('asinval').textContent = az.asin;
+    document.getElementById('asinmarket').textContent = az.marketplace +
+      (az.marketplace === 'amazon.se' ? '' : ' ⚠️ (inte amazon.se – affiliate-taggen gäller bara amazon.se)');
+  } else {
+    box.style.display = 'none';
+  }
   // Gissa varumärke ur kända mönster i URL:en
   var brands = ['philips','ninja','cosori','tefal','bosch','electrolux','wilfa','kenwood',
                 'moulinex','russell hobbs','instant','xiaomi','severin','wmf','greenpan',
@@ -136,6 +175,7 @@ function build() {
   if (!brand || !model || !type) return;
 
   var id = slug(brand + '-' + model);
+  var az = amazonInfo(url);
   var json = {
     "_plats": "/json/maskiner/" + id + ".json  (en maskinfil per maskin – läses in automatiskt)",
     "id": id,
@@ -149,7 +189,7 @@ function build() {
     "egenskaper": ["FYLL I egenskaper från produktsidan"],
     "viktigt": [],
     "lankar": {
-      "kop": url || "FYLL I produktlänk",
+      "kop": az ? az.ren : (url || "FYLL I produktlänk"),
       "bruksanvisning": "SÖK UPP manualen (manuals.plus / manualslib.com / tillverkaren)",
       "tillverkare": "FYLL I"
     },
@@ -165,6 +205,7 @@ function build() {
     ],
     "bild": "images/" + id + ".jpg"
   };
+  if (az) json.asin = az.asin;   /* 🛒 ASIN = central produktidentifierare */
   document.getElementById('out').value = JSON.stringify(json, null, 2);
   document.getElementById('okbox').style.display = 'block';
   document.getElementById('okbox').innerHTML =
@@ -232,5 +273,5 @@ async function saveDirect() {
 }
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f40966ad67c8c4',t:'MTc4NzQyNDM0OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
