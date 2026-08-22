@@ -60,10 +60,13 @@
       .replace(/å/g, 'a').replace(/ä/g, 'a').replace(/ö/g, 'o')
       .replace(/[^a-z0-9%]+/g, ' ').trim();
   }
-  function match(namn, db) {
+  /* matchAll: returnerar ALLA kandidater som delar högsta poängen.
+     Fler än 1 = tvetydigt ("hemmagjord sylt" träffar både svartvinbär
+     och fläder) → raden får en väljare så användaren bestämmer. */
+  function matchAll(namn, db) {
     var n = norm(namn);
-    if (!n) return null;
-    var best = null, bestScore = 0;
+    if (!n) return [];
+    var bestScore = 0, list = [];
     for (var i = 0; i < db.length; i++) {
       var d = norm(db[i].namn);
       var score = 0;
@@ -77,9 +80,26 @@
         else if (hits >= 2) score = 40;
         else if (hits === 1 && dw.length === 1) score = 30;
       }
-      if (score > bestScore) { bestScore = score; best = db[i]; }
+      if (score > bestScore) { bestScore = score; list = [db[i]]; }
+      else if (score === bestScore && score >= 30) list.push(db[i]);
     }
-    return bestScore >= 30 ? best : null;
+    return bestScore >= 30 ? list : [];
+  }
+  function match(namn, db) { var l = matchAll(namn, db); return l.length ? l[0] : null; }
+
+  /* ---------- Flera träffar → UNDERRADER i tabellen ----------
+     "Hemmagjord sylt 30 g" blir en titelrad och varje databas-
+     post som matchar visas som egen underrad med kcal per sylt.
+     Kalkylen räknar med GENOMSNITTET av varianterna. */
+  function snitt(list) {
+    var f = ['pris_kr_per_kg', 'kcal', 'protein', 'kolhydrat', 'fett', 'fiber'];
+    var o = { namn: 'genomsnitt av ' + list.length + ' sorter' };
+    f.forEach(function (k) {
+      var s = 0;
+      list.forEach(function (c) { s += (+c[k] || 0); });
+      o[k] = s / list.length;
+    });
+    return o;
   }
 
   /* ---------- Läs receptets ingrediensrader ---------- */
@@ -132,7 +152,7 @@
     /* Riv gammalt (så omkörning efter redigering ger färska värden) */
     var oldBox = document.getElementById('mk-kalkyl');
     if (oldBox) oldBox.remove();
-    document.querySelectorAll('.mk-saknas, .mk-prodlank').forEach(function (x) { x.remove(); });
+    document.querySelectorAll('.mk-saknas, .mk-prodlank, .mk-ingsub').forEach(function (x) { x.remove(); });
 
     var rows = readRows();
     if (rows.length < 2) return;
@@ -161,8 +181,43 @@
     }
 
     rows.forEach(function (r) {
-      var ing = match(r.namn, db);
+      var kandidater = matchAll(r.namn, db);
+      var ing = kandidater[0] || null;
       var g = toGrams(r.mangd, r.namn);
+      if (kandidater.length > 1) {
+        /* 🔽 FLERA TRÄFFAR: raden blir titel, varianterna visas som
+           underrader med kcal för RECEPTETS MÄNGD (t.ex. 30 g).
+           Kalkylen räknar med genomsnittet. */
+        ing = snitt(kandidater);
+        var nEl = r.el && r.el.nextElementSibling;
+        if (r.el && r.el.parentNode && !(nEl && nEl.classList && nEl.classList.contains('mk-ingsub'))) {
+          var cols = r.el.children.length || 3;
+          var next = r.el.nextSibling;
+          kandidater.forEach(function (c) {
+            var sub = document.createElement('tr');
+            sub.className = 'mk-ingsub';
+            var td = document.createElement('td');
+            td.colSpan = cols;
+            td.style.cssText = 'padding:2px 8px 2px 26px;font-size:.8rem;color:#7f8c8d;border:none;background:rgba(230,126,34,.05);';
+            var kcalTxt;
+            if (g !== null) {
+              /* kcal för receptets mängd: 30 g × 210/100 = 63 kcal */
+              kcalTxt = '<span style="color:#e67e22;font-weight:700;">' +
+                fmt((+c.kcal || 0) * g / 100, 0) + ' kcal</span>' +
+                '<span style="font-size:.72rem;"> för ' + fmt(g, 0) + ' g</span>';
+            } else {
+              /* okänd mängd-enhet → visa per 100 g som reserv */
+              kcalTxt = '<span style="color:#e67e22;font-weight:700;">' +
+                fmt(+c.kcal || 0, 0) + ' kcal</span><span style="font-size:.72rem;">/100 g</span>';
+            }
+            td.innerHTML = '↳ ' + c.namn + ' ' + kcalTxt +
+              ((+c.pris_kr_per_kg || 0) > 0 && g !== null ?
+                ' · ' + fmt((+c.pris_kr_per_kg) * g / 1000, 2) + ' kr' : '');
+            sub.appendChild(td);
+            r.el.parentNode.insertBefore(sub, next);
+          });
+        }
+      }
       if (!ing) {
         missed.push(r.namn);
         /* 🔴 RÖD rad: ingrediensen finns INTE i databasen */
