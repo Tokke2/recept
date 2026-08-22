@@ -687,12 +687,31 @@
 
     /* Redigeringsbalk */
     var fname = decodeURIComponent(location.pathname.split('/').pop());
+
+    /* 🗂️ Kategorier (samma lista som recept.html) + nuvarande värden ur meta */
+    var KATTER = [
+      ['', '🤖 Auto (gissas)'], ['husdjur', '🐶 Husdjur'], ['sylt', '🫙 Sylt & marmelad'],
+      ['saft', '🧃 Saft & dryck'], ['glass', '🍦 Glass & fryst'], ['snacks', '🥨 Snacks'],
+      ['brod', '🍞 Bröd'], ['deg', '🥖 Deg'], ['bakning', '🍰 Bakning & fika'],
+      ['efterratt', '🍮 Efterrätt'], ['varmratt', '🍲 Varmrätter'], ['ovrigt', '🍽️ Övrigt']
+    ];
+    var metaKat = (document.querySelector('meta[name="recept:kategori"]') || {}).content || '';
+    var metaIng = ((document.querySelector('meta[name="recept:ingrediens"]') || {}).content || '') === 'ja';
+
     var bar = document.createElement('div');
     bar.id = 'mk-editbar';
     bar.className = 'no-print';
     bar.innerHTML =
       '<b>✏️ Redigeringsläge</b>' +
       '<span id="eb-dirty" style="font-size:.78rem;opacity:.85;"></span>' +
+      '<label style="display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:700;" title="Var receptet hamnar i receptsamlingen. Auto = gissas av namnet/taggarna.">🗂️' +
+        '<select id="eb-kat" style="border:none;border-radius:8px;padding:6px 8px;font-size:.8rem;font-family:inherit;font-weight:700;color:#2c3e50;cursor:pointer;max-width:170px;">' +
+        KATTER.map(function (k) {
+          return '<option value="' + k[0] + '"' + (k[0] === metaKat ? ' selected' : '') + '>' + k[1] + '</option>';
+        }).join('') + '</select></label>' +
+      '<label style="display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,.15);border-radius:8px;padding:6px 10px;" ' +
+        'title="Kryssa i om receptet (sylt/saft/buljong...) även ska finnas i ingrediensdatabasen – pris & näring per 100 g räknas ur kalkylen och uppdateras vid varje sparning.">' +
+        '<input type="checkbox" id="eb-ing"' + (metaIng ? ' checked' : '') + ' style="width:16px;height:16px;accent-color:#27ae60;cursor:pointer;">🫙 Även ingrediens</label>' +
       '<button class="eb save" id="eb-save" style="background:#27ae60;color:#fff;">💾 Spara på sajten</button>' +
       '<button class="eb" id="eb-dl" style="background:rgba(255,255,255,.2);color:#fff;" title="Reserv: ladda ner filen istället">⬇️</button>' +
       '<button class="eb" id="eb-del" style="background:#c0392b;color:#fff;" title="Ta bort hela receptet från sajten">🗑️ Ta bort receptet</button>' +
@@ -702,6 +721,28 @@
     document.getElementById('eb-dl').onclick = saveFile;
     document.getElementById('eb-del').onclick = deleteRecipe;
     document.getElementById('eb-exit').onclick = tryStopEdit;
+
+    /* Kategori/ingrediens → skrivs DIREKT som meta i dokumentet (följer med i sparad fil) */
+    function setMeta(namn, varde) {
+      var m = document.querySelector('meta[name="recept:' + namn + '"]');
+      if (!varde) { if (m) m.remove(); return; }
+      if (!m) {
+        m = document.createElement('meta');
+        m.setAttribute('name', 'recept:' + namn);
+        var ank = document.querySelector('meta[name="recept:namn"]');
+        if (ank && ank.parentNode) ank.parentNode.insertBefore(m, ank.nextSibling);
+        else document.head.appendChild(m);
+      }
+      m.setAttribute('content', varde);
+    }
+    document.getElementById('eb-kat').addEventListener('change', function () {
+      setMeta('kategori', this.value);
+      markDirty();
+    });
+    document.getElementById('eb-ing').addEventListener('change', function () {
+      setMeta('ingrediens', this.checked ? 'ja' : '');
+      markDirty();
+    });
 
     /* Markera osparat + varna vid sidlämning */
     document.body.addEventListener('input', markDirty, true);
@@ -852,7 +893,16 @@
       dirty = false;
       var d = document.getElementById('eb-dirty');
       if (d) d.textContent = '✅ sparat';
-      if (window.__MK_TOAST) window.__MK_TOAST('🎉 Sparat på GitHub! Live om ~1 minut (grön bock i Actions)');
+      /* 🫙 "Även ingrediens" ikryssad → uppdatera ingrediensdatabasen ur kalkylen */
+      var ingChk = document.getElementById('eb-ing');
+      if (ingChk && ingChk.checked && window.__MK_RECEPT_TILL_ING) {
+        var r2 = await window.__MK_RECEPT_TILL_ING();
+        if (window.__MK_TOAST) {
+          window.__MK_TOAST(r2.ok
+            ? '🎉 Sparat! Receptet är även uppdaterat i ingrediensdatabasen 🫙'
+            : '🎉 Receptet sparat – men ingrediensposten misslyckades: ' + r2.error);
+        }
+      } else if (window.__MK_TOAST) window.__MK_TOAST('🎉 Sparat på GitHub! Live om ~1 minut (grön bock i Actions)');
       stopEdit();
     } else {
       if (window.__MK_TOAST) window.__MK_TOAST('⚠️ Kunde inte spara: ' + res.error + ' – prova ⬇️ som reserv');
@@ -869,6 +919,18 @@
       '#mk-lang, #mk-auto-qr, #mk-provenance, #mk-betyg, #mk-maskinmatch, #mk-kalkyl, #mk-donation, #mk-aff-disclosure, ' +
       '.share-btn, .print-btn, [id^="mk-pd"], [id^="mk-pw"], [id^="mk-swish"], ' +
       '.mk-saknas, .mk-prodlank, .mk-ingsub, #mk-byt-notis, .mk-ingsok').forEach(function (el) { el.remove(); });
+    /* 🌡️ Enhets-spans → tillbaka till exakt originaltext (metriskt) */
+    clone.querySelectorAll('span.mk-enh').forEach(function (s) {
+      s.parentNode.replaceChild(clone.ownerDocument.createTextNode(s.getAttribute('data-orig') || s.textContent), s);
+    });
+    /* 🖼️ Auto-genererad hero-SVG → återställ riktiga bildsökvägen */
+    clone.querySelectorAll('img.mk-hero-auto').forEach(function (im) {
+      var fn = decodeURIComponent(location.pathname.split('/').pop()).replace(/\.html?$/i, '');
+      im.classList.remove('mk-hero-auto');
+      im.removeAttribute('data-mk-auto');
+      im.src = '../images/recept/' + fn + '.jpg';
+      im.style.display = '';
+    });
     clone.querySelectorAll('[contenteditable]').forEach(function (el) {
       el.removeAttribute('contenteditable');
     });
