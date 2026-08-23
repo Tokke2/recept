@@ -43,6 +43,8 @@
   if (!LANGS[lang]) lang = 'sv';
 
   var dict = {}, patterns = [], autoCache = {}, originals = new WeakMap();
+  var attrOriginals = new WeakMap();          /* el → {placeholder: "...", title: "..."} */
+  var attrElement = [];                        /* lista för återställning (WeakMap kan ej itereras) */
   var pending = {}, queue = [], busy = false, saveTimer = null;
 
   /* ============================================================
@@ -158,6 +160,16 @@
       if (originals.has(n)) n.nodeValue = originals.get(n);
     }
     if (originals.has(document)) document.title = originals.get(document);
+    /* Attribut (placeholder/title/alt/aria-label) tillbaka till svenska */
+    attrElement.forEach(function (el) {
+      var store = attrOriginals.get(el);
+      if (!store) return;
+      Object.keys(store).forEach(function (a) {
+        try { el.setAttribute(a, store[a]); } catch (e) {}
+      });
+    });
+    /* Töm auto-kön så inga sena svar skriver över svenskan */
+    queue = []; pending = {};
   }
 
   /* ============================================================
@@ -196,7 +208,7 @@
   }
 
   function translatable(t) {
-    return t && t.length >= 2 && t.length <= 450 &&
+    return t && t.length >= 2 && t.length <= 1200 &&
       /[a-zA-ZåäöÅÄÖ]{2}/.test(t) && t.indexOf('http') !== 0;
   }
 
@@ -206,7 +218,7 @@
     if (!originals.has(n)) originals.set(n, raw);
     var out = tr(t);
     if (out !== null) { n.nodeValue = raw.replace(t, out); return; }
-    if (translatable(t)) queueAuto(t, n);
+    if (translatable(t)) queueAuto(t, { typ: 'nod', n: n });
   }
 
   function translateAll(root) {
@@ -224,64 +236,106 @@
     }, false), n;
     while ((n = w.nextNode())) handleNode(n);
 
-    // Attribut
-    var els = root.querySelectorAll ? root.querySelectorAll('[placeholder],[title],[alt]') : [];
+    // Attribut – ordbok först, annars auto-översättning (nytt i v3)
+    var els = root.querySelectorAll ? root.querySelectorAll('[placeholder],[title],[alt],[aria-label]') : [];
     for (var i = 0; i < els.length; i++) {
       if (els[i].closest('#mk-lang')) continue;
-      ['placeholder', 'title', 'alt'].forEach(function (a) {
+      ['placeholder', 'title', 'alt', 'aria-label'].forEach(function (a) {
         var v = els[i].getAttribute(a);
         if (!v || !v.trim()) return;
-        var out = tr(v.trim());
-        if (out !== null) els[i].setAttribute(a, v.replace(v.trim(), out));
+        var t = v.trim();
+        var key = 'attr:' + a;
+        if (!attrOriginals.has(els[i])) { attrOriginals.set(els[i], {}); attrElement.push(els[i]); }
+        var store = attrOriginals.get(els[i]);
+        if (store[a] === undefined) store[a] = v;
+        var out = tr(t);
+        if (out !== null) { els[i].setAttribute(a, v.replace(t, out)); return; }
+        if (translatable(t)) queueAuto(t, { typ: 'attr', el: els[i], attr: a });
       });
     }
-    // Sidtitel
+    // Sidtitel – ordbok först, annars auto (nytt i v3)
     if (root === document.body) {
       if (!originals.has(document)) originals.set(document, document.title);
-      var tt = tr(document.title.trim());
+      var ttxt = document.title.trim();
+      var tt = tr(ttxt);
       if (tt !== null) document.title = tt;
+      else if (translatable(ttxt)) queueAuto(ttxt, { typ: 'titel' });
     }
   }
 
   /* ============================================================
-     AUTO-ÖVERSÄTTNING – buntad gtx-kö med progressindikator
+     AUTO-ÖVERSÄTTNING v3 – buntad gtx-kö med progressindikator
+     · SEPARATOR-TOKEN "\n⁂\n" istället för bara \n → texter med
+       egna radbrytningar splittrar inte längre bunten (vanligaste
+       orsaken till "halva sidan blev inte översatt")
+     · Mål kan vara textnod, attribut ELLER sidtiteln
+     · Misslyckad bunt provas igen EN gång med mindre bitar
      ============================================================ */
-  function queueAuto(text, node) {
+  var SEP = '\n⁂\n';
+  function queueAuto(text, mal) {
     if (!pending[text]) { pending[text] = []; queue.push(text); pump(); }
-    pending[text].push(node);
+    pending[text].push(mal);
   }
 
-  function pump() {
-    if (busy || !queue.length) return;
+  function applicera(text, out) {
+    autoCache[text] = out;
+    (pending[text] || []).forEach(function (mal) {
+      try {
+        if (mal.typ === 'nod' || mal.n) {
+          var n = mal.n || mal;
+          if (n.nodeValue && n.nodeValue.trim() === text) {
+            n.nodeValue = n.nodeValue.replace(text, out);
+          }
+        } else if (mal.typ === 'attr') {
+          var v = mal.el.getAttribute(mal.attr);
+          if (v && v.trim() === text) mal.el.setAttribute(mal.attr, v.replace(text, out));
+        } else if (mal.typ === 'titel') {
+          if (document.title.trim() === text) document.title = out;
+        }
+      } catch (e) {}
+    });
+  }
+
+  function pump(retryBatch) {
+    if (busy || (!queue.length && !retryBatch)) return;
     busy = true;
     progress(true);
-    var batch = queue.splice(0, 30);
+    var pumpLang = lang;   /* sena svar efter språkbyte ignoreras */
+    var batch = retryBatch || queue.splice(0, 20);
     var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=sv&tl=' +
-              lang + '&dt=t&q=' + encodeURIComponent(batch.join('\n'));
+              lang + '&dt=t&q=' + encodeURIComponent(batch.join(SEP));
     fetch(url)
       .then(function (r) { return r.json(); })
       .then(function (d) {
+        if (lang !== pumpLang) { batch.forEach(function (t) { delete pending[t]; }); return; }
         var full = '';
         (d && d[0] || []).forEach(function (seg) { if (seg && seg[0]) full += seg[0]; });
-        var outs = full.split('\n');
-        batch.forEach(function (text, i) {
-          var out = (outs.length === batch.length ? outs[i] : '').trim();
-          if (out && out !== text) {
-            autoCache[text] = out;
-            (pending[text] || []).forEach(function (n) {
-              try {
-                if (n.nodeValue && n.nodeValue.trim() === text) {
-                  n.nodeValue = n.nodeValue.replace(text, out);
-                }
-              } catch (e) {}
-            });
-          }
-          delete pending[text];
-        });
+        /* gtx kan tappa mellanslag runt separatorn – tolerant split */
+        var outs = full.split(/\s*⁂\s*/);
+        if (outs.length === batch.length) {
+          batch.forEach(function (text, i) {
+            var out = (outs[i] || '').trim();
+            if (out && out !== text) applicera(text, out);
+            delete pending[text];
+          });
+        } else if (batch.length > 1) {
+          /* Bunten gick sönder → dela i två och prova igen */
+          busy = false;
+          var mitt = Math.ceil(batch.length / 2);
+          pump(batch.slice(0, mitt));
+          queue = batch.slice(mitt).concat(queue);
+          return;
+        } else {
+          /* Enstaka text: ta hela svaret rakt av */
+          var ensam = full.trim();
+          if (ensam && ensam !== batch[0]) applicera(batch[0], ensam);
+          delete pending[batch[0]];
+        }
         saveCache();
       })
       .catch(function () { batch.forEach(function (t) { delete pending[t]; }); })
       .then(function () {
+        if (busy === false) return;   /* retrasplit tog över */
         busy = false;
         if (queue.length) setTimeout(pump, 120);
         else progress(false);
