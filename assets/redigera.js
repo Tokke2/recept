@@ -585,6 +585,127 @@
       el.contentEditable = 'true';
     });
 
+    /* ============================================================
+       🔧 LÄGG TILL MASKIN I EFTERHAND: ➕-knapp i "Gör så här"-
+       kortet → välj maskin + program ur databasen → ny maskinsteg-
+       ruta läggs in OCH recept:maskiner-metan uppdateras (så
+       receptflikar/maskinkort/kopplingar hittar receptet). Flera
+       maskiner kan läggas till efter varandra. ✕ tar bort ruta.
+       ============================================================ */
+    (function maskinTillagg() {
+      var stegKort = null;
+      document.querySelectorAll('.card').forEach(function (c) {
+        var h = c.querySelector('h2');
+        if (!stegKort && h && /(gör så här|steg|instruktion)/i.test(h.textContent)) stegKort = c;
+      });
+      if (!stegKort || stegKort.querySelector('.mk-addmaskin')) return;
+
+      /* ✕ på befintliga maskinsteg-rutor */
+      document.querySelectorAll('.machine-step').forEach(function (ms) {
+        if (ms.querySelector('.mk-rowbtn')) return;
+        var del = document.createElement('button');
+        del.className = 'mk-rowbtn del no-print';
+        del.textContent = '✕';
+        del.title = 'Ta bort maskinrutan';
+        del.contentEditable = 'false';
+        del.onclick = function () { ms.remove(); markDirty(); };
+        ms.appendChild(del);
+      });
+
+      var add = document.createElement('button');
+      add.className = 'mk-addrow mk-addmaskin no-print';
+      add.textContent = '+ Lägg till maskin';
+      add.onclick = async function () {
+        if (document.getElementById('mk-maskval-bg')) return;
+        var rot = window.__MK_ROOT || '../';
+        var maskiner = [];
+        try {
+          var idx = await (await fetch(rot + 'json/maskiner-index.json', { cache: 'no-store' })).json();
+          await Promise.all(idx.map(async function (f) {
+            try { maskiner.push(await (await fetch(rot + 'json/maskiner/' + f)).json()); } catch (e) {}
+          }));
+        } catch (e) {}
+        if (!maskiner.length) { if (window.__MK_TOAST) window.__MK_TOAST('Kunde inte läsa maskindatabasen'); return; }
+        maskiner.sort(function (a, b) { return (a.namn || '').localeCompare(b.namn || '', 'sv'); });
+
+        var bg = document.createElement('div');
+        bg.id = 'mk-maskval-bg';
+        bg.className = 'no-print';
+        bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:330;display:flex;align-items:center;justify-content:center;padding:16px;';
+        bg.innerHTML =
+          '<div style="background:#fff;border-radius:16px;max-width:440px;width:100%;padding:22px 26px;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
+            '<h3 style="margin:0 0 10px;">🔧 Lägg till maskin i receptet</h3>' +
+            '<label style="display:block;font-size:.8rem;font-weight:700;margin-bottom:3px;">Maskin</label>' +
+            '<select id="mv-maskin" style="width:100%;padding:10px;border:2px solid #e8e2d8;border-radius:9px;font-size:.9rem;font-family:inherit;margin-bottom:10px;">' +
+              maskiner.map(function (m, i) { return '<option value="' + i + '">' + (m.namn || m.id) + '</option>'; }).join('') +
+            '</select>' +
+            '<label style="display:block;font-size:.8rem;font-weight:700;margin-bottom:3px;">Program</label>' +
+            '<select id="mv-prog" style="width:100%;padding:10px;border:2px solid #e8e2d8;border-radius:9px;font-size:.9rem;font-family:inherit;margin-bottom:10px;"></select>' +
+            '<label style="display:block;font-size:.8rem;font-weight:700;margin-bottom:3px;">Moment (visas i metan, t.ex. "Gräddning")</label>' +
+            '<input id="mv-moment" type="text" placeholder="t.ex. Gräddning, Alternativ, Jäsning" style="width:100%;padding:10px;border:2px solid #e8e2d8;border-radius:9px;font-size:.9rem;font-family:inherit;box-sizing:border-box;margin-bottom:14px;">' +
+            '<div style="display:flex;gap:10px;">' +
+              '<button id="mv-ok" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-family:inherit;">➕ Lägg till</button>' +
+              '<button id="mv-nej" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-family:inherit;">Avbryt</button>' +
+            '</div>' +
+          '</div>';
+        document.body.appendChild(bg);
+
+        function fyllProgram() {
+          var m = maskiner[+bg.querySelector('#mv-maskin').value];
+          var ps = m.program || [];
+          bg.querySelector('#mv-prog').innerHTML = ps.length
+            ? ps.map(function (p, i) { return '<option value="' + i + '">' + p.namn + (p.standardtid ? ' (' + p.standardtid + ')' : '') + '</option>'; }).join('')
+            : '<option value="-1">– inga program (manuellt läge) –</option>';
+        }
+        fyllProgram();
+        bg.querySelector('#mv-maskin').addEventListener('change', fyllProgram);
+
+        var ned = false;
+        bg.addEventListener('mousedown', function (e) { ned = (e.target === bg); });
+        bg.addEventListener('click', function (e) { if (e.target === bg && ned) bg.remove(); });
+        bg.querySelector('#mv-nej').onclick = function () { bg.remove(); };
+
+        bg.querySelector('#mv-ok').onclick = function () {
+          var m = maskiner[+bg.querySelector('#mv-maskin').value];
+          var pi = +bg.querySelector('#mv-prog').value;
+          var p = (m.program && pi >= 0) ? m.program[pi] : { namn: 'Manuellt läge', standardtid: '', beskrivning: '' };
+          var moment = bg.querySelector('#mv-moment').value.trim() || 'Tillagning';
+          var kort = (m.varumarke ? m.varumarke + ' ' : '') + (m.modellnamn || m.namn || m.id);
+
+          /* 1) Ny maskinsteg-ruta i Gör så här-kortet */
+          var ruta = document.createElement('div');
+          ruta.className = 'machine-step';
+          ruta.innerHTML = '<h3>⚙️ ' + kort + ' · <span class="prog">' + p.namn +
+            (p.standardtid ? ' · ' + p.standardtid : '') + '</span></h3>' +
+            (p.beskrivning ? '<div class="why">' + p.beskrivning + '</div>' : '');
+          var ol = stegKort.querySelector('ol');
+          if (ol) stegKort.insertBefore(ruta, ol);
+          else stegKort.appendChild(ruta);
+          var del = document.createElement('button');
+          del.className = 'mk-rowbtn del no-print';
+          del.textContent = '✕'; del.contentEditable = 'false';
+          del.onclick = function () { ruta.remove(); markDirty(); };
+          ruta.appendChild(del);
+
+          /* 2) Uppdatera recept:maskiner-metan (| -separerad, som övriga) */
+          var meta = document.querySelector('meta[name="recept:maskiner"]');
+          if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute('name', 'recept:maskiner');
+            var ank = document.querySelector('meta[name="recept:namn"]');
+            (ank && ank.parentNode ? ank.parentNode : document.head).appendChild(meta);
+          }
+          var post = moment + ': ' + kort + ' · ' + p.namn + (p.standardtid ? ' ' + p.standardtid : '');
+          meta.setAttribute('content', (meta.getAttribute('content') ? meta.getAttribute('content') + ' | ' : '') + post);
+
+          bg.remove();
+          markDirty();
+          if (window.__MK_TOAST) window.__MK_TOAST('🔧 ' + kort + ' tillagd – 💾 Spara för att behålla');
+        };
+      };
+      stegKort.appendChild(add);
+    })();
+
     /* Rad-knappar: ta bort-✕ på ingrediensrader + lägg till-knapp */
     var ing = document.querySelector('.mk-ing-card table') ||
               (function () {
@@ -934,7 +1055,7 @@
     clone.querySelectorAll('a.mk-masklank').forEach(function (a) {
       a.parentNode.replaceChild(clone.ownerDocument.createTextNode(a.textContent), a);
     });
-    clone.querySelectorAll('#mk-skala-badge, #mk-skala-bg, #mk-etikett-ark, #mk-etikett-bg, #mk-etikett-css, #mk-oversikt').forEach(function (el) { el.remove(); });
+    clone.querySelectorAll('#mk-skala-badge, #mk-skala-bg, #mk-etikett-ark, #mk-etikett-bg, #mk-etikett-css, #mk-oversikt, #mk-maskval-bg').forEach(function (el) { el.remove(); });
     /* 🖼️ Auto-genererad hero-SVG → återställ riktiga bildsökvägen */
     clone.querySelectorAll('img.mk-hero-auto').forEach(function (im) {
       var fn = decodeURIComponent(location.pathname.split('/').pop()).replace(/\.html?$/i, '');
