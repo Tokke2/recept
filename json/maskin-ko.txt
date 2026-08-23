@@ -1,0 +1,7 @@
+# PLATS: /json/maskin-ko.txt (kö för maskinimport-roboten – EN MASKIN PER RAD)
+# Skrivs av maskin-import.html (🤖 Importera automatiskt). Roboten (maskin-import.yml)
+# bygger maskinfilen och gör raden till en #KLAR-kommentar.
+# En rad får innehålla FLERA länkar (mellanslag mellan) för SAMMA maskin:
+#   AMAZON-LÄNK TILLVERKAR-LÄNK
+# Amazon ger ASIN/köpknapp · tillverkarsidan ger namn, 🖼️ produktbild och 📖 manual
+# (hittas manual-PDF läses programnamnen ur den). Bilder hämtas ALDRIG från Amazon.
