@@ -47,6 +47,10 @@ jobs:
             echo "Inget nytt."
           else
             git commit -m "🤖 Maskinimport: nya maskiner via länk-kön"
-            git pull --rebase origin main || true
-            git push
+            for i in 1 2 3; do
+              if git push; then break; fi
+              echo "Push-krock (försök $i) – rebasar..."
+              git pull --rebase origin main
+              sleep 5
+            done
           fi
