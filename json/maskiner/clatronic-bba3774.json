@@ -187,5 +187,7 @@
    ]
   }
  ],
- "bild": "images/clatronic-bba3774.png"
+ "bild": "images/clatronic-bba3774.png",
+ "effekt_w": 550,
+ "effekt_kalla": "självläkning: central reservtabell"
 }

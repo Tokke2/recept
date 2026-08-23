@@ -61,5 +61,7 @@
    ]
   }
  ],
- "bild": "images/silonn-ismaskin.jpg"
+ "bild": "images/silonn-ismaskin.jpg",
+ "effekt_w": 160,
+ "effekt_kalla": "självläkning: central reservtabell"
 }
