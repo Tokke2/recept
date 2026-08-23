@@ -367,6 +367,66 @@ def program_ur_pdf(pdf_url):
         return []
 
 
+def hitta_tillverkarsida(varumarke, modell):
+    """Hitta tillverkarens PRODUKTSIDA själv via sökning – användaren
+       behöver bara Amazon-länken. Träffen måste ligga på tillverkarens
+       domän (kända kartan) eller ha varumärket i värdnamnet."""
+    if not varumarke:
+        return ''
+    kand_host = ''
+    kand = TILLVERKARE.get(varumarke.lower(), '')
+    if kand:
+        kand_host = urllib.parse.urlparse(kand).netloc.replace('www.', '')
+    brand_token = re.sub(r'[^a-z]', '', varumarke.lower())
+    SKRAP = r'amazon\.|prisjakt|pricerunner|elgiganten|netonnet|youtube|facebook|instagram|ebay|tradera|wikipedia'
+    for u in ddg_lankar(('%s %s' % (varumarke, modell or '')).strip(), 8):
+        host = urllib.parse.urlparse(u).netloc.replace('www.', '').lower()
+        if re.search(SKRAP, host):
+            continue
+        if (kand_host and kand_host in host) or (brand_token and brand_token in re.sub(r'[^a-z]', '', host)):
+            print('🏭 Tillverkarsida hittad via sökning: %s' % u[:80])
+            return u
+    return ''
+
+
+def hitta_specs(*texter):
+    """📐 Egenskaper ur produkttexter: mått, vikt, volym, hastigheter,
+       volt, funktioner. Returnerar lista med chip-texter till kortet."""
+    text = ' '.join(t for t in texter if t)
+    text = re.sub(r'<[^>]+>', ' ', text)[:40000]
+    ut = []
+
+    m = re.search(r'(\d+[.,]?\d*)\s*[x×]\s*(\d+[.,]?\d*)\s*[x×]\s*(\d+[.,]?\d*)\s*cm', text, re.I)
+    if m:
+        ut.append('📐 %s × %s × %s cm' % (m.group(1), m.group(2), m.group(3)))
+    m = re.search(r'(\d+(?:[.,]\d+)?)\s*kg\b', text, re.I)
+    if m and float(m.group(1).replace(',', '.')) < 60:
+        ut.append('⚖️ %s kg' % m.group(1))
+    m = re.search(r'(\d+(?:[.,]\d+)?)\s*(?:L|liter)\b', text) or \
+        re.search(r'(\d{3,4})\s*ml\b', text, re.I)
+    if m:
+        ut.append('🥛 %s %s' % (m.group(1), 'L' if not m.group(0).lower().endswith('ml') else 'ml'))
+    m = re.search(r'(\d{1,2})\s*(hastigheter|speeds|stufen)', text, re.I)
+    if m:
+        ut.append('🎚️ %s hastigheter' % m.group(1))
+    m = re.search(r'(\d{2,3})\s*[-–]?\s*(\d{2,3})?\s*°C', text)
+    if m and m.group(2):
+        ut.append('🌡️ %s–%s °C' % (m.group(1), m.group(2)))
+    m = re.search(r'(\d{1,2})\s*(program|funktioner|functions|programme)\b', text, re.I)
+    if m and int(m.group(1)) > 1:
+        ut.append('🎛️ %s %s' % (m.group(1), m.group(2).lower()))
+    m = re.search(r'(2[023]0)\s*V(?:olt)?\b', text)
+    if m:
+        ut.append('🔌 %s V' % m.group(1))
+    # unika, max 6
+    setts, unika = set(), []
+    for e in ut:
+        if e not in setts:
+            setts.add(e)
+            unika.append(e)
+    return unika[:6]
+
+
 def bygg_maskin(urls):
     """urls = lista med 1+ länkar för SAMMA maskin (Amazon + tillverkare).
        Amazon ger ASIN/köplänk; tillverkarsidan ger namn/bild/manual."""
@@ -412,8 +472,43 @@ def bygg_maskin(urls):
     typ = hitta_typ(namn + ' ' + sok + ' ' + ' '.join(urls))
     watt = hitta_watt(namn) or hitta_watt(sok) or hitta_watt(tillv_html[:5000] if tillv_html else '')
 
+    # EXTRA SÖKRUNDA om modell eller effekt saknas: Amazons produkttitlar
+    # innehåller ofta båda ("... 1200 W ... TB401EU") – en riktad DDG-
+    # sökning på ASIN + varumärke brukar ge fullständiga titeln.
+    extra = ''
+    if asin and (not modell or not watt):
+        extra = ddg_titel('%s %s specifications' % (varumarke or '', asin)) or \
+                ddg_titel(asin + ' ' + (varumarke or ''))
+        if extra:
+            if not modell:
+                modell = hitta_modell(extra, varumarke)
+            if not watt:
+                watt = hitta_watt(extra)
+            if typ == 'Annan köksmaskin':
+                typ = hitta_typ(extra)
+
+    # 🏭 ENDAST AMAZON-LÄNK? Roboten letar upp tillverkarens produktsida
+    # SJÄLV (användaren behöver bara Amazon-länken – beställning).
+    if not tillv_url and varumarke:
+        tillv_url = hitta_tillverkarsida(varumarke, modell)
+        if tillv_url:
+            tillv_html = hamta(tillv_url)
+            # tillverkartiteln kan vara bättre än Amazon-sluggen
+            if tillv_html and not modell:
+                t2 = sid_titel(tillv_url)
+                if t2:
+                    modell = hitta_modell(t2, varumarke) or modell
+
     mid = slug((varumarke + '-' + modell) if (varumarke and modell) else (namn[:40] or (asin or 'maskin')))
     soktext = urllib.parse.quote((varumarke + ' ' + modell).strip() or namn[:50])
+
+    # NAMN = "Tillverkare Modell – Typ" när båda finns (användarens beställning),
+    # annars den städade produkttiteln som reserv.
+    if varumarke and modell:
+        visningsnamn = ('%s %s – %s' % (varumarke, modell, typ.split('/')[0].strip())
+                        if typ != 'Annan köksmaskin' else '%s %s' % (varumarke, modell))
+    else:
+        visningsnamn = stada_titel(namn)[:80] if namn else mid
 
     # 2) 🖼️ Bild från TILLVERKARENS sida (aldrig Amazon)
     bildfil = ''
@@ -450,13 +545,14 @@ def bygg_maskin(urls):
     maskin = {
         '_plats': '/json/maskiner/%s.json  (en maskinfil per maskin – läses in automatiskt)' % mid,
         'id': mid,
-        'namn': (stada_titel(namn)[:80] if namn else mid),
+        'namn': visningsnamn,
         'typ': typ,
         'varumarke': varumarke or 'FYLL I',
         'modellnamn': modell or 'FYLL I',
         'effekt_w': watt or 1000,
         'effekt_kalla': 'ur produktnamnet' if watt else 'UPPSKATTAD av roboten – kontrollera!',
-        'egenskaper': ['🤖 Importerad automatiskt – kontrollera uppgifterna'],
+        'egenskaper': (hitta_specs(namn, sok, extra, tillv_html[:40000] if tillv_html else '') or
+                       ['🤖 Importerad automatiskt – kontrollera uppgifterna']),
         'lankar': lankar,
         'bild': bildfil or ('images/%s.jpg' % mid),
     }
