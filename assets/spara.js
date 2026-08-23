@@ -64,7 +64,8 @@
     return new Promise(function (resolve) {
       var bg = document.createElement('div');
       bg.className = 'no-print';
-      bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:310;display:flex;align-items:center;justify-content:center;padding:16px;';
+      /* z-index 450: ALLTID över sidlåset (400) – annars syns inte fältet! */
+      bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;display:flex;align-items:center;justify-content:center;padding:16px;';
       bg.innerHTML =
         '<div id="mkSpPw" style="background:#fff;border-radius:16px;max-width:380px;width:100%;padding:26px 28px;text-align:center;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
           '<div style="font-size:2rem;">🔒</div>' +
@@ -93,12 +94,24 @@
         this.textContent = show ? '🙈' : '👁️';
         input.focus();
       });
+      var fel = 0;
       async function attempt() {
         if (await checkPassword(input.value, lock)) {
           try { sessionStorage.setItem(UNLOCK_KEY, '1'); } catch (e) {}
           bg.remove(); resolve(true);
         } else {
-          bg.querySelector('#mkSpMsg').textContent = 'Fel lösenord – försök igen';
+          fel++;
+          if (fel >= 3) {
+            /* 🚪 3 fel = ut till startsidan (användarens regel) */
+            bg.querySelector('#mkSpMsg').textContent = '❌ 3 felaktiga försök – skickas till startsidan...';
+            input.disabled = true;
+            bg.querySelector('#mkSpOk').disabled = true;
+            setTimeout(function () {
+              location.href = (window.__MK_ROOT || './') + 'index.html';
+            }, 1400);
+            return;
+          }
+          bg.querySelector('#mkSpMsg').textContent = 'Fel lösenord – försök ' + fel + ' av 3';
           input.select();
         }
       }
