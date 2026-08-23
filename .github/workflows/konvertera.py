@@ -539,7 +539,15 @@ def main():
     txt_made = convert_text_files()
 
     changed = []
+
+    def ej_recept(f):
+        """Sökmotor-verifieringsfiler ska ALDRIG konverteras till recept."""
+        import os as _os
+        return _os.path.basename(f).lower().startswith(('google', 'bingsiteauth', 'yandex_'))
+
     for f in sorted(glob.glob('recept/*.html')):
+        if ej_recept(f):
+            continue
         res = convert_file(f, energi)
         if res:
             changed.append(res)
@@ -557,6 +565,8 @@ def main():
                  'maskin-import.html', 'status.html']
         urls = [bas + s for s in sidor]
         for f in sorted(glob.glob('recept/*.html')):
+            if ej_recept(f):
+                continue
             namn = os.path.basename(f)
             if 'MALL' in namn.upper():
                 continue
