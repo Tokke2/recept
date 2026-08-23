@@ -43,11 +43,16 @@ jobs:
           set -euo pipefail
           git config user.name  "Läknings-robot"
           git config user.email "actions@users.noreply.github.com"
-          git add json/ recept/ backup/ || true
+          git add -A json/ recept/ backup/
           if git diff --cached --quiet; then
             echo "Allt friskt."
           else
             git commit -m "🩹 Självläkning: effekt/energi/bildvägar ($(date +%F))"
-            git pull --rebase origin main || true
-            git push
+            # Krocktålig push: andra robotar kan pusha samtidigt → 3 försök med rebase
+            for i in 1 2 3; do
+              if git push; then break; fi
+              echo "Push-krock (försök $i) – rebasar och provar igen..."
+              git pull --rebase origin main
+              sleep 5
+            done
           fi
