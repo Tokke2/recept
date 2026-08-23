@@ -165,7 +165,7 @@
   }
 
   function close() {
-    stopTimer();
+    stopAllaTimers();
     stopSpeak();
     if (overlay) overlay.remove();
     overlay = null;
@@ -201,28 +201,79 @@
     }
     return out.slice(0, 3);
   }
+  /* ============================================================
+     ⏲️ MULTITIMER (roadmap 3): FLERA namngivna timers samtidigt
+     ("Jäsning 90 min" + "Förvärmning 15 min"). Överlever steg-
+     byten (renderas i egen fast rad, inte i steg-innehållet).
+     Pip + vibration + rödblink när en timer blir klar. ✕ per timer.
+     ============================================================ */
+  var timers = [];          /* [{id, label, left, done}] */
+  var timerInt2 = null;
+
   function startTimer(sec, label) {
-    stopTimer();
-    timerLeft = sec; timerLabel = label;
-    timerInt = setInterval(function () {
-      timerLeft--;
-      var el = overlay && overlay.querySelector('#cmTimer');
-      if (el) el.textContent = '⏱️ ' + fmt(timerLeft) + ' (' + timerLabel + ')';
-      if (timerLeft <= 0) {
-        stopTimer();
-        beep();
-        if (overlay) {
-          overlay.style.background = '#c0392b';
-          setTimeout(function () { if (overlay) overlay.style.background = '#2c3e50'; }, 400);
-          setTimeout(function () { if (overlay) overlay.style.background = '#c0392b'; }, 800);
-          setTimeout(function () { if (overlay) overlay.style.background = '#2c3e50'; }, 1200);
-          var el2 = overlay.querySelector('#cmTimer');
-          if (el2) el2.textContent = '⏰ KLART! (' + timerLabel + ')';
-        }
-      }
-    }, 1000);
+    /* samma etikett redan igång? starta om den istället för dubblett */
+    var bef = timers.find(function (t) { return t.label === label && !t.done; });
+    if (bef) { bef.left = sec; paintTimers(); return; }
+    timers.push({ id: Date.now() + Math.random(), label: label, left: sec, done: false });
+    if (!timerInt2) {
+      timerInt2 = setInterval(function () {
+        var aktiva = false;
+        timers.forEach(function (t) {
+          if (t.done) return;
+          t.left--;
+          if (t.left <= 0) {
+            t.done = true;
+            beep();
+            if (overlay) {
+              overlay.style.background = '#c0392b';
+              setTimeout(function () { if (overlay) overlay.style.background = '#2c3e50'; }, 400);
+              setTimeout(function () { if (overlay) overlay.style.background = '#c0392b'; }, 800);
+              setTimeout(function () { if (overlay) overlay.style.background = '#2c3e50'; }, 1200);
+            }
+          } else aktiva = true;
+        });
+        paintTimers();
+        if (!aktiva && !timers.some(function (t) { return !t.done; })) { /* alla klara – låt raden stå kvar */ }
+      }, 1000);
+    }
+    paintTimers();
   }
-  function stopTimer() { if (timerInt) { clearInterval(timerInt); timerInt = null; } }
+  function stopTimer() { /* multitimer: stoppa ALDRIG automatiskt vid stegbyte */ }
+  function stopAllaTimers() {
+    timers = [];
+    if (timerInt2) { clearInterval(timerInt2); timerInt2 = null; }
+  }
+
+  function paintTimers() {
+    if (!overlay) return;
+    if (!document.getElementById('mk-blink-css')) {
+      var bc = document.createElement('style');
+      bc.id = 'mk-blink-css';
+      bc.textContent = '@keyframes mkBlink{0%,100%{opacity:1;}50%{opacity:.5;}}';
+      document.head.appendChild(bc);
+    }
+    var rad = overlay.querySelector('#cmTimers');
+    if (!rad) return;
+    if (!timers.length) { rad.innerHTML = ''; rad.style.display = 'none'; return; }
+    rad.style.display = 'flex';
+    rad.innerHTML = timers.map(function (t) {
+      return '<span data-tid="' + t.id + '" style="display:inline-flex;align-items:center;gap:6px;' +
+        (t.done
+          ? 'background:#c0392b;animation:mkBlink 1s infinite;'
+          : 'background:rgba(243,156,18,.25);border:1px solid rgba(243,156,18,.7);') +
+        'border-radius:999px;padding:5px 12px;font-size:.9rem;font-weight:700;">' +
+        (t.done ? '⏰ KLART! ' : '⏱️ ' + fmt(t.left) + ' ') + t.label +
+        '<button data-del="' + t.id + '" style="background:rgba(255,255,255,.25);color:#fff;border:none;' +
+        'border-radius:99px;width:20px;height:20px;line-height:1;cursor:pointer;font-size:.7rem;">✕</button></span>';
+    }).join('');
+    rad.querySelectorAll('[data-del]').forEach(function (b) {
+      b.onclick = function () {
+        timers = timers.filter(function (t) { return String(t.id) !== b.getAttribute('data-del'); });
+        if (!timers.length && timerInt2) { clearInterval(timerInt2); timerInt2 = null; }
+        paintTimers();
+      };
+    });
+  }
   function fmt(s) {
     var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60;
     return (h ? h + ':' : '') + (m < 10 && h ? '0' : '') + m + ':' + (x < 10 ? '0' : '') + x;
@@ -261,7 +312,7 @@
 
   /* ================== RENDERING ================== */
   function render() {
-    stopTimer(); stopSpeak();
+    stopSpeak();   /* multitimern rullar vidare över stegbyten */
     var s = steps[idx];
     var pct = Math.round(((idx + 1) / steps.length) * 100);
     var times = findTimes(s.plain);
@@ -271,8 +322,8 @@
       '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;">' +
         '<span style="opacity:.75;font-size:.95rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (s.section || 'Steg') + '</span>' +
         '<div style="display:flex;gap:6px;flex-shrink:0;">' +
-          '<button id="cmFontM" style="' + miniBtn() + '">A−</button>' +
-          '<button id="cmFontP" style="' + miniBtn() + '">A+</button>' +
+          '<button id="cmFontM" title="Mindre text (' + Math.round(fontScale * 100) + '%)" style="' + miniBtn() + '">A−</button>' +
+          '<button id="cmFontP" title="Större text (' + Math.round(fontScale * 100) + '%)" style="' + miniBtn() + '">A+</button>' +
           (ingHTML ? '<button id="cmIng" style="' + miniBtn() + '">🧾</button>' : '') +
           '<button id="cmClose" style="' + miniBtn() + '">✕</button>' +
         '</div>' +
@@ -281,13 +332,16 @@
       '<div style="background:rgba(255,255,255,.15);border-radius:99px;height:8px;margin-bottom:10px;">' +
         '<div style="background:#27ae60;height:8px;border-radius:99px;width:' + pct + '%;transition:width .3s;"></div>' +
       '</div>' +
-      '<div style="display:flex;justify-content:space-between;opacity:.75;font-size:.95rem;margin-bottom:10px;">' +
+      '<div style="display:flex;justify-content:space-between;opacity:.75;font-size:.95rem;margin-bottom:6px;">' +
         '<span>Steg ' + (idx + 1) + ' av ' + steps.length + '</span>' +
-        '<span id="cmTimer" style="font-weight:700;"></span>' +
       '</div>' +
+      /* ⏲️ Multitimer-rad: överlever stegbyten (fylls av paintTimers) */
+      '<div id="cmTimers" style="display:none;flex-wrap:wrap;gap:7px;margin-bottom:8px;"></div>' +
       /* Steget + ingrediensmängder som nämns i steget */
-      '<div style="flex:1;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;">' +
-        '<div style="font-size:calc(clamp(1.5rem,4.5vw,2.5rem)*' + fontScale + ');line-height:1.45;font-weight:600;">' + s.text + '</div>' +
+      /* margin:auto 0 istället för justify-content:center → toppen klipps
+         ALDRIG bort vid stor zoom (flex-centrering + overflow-bugg) */
+      '<div style="flex:1;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;">' +
+        '<div style="margin:auto 0;font-size:calc(clamp(1.5rem,4.5vw,2.5rem)*' + fontScale + ');line-height:1.35;font-weight:600;">' + s.text + '</div>' +
         (function () {
           if (s.isIngredients) return '';
           var used = ingredientsInStep(s.plain);
@@ -331,8 +385,8 @@
           var pv = document.getElementById('mk-provenance');
           if (pv) renderProvenance(pv);
         } : next;
-    overlay.querySelector('#cmFontP').onclick = function () { fontScale = Math.min(1.6, fontScale + 0.15); save(); render(); };
-    overlay.querySelector('#cmFontM').onclick = function () { fontScale = Math.max(0.7, fontScale - 0.15); save(); render(); };
+    overlay.querySelector('#cmFontP').onclick = function () { fontScale = Math.min(3.0, fontScale + 0.25); save(); render(); };
+    overlay.querySelector('#cmFontM').onclick = function () { fontScale = Math.max(0.7, fontScale - 0.25); save(); render(); };
     overlay.querySelector('#cmSpeak').onclick = function () { speaking ? (stopSpeak(), paintSpeak()) : speak(s.plain); };
     overlay.querySelectorAll('.cmT').forEach(function (b) {
       b.onclick = function () { startTimer(+b.dataset.s, b.dataset.l); };
@@ -341,6 +395,7 @@
       overlay.querySelector('#cmIng').onclick = function () { overlay.querySelector('#cmIngPanel').style.display = 'block'; };
       overlay.querySelector('#cmIngClose').onclick = function () { overlay.querySelector('#cmIngPanel').style.display = 'none'; };
     }
+    paintTimers();   /* ⏲️ multitimer-raden återfylls efter varje stegbyte */
   }
 
   function miniBtn() {
