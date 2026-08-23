@@ -1,0 +1,52 @@
+# ============================================================
+# PLATS: /.github/workflows/maskin-import.yml  (EXAKT denna sökväg krävs av GitHub Actions)
+# ============================================================
+# 🤖 MASKIN-IMPORTROBOT – Mitt Maskinkök
+# ============================================================
+# Triggas när json/maskin-ko.txt ändras (maskin-import.html
+# lägger produktlänkar där via 💾-knappen). Roboten bygger då
+# kompletta maskinfiler: namn, varumärke, modell, typ, effekt,
+# ASIN, tillverkarens hemsida, bruksanvisnings-sökning och
+# standardprogram för maskintypen (märkta VERIFIERA).
+# Kan även köras manuellt: Actions → "Maskinimport-robot" →
+# Run workflow.
+# ============================================================
+name: Maskinimport-robot
+
+on:
+  push:
+    paths:
+      - 'json/maskin-ko.txt'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  importera:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hämta repot
+        uses: actions/checkout@v4
+
+      - name: Installera pypdf (för programläsning ur manual-PDF:er)
+        run: pip install pypdf --quiet
+
+      - name: Kör importroboten
+        env:
+          DATUM: ${{ github.run_started_at }}
+        run: python3 .github/workflows/maskin-robot.py
+
+      - name: Committa nya maskinfiler
+        run: |
+          set -euo pipefail
+          git config user.name  "Maskin-robot"
+          git config user.email "actions@users.noreply.github.com"
+          git add json/maskiner/ json/maskiner-index.json json/maskin-ko.txt images/
+          if git diff --cached --quiet; then
+            echo "Inget nytt."
+          else
+            git commit -m "🤖 Maskinimport: nya maskiner via länk-kön"
+            git pull --rebase origin main || true
+            git push
+          fi
