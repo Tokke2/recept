@@ -123,6 +123,10 @@ def main():
             typ_ = str(p.get('typ', ''))
             besk = str(p.get('beskrivning', ''))
             namn_ = str(p.get('namn', ''))
+            # OBS: typ "Ur manualen" och ägarens egna program räknas ALDRIG
+            # hit → de ändras aldrig utan användarens godkännande (regel).
+            if 'Ur manualen' in typ_:
+                return False
             return ('Standardprogram' in typ_ or 'Ej ifyllt' in typ_ or
                     'ROBOT-FÖRIFYLLT' in besk or namn_.startswith('❓') or
                     'PROGRAM SAKNAS' in namn_ or 'fyll i från bruksanvisningen' in namn_.lower())
