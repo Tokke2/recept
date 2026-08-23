@@ -297,10 +297,24 @@ def sok_manual(varumarke, modell, tillv_html='', tillv_url=''):
     if not sokord or len(sokord) < 5:
         return '', ''
 
-    # Steg 2: direkt PDF-sökning
-    for u in ddg_lankar(sokord + ' manual filetype:pdf', 5):
+    # Tillverkarens domän(er) – träffar där prioriteras ALLTID högst
+    tillv_domaner = []
+    if tillv_url:
+        tillv_domaner.append(urllib.parse.urlparse(tillv_url).netloc.replace('www.', ''))
+    kand = TILLVERKARE.get((varumarke or '').lower(), '')
+    if kand:
+        tillv_domaner.append(urllib.parse.urlparse(kand).netloc.replace('www.', ''))
+
+    def pa_tillverkardoman(u):
+        host = urllib.parse.urlparse(u).netloc.replace('www.', '')
+        return any(d and d in host for d in tillv_domaner)
+
+    # Steg 2: direkt PDF-sökning – TILLVERKARENS domän först (nr 1-regeln)
+    traffar = [u for u in ddg_lankar(sokord + ' manual filetype:pdf', 6)]
+    traffar.sort(key=lambda u: 0 if pa_tillverkardoman(u) else 1)
+    for u in traffar:
         if '.pdf' in u.lower() and ar_pdf(u):
-            print('📖 Manual (PDF-sökning): %s' % u[:80])
+            print('📖 Manual (PDF-sökning%s): %s' % (' – TILLVERKAREN' if pa_tillverkardoman(u) else '', u[:75]))
             return u, ''
 
     # Steg 3: manualsida (manualslib/manuals.plus/tillverkare) med PDF i sig
