@@ -1,21 +1,151 @@
 {
  "_plats": "/json/maskiner/ninja-nc502eu.json  (en maskinfil per maskin – läses in automatiskt)",
  "id": "ninja-nc502eu",
- "namn": "Ninja NC502EU – Glassmaskin",
+ "namn": "Ninja CREAMi Deluxe NC502EU – Glassmaskin",
  "typ": "Glassmaskin / Frozen Drink Maker",
  "varumarke": "Ninja",
  "modellnamn": "NC502EU",
- "effekt_w": 1000,
- "effekt_kalla": "UPPSKATTAD av roboten – kontrollera!",
+ "effekt_w": 800,
+ "effekt_kalla": "verifierad (produktblad: 800 W, 220–240 V)",
  "egenskaper": [
-  "🤖 Importerad automatiskt – kontrollera uppgifterna"
+  "10 One-Touch-program (4 nya vs tidigare CREAMi: Slushie, Fryst dryck, Frappé, Fryst yoghurt)",
+  "Topp & Botten: två smaker i samma Deluxe-bägare",
+  "Re-Spin: kör igen för krämigare konsistens",
+  "Mix-In: blanda ner kakor/nötter/godis efter bearbetning",
+  "📐 42,2 × 30,5 × 21,4 cm · ⚖️ 7,3 kg",
+  "Diskmaskinssäkra delar (BPA-fri plast)"
  ],
  "lankar": {
   "kop": "https://www.amazon.se/dp/B0FJ8ZVCVW/",
   "bruksanvisning": "https://www.manualslib.com/manual/4021489/Ninja-Creami-Deluxe-Nc502eu.html",
   "tillverkare": "https://www.sharkninja.se/ninja-creami-deluxe-10-i-1-glassmaskin-nc502eu/NC502EU.html?dwvar_NC502EU_color=99a6b0"
  },
- "bild": "images/ninja-nc502eu.jpg",
+ "bild": "images/ninja-nc502eu.png",
  "asin": "B0FJ8ZVCVW",
- "fritext": "Ninja CREAMi Deluxe NC502EU – program\n\nMaskinen har 10 program för glass, desserter och frysta drycker. SharkNinja beskriver även fyra nya program jämfört med tidigare CREAMi-modeller: slushie, kall/fryst dryck, frappé och fryst yoghurt.\n\nProgram\tBeskrivning\n🍦 Glass (Ice Cream)\tFör klassisk, krämig glass. Passar exempelvis vanilj, choklad, jordgubb och andra glassbaser.\n🍨 Gelato\tFör en tätare och fylligare fryst dessert med gelato-liknande konsistens.\n🍧 Sorbet\tFör fruktbaserade och andra mjölkfria sorbeter.\n🥛 Lättglass (Lite)\tFör lättare glassvarianter, exempelvis recept med lägre fett- eller sockerinnehåll.\n🥣 Fryst yoghurt (Frozen Yogurt)\tFör yoghurtbaserade frysta desserter.\n🥤 Milkshake\tFör krämiga milkshakes. Ninja anger att dessa kan göras utan att basen behöver frysas först.\n🧊 Fryst dryck (Frozen Drink)\tFör frysta drycker, både med och utan alkohol.\n🥤 Slushie\tFör uppfriskande slushies och liknande frysta drycker.\n☕ Frappé\tFör caféinspirerade frappéer, exempelvis kaffe- och dessertbaserade drycker.\n🍫 Mix-In\tAnvänds för att blanda ner extra ingredienser som choklad, nötter, kakor, godis eller frukt i den färdiga desserten.\nExtra funktioner\n\nTopp & Botten\nMed Deluxe-bägaren kan du göra två olika smakdelar i samma bägare genom att använda topp- och bottenfunktionerna. Det kan exempelvis vara en smak i den övre delen och en annan i den nedre.\n\nSpinn igen (Re-Spin)\nOm resultatet inte har den konsistens du vill ha kan du köra Spinn igen för att göra blandningen krämigare och justera konsistensen.\n\nMix-In\nEfter att basen har bearbetats kan du använda Mix-In för att tillsätta exempelvis Oreos/kakor, chokladbitar, nötter, godis eller andra ingredienser.\n\nFör din receptdatabas\n\nJag skulle lägga in maskinen ungefär så här:\n\nTillverkare: Ninja\nMaskin: CREAMi Deluxe\nModell: NC502EU\nProgram: 10\n\nSedan kopplar du varje recept till exempelvis:\n\nNinja CREAMi Deluxe NC502EU\nProgram: Glass\nFörberedelse: Frys basen\nEfter bearbetning: Spinn igen vid behov\nTillsats: Mix-In vid behov\n\nDet blir väldigt tydligt för användaren och är också precis den typen av strukturerad information som kan göra din receptplattform intressant för Ninja."
+ "fritext": "Deluxe-bägaren rymmer 709 ml och kan delas i Topp & Botten – två smaker i samma bägare. 4 program är nya jämfört med tidigare CREAMi-modeller: Slushie, Fryst dryck, Frappé och Fryst yoghurt.",
+ "kapacitet": "2 × 709 ml Deluxe-bägare (max ~2,1 L glass)",
+ "alias": [
+  "Ninja CREAMi",
+  "CREAMi Deluxe",
+  "Ninja NC502"
+ ],
+ "viktigt": [
+  "Basen måste FRYSAS 24 h före bearbetning (gäller ej Milkshake).",
+  "Re-Spin vid smulig konsistens · Mix-In EFTER första körningen."
+ ],
+ "program": [
+  {
+   "namn": "🍦 Glass (Ice Cream)",
+   "typ": "One-Touch-program",
+   "standardtid": "auto (basen fryses 24 h först)",
+   "beskrivning": "klassisk krämig glass – vanilj, choklad, jordgubb. Ur SharkNinjas produktinfo (NC502EU).",
+   "bast_for": "klassisk krämig glass",
+   "nyckelord": [
+    "glass",
+    "vaniljglass",
+    "chokladglass"
+   ]
+  },
+  {
+   "namn": "🍨 Gelato",
+   "typ": "One-Touch-program",
+   "standardtid": "auto (basen fryses 24 h först)",
+   "beskrivning": "tätare, fylligare fryst dessert med gelato-konsistens. Ur SharkNinjas produktinfo (NC502EU).",
+   "bast_for": "tätare, fylligare fryst dessert med gelato-konsistens",
+   "nyckelord": [
+    "gelato",
+    "dessert"
+   ]
+  },
+  {
+   "namn": "🍧 Sorbet",
+   "typ": "One-Touch-program",
+   "standardtid": "auto (basen fryses 24 h först)",
+   "beskrivning": "fruktbaserade & mjölkfria sorbeter. Ur SharkNinjas produktinfo (NC502EU).",
+   "bast_for": "fruktbaserade & mjölkfria sorbeter",
+   "nyckelord": [
+    "sorbet",
+    "frukt"
+   ]
+  },
+  {
+   "namn": "🥛 Lättglass (Lite)",
+   "typ": "One-Touch-program",
+   "standardtid": "auto (basen fryses 24 h först)",
+   "beskrivning": "lättare varianter – lägre fett/socker, proteinglass. Ur SharkNinjas produktinfo (NC502EU).",
+   "bast_for": "lättare varianter",
+   "nyckelord": [
+    "lättglass",
+    "proteinglass",
+    "sockerfri"
+   ]
+  },
+  {
+   "namn": "🥣 Fryst yoghurt (Frozen Yogurt)",
+   "typ": "One-Touch-program",
+   "standardtid": "auto (basen fryses 24 h först)",
+   "beskrivning": "yoghurtbaserade frysta desserter. Ur SharkNinjas produktinfo (NC502EU).",
+   "bast_for": "yoghurtbaserade frysta desserter",
+   "nyckelord": [
+    "fryst yoghurt",
+    "frozen yogurt"
+   ]
+  },
+  {
+   "namn": "🥤 Milkshake",
+   "typ": "One-Touch-program",
+   "standardtid": "auto (ingen frysning krävs)",
+   "beskrivning": "krämiga milkshakes – basen behöver INTE frysas först. Ur SharkNinjas produktinfo (NC502EU).",
+   "bast_for": "krämiga milkshakes",
+   "nyckelord": [
+    "milkshake",
+    "shake"
+   ]
+  },
+  {
+   "namn": "🧊 Fryst dryck (Frozen Drink)",
+   "typ": "One-Touch-program",
+   "standardtid": "auto (basen fryses 24 h först)",
+   "beskrivning": "frysta drycker med och utan alkohol. Ur SharkNinjas produktinfo (NC502EU).",
+   "bast_for": "frysta drycker med och utan alkohol",
+   "nyckelord": [
+    "fryst dryck",
+    "drink",
+    "cocktail"
+   ]
+  },
+  {
+   "namn": "🥤 Slushie",
+   "typ": "One-Touch-program",
+   "standardtid": "auto (basen fryses 24 h först)",
+   "beskrivning": "uppfriskande slushies. Ur SharkNinjas produktinfo (NC502EU).",
+   "bast_for": "uppfriskande slushies",
+   "nyckelord": [
+    "slush",
+    "slushie"
+   ]
+  },
+  {
+   "namn": "☕ Frappé",
+   "typ": "One-Touch-program",
+   "standardtid": "auto (basen fryses 24 h först)",
+   "beskrivning": "caféinspirerade frappéer – kaffe- & dessertdrycker. Ur SharkNinjas produktinfo (NC502EU).",
+   "bast_for": "caféinspirerade frappéer",
+   "nyckelord": [
+    "frappé",
+    "kaffe"
+   ]
+  },
+  {
+   "namn": "🍫 Mix-In",
+   "typ": "One-Touch-program",
+   "standardtid": "auto (basen fryses 24 h först)",
+   "beskrivning": "blanda ner choklad/nötter/kakor/godis/frukt i färdig dessert. Ur SharkNinjas produktinfo (NC502EU).",
+   "bast_for": "blanda ner choklad/nötter/kakor/godis/frukt i färdig dessert",
+   "nyckelord": [
+    "mix-in",
+    "topping"
+   ]
+  }
+ ]
 }
