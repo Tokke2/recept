@@ -1,0 +1,78 @@
+/* ============================================================
+   PLATS: /assets/design.css  (assets-mappen i repo-roten)
+   ============================================================
+   🎨 CENTRAL DESIGNFIL – Mitt Maskinkök
+   ============================================================
+   ETT ställe för hela sajtens utseende. Laddas av site.js på
+   ALLA sidor EFTER sidornas egna <style> → värdena här VINNER.
+
+   Byt tema = ändra variablerna under :root nedan. Sidorna
+   använder redan var(--accent) osv., så allt slår igenom
+   överallt direkt: sidor, recept, kort, knappar, dialoger.
+
+   Exempel – jultema:
+     --accent:#1e6b3a;  --accent2:#c0392b;  --bg:#f4f7f4;
+   Exempel – mörkblått:
+     --accent:#1a5276;  --accent2:#2980b9;
+   ============================================================ */
+
+:root {
+  /* === FÄRGPALETTEN (ändra HÄR för att byta tema överallt) === */
+  --bg: #f6f3ee;          /* sidbakgrund (varm gräddvit) */
+  --card: #ffffff;        /* kort/paneler */
+  --accent: #c0392b;      /* huvudfärg (röd) – rubrikband, knappar */
+  --accent2: #e67e22;     /* sekundär (orange) – gradienter, detaljer */
+  --dark: #2c3e50;        /* brödtext */
+  --muted: #7f8c8d;       /* dämpad text */
+  --green: #27ae60;       /* positivt: mängder, spara, klart */
+  --gold: #f1c40f;        /* stjärnor/betyg */
+
+  /* === EFFEKTER === */
+  --radius: 14px;                              /* kort-rundning */
+  --radius-sm: 9px;                            /* knappar/fält */
+  --shadow: 0 2px 8px rgba(0, 0, 0, .07);      /* kort-skugga */
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, .14); /* lyft kort/dialog */
+  --grad: linear-gradient(135deg, var(--accent), var(--accent2));
+}
+
+/* ============================================================
+   GEMENSAM POLERING (försiktig – förstärker, ersätter inte)
+   ============================================================ */
+
+/* Mjukare kort-hover överallt där kort finns */
+.card, .rcard, .mcard {
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+
+/* Knappfokus – synligt för tangentbord, snyggt för alla */
+button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--accent2);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Formulärfält: enhetlig fokusfärg på hela sajten */
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent2) !important;
+}
+
+/* Rubrikband: samma gradient överallt (styrs av --grad) */
+header {
+  background: var(--grad) !important;
+}
+
+/* Länkfärg i löptext */
+.card a:not(.link-btn):not(.btn):not(.rcard):not(.mk-masklank) {
+  color: var(--accent);
+}
+
+/* Tabellrubriker – enhetlig dämpad stil */
+th {
+  letter-spacing: .04em;
+}
+
+/* Print: designfilen ska aldrig störa utskrifter */
+@media print {
+  header { background: #fff !important; color: #000 !important; }
+}
