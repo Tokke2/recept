@@ -50,6 +50,10 @@ jobs:
             echo "Inga nya fraser."
           else
             git commit -m "🌐 Språkrobot: nya förgenererade översättningar"
-            git pull --rebase origin main || true
-            git push
+            for i in 1 2 3; do
+              if git push; then break; fi
+              echo "Push-krock (försök $i) – rebasar..."
+              git pull --rebase origin main
+              sleep 5
+            done
           fi
