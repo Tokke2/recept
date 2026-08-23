@@ -1,0 +1,53 @@
+# ============================================================
+# PLATS: /.github/workflows/sjalvlakning.yml  (EXAKT denna sökväg krävs av GitHub Actions)
+# ============================================================
+# 🩹 SJÄLVLÄKNINGSROBOT – Mitt Maskinkök
+# ============================================================
+# Gör sajten självstyrd: fyller i saknad effekt_w (reservtabell/
+# typstandard), BERÄKNAR ENERGIDATA per recept automatiskt ur
+# recept:maskiner-metan, rättar trasiga bildvägar och städar bort
+# felplacerade sökmotor-verifieringsfiler ur recept/.
+# Skriver ALDRIG över befintliga värden.
+# Körs varje natt 04:15 UTC + vid push + manuellt.
+# ============================================================
+name: Självläkning (natt)
+
+on:
+  schedule:
+    - cron: '15 4 * * *'
+  push:
+    paths:
+      - 'recept/**.html'
+      - 'json/maskiner/**.json'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sjalvlakning
+  cancel-in-progress: false
+
+jobs:
+  laka:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hämta repot
+        uses: actions/checkout@v4
+
+      - name: Kör självläkningen
+        run: python3 .github/workflows/sjalvlakning.py
+
+      - name: Committa lagningar
+        run: |
+          set -euo pipefail
+          git config user.name  "Läknings-robot"
+          git config user.email "actions@users.noreply.github.com"
+          git add json/ recept/ backup/ || true
+          if git diff --cached --quiet; then
+            echo "Allt friskt."
+          else
+            git commit -m "🩹 Självläkning: effekt/energi/bildvägar ($(date +%F))"
+            git pull --rebase origin main || true
+            git push
+          fi
