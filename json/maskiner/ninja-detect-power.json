@@ -1,18 +1,22 @@
 {
  "_plats": "/json/maskiner/ninja-detect-power.json  (en maskinfil per maskin – läses in automatiskt)",
  "id": "ninja-detect-power",
- "namn": "Ninja Detect Power Blender &amp; Processor Pro | SharkNinja SE",
+ "namn": "Ninja Detect Power Blender & Processor Pro 3-i-1",
  "typ": "Blender / Mixer",
  "varumarke": "Ninja",
- "modellnamn": "Detect Power",
- "kapacitet": "FYLL I (t.ex. 5 L)",
+ "modellnamn": "TB401EU",
+ "kapacitet": "2 L kanna (max 1,9 L) + 1,8 L matberedarskål (max 1,6 L) + 680 ml bägare",
  "effekt_w": 1200,
  "effekt_kalla": "ur produktnamnet",
  "egenskaper": [
-  "🤖 Importerad automatiskt  – kontrollera uppgifterna"
+  "BlendSense-teknik (känner av innehållet och justerar automatiskt)",
+  "20 funktioner: 14 manuella + 6 automatiska lägen",
+  "10 hastigheter · 1200 W motor",
+  "Blad: Total Crushing (kross/mix), hackblad, degblad, skiv-/rivskiva, Hybrid Edge",
+  "Övre hyllan diskmaskinssäker, löstagbara delar"
  ],
  "viktigt": [
-  "Programlistan är STANDARDPROGRAM för maskintypen – verifiera tider/temperaturer mot bruksanvisningen (länk under Bruksanvisning)."
+  "PROGRAM EJ IFYLLDA: roboten hittade ingen läsbar manual och gissar aldrig. Fyll i de 6 automatiska lägena + manuella funktioner från bruksanvisningen (länk under Bruksanvisning)."
  ],
  "lankar": {
   "kop": "https://www.amazon.se/dp/B0D8QQ2LY5/",
@@ -22,27 +26,12 @@
  },
  "program": [
   {
-   "namn": "Mixa",
-   "typ": "Standardprogram",
-   "standardtid": "30–60 sek",
-   "beskrivning": "ROBOT-FÖRIFYLLT standardprogram för maskintypen – VERIFIERA mot bruksanvisningen!",
-   "bast_for": "smoothies, soppor",
-   "nyckelord": [
-    "smoothies",
-    "soppor"
-   ]
-  },
-  {
-   "namn": "Puls",
-   "typ": "Standardprogram",
-   "standardtid": "korta tryck",
-   "beskrivning": "ROBOT-FÖRIFYLLT standardprogram för maskintypen – VERIFIERA mot bruksanvisningen!",
-   "bast_for": "hackning, krossa is",
-   "nyckelord": [
-    "hackning",
-    "krossa",
-    "is"
-   ]
+   "namn": "❓ PROGRAM SAKNAS – fyll i från manualen",
+   "typ": "Ej ifyllt",
+   "standardtid": "–",
+   "beskrivning": "Maskinen har 20 funktioner (14 manuella + 6 automatiska lägen med BlendSense) enligt produktbladet – exakta namn/tider måste tas ur bruksanvisningen.",
+   "bast_for": "mixa, hacka, deg (pizzadeg!), krossa is, drinkar, vispa",
+   "nyckelord": []
   }
  ],
  "bild": "images/ninja-detect-power.webp",
