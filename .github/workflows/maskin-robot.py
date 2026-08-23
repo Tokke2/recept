@@ -13,9 +13,9 @@
 #   · Maskintyp (nyckelord sv/en) + effekt (W ur namnet)
 #   · Tillverkarens hemsida (varumärke→domän-karta)
 #   · Bruksanvisning: sökta länkar (manualslib + manuals.plus)
-#   · Program: STANDARDPROGRAM per maskintyp, märkta
-#     "VERIFIERA mot bruksanvisningen" (ingen robot kan läsa
-#     manualen – be en AI-chatt verifiera, eller redigera själv)
+#   · Program: ENDAST ur manual-PDF (pypdf + programordlista).
+#     Hittas ingen manual GISSAR roboten ALDRIG – programlistan
+#     lämnas med tydlig "fyll i själv"-post istället.
 # Skriver json/maskiner/ID.json + uppdaterar maskiner-index.json.
 # Kön töms (behandlade rader blir #KLAR-kommentarer).
 # ============================================================
@@ -75,60 +75,6 @@ TYPER = [
     (r'slow ?cooker|långkokare', 'Slow cooker'),
 ]
 
-# Standardprogram per typ – ALLTID märkta för verifiering
-PROGRAM = {
-    'Airfryer / Varmluftsfritös': [
-        ('Air Fry', '200 °C · 12–18 min', 'pommes, kyckling, grönsaker'),
-        ('Roast', '180 °C · 18–25 min', 'kött, rotfrukter'),
-        ('Bake', '160 °C · 20–30 min', 'bakverk, gratänger'),
-        ('Reheat', '150 °C · 5–10 min', 'uppvärmning av rester'),
-        ('Dehydrate', '55 °C · 4–8 h', 'torkade frukter, jerky'),
-    ],
-    'Riskokare / Multikokare': [
-        ('Ris', 'auto', 'vitt ris, jasminris'),
-        ('Gröt/Risotto', '45–60 min', 'gröt, risotto'),
-        ('Ångkok', '15–30 min', 'grönsaker, fisk'),
-        ('Soppa', '60 min', 'soppor, buljong'),
-        ('Långkok (Slow cook)', '2–8 h', 'grytor, pulled pork'),
-        ('Kaka', '45–60 min', 'mjuka kakor'),
-        ('Yoghurt', '8 h', 'hemgjord yoghurt'),
-    ],
-    'Bakmaskin / Brödbakningsmaskin': [
-        ('Basic/Standard', '3:00 h', 'vitt matbröd'),
-        ('Snabbprogram', '1:58 h', 'snabbt bröd'),
-        ('Deg (Dough)', '1:30 h', 'pizzadeg, bulldeg – knådar+jäser utan bakning'),
-        ('Sylt (Jam)', '1:20 h', 'sylt och marmelad'),
-        ('Kaka (Cake)', '1:50 h', 'mjuka kakor'),
-        ('Glutenfri', '2:50 h', 'glutenfritt bröd'),
-    ],
-    'Glassmaskin / Frozen Drink Maker': [
-        ('Glass', '20–40 min', 'gräddglass'),
-        ('Sorbet', '20–30 min', 'fruktsorbet'),
-        ('Milkshake', '10–15 min', 'milkshake'),
-    ],
-    'Torkautomat / Dehydrator': [
-        ('Örter', '35–40 °C · 4–8 h', 'basilika, persilja'),
-        ('Grönsaker', '50–55 °C · 6–10 h', 'tomater, chips'),
-        ('Frukt', '57–60 °C · 6–12 h', 'äpple, banan'),
-        ('Jerky', '65–70 °C · 4–7 h', 'köttorkning'),
-    ],
-    'Ismaskin': [
-        ('Iskuber', '6–12 min per omgång', 'små/stora kuber'),
-        ('Självrengöring', '~30 min', 'rengöringsprogram'),
-    ],
-    'Pizzaugn': [
-        ('Pizza', 'max värme · 60–120 sek efter 10–15 min förvärmning', 'napolitansk pizza'),
-    ],
-    'Blender / Mixer': [
-        ('Mixa', '30–60 sek', 'smoothies, soppor'),
-        ('Puls', 'korta tryck', 'hackning, krossa is'),
-    ],
-    'Sous vide': [('Sous vide', 'temp/tid ställs manuellt', 'kött, fisk, ägg')],
-    'Kaffekvarn / Kryddkvarn': [('Malning', 'puls, 10–30 sek', 'kaffe, kryddor, nötter')],
-    'Smörgåsgrill': [('Toast', '3–5 min', 'varma mackor')],
-    'Våffeljärn': [('Våfflor', '3–5 min', 'frasvåfflor')],
-    'Slow cooker': [('Låg', '6–8 h', 'grytor'), ('Hög', '3–4 h', 'snabbare långkok')],
-}
 
 
 def hamta(url, timeout=20):
@@ -175,6 +121,15 @@ def ddg_titel(fraga):
     # städa butiksstavelser
     t = re.sub(r'\s*[-–|:]\s*(Amazon\.[a-z.]+|amazon\.(se|com|de)).*$', '', t, flags=re.I)
     return t
+
+
+def stada_titel(t):
+    """Avkoda HTML-tecken (&amp; → &) och klipp bort sajtnamn efter | – · osv."""
+    import html as _html
+    t = _html.unescape(t or '')
+    t = re.split(r'\s*[|–—]\s*(?=[A-ZÅÄÖ][a-zåäö]*\s*(SE|Sverige|Official|Home)?\s*$)', t)[0]
+    t = re.sub(r'\s*\|\s*[^|]{0,30}$', '', t)      # "... | SharkNinja SE"
+    return re.sub(r'\s+', ' ', t).strip()
 
 
 def sid_titel(url):
@@ -407,7 +362,9 @@ def bygg_maskin(urls):
                                     'https://duckduckgo.com/?q=' + soktext + '+officiell+hemsida'),
     }
 
-    # 4) Program: manual-PDF:ns program vinner, annars typstandard
+    # 4) Program: ENDAST ur manual-PDF:en – roboten GISSAR ALDRIG.
+    #    Hittas ingen manual/inga program lämnas listan tom med tydlig
+    #    instruktion (användarens beställning: "ska den inte gissa").
     if pdf_program:
         program = [{
             'namn': p,
@@ -419,23 +376,20 @@ def bygg_maskin(urls):
         } for p in pdf_program]
     else:
         program = [{
-            'namn': p[0],
-            'typ': 'Standardprogram',
-            'standardtid': p[1],
-            'beskrivning': 'ROBOT-FÖRIFYLLT standardprogram för maskintypen – VERIFIERA mot bruksanvisningen!',
-            'bast_for': p[2],
-            'nyckelord': [w.strip(',').lower() for w in p[2].split()[:4]],
-        } for p in PROGRAM.get(typ, [])] or [{
-            'namn': 'PROGRAM – fyll i från bruksanvisningen',
-            'typ': 'Program', 'standardtid': 'XX min',
-            'beskrivning': 'Roboten kände inte igen maskintypen – fyll i programmen manuellt.',
-            'bast_for': '...', 'nyckelord': [],
+            'namn': '❓ PROGRAM SAKNAS – ingen manual hittades',
+            'typ': 'Ej ifyllt',
+            'standardtid': '–',
+            'beskrivning': 'Roboten hittade ingen läsbar bruksanvisning och GISSAR ALDRIG program. '
+                           'Sök manualen via länken under Bruksanvisning och fyll i programmen '
+                           '(✏️ på GitHub eller be en AI-chatt med SPEC.md).',
+            'bast_for': '–',
+            'nyckelord': [],
         }]
 
     maskin = {
         '_plats': '/json/maskiner/%s.json  (en maskinfil per maskin – läses in automatiskt)' % mid,
         'id': mid,
-        'namn': (namn[:80] if namn else mid),
+        'namn': (stada_titel(namn)[:80] if namn else mid),
         'typ': typ,
         'varumarke': varumarke or 'FYLL I',
         'modellnamn': modell or 'FYLL I',
@@ -446,8 +400,8 @@ def bygg_maskin(urls):
                        os.environ.get('DATUM', '')],
         'viktigt': [('Programlistan lästes ur bruksanvisningen – VERIFIERA tider/temperaturer där.'
                      if pdf_program else
-                     'Programlistan är STANDARDPROGRAM för maskintypen – verifiera tider/'
-                     'temperaturer mot bruksanvisningen (länk under Bruksanvisning).')],
+                     'PROGRAM EJ IFYLLDA: ingen manual hittades och roboten gissar aldrig. '
+                     'Fyll i programmen från bruksanvisningen (länk under Bruksanvisning).')],
         'lankar': lankar,
         'program': program,
         'bild': bildfil or ('images/%s.jpg' % mid),
