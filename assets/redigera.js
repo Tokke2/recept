@@ -1055,7 +1055,9 @@
     clone.querySelectorAll('a.mk-masklank').forEach(function (a) {
       a.parentNode.replaceChild(clone.ownerDocument.createTextNode(a.textContent), a);
     });
-    clone.querySelectorAll('#mk-skala-badge, #mk-skala-bg, #mk-etikett-ark, #mk-etikett-bg, #mk-etikett-css, #mk-oversikt, #mk-maskval-bg').forEach(function (el) { el.remove(); });
+    clone.querySelectorAll('#mk-skala-badge, #mk-skala-bg, #mk-etikett-ark, #mk-etikett-bg, #mk-etikett-css, #mk-oversikt, #mk-maskval-bg, #mk-bock-reset, #mk-bock-css').forEach(function (el) { el.remove(); });
+    /* ✅ bock-status är privat (localStorage) – aldrig i sparad fil */
+    clone.querySelectorAll('tr.mk-bockad').forEach(function (tr) { tr.classList.remove('mk-bockad'); });
     /* 🖼️ Auto-genererad hero-SVG → återställ riktiga bildsökvägen */
     clone.querySelectorAll('img.mk-hero-auto').forEach(function (im) {
       var fn = decodeURIComponent(location.pathname.split('/').pop()).replace(/\.html?$/i, '');
