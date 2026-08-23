@@ -17,9 +17,95 @@
  ],
  "lankar": {
   "kop": "https://www.amazon.se/dp/B0D8QQ2LY5/",
-  "bruksanvisning": "https://www.manualslib.com/manual/3749319/Ninja-Detect-Power-Blender-Pro.html",
+  "bruksanvisning": "https://manuals.plus/ninja/tb401eu-detect-power-blender-plus-processor-pro-manual",
   "tillverkare": "https://www.sharkninja.se/ninja-detect-power-blender-processor-pro/TB401EU.html?dwvar_TB401EU_color=363838"
  },
  "bild": "images/ninja-detect-power.png",
- "asin": "B0D8QQ2LY5"
+ "asin": "B0D8QQ2LY5",
+ "program": [
+  {
+   "namn": "BlendSense™",
+   "typ": "Automatiskt läge",
+   "standardtid": "auto – stannar själv",
+   "beskrivning": "Standardprogram vid start: känner av innehållet och justerar hastighet/tid automatiskt. Ur manualen (TB401EU).",
+   "bast_for": "smoothies, frysta drinkar, smoothie bowls, dipp, puré, deg, såser",
+   "nyckelord": [
+    "smoothie",
+    "puré",
+    "sås",
+    "dipp",
+    "deg",
+    "milkshake"
+   ]
+  },
+  {
+   "namn": "Mince (Processing Mode)",
+   "typ": "Automatiskt läge",
+   "standardtid": "auto – stannar själv",
+   "beskrivning": "Smart förinställt hackprogram med pausmönster. Kanna & matberedarskål. Ur manualen.",
+   "bast_for": "finhackning av lök, örter, nötter",
+   "nyckelord": [
+    "hacka",
+    "finhacka",
+    "lök",
+    "örter"
+   ]
+  },
+  {
+   "namn": "Small Chop (Processing Mode)",
+   "typ": "Automatiskt läge",
+   "standardtid": "auto – stannar själv",
+   "beskrivning": "Smart förinställt program för mindre bitar. Kanna & matberedarskål. Ur manualen.",
+   "bast_for": "salsa, grönsakshack",
+   "nyckelord": [
+    "hacka",
+    "salsa"
+   ]
+  },
+  {
+   "namn": "Large Chop (Processing Mode)",
+   "typ": "Automatiskt läge",
+   "standardtid": "auto – stannar själv",
+   "beskrivning": "Smart förinställt program för grövre bitar. Kanna & matberedarskål. Ur manualen.",
+   "bast_for": "grovhack, röror",
+   "nyckelord": [
+    "grovhacka",
+    "röra"
+   ]
+  },
+  {
+   "namn": "Disc (Processing Mode)",
+   "typ": "Automatiskt läge",
+   "standardtid": "kontinuerligt",
+   "beskrivning": "Endast matberedarskålen med vändbara skiv-/rivskivan. Ur manualen.",
+   "bast_for": "skiva & riva grönsaker, ost",
+   "nyckelord": [
+    "skiva",
+    "riva",
+    "ost",
+    "grönsaker"
+   ]
+  },
+  {
+   "namn": "Manual (hastighet 1–10)",
+   "typ": "Manuellt läge",
+   "standardtid": "60 sek per körning",
+   "beskrivning": "Full kontroll: hastighet 1–10 i kannan (LOW/MED/HIGH i bägare/skål). Kör 60 sek åt gången. Starta lågt (1–3) och öka. Ur manualen.",
+   "bast_for": "krossa is, cocktails, egen kontroll",
+   "nyckelord": [
+    "is",
+    "cocktail",
+    "mixa",
+    "manuell"
+   ]
+  }
+ ],
+ "viktigt": [
+  "Program verifierade mot officiella manualen (TB401EU, manuals.plus). Manuella program kör 60 sek/körning och kan inte kombineras med BlendSense/Processing Mode."
+ ],
+ "alias": [
+  "Ninja Detect",
+  "Detect Power",
+  "Ninja TB401"
+ ]
 }
