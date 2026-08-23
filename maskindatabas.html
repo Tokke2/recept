@@ -219,7 +219,12 @@ async function init() {
     name: m.namn,
     shortName: (m.varumarke + ' ' + (m.modellnamn || '')).trim(),
     sub: [m.typ, m.modellnamn ? 'Modell ' + m.modellnamn : '', m.kapacitet || ''].filter(Boolean).join(' · '),
-    specs: m.egenskaper || [],
+    /* ⚡ Effekt + kapacitet visas ALLTID först bland egenskaperna */
+    specs: [
+      ...(m.effekt_w ? ['⚡ ' + (m.effekt_w >= 1000 ? (m.effekt_w / 1000).toLocaleString('sv-SE') + ' kW' : m.effekt_w + ' W')] : []),
+      ...((m.kapacitet && !/FYLL I/i.test(m.kapacitet)) ? ['🥛 ' + m.kapacitet] : []),
+      ...(m.egenskaper || [])
+    ].filter((v, i, a) => a.indexOf(v) === i),
     links: byggLankar(m),
     image: m.bild || '',
     notes: (m.viktigt || []).join(' · ') || null,
@@ -269,7 +274,7 @@ function renderAll() {
           : `<a class="link-btn" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join("")}</div>` : ""}
       ${m.notes ? `<div class="notes">${m.notes}</div>` : ""}
       <div class="mk-maskinrecept" id="mrec-${m.id}"></div>
-      <table>
+      ${m.programs.length ? `<table>
         <tr><th>Program</th><th>Tid</th><th>Beskrivning</th><th>Bäst för</th></tr>
         ${m.programs.map(p => `
           <tr>
@@ -278,7 +283,7 @@ function renderAll() {
             <td>${p.desc}</td>
             <td><span class="badge">${p.best}</span></td>
           </tr>`).join("")}
-      </table>`;
+      </table>` : ""}`;
     cardsEl.appendChild(card);
   });
 }
@@ -417,5 +422,5 @@ function recommend() {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f4ec5ade35bc2f',t:'MTc4NzQzMzY0NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
