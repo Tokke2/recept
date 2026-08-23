@@ -168,7 +168,7 @@
     var sek = document.createElement('section');
     sek.id = 'mk-hem2';
     sek.className = 'no-print';
-    sek.style.cssText = 'max-width:1100px;margin:0 auto 8px;padding:0 20px;';
+    sek.style.cssText = 'margin:26px 0 0;';
     var h = '<div style="display:flex;flex-wrap:wrap;gap:14px;">';
     h += kort(veckans, '⭐ Veckans recept (v.' + v + ')',
       'Veckans lyft ur samlingen – nytt varje måndag!', '#e67e22');
@@ -179,8 +179,14 @@
     h += '</div>';
     sek.innerHTML = h;
 
-    var hero = document.querySelector('.hero');
-    if (hero && hero.parentNode) hero.parentNode.insertBefore(sek, hero.nextSibling);
+    /* EFTER huvudkorten (main-cards har negativ marginal som annars
+       lägger sig ÖVER sektionen – "inget ska gömmas bakom annat") */
+    var mc = document.querySelector('.main-cards');
+    if (mc && mc.parentNode) mc.parentNode.insertBefore(sek, mc.nextSibling);
+    else {
+      var hero = document.querySelector('.hero');
+      if (hero && hero.parentNode) hero.parentNode.insertBefore(sek, hero.nextSibling);
+    }
   }
 
   function start() { halsning(); byggSektion(); }
