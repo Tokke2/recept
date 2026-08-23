@@ -43,6 +43,7 @@
     var vm = rensa(m.varumarke), mod = rensa(m.modellnamn), namn = rensa(m.namn);
     if (vm && mod) ut.push(vm + ' ' + mod);
     if (namn && namn.length > 5) ut.push(namn);
+    (m.alias || []).forEach(function (a) { if (a && a.length >= 5) ut.push(rensa(a)); });
     if (mod && mod.length >= 4) ut.push(mod);
     if (vm && vm.length >= 4) ut.push(vm);
     /* unika, längsta först */
