@@ -252,6 +252,76 @@ def hitta_manual_pdf(html, bas_url):
     return urllib.parse.urljoin(bas_url, m.group(1)) if m else ''
 
 
+def ddg_lankar(fraga, max_n=6):
+    """DuckDuckGo-sök → lista med resultat-URL:er (för manual-jakt)."""
+    try:
+        data = urllib.parse.urlencode({'q': fraga}).encode()
+        req = urllib.request.Request('https://html.duckduckgo.com/html/', data=data, headers=UA)
+        with urllib.request.urlopen(req, timeout=20) as r:
+            html = r.read().decode('utf-8', 'ignore')
+    except Exception:
+        return []
+    ut = []
+    for m in re.finditer(r'result__a[^>]*href=["\']([^"\']+)["\']', html):
+        href = m.group(1)
+        # DDG slår in målet i uddg=-parametern
+        um = re.search(r'uddg=([^&]+)', href)
+        if um:
+            href = urllib.parse.unquote(um.group(1))
+        if href.startswith('http') and 'duckduckgo' not in href:
+            ut.append(href)
+        if len(ut) >= max_n:
+            break
+    return ut
+
+
+def sok_manual(varumarke, modell, tillv_html='', tillv_url=''):
+    """Manual-jakt i FLERA steg – returnerar (pdf_url, manual_sida):
+       1) PDF direkt på tillverkarsidan
+       2) DDG: '<märke> <modell> manual filetype:pdf' → testa PDF-länkar
+       3) DDG: '<märke> <modell> user manual' → sida som INNEHÅLLER PDF-länk
+       Verifierar alltid att svaret faktiskt är en PDF (%PDF-huvud)."""
+    sokord = ('%s %s' % (varumarke or '', modell or '')).strip()
+
+    def ar_pdf(u):
+        d = hamta_bin(u, max_mb=1)
+        return bool(d) and d[:4] == b'%PDF'
+
+    # Steg 1: tillverkarsidan
+    if tillv_html:
+        pdf = hitta_manual_pdf(tillv_html, tillv_url)
+        if pdf and ar_pdf(pdf):
+            print('📖 Manual (tillverkarsidan): %s' % pdf[:80])
+            return pdf, ''
+
+    if not sokord or len(sokord) < 5:
+        return '', ''
+
+    # Steg 2: direkt PDF-sökning
+    for u in ddg_lankar(sokord + ' manual filetype:pdf', 5):
+        if '.pdf' in u.lower() and ar_pdf(u):
+            print('📖 Manual (PDF-sökning): %s' % u[:80])
+            return u, ''
+
+    # Steg 3: manualsida (manualslib/manuals.plus/tillverkare) med PDF i sig
+    for u in ddg_lankar(sokord + ' user manual bruksanvisning', 6):
+        if re.search(r'amazon\.', u, re.I):
+            continue
+        sida = hamta(u)
+        if not sida:
+            continue
+        pdf = hitta_manual_pdf(sida, u)
+        if pdf and ar_pdf(pdf):
+            print('📖 Manual (via %s): %s' % (u[:40], pdf[:70]))
+            return pdf, u
+        if re.search(r'manualslib\.com/manual/|manuals\.plus/[a-z]', u, re.I):
+            print('📖 Manualsida hittad (ingen direkt-PDF): %s' % u[:80])
+            return '', u
+
+    print('ℹ️  Ingen manual hittades för "%s"' % sokord)
+    return '', ''
+
+
 # Programord som letas i manual-PDF:er (sv/en/de)
 PROGRAMORD = [
     'air fry', 'airfry', 'max crisp', 'roast', 'bake', 'grill', 'reheat',
@@ -350,41 +420,32 @@ def bygg_maskin(urls):
     if tillv_html:
         bildfil = spara_bild(hitta_bild(tillv_html, tillv_url), mid)
 
-    # 3) 📖 Manual: PDF på tillverkarsidan? Läs programnamn ur den!
-    manual_pdf = hitta_manual_pdf(tillv_html, tillv_url) if tillv_html else ''
+    # 3) 📖 MANUAL-JAKT i flera steg: tillverkarsidan → PDF-sökning →
+    #    manualsida. Verifierade PDF:er läses för programnamn.
+    manual_pdf, manual_sida = sok_manual(varumarke, modell, tillv_html, tillv_url)
     pdf_program = program_ur_pdf(manual_pdf)
 
-    lankar = {
-        'kop': ('https://www.amazon.se/dp/%s/' % asin) if asin else (amazon_url or tillv_url),
-        'bruksanvisning': manual_pdf or ('https://www.manualslib.com/search.html?q=' + soktext),
-        'bruksanvisning_alternativ': 'https://manuals.plus/?s=' + soktext,
-        'tillverkare': tillv_url or TILLVERKARE.get(varumarke.lower(),
-                                    'https://duckduckgo.com/?q=' + soktext + '+officiell+hemsida'),
-    }
+    # Länkar: ENDAST det som faktiskt HITTATS – aldrig sök-platshållare.
+    lankar = {'kop': ('https://www.amazon.se/dp/%s/' % asin) if asin else (amazon_url or tillv_url)}
+    if manual_pdf:
+        lankar['bruksanvisning'] = manual_pdf
+    elif manual_sida:
+        lankar['bruksanvisning'] = manual_sida
+    tillv_riktig = tillv_url or TILLVERKARE.get((varumarke or '').lower(), '')
+    if tillv_riktig:
+        lankar['tillverkare'] = tillv_riktig
 
     # 4) Program: ENDAST ur manual-PDF:en – roboten GISSAR ALDRIG.
-    #    Hittas ingen manual/inga program lämnas listan tom med tydlig
-    #    instruktion (användarens beställning: "ska den inte gissa").
-    if pdf_program:
-        program = [{
-            'namn': p,
-            'typ': 'Ur manualen',
-            'standardtid': 'SE MANUALEN',
-            'beskrivning': 'Programnamnet hittades i bruksanvisningen – VERIFIERA tid/temperatur där!',
-            'bast_for': '...',
-            'nyckelord': [p.lower()],
-        } for p in pdf_program]
-    else:
-        program = [{
-            'namn': '❓ PROGRAM SAKNAS – ingen manual hittades',
-            'typ': 'Ej ifyllt',
-            'standardtid': '–',
-            'beskrivning': 'Roboten hittade ingen läsbar bruksanvisning och GISSAR ALDRIG program. '
-                           'Sök manualen via länken under Bruksanvisning och fyll i programmen '
-                           '(✏️ på GitHub eller be en AI-chatt med SPEC.md).',
-            'bast_for': '–',
-            'nyckelord': [],
-        }]
+    #    Hittas inget UTELÄMNAS programlistan HELT (inga platshållare,
+    #    inga varningstexter – användarens beställning).
+    program = [{
+        'namn': p,
+        'typ': 'Ur manualen',
+        'standardtid': 'SE MANUALEN',
+        'beskrivning': 'Programnamnet hittades i bruksanvisningen – VERIFIERA tid/temperatur där!',
+        'bast_for': '...',
+        'nyckelord': [p.lower()],
+    } for p in pdf_program]
 
     maskin = {
         '_plats': '/json/maskiner/%s.json  (en maskinfil per maskin – läses in automatiskt)' % mid,
@@ -393,19 +454,16 @@ def bygg_maskin(urls):
         'typ': typ,
         'varumarke': varumarke or 'FYLL I',
         'modellnamn': modell or 'FYLL I',
-        'kapacitet': 'FYLL I (t.ex. 5 L)',
         'effekt_w': watt or 1000,
         'effekt_kalla': 'ur produktnamnet' if watt else 'UPPSKATTAD av roboten – kontrollera!',
-        'egenskaper': ['🤖 Importerad automatiskt %s – kontrollera uppgifterna' %
-                       os.environ.get('DATUM', '')],
-        'viktigt': [('Programlistan lästes ur bruksanvisningen – VERIFIERA tider/temperaturer där.'
-                     if pdf_program else
-                     'PROGRAM EJ IFYLLDA: ingen manual hittades och roboten gissar aldrig. '
-                     'Fyll i programmen från bruksanvisningen (länk under Bruksanvisning).')],
+        'egenskaper': ['🤖 Importerad automatiskt – kontrollera uppgifterna'],
         'lankar': lankar,
-        'program': program,
         'bild': bildfil or ('images/%s.jpg' % mid),
     }
+    # Tomma saker UTELÄMNAS helt – inga platshållare/varningstexter:
+    if program:
+        maskin['program'] = program
+        maskin['viktigt'] = ['Programlistan lästes ur bruksanvisningen – VERIFIERA tider/temperaturer där.']
     if asin:
         maskin['asin'] = asin
     return mid, maskin
