@@ -356,6 +356,89 @@
 
     table.className = (table.className ? table.className + ' ' : '') + 'mk-ing2';
     table.innerHTML = h;
+    bockar(table);   /* ✅ avbockningsbara rader (roadmap 4) */
+  }
+
+  /* ============================================================
+     ✅ AVBOCKNINGSBARA INGREDIENSER (roadmap 4)
+     · Klicka på en rad → raden bockas av (grön genomstruken)
+     · Sparas i localStorage PER RECEPT (mk-bock:<filnamn>)
+     · "Nollställ"-knapp visas när minst en är avbockad
+     · Endast skärm – aldrig utskrift, aldrig i sparad fil
+     · Stör inte redigeringsläget (avstängd där)
+     ============================================================ */
+  var BOCK_KEY = 'mk-bock:' + decodeURIComponent(location.pathname.split('/').pop());
+  function bockLas() {
+    try { return JSON.parse(localStorage.getItem(BOCK_KEY) || '[]'); } catch (e) { return []; }
+  }
+  function bockSpara(lista) {
+    try {
+      if (lista.length) localStorage.setItem(BOCK_KEY, JSON.stringify(lista));
+      else localStorage.removeItem(BOCK_KEY);
+    } catch (e) {}
+  }
+
+  function bockar(table) {
+    var css2 = document.getElementById('mk-bock-css');
+    if (!css2) {
+      css2 = document.createElement('style');
+      css2.id = 'mk-bock-css';
+      css2.textContent =
+        '.mk-ing2 tr[data-namn]{cursor:pointer;}' +
+        '.mk-ing2 tr[data-namn] td:first-child::before{content:"⬜";margin-right:7px;font-size:.85em;}' +
+        '.mk-ing2 tr.mk-bockad td:first-child::before{content:"✅";}' +
+        '.mk-ing2 tr.mk-bockad td{opacity:.45;}' +
+        '.mk-ing2 tr.mk-bockad td:first-child{text-decoration:line-through;}' +
+        'body.mk-editing .mk-ing2 tr[data-namn]{cursor:text;}' +
+        'body.mk-editing .mk-ing2 tr[data-namn] td:first-child::before{content:"";margin:0;}' +
+        'body.mk-editing .mk-ing2 tr.mk-bockad td{opacity:1;text-decoration:none;}' +
+        '#mk-bock-reset{margin-top:8px;background:#f0ebe3;color:#7f8c8d;border:none;border-radius:9px;' +
+          'padding:7px 15px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;}' +
+        '#mk-bock-reset:hover{background:#e8e2d8;color:#2c3e50;}' +
+        '@media print{.mk-ing2 tr[data-namn] td:first-child::before{content:""!important;margin:0!important;}' +
+          '.mk-ing2 tr.mk-bockad td{opacity:1!important;text-decoration:none!important;}' +
+          '#mk-bock-reset{display:none!important;}}';
+      document.head.appendChild(css2);
+    }
+
+    var sparade = bockLas();
+    table.querySelectorAll('tr[data-namn]').forEach(function (tr) {
+      if (sparade.indexOf(tr.getAttribute('data-namn')) !== -1) tr.classList.add('mk-bockad');
+    });
+
+    function uppdateraReset() {
+      var kort = table.closest('.card') || table.parentNode;
+      var btn = document.getElementById('mk-bock-reset');
+      var antal = table.querySelectorAll('tr.mk-bockad').length;
+      if (antal && !btn) {
+        btn = document.createElement('button');
+        btn.id = 'mk-bock-reset';
+        btn.className = 'no-print';
+        btn.onclick = function () {
+          table.querySelectorAll('tr.mk-bockad').forEach(function (tr) { tr.classList.remove('mk-bockad'); });
+          bockSpara([]);
+          btn.remove();
+        };
+        kort.appendChild(btn);
+      }
+      if (btn) {
+        if (!antal) { btn.remove(); return; }
+        btn.textContent = '↩️ Nollställ avbockade (' + antal + ')';
+      }
+    }
+    uppdateraReset();
+
+    table.addEventListener('click', function (e) {
+      if (document.body.classList.contains('mk-editing')) return;   /* ej i redigeringsläget */
+      if (e.target.closest('a, button, .mk-ingsub')) return;         /* länkar/knappar/underrader */
+      var tr = e.target.closest('tr[data-namn]');
+      if (!tr) return;
+      tr.classList.toggle('mk-bockad');
+      var lista = [];
+      table.querySelectorAll('tr.mk-bockad').forEach(function (t) { lista.push(t.getAttribute('data-namn')); });
+      bockSpara(lista);
+      uppdateraReset();
+    });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build);
