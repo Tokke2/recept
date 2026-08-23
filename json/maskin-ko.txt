@@ -5,6 +5,4 @@
 #   AMAZON-LÄNK TILLVERKAR-LÄNK
 # Amazon ger ASIN/köpknapp · tillverkarsidan ger namn, 🖼️ produktbild och 📖 manual
 # (hittas manual-PDF läses programnamnen ur den). Bilder hämtas ALDRIG från Amazon.
-# KLAR 2026-08-23 https://www.amazon.se/Ninja-NC502EU-glassmaskin-funktioner-milkshakes/dp/B0FJ8ZVCVW/ref=sr_1_2?sr=8-2 → ninja-nc502eu (skapad)
-
-https://www.amazon.se/Ninja-NC502EU-glassmaskin-funktioner-milkshakes/dp/B0FJ8ZVCVW/ref=sr_1_2?sr=8-2 https://www.sharkninja.se/ninja-creami-deluxe-10-i-1-glassmaskin-nc502eu/NC502EU.html?dwvar_NC502EU_color=99a6b0
+# KLAR 2026-08-23 https://www.amazon.se/Ninja-NC502EU-glassmaskin-funktioner-milkshakes/dp/B0FJ8ZVCVW/ref=sr_1_2?sr=8-2 https://www.sharkninja.se/ninja-creami-deluxe-10-i-1-glassmaskin-nc502eu/NC502EU.html?dwvar_NC502EU_color=99a6b0 → ninja-nc502eu (fanns redan)
