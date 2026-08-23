@@ -56,6 +56,7 @@
     border-radius: 14px;
     padding: 22px 24px;
     margin-bottom: 18px;
+    position: relative;   /* ✏️-knappen förankras i kortets hörn */
     box-shadow: 0 2px 8px rgba(0,0,0,.07);
   }
   .machine-title { font-size: 1.25rem; margin-bottom: 2px; }
@@ -226,6 +227,8 @@ async function init() {
       ...(m.egenskaper || [])
     ].filter((v, i, a) => a.indexOf(v) === i),
     links: byggLankar(m),
+    alias: m.alias || [],
+    fritext: m.fritext || '',
     image: m.bild || '',
     notes: (m.viktigt || []).join(' · ') || null,
     programs: (m.program || []).map(p => ({
@@ -272,7 +275,11 @@ function renderAll() {
         l.affiliate
           ? `<a class="link-btn amazon-link" href="${l.url}" target="_blank" rel="noopener sponsored" style="background:linear-gradient(135deg,#ff9900,#e67e22);color:#fff;font-weight:700;">${l.label}</a>`
           : `<a class="link-btn" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join("")}</div>` : ""}
+      ${m.fritext ? `<div class="notes" style="border-left-color:#3498db;background:#eef7fb;">${m.fritext}</div>` : ""}
       ${m.notes ? `<div class="notes">${m.notes}</div>` : ""}
+      <button class="mk-edit-btn no-print" data-id="${m.id}" title="Redigera maskinen (lösenordsskyddat)"
+        style="position:absolute;top:14px;right:14px;background:#fdf6ee;border:1.5px solid #e67e22;color:#e67e22;
+        border-radius:10px;padding:6px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">✏️ Redigera</button>
       <div class="mk-maskinrecept" id="mrec-${m.id}"></div>
       ${m.programs.length ? `<table>
         <tr><th>Program</th><th>Tid</th><th>Beskrivning</th><th>Bäst för</th></tr>
@@ -295,6 +302,75 @@ function showMachine(id, btn) {
     document.getElementById("card-" + m.id).classList.toggle("hidden", m.id !== id);
   });
 }
+
+/* ============ ✏️ MASKINREDIGERING (lösenordsskyddad) ============
+   Penna på varje kort → dialog: namn, effekt, kapacitet, FRITEXT
+   (valfri beskrivning som visas blå på kortet), köp-/manual-/
+   tillverkarlänk. Sparar via spara.js direkt till json/maskiner/. */
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.mk-edit-btn');
+  if (!btn) return;
+  if (!window.__MK_SPARA) { alert('Spara-modulen laddas fortfarande – prova igen om en sekund.'); return; }
+  const id = btn.dataset.id;
+  const raw = await __MK_SPARA.load('json/maskiner/' + id + '.json');
+  if (!raw) { alert('Kunde inte läsa maskinfilen.'); return; }
+  const m = JSON.parse(raw);
+
+  const bg = document.createElement('div');
+  bg.className = 'no-print';
+  bg.id = 'mk-medit-bg';
+  bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:320;display:flex;align-items:center;justify-content:center;padding:16px;';
+  const f = (label, id2, val, ph) => `<label style="display:block;font-size:.8rem;font-weight:700;margin:10px 0 3px;">${label}</label>
+    <input id="${id2}" type="text" value="${String(val || '').replace(/"/g, '&quot;')}" placeholder="${ph || ''}"
+      style="width:100%;padding:9px 12px;border:2px solid #e8e2d8;border-radius:9px;font-size:.9rem;font-family:inherit;box-sizing:border-box;">`;
+  bg.innerHTML = `<div style="background:#fff;border-radius:16px;max-width:480px;width:100%;padding:22px 26px;max-height:90vh;overflow-y:auto;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">
+    <h3 style="margin:0;">✏️ ${m.namn || id}</h3>
+    <p style="font-size:.78rem;color:#7f8c8d;margin:4px 0 6px;">Programlistan redigeras på GitHub (✏️ på filen) – här ändras kortets uppgifter.</p>
+    ${f('Namn', 'me-namn', m.namn)}
+    ${f('Effekt (W)', 'me-watt', m.effekt_w)}
+    ${f('Kapacitet', 'me-kap', m.kapacitet, 't.ex. 5 L')}
+    <label style="display:block;font-size:.8rem;font-weight:700;margin:10px 0 3px;">📝 Fritext (valfri – visas som blå ruta på kortet)</label>
+    <textarea id="me-fritext" placeholder="t.ex. Köpt aug 2026 på Amazon. Står i köksskåpet till vänster. Bäst för stora satser."
+      style="width:100%;min-height:70px;padding:9px 12px;border:2px solid #e8e2d8;border-radius:9px;font-size:.9rem;font-family:inherit;box-sizing:border-box;resize:vertical;">${(m.fritext || '')}</textarea>
+    ${f('🛒 Köplänk', 'me-kop', (m.lankar || {}).kop)}
+    ${f('📖 Bruksanvisning', 'me-manual', (m.lankar || {}).bruksanvisning)}
+    ${f('🏭 Tillverkare', 'me-tillv', (m.lankar || {}).tillverkare)}
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button id="me-spara" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;font-size:.95rem;cursor:pointer;font-family:inherit;">💾 Spara</button>
+      <button id="me-avbryt" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-family:inherit;">Avbryt</button>
+    </div>
+    <div id="me-msg" style="font-size:.82rem;color:#c0392b;min-height:16px;margin-top:8px;"></div>
+  </div>`;
+  document.body.appendChild(bg);
+  let ned = false;
+  bg.addEventListener('mousedown', ev => { ned = (ev.target === bg); });
+  bg.addEventListener('click', ev => { if (ev.target === bg && ned) bg.remove(); });
+  bg.querySelector('#me-avbryt').onclick = () => bg.remove();
+  bg.querySelector('#me-spara').onclick = async () => {
+    const g = i => bg.querySelector('#' + i).value.trim();
+    m.namn = g('me-namn') || m.namn;
+    m.effekt_w = parseInt(g('me-watt')) || m.effekt_w;
+    if (g('me-kap')) m.kapacitet = g('me-kap');
+    const ft = bg.querySelector('#me-fritext').value.trim();
+    if (ft) m.fritext = ft; else delete m.fritext;
+    m.lankar = m.lankar || {};
+    ['kop|me-kop', 'bruksanvisning|me-manual', 'tillverkare|me-tillv'].forEach(par => {
+      const [nyckel, falt] = par.split('|');
+      const v = g(falt);
+      if (v) m.lankar[nyckel] = v; else delete m.lankar[nyckel];
+    });
+    const b = bg.querySelector('#me-spara');
+    b.disabled = true; b.textContent = '⏳ Sparar...';
+    const res = await __MK_SPARA.save('json/maskiner/' + id + '.json', JSON.stringify(m, null, 1), 'Maskin redigerad via sajten: ' + id);
+    if (res.ok) {
+      bg.remove();
+      location.reload();
+    } else {
+      b.disabled = false; b.textContent = '💾 Spara';
+      bg.querySelector('#me-msg').textContent = '⚠️ ' + res.error;
+    }
+  };
+});
 
 /* ============ 🔗 Hash-stöd: maskindatabas.html#maskin-id ============
    Recepten länkar hit (assets/maskinlank.js) – rätt kort öppnas
@@ -347,10 +423,12 @@ async function byggMaskinRecept() {
     const namnLC = (m.shortName || '').toLowerCase();
     const helLC = (m.name || '').toLowerCase();
     const modell = (m.sub.match(/Modell ([^·]+)/) || [])[1]?.trim().toLowerCase() || '';
+    const aliasLC = (m.alias || []).map(a => a.toLowerCase());
     const träffar = receptData.filter(r =>
       (namnLC && r.text.includes(namnLC)) ||
       (helLC && r.text.includes(helLC)) ||
-      (modell && modell.length >= 4 && r.text.includes(modell))
+      (modell && modell.length >= 4 && r.text.includes(modell)) ||
+      aliasLC.some(a => a.length >= 5 && r.text.includes(a))
     );
     const box = document.getElementById('mrec-' + m.id);
     if (!box || !träffar.length) return;
@@ -422,5 +500,5 @@ function recommend() {
 }
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f8c729889e1806',t:'MTc4NzQ3NDA2NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
