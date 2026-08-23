@@ -129,7 +129,7 @@ async function run() {
     const repo = parts.length ? parts[0] : user + '.github.io';
     const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/recept?ref=main`);
     if (res.ok) {
-      files = (await res.json()).filter(i => i.type === 'file' && /\.(html?|pdf)$/i.test(i.name)).map(i => i.name);
+      files = (await res.json()).filter(i => i.type === 'file' && /\.(html?|pdf)$/i.test(i.name) && !/^(google|bingsiteauth|yandex_)/i.test(i.name)).map(i => i.name);
       add(s3, 'ok', `Recept-mappen listad: ${files.length} filer`);
     } else {
       add(s3, 'warn', 'GitHub-listning svarade ' + res.status, 'Kan vara API-gränsen (60/h) – recepten kan ändå fungera.');
@@ -203,5 +203,5 @@ async function run() {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2b87086fddf349b',t:'MTc4Njc5OTQyNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f93fb68c78f9e2',t:'MTc4NzQ3OTAwMg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
