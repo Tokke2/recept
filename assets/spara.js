@@ -282,7 +282,45 @@
     save: save,
     load: load,
     remove: remove,
+    unlock: requireUnlock,   /* 🔒 sidlås: nytt-recept/maskin-import låser hela sidan */
     hasToken: function () { return !!getToken(); },
     clearToken: clearToken
   };
+
+  /* ============================================================
+     🔒 SIDLÅS: sidor som SKAPAR innehåll (nytt-recept.html,
+     maskin-import.html) kräver lösenord DIREKT vid öppning –
+     inte först vid sparning. Innehållet döljs bakom en låsskärm
+     tills rätt lösenord angetts (samma sessionsupplåsning som ✏️).
+     ============================================================ */
+  (function sidlas() {
+    if (!/(nytt-recept|maskin-import)\.html$/i.test(location.pathname)) return;
+    var unlocked = false;
+    try { unlocked = sessionStorage.getItem(UNLOCK_KEY) === '1'; } catch (e) {}
+    if (unlocked) return;
+
+    function visaLasskarm() {
+      var skydd = document.createElement('div');
+      skydd.id = 'mk-sidlas';
+      skydd.className = 'no-print';
+      skydd.style.cssText = 'position:fixed;inset:0;z-index:400;background:#f6f3ee;display:flex;' +
+        'align-items:center;justify-content:center;padding:16px;font-family:Segoe UI,system-ui,sans-serif;';
+      skydd.innerHTML =
+        '<div style="text-align:center;max-width:380px;">' +
+          '<div style="font-size:3rem;">🔒</div>' +
+          '<h2 style="color:#2c3e50;margin:10px 0 6px;">Ägarsida</h2>' +
+          '<p style="color:#7f8c8d;font-size:.9rem;margin:0 0 18px;">Att lägga till recept och maskiner kräver lösenord.</p>' +
+          '<button id="mk-sidlas-open" style="background:#c0392b;color:#fff;border:none;border-radius:12px;' +
+            'padding:13px 30px;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit;">🔓 Lås upp</button>' +
+          '<div style="margin-top:14px;"><a href="' + (window.__MK_ROOT || './') + 'index.html" ' +
+            'style="color:#a5967e;font-size:.85rem;">← Till startsidan</a></div>' +
+        '</div>';
+      document.body.appendChild(skydd);
+      skydd.querySelector('#mk-sidlas-open').onclick = async function () {
+        if (await requireUnlock()) skydd.remove();
+      };
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', visaLasskarm);
+    else visaLasskarm();
+  })();
 })();
