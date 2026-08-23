@@ -150,8 +150,10 @@ async function init() {
 
 function fillPrograms() {
   const m = MACHINES[+document.getElementById('mSelect').value];
-  document.getElementById('pSelect').innerHTML = (m ? m.program : []).map((p,i) =>
-    `<option value="${i}">${p.namn} (${p.standardtid || '-'})</option>`).join('');
+  const prog = (m && m.program) ? m.program : [];   /* maskiner utan programlista kraschar ej */
+  document.getElementById('pSelect').innerHTML = prog.length
+    ? prog.map((p,i) => `<option value="${i}">${p.namn} (${p.standardtid || '-'})</option>`).join('')
+    : '<option value="-1">– inga program inlagda för maskinen –</option>';
 }
 
 /* ============================================================
@@ -249,7 +251,9 @@ function renderIngs() {
 /* ============ Maskinsteg ============ */
 function addMachine() {
   const m = MACHINES[+document.getElementById('mSelect').value];
-  const p = m.program[+document.getElementById('pSelect').value];
+  const pIdx = +document.getElementById('pSelect').value;
+  const p = (m.program && pIdx >= 0) ? m.program[pIdx]
+    : { namn: 'Manuellt läge', standardtid: '', beskrivning: '' };   /* maskin utan program */
   const min = +document.getElementById('mMin').value || 30;
   machineSteps.push({ m, p, min });
   document.getElementById('mList').innerHTML = machineSteps.map((s,i) =>
@@ -448,5 +452,5 @@ async function saveDirect() {
 }
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f86903fb623131',t:'MTc4NzQ3MDIwOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
