@@ -5,6 +5,4 @@
 #   AMAZON-LÄNK TILLVERKAR-LÄNK
 # Amazon ger ASIN/köpknapp · tillverkarsidan ger namn, 🖼️ produktbild och 📖 manual
 # (hittas manual-PDF läses programnamnen ur den). Bilder hämtas ALDRIG från Amazon.
-# KLAR 2026-08-23 https://www.amazon.se/dp/B0D8QQ2LY5 https://www.sharkninja.se/ninja-detect-power-blender-processor-pro/TB401EU.html?dwvar_TB401EU_color=363838 → ninja-detect-power (skapad)
-
-https://www.amazon.se/Ninja-NC502EU-glassmaskin-funktioner-milkshakes/dp/B0FJ8ZVCVW/ref=sr_1_2?sr=8-2
+# KLAR 2026-08-23 https://www.amazon.se/Ninja-NC502EU-glassmaskin-funktioner-milkshakes/dp/B0FJ8ZVCVW/ref=sr_1_2?sr=8-2 → ninja-nc502eu (skapad)

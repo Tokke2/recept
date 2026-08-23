@@ -1,0 +1,20 @@
+{
+ "_plats": "/json/maskiner/ninja-nc502eu.json  (en maskinfil per maskin – läses in automatiskt)",
+ "id": "ninja-nc502eu",
+ "namn": "Ninja NC502EU – Glassmaskin",
+ "typ": "Glassmaskin / Frozen Drink Maker",
+ "varumarke": "Ninja",
+ "modellnamn": "NC502EU",
+ "effekt_w": 1000,
+ "effekt_kalla": "UPPSKATTAD av roboten – kontrollera!",
+ "egenskaper": [
+  "🤖 Importerad automatiskt – kontrollera uppgifterna"
+ ],
+ "lankar": {
+  "kop": "https://www.amazon.se/dp/B0FJ8ZVCVW/",
+  "bruksanvisning": "https://www.manualslib.com/manual/4021489/Ninja-Creami-Deluxe-Nc502eu.html",
+  "tillverkare": "https://ninjakitchen.eu/"
+ },
+ "bild": "images/ninja-nc502eu.jpg",
+ "asin": "B0FJ8ZVCVW"
+}
