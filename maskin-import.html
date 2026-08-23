@@ -47,6 +47,20 @@
     <div style="margin-top:4px;">ASIN: <b id="asinval" style="font-family:monospace;"></b> · <span id="asinmarket"></span></div>
     <div style="font-size:.8rem;color:#7f8c8d;margin-top:4px;">Länken normaliseras till ren produktlänk (amazon.se/dp/ASIN). Affiliate-taggen läggs på automatiskt av sajten när <code>json/affiliate.json</code> har din Associates-tag – den sparas ALDRIG i maskinfilen.</div>
   </div>
+
+  <label style="display:block;margin-top:12px;font-weight:700;font-size:.85rem;">🏭 Tillverkarens produktsida (valfritt – ger bild + manual + bättre namn!)</label>
+  <input type="text" id="tillvUrl" placeholder="https://ninjakitchen.eu/product/... (tillverkarens egen sida för produkten)">
+
+  <button class="btn" id="autoBtn" style="background:linear-gradient(135deg,#8e44ad,#e67e22);font-size:1rem;padding:14px 22px;margin-top:12px;" onclick="autoImport()">🤖 Importera automatiskt – roboten fixar resten</button>
+  <div id="autoResult"></div>
+  <div class="info" style="margin-top:10px;">
+    🤖 <b>Så funkar autoimporten:</b> länkarna läggs i robotens kö (lösenordsskyddat) → GitHub-roboten hittar namn, varumärke, modell, typ, effekt, ASIN, tillverkarens hemsida, bruksanvisning och program. Klar inom ~2 min (grön bock i Actions).<br>
+    💪 <b>Bäst resultat med BÅDA länkarna:</b> Amazon-länken ger ASIN/köpknapp · tillverkarlänken ger <b>🖼️ produktbild</b> (laddas upp automatiskt till images/), <b>📖 manual-PDF</b> och – om manualen hittas – <b>programnamnen lästa direkt ur den</b>!<br>
+    ⚠️ Tider/temperaturer måste alltid <b>verifieras mot bruksanvisningen</b> (länken hamnar på maskinkortet).
+  </div>
+
+  <details style="margin-top:14px;">
+    <summary style="cursor:pointer;font-weight:700;color:#7f8c8d;">✍️ Eller fyll i manuellt (gamla sättet)</summary>
   <div class="row" style="margin-top:10px;">
     <div><label>Varumärke *</label><input type="text" id="brand" placeholder="t.ex. Philips" oninput="build()"></div>
     <div><label>Modell *</label><input type="text" id="model" placeholder="t.ex. HD9285" oninput="build()"></div>
@@ -68,6 +82,7 @@
       </select></div>
     <div><label>Effekt (W, för energiberäkning)</label><input type="text" id="watt" placeholder="t.ex. 2000" oninput="build()"></div>
   </div>
+  </details>
 </div>
 
 <div class="card">
@@ -120,6 +135,53 @@ function amazonInfo(u) {
     if (!/^[A-Z0-9]{10}$/.test(asin)) return null;
     return { asin: asin, marketplace: url.hostname.replace(/^www\./, ''), ren: 'https://' + url.hostname + '/dp/' + asin + '/' };
   } catch (e) { return null; }
+}
+
+/* ============================================================
+   🤖 AUTOIMPORT: lägger länken i json/maskin-ko.txt (via
+   spara.js, lösenordsskyddat) → GitHub-roboten (maskin-import.yml)
+   bygger komplett maskinfil: namn/varumärke/modell/typ/effekt/
+   ASIN/tillverkarens hemsida/bruksanvisning/standardprogram.
+   ============================================================ */
+async function autoImport() {
+  var url = document.getElementById('url').value.trim();
+  var tillv = document.getElementById('tillvUrl').value.trim();
+  /* Båda länkarna på SAMMA rad = samma maskin (roboten kombinerar dem) */
+  if (tillv && /^https?:\/\//.test(tillv)) url = (url ? url + ' ' : '') + tillv;
+  var res = document.getElementById('autoResult');
+  if (!/^https?:\/\//.test(url)) {
+    res.innerHTML = '<div class="info" style="border-left-color:#c0392b;background:#fdecea;margin-top:10px;">⚠️ Klistra in en produktlänk först (måste börja med https://).</div>';
+    return;
+  }
+  if (!window.__MK_SPARA) {
+    res.innerHTML = '<div class="info" style="border-left-color:#c0392b;background:#fdecea;margin-top:10px;">⚠️ Spara-modulen kunde inte laddas – ladda om sidan.</div>';
+    return;
+  }
+  var btn = document.getElementById('autoBtn');
+  btn.disabled = true; btn.textContent = '⏳ Lägger i robotens kö...';
+  var r = { ok: false, error: 'okänt fel' };
+  try {
+    var raw = await __MK_SPARA.load('json/maskin-ko.txt');
+    var rader = (raw || '# PLATS: /json/maskin-ko.txt (kö för maskinimport-roboten – en produktlänk per rad)').split('\n');
+    if (rader.some(function (x) { return x.trim() === url; })) {
+      r = { ok: true };
+    } else {
+      rader.push(url);
+      r = await __MK_SPARA.save('json/maskin-ko.txt', rader.join('\n').replace(/\n+$/, '') + '\n',
+        '🤖 Maskinimport-kö: ny produktlänk');
+    }
+  } catch (e) { r = { ok: false, error: e.message }; }
+  btn.disabled = false; btn.textContent = '🤖 Importera automatiskt – roboten fixar resten';
+  if (r.ok) {
+    res.innerHTML = '<div class="info" style="border-left-color:#27ae60;background:#eaf7ef;margin-top:10px;">' +
+      '🎉 <b>Länken ligger i robotens kö!</b> Roboten bygger maskinfilen nu – klar inom ~2 min ' +
+      '(<a href="https://github.com/Tokke2/recept/actions" target="_blank" rel="noopener">grön bock i Actions</a>).<br>' +
+      'Maskinen dyker sedan upp i <a href="maskindatabas.html">maskindatabasen</a> automatiskt (Ctrl+Shift+R).<br>' +
+      '⚠️ Öppna maskinkortet efteråt och <b>verifiera programlistan</b> mot bruksanvisningen (länk finns på kortet).<br>' +
+      '🖼️ Ladda gärna upp en produktbild som <b>images/MASKIN-ID.jpg</b>.</div>';
+  } else {
+    res.innerHTML = '<div class="info" style="border-left-color:#c0392b;background:#fdecea;margin-top:10px;">⚠️ <b>Kunde inte spara kön:</b> ' + r.error + ' – använd manuella sättet nedan som reserv.</div>';
+  }
 }
 
 function parseUrl() {
@@ -273,5 +335,5 @@ async function saveDirect() {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f40966ad67c8c4',t:'MTc4NzQyNDM0OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f81f752c940a33',t:'MTc4NzQ2NzE5NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
