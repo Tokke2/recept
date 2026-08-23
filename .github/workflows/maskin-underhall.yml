@@ -1,0 +1,47 @@
+# ============================================================
+# PLATS: /.github/workflows/maskin-underhall.yml  (EXAKT denna sökväg krävs av GitHub Actions)
+# ============================================================
+# 🔧 VECKOUNDERHÅLL AV MASKINDATABASEN – Mitt Maskinkök
+# ============================================================
+# Körs varje måndag 05:00 svensk tid (04:00 UTC) + manuellt.
+# För varje maskin: hämtar saknad bild från tillverkarsidan,
+# jagar saknade manualer, tar bort/ersätter döda länkar.
+# FÖRBÄTTRAR ENDAST – skriver aldrig över fungerande data,
+# rör aldrig programlistorna. Logg: backup/maskin-underhall-LOGG.md
+# ============================================================
+name: Maskinunderhåll (veckovis)
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'      # måndagar 04:00 UTC ≈ 05:00/06:00 svensk tid
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  underhall:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hämta repot
+        uses: actions/checkout@v4
+
+      - name: Installera pypdf
+        run: pip install pypdf --quiet
+
+      - name: Kör underhållsroboten
+        run: python3 .github/workflows/maskin-underhall.py
+
+      - name: Committa förbättringar
+        run: |
+          set -euo pipefail
+          git config user.name  "Underhålls-robot"
+          git config user.email "actions@users.noreply.github.com"
+          git add json/maskiner/ images/ backup/
+          if git diff --cached --quiet; then
+            echo "Inget att committa."
+          else
+            git commit -m "🔧 Veckounderhåll: maskinbilder/manualer/länkar ($(date +%F))"
+            git pull --rebase origin main || true
+            git push
+          fi
