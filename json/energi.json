@@ -98,6 +98,60 @@
     "min": 25,
     "moment": "Gräddning (Bake 200°C)"
    }
+  ],
+  "frysbar-tomatsas-pa-egna-tomater-squash-lok-vitlok.html": [
+   {
+    "maskin": "midea-mb-fs5017",
+    "min": 90,
+    "moment": "Koka grönsakerna"
+   },
+   {
+    "maskin": "midea-mb-fs5017",
+    "min": 68,
+    "moment": "Reducera (45–90 min, snitt)"
+   }
+  ],
+  "lokbrod-i-bakmaskin.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 180,
+    "moment": "11. Sandwich hela programmet"
+   }
+  ],
+  "majsbrod-saftig-print.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 180,
+    "moment": "Bakprogram"
+   }
+  ],
+  "mjukt-protein-ostbrod-med-turkisk-yoghurt.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 180,
+    "moment": "11. Sandwich hela programmet"
+   }
+  ],
+  "mjukt-toastbrod-med-turkisk-yoghurt-hemgjord-sylt-utan-margarin.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 180,
+    "moment": "11. Sandwich hela programmet"
+   }
+  ],
+  "saft-wheybrod.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 180,
+    "moment": "11. Sandwich hela programmet"
+   }
+  ],
+  "svartvinbarssylt-klassiskt-recept.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 80,
+    "moment": "9. Jam (Sylt) 1:20 h"
+   }
   ]
  }
 }
