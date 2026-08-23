@@ -594,6 +594,19 @@
       "fiber": 0,
       "recept": "svartvinbarssylt-klassiskt-recept.html",
       "kalla": "eget recept (Svartvinbärssylt – klassiskt recept) 2026-08-23"
+    },
+    {
+      "id": "zucchini-klass-1",
+      "namn": "Zucchini Klass 1",
+      "pris_kr_per_kg": 27.73,
+      "kcal": 0,
+      "protein": 0,
+      "kolhydrat": 0,
+      "fett": 0,
+      "fiber": 0,
+      "lank": "https://www.willys.se/produkt/Zucchini-Klass-1-100268130_ST",
+      "kalla": "willys.se (jamforpris kr/kg)",
+      "uppdaterad": "2026-08-23"
     }
   ]
 }
