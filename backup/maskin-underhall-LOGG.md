@@ -21,3 +21,4 @@
 | ninja-detect-power.json | 📖 manual hittad: https://www.manualslib.com/manual/3938396/Ninja-Tb401.html |
 | silonn-ismaskin.json | 🔗 död manuallänk borttagen |
 | silonn-ismaskin.json | 📖 manual hittad: https://www.manualslib.com/manual/4176040/Silonn-Slim01.html |
+| 2026-08-24 | ✅ allt friskt – inga åtgärder |
