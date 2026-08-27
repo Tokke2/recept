@@ -109,7 +109,7 @@
     var td = tr.querySelector('td');
     if (!td) return '';
     var c = td.cloneNode(true);
-    c.querySelectorAll('.mk-saknas, .mk-prodlank, .drop, .mk-rowbtn').forEach(function (x) { x.remove(); });
+    c.querySelectorAll('.mk-saknas, .mk-prodlank, .drop, .mk-rowbtn, .mk-bytsmak').forEach(function (x) { x.remove(); });
     return c.textContent.replace(/💧/g, '').trim();
   }
   function readRows() {
@@ -152,7 +152,7 @@
     /* Riv gammalt (så omkörning efter redigering ger färska värden) */
     var oldBox = document.getElementById('mk-kalkyl');
     if (oldBox) oldBox.remove();
-    document.querySelectorAll('.mk-saknas, .mk-prodlank, .mk-ingsub').forEach(function (x) { x.remove(); });
+    document.querySelectorAll('.mk-saknas, .mk-prodlank, .mk-ingsub, .mk-bytsmak').forEach(function (x) { x.remove(); });
 
     var rows = readRows();
     if (rows.length < 2) return;
@@ -287,6 +287,47 @@
       }
     });
 
+    /* 🔀 BYT SMAK (förslag 169): på smaksättar-rader (bär/frukt/sylt/
+       saft/smaksättare) visas en 🔀-knapp som byter ingrediensen mot
+       en ANNAN smaksättare ur databasen – kalkylen räknas om direkt.
+       Endast på skärmen (spans städas som allt annat). */
+    (function bytSmak() {
+      var SMAK_RE = /jordgubb|hallon|blåbär|svartvinbär|vinbär|lingon|hjortron|bär\b|banan|mango|ananas|persika|äpple|päron|citron|lime|apelsin|vanilj|choklad|kakao|biscoff|kanel|kardemumma|sylt|saft|honung|sirap|smak/i;
+      var kandidater = db.filter(function (d) { return SMAK_RE.test(d.namn || ''); });
+      if (kandidater.length < 2) return;
+      rows.forEach(function (r) {
+        if (!r.el || !SMAK_RE.test(r.namn)) return;
+        var nc = r.el.querySelector('td');
+        if (!nc || nc.querySelector('.mk-bytsmak')) return;
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'mk-bytsmak no-print';
+        b.contentEditable = 'false';
+        b.textContent = '🔀';
+        b.title = 'Byt smak: slumpa en annan smaksättare ur databasen (' + kandidater.length + ' möjliga)';
+        b.style.cssText = 'margin-left:6px;background:#f4ecfb;border:1.5px solid #8e44ad;color:#8e44ad;' +
+          'border-radius:999px;padding:0 8px;font-size:.75rem;cursor:pointer;vertical-align:middle;';
+        (function (rad) {
+          b.onclick = function (e) {
+            e.stopPropagation();
+            var nuvarande = norm(liveName(rad.el));
+            var alternativ = kandidater.filter(function (k) { return norm(k.namn) !== nuvarande; });
+            if (!alternativ.length) return;
+            var ny = alternativ[Math.floor(Math.random() * alternativ.length)];
+            var cell = rad.el.querySelector('td');
+            /* behåll ev. 💧-droppe, byt bara namnet */
+            var drop = cell.querySelector('.drop');
+            cell.textContent = ny.namn;
+            if (drop) cell.insertBefore(drop, cell.firstChild);
+            rad.el.setAttribute('data-namn', ny.namn);
+            if (window.__MK_TOAST) window.__MK_TOAST('🔀 Bytte till ' + ny.namn + ' – kalkylen räknas om (endast på skärmen)');
+            if (window.__MK_KALKYL_REFRESH) window.__MK_KALKYL_REFRESH();
+          };
+        })(r);
+        nc.appendChild(b);
+      });
+    })();
+
     /* ♻️ UTBYTES-NOTIS – alltid, på alla recept (även utan kalkyl) */
     window.__MK_KALKYL_TOT = tot;   /* delas med etikett.js (burketiketter) m.fl. */
     (function bytesNotis() {
@@ -309,6 +350,65 @@
     })();
 
     if (matched < 2) return;   /* för få träffar för att vara meningsfullt */
+
+    /* ============================================================
+       📊 AUTO-KORRIGERAD NÄRING (användarens regel): inklistrade
+       recept kan ha egna näringstal – de RÄKNAS ALLTID OM mot
+       databasen och korrigeras automatiskt PÅ SKÄRMEN när ≥80 %
+       av ingredienserna matchat (annars vore siffrorna sämre än
+       originalets). Kcal/protein/kolhydrat/fett/fiber i recept-
+       filens 📊 Näringsvärde-kort byts mot kalkylens live-värden
+       + märks "🔄 live ur databasen". Källfilen röres aldrig.
+       ============================================================ */
+    (function korrigeraNaring() {
+      if (matched / rows.length < 0.8) return;
+      var kort = null;
+      document.querySelectorAll('.card').forEach(function (c) {
+        var h = c.querySelector('h2');
+        if (!kort && h && /näringsvärde/i.test(h.textContent) && !c.id) kort = c;
+      });
+      if (!kort || kort.getAttribute('data-mk-livekorr')) return;
+
+      var beskr0 = (document.querySelector('meta[name="recept:beskrivning"]') || {}).content || '';
+      var pm0 = beskr0.match(/(\d+)\s*(portioner|port\b|bitar|hundportioner|klickar|glas|bullar|pizzor)/i);
+      var port0 = pm0 ? +pm0[1] : 0;
+      var perPortion = /per (boll|portion|bit|glas|bulle|klick|styck)/i.test(kort.textContent) && port0;
+      var d = perPortion ? port0 : 1;
+
+      var VARDEN = [
+        [/^kcal|^energi/i, Math.round(tot.kcal / d) + (perPortion ? '' : ' totalt')],
+        [/^protein/i, fmt(tot.prot / d) + ' g'],
+        [/^kolhydrat/i, fmt(tot.kolh / d) + ' g'],
+        [/^fett/i, fmt(tot.fett / d) + ' g'],
+        [/^fiber/i, fmt(tot.fiber / d) + ' g'],
+        [/^pris|^kostnad/i, '~' + fmt(tot.kr / d, 2) + ' kr']
+      ];
+      var andrade = 0;
+      kort.querySelectorAll('tr').forEach(function (tr) {
+        var tds = tr.querySelectorAll('td');
+        if (tds.length < 2) return;
+        var etikett = tds[0].textContent.trim();
+        VARDEN.forEach(function (v) {
+          if (v[0].test(etikett)) {
+            var gammalt = tds[1].textContent.trim();
+            var nytt = String(v[1]);
+            if (gammalt.replace(/\s/g, '') !== nytt.replace(/\s/g, '')) {
+              tds[1].innerHTML = '<b style="color:#27ae60;" title="Auto-korrigerad mot ingrediensdatabasen (stod: ' +
+                gammalt.replace(/"/g, '&quot;') + ')">' + nytt + '</b>';
+              andrade++;
+            }
+          }
+        });
+      });
+      if (andrade) {
+        kort.setAttribute('data-mk-livekorr', '1');
+        var not = document.createElement('p');
+        not.className = 'no-print mk-naring-not';
+        not.innerHTML = '🔄 <b>' + andrade + ' värden auto-korrigerade</b> mot ingrediensdatabasen (live) – gröna siffror är omräknade, hovra för originalet.';
+        not.style.cssText = 'font-size:.76rem;color:#27ae60;background:#eaf7ef;border-radius:8px;padding:6px 10px;margin-top:8px;';
+        kort.appendChild(not);
+      }
+    })();
 
     /* Portioner ur beskrivningen: "12 bitar", "6 portioner" */
     var beskr = (document.querySelector('meta[name="recept:beskrivning"]') || {}).content || '';
