@@ -152,6 +152,13 @@
     "min": 80,
     "moment": "9. Jam (Sylt) 1:20 h"
    }
+  ],
+  "grundrecept-glass-i-ninja-creami-nc502eu-mjolk-yoghurt-protein-hemgjord-sylt.html": [
+   {
+    "maskin": "ninja-nc502eu",
+    "min": 1440,
+    "moment": "Tillagning (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }
