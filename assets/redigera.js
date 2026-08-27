@@ -518,7 +518,10 @@
   }
   function updateSok(td) {
     loadIngDb().then(function (db) {
-      if (!db.length || document.activeElement !== td) return;
+      if (!db.length) return;
+      /* aktivt element kan vara td:n ELLER något inuti den (contentEditable) */
+      var akt = document.activeElement;
+      if (akt !== td && !(akt && td.contains(akt))) return;
       var q = sokNorm(cellText(td).replace(/^ny ingrediens$/i, ''));
       var borjar = [], innehaller = [];
       db.forEach(function (ing) {
@@ -532,26 +535,58 @@
       renderSok(td, list);
     });
   }
-  function attachSok(td) {
-    if (!td || td.__mkSok) return;
-    td.__mkSok = true;
-    td.addEventListener('focus', function () { if (editing) updateSok(td); });
-    td.addEventListener('input', function () { if (editing) updateSok(td); });
-    td.addEventListener('blur', function () { setTimeout(closeSok, 150); });
-    td.addEventListener('keydown', function (e) {
-      if (!sokBox || sokTd !== td) return;
-      var n = sokBox.querySelectorAll('.mk-sokval').length;
-      if (e.key === 'ArrowDown') { e.preventDefault(); markSok((sokIdx + 1) % n); }
-      else if (e.key === 'ArrowUp') { e.preventDefault(); markSok((sokIdx - 1 + n) % n); }
-      else if (e.key === 'Enter' && sokIdx >= 0) {
-        e.preventDefault();
-        var b = sokBox.querySelector('.mk-sokval[data-i="' + sokIdx + '"]');
-        if (b) b.click();
-      }
-      else if (e.key === 'Escape') { e.stopPropagation(); closeSok(); }
-      else if (e.key === 'Tab') closeSok();
-    });
+
+  /* Är cellen en ingrediens-NAMNCELL i redigeringsläge? */
+  function arNamncell(el) {
+    if (!editing || !el || !el.closest) return null;
+    var td = el.closest('td');
+    if (!td || td.cellIndex !== 0) return null;
+    var tr = td.closest('tr');
+    if (!tr || tr.classList.contains('total') || tr.classList.contains('tot')) return null;
+    var tabell = td.closest('.mk-ing2') ||
+      (td.closest('.mk-ing-card') ? td.closest('table') : null) ||
+      (function () {
+        var card = td.closest('.card');
+        var h = card && card.querySelector('h2');
+        return (h && /ingrediens/i.test(h.textContent)) ? td.closest('table') : null;
+      })();
+    return tabell ? td : null;
   }
+
+  /* ✍️ HÄNDELSEDELEGERING (v2): lyssnare på document istället för
+     per-cell – tål att tabellen byggs om av ingrediens.js/kalkyl.js
+     när som helst. attachSok() finns kvar som no-op-kompatibilitet. */
+  function attachSok() { /* delegering sköter allt numera */ }
+  document.addEventListener('focusin', function (e) {
+    var td = arNamncell(e.target);
+    if (td) updateSok(td);
+  });
+  document.addEventListener('click', function (e) {
+    var td = arNamncell(e.target);
+    if (td && !sokBox) updateSok(td);
+  });
+  document.addEventListener('input', function (e) {
+    var td = arNamncell(e.target);
+    if (td) updateSok(td);
+  });
+  document.addEventListener('focusout', function (e) {
+    if (arNamncell(e.target)) setTimeout(closeSok, 150);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (!sokBox) return;
+    var td = arNamncell(e.target);
+    if (!td || sokTd !== td) return;
+    var n = sokBox.querySelectorAll('.mk-sokval').length;
+    if (e.key === 'ArrowDown') { e.preventDefault(); markSok((sokIdx + 1) % n); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); markSok((sokIdx - 1 + n) % n); }
+    else if (e.key === 'Enter' && sokIdx >= 0) {
+      e.preventDefault();
+      var b = sokBox.querySelector('.mk-sokval[data-i="' + sokIdx + '"]');
+      if (b) b.click();
+    }
+    else if (e.key === 'Escape') { e.stopPropagation(); closeSok(); }
+    else if (e.key === 'Tab') closeSok();
+  });
 
   function startEdit() {
     if (editing) return;
@@ -1046,7 +1081,7 @@
     clone.querySelectorAll('#mk-editbar, .mk-rowbtn, .mk-addrow, #mk-rnav, #mk-fab, #mk-top, #mk-qty, #mk-komp, ' +
       '#mk-lang, #mk-auto-qr, #mk-provenance, #mk-betyg, #mk-maskinmatch, #mk-kalkyl, #mk-donation, #mk-aff-disclosure, ' +
       '.share-btn, .print-btn, [id^="mk-pd"], [id^="mk-pw"], [id^="mk-swish"], ' +
-      '.mk-saknas, .mk-prodlank, .mk-ingsub, #mk-byt-notis, .mk-ingsok').forEach(function (el) { el.remove(); });
+      '.mk-saknas, .mk-prodlank, .mk-ingsub, #mk-byt-notis, .mk-ingsok, .mk-bytsmak, #mk-kedja').forEach(function (el) { el.remove(); });
     /* 🌡️ Enhets-spans + ⚖️ skalnings-spans + ✨ steg-markeringar → exakt originaltext */
     clone.querySelectorAll('span.mk-enh, span.mk-skala, span.mk-stegmark').forEach(function (s) {
       s.parentNode.replaceChild(clone.ownerDocument.createTextNode(s.getAttribute('data-orig') || s.textContent), s);
