@@ -82,6 +82,25 @@ Gör så här
   <p style="color:var(--muted);font-size:.85rem;margin-bottom:6px;">Matchade automatiskt mot din maskindatabas – programmens nyckelord vs receptets text.</p>
   <div id="mList"><em style="color:var(--muted);">Inga maskiner matchade – receptet fungerar ändå, maskiner kan läggas till senare med ✏️.</em></div>
 
+  <h2 style="margin-top:18px;">➕ Koppla fler maskiner (bläddra bland alla)</h2>
+  <p style="color:var(--muted);font-size:.85rem;margin-bottom:6px;">Recept kan använda FLERA maskiner i kedja – t.ex. blenda glassbasen i Ninja Detect → frys 24 h → spinn i CREAMi. Välj maskin + program + moment och lägg till, hur många som helst.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;background:#faf7f2;border-radius:12px;padding:12px 14px;">
+    <div style="flex:2;min-width:180px;">
+      <label style="display:block;font-size:.75rem;font-weight:700;margin-bottom:2px;">Maskin</label>
+      <select id="exMaskin" onchange="exFyllProgram()" style="width:100%;padding:9px;border:2px solid #e8e2d8;border-radius:9px;font-family:inherit;font-size:.88rem;"></select>
+    </div>
+    <div style="flex:2;min-width:180px;">
+      <label style="display:block;font-size:.75rem;font-weight:700;margin-bottom:2px;">Program</label>
+      <select id="exProg" style="width:100%;padding:9px;border:2px solid #e8e2d8;border-radius:9px;font-family:inherit;font-size:.88rem;"></select>
+    </div>
+    <div style="flex:2;min-width:150px;">
+      <label style="display:block;font-size:.75rem;font-weight:700;margin-bottom:2px;">Moment (t.ex. "Blenda basen")</label>
+      <input type="text" id="exMoment" placeholder="Tillagning" style="width:100%;padding:9px;border:2px solid #e8e2d8;border-radius:9px;font-family:inherit;font-size:.88rem;box-sizing:border-box;">
+    </div>
+    <button type="button" onclick="exLaggTill()" style="background:#27ae60;color:#fff;border:none;border-radius:9px;padding:10px 18px;font-weight:700;cursor:pointer;font-family:inherit;">➕ Lägg till</button>
+  </div>
+  <div id="exList" style="margin-top:8px;"></div>
+
   <h2 style="margin-top:18px;">3️⃣ Förhandsgranskning</h2>
   <iframe id="prev"></iframe>
   <button class="btn orange" onclick="saveDirect()" id="saveBtn">💾 Spara direkt på sajten</button>
@@ -100,11 +119,25 @@ Gör så här
    ============================================================ */
 let PARSED = null, MACHINES = [], SUGGESTED = [];
 
-const EMOJI_MAP = [['pizza','🍕'],['glass','🍦'],['slush','🍹'],['shake','🥤'],['smoothie','🥤'],
-  ['pita','🫓'],['bröd','🍞'],['brod','🍞'],['deg','🥖'],['kaka','🍰'],['muffin','🧁'],['chips','🥨'],
-  ['soppa','🍲'],['gryta','🍲'],['kyckling','🍗'],['fisk','🐟'],['lax','🐟'],['ris','🍚'],
-  ['pasta','🍝'],['makaron','🍝'],['hund','🐶'],['drink','🍹'],['sallad','🥗'],['yoghurt','🥛'],
-  ['ägg','🍳'],['pannkak','🥞'],['våffl','🧇'],['kött','🥩'],['toast','🥪'],['macka','🥪']];
+/* PRIORITERAD lista – specifika ord först (samma logik som assets/emoji.js):
+   sylt→🫙 saft→🧃 kött→🥩 osv. Första träffen vinner. */
+const EMOJI_MAP = [
+  ['sylt','🫙'],['marmelad','🫙'],['chutney','🫙'],['saft','🧃'],['juice','🧃'],
+  ['smoothie','🥤'],['proteinshake','🥤'],['shake','🥤'],['slush','🍹'],['drink','🍹'],['cocktail','🍸'],
+  ['hundglass','🐶'],['mjukglass','🍦'],['glass','🍦'],['sorbet','🍧'],
+  ['köttbulle','🧆'],['köttfärs','🥩'],['biff','🥩'],['stek','🥩'],['kött','🥩'],['fläsk','🥓'],
+  ['bacon','🥓'],['korv','🌭'],['hamburg','🍔'],['kyckling','🍗'],['revben','🍖'],
+  ['lax','🐟'],['torsk','🐟'],['fisk','🐟'],['räk','🦐'],
+  ['pizzadeg','🍕'],['pizza','🍕'],['pitabröd','🫓'],['pita','🫓'],['tortilla','🫓'],
+  ['toastbröd','🍞'],['majsbröd','🍞'],['bröd','🍞'],['limpa','🍞'],['baguette','🥖'],['deg','🥖'],
+  ['bulle','🥐'],['croissant','🥐'],['smulpaj','🥧'],['smuldeg','🥧'],['paj','🥧'],['tårta','🎂'],
+  ['muffin','🧁'],['kladdkaka','🍫'],['brownie','🍫'],['kaka','🍰'],['kex','🍪'],['cookie','🍪'],
+  ['våffl','🧇'],['pannkak','🥞'],
+  ['soppa','🍲'],['gryta','🍲'],['curry','🍛'],['risotto','🍚'],['ris','🍚'],['gröt','🥣'],
+  ['pasta','🍝'],['lasagne','🍝'],['makaron','🍝'],['nudl','🍜'],['taco','🌮'],['sushi','🍣'],
+  ['omelett','🍳'],['ägg','🍳'],['potatis','🥔'],['pommes','🍟'],['toast','🥪'],['macka','🥪'],['sallad','🥗'],
+  ['chips','🥨'],['snacks','🥨'],['popcorn','🍿'],['granola','🥣'],['yoghurt','🥛'],['sås','🥫'],
+  ['ananas','🍍'],['äpple','🍎'],['jordgubb','🍓'],['blåbär','🫐'],['banan','🍌'],['citron','🍋'],['mango','🥭'],['hund','🐶']];
 
 const MATORD = ['kaka','bröd','deg','pizza','glass','slush','soppa','gryta','kyckling','fisk','ris',
   'pasta','sallad','shake','smoothie','chips','snacks','efterrätt','fika','protein','airfryer',
@@ -306,16 +339,65 @@ async function analyze() {
   }).join('') : '<em style="color:var(--muted);">Inga maskiner matchade – receptet fungerar ändå, maskiner kan läggas till senare med ✏️.</em>';
 
   document.getElementById('resBox').style.display = 'block';
+  exFyllValjare();   /* ➕ bläddra bland ALLA maskiner */
   rebuild();
   try { document.getElementById('resBox').scrollIntoView({ behavior: 'smooth' }); } catch (e) {}
 }
 
+/* ---------- ➕ Extra maskiner: bläddra bland ALLA + koppla i kedja ---------- */
+let EXTRA = [];   /* [{m, p, moment}] */
+function exFyllValjare() {
+  const sel = document.getElementById('exMaskin');
+  if (!sel || !MACHINES.length) return;
+  const sorterade = [...MACHINES].sort((a, b) => (a.namn || '').localeCompare(b.namn || '', 'sv'));
+  sel.innerHTML = sorterade.map(m => `<option value="${m.id}">${(m.varumarke || '') + ' ' + (m.modellnamn || m.namn || m.id)}</option>`).join('');
+  exFyllProgram();
+}
+function exFyllProgram() {
+  const sel = document.getElementById('exMaskin');
+  const m = MACHINES.find(x => x.id === sel.value);
+  const ps = (m && m.program) || [];
+  document.getElementById('exProg').innerHTML = ps.length
+    ? ps.map((p, i) => `<option value="${i}">${p.namn}${p.standardtid ? ' (' + p.standardtid + ')' : ''}</option>`).join('')
+    : '<option value="-1">– inga program (manuellt läge) –</option>';
+}
+function exLaggTill() {
+  const m = MACHINES.find(x => x.id === document.getElementById('exMaskin').value);
+  if (!m) return;
+  const pi = +document.getElementById('exProg').value;
+  const p = (m.program && pi >= 0) ? m.program[pi] : { namn: 'Manuellt läge', standardtid: '', beskrivning: '' };
+  const moment = document.getElementById('exMoment').value.trim() || 'Tillagning';
+  EXTRA.push({ m, p, moment });
+  document.getElementById('exMoment').value = '';
+  exRita();
+  rebuild();
+}
+function exTaBort(i) { EXTRA.splice(i, 1); exRita(); rebuild(); }
+function exRita() {
+  document.getElementById('exList').innerHTML = EXTRA.map((e, i) => {
+    const name = ((e.m.varumarke || '') + ' ' + (e.m.modellnamn || '')).trim() || e.m.namn;
+    return '<div class="mrow" style="border-left:4px solid #27ae60;">' +
+      '<span style="font-weight:800;color:#27ae60;">' + (i + 1) + '.</span>' +
+      (e.m.bild ? '<img src="' + e.m.bild + '" onerror="this.remove()">' : '') +
+      '<div style="flex:1;"><b>' + esc(e.moment) + ':</b> ' + esc(name) + ' · <span class="prog">' + esc(e.p.namn || '') +
+      (e.p.standardtid ? ' · ' + esc(e.p.standardtid) : '') + '</span></div>' +
+      '<button type="button" onclick="exTaBort(' + i + ')" style="background:#fdecea;color:#c0392b;border:none;border-radius:8px;padding:5px 11px;font-weight:700;cursor:pointer;">✕</button></div>';
+  }).join('');
+}
+
 /* ---------- Bygg standard-HTML ---------- */
 function chosenMachines() {
-  return SUGGESTED.filter((h, i) => {
+  const valda = SUGGESTED.filter((h, i) => {
     const c = document.getElementById('mk' + i);
     return c && c.checked;
   });
+  /* ➕ extra kopplade maskiner läggs EFTER förslagen, i kedje-ordning.
+     Dubbletter (samma maskin+program) hoppar över förslags-versionen. */
+  EXTRA.forEach(e => {
+    const dubbel = valda.some(h => h.m.id === e.m.id && (h.p.namn || '') === (e.p.namn || ''));
+    if (!dubbel) valda.push({ m: e.m, p: e.p, moment: e.moment });
+  });
+  return valda;
 }
 function buildHtml() {
   const namn = document.getElementById('fNamn').value.trim() || 'Nytt recept';
@@ -333,7 +415,9 @@ function buildHtml() {
   if (!taggar.length) taggar = [namn.toLowerCase().split(' ')[0]];
   const metaMask = machines.map((h, i) => {
     const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
-    return (i === 0 ? 'Tillagning: ' : 'Alternativ: ') + name + ' · ' + (h.p.namn || '') + (h.p.standardtid ? ' ' + h.p.standardtid : '');
+    /* Eget moment ("Blenda basen") vinner – annars Tillagning/Alternativ */
+    const moment = h.moment || (i === 0 ? 'Tillagning' : 'Alternativ');
+    return moment + ': ' + name + ' · ' + (h.p.namn || '') + (h.p.standardtid ? ' ' + h.p.standardtid : '');
   }).join(' | ');
   const chips = machines.map(h => {
     const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
@@ -343,7 +427,9 @@ function buildHtml() {
   const ingRows = PARSED.ings.map(i => '    <tr><td>' + esc(i[0]) + '</td><td>' + esc(i[1]) + '</td></tr>').join('\n');
   const machineBoxes = machines.map(h => {
     const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
-    return '  <div class="machine-step">\n    <h3>⚙️ ' + esc(name) + ' · <span class="prog">' + esc(h.p.namn || '') +
+    /* Momentet visas i rutan ("Blenda basen: Ninja Detect · BlendSense") */
+    const momPrefix = h.moment ? esc(h.moment) + ': ' : '';
+    return '  <div class="machine-step">\n    <h3>⚙️ ' + momPrefix + esc(name) + ' · <span class="prog">' + esc(h.p.namn || '') +
       (h.p.standardtid ? ' · ' + esc(h.p.standardtid) : '') + '</span></h3>\n' +
       (h.p.beskrivning ? '    <div class="why">' + esc(h.p.beskrivning) + '</div>\n' : '') + '  </div>';
   }).join('\n');
@@ -443,5 +529,5 @@ async function saveDirect() {
 }
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a31d7508de6ede4e',t:'MTc4Nzg1ODY3NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
