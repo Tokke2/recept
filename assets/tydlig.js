@@ -200,9 +200,57 @@
   };
   window.__MK_STEGMARK_KOR = markeraSteg;
 
+  /* ============================================================
+     DEL 3: ⛓️ KEDJE-VY (förslag 166): recept med FLERA maskiner
+     får en visuell tidslinje ovanför stegen:
+       [🌀 Blenda basen · Ninja Detect] → [🧊 Frys 24 h] → [🍦 Spinn · CREAMi]
+     Byggs ur recept:maskiner-metan (| -separerad). Väntemoment
+     (frys/jäs/vila i moment-texten) får egen ikon.
+     ============================================================ */
+  function kedjeIkon(txt) {
+    var t = txt.toLowerCase();
+    if (/frys|kyl/.test(t)) return '🧊';
+    if (/jäs|vila|vänta/.test(t)) return '⏳';
+    if (/blend|mixa|vispa/.test(t)) return '🌀';
+    if (/grädd|baka|ugn/.test(t)) return '🔥';
+    if (/deg|knåda/.test(t)) return '🥖';
+    if (/glass|spinn/.test(t)) return '🍦';
+    return '⚙️';
+  }
+  function byggKedja() {
+    if (document.getElementById('mk-kedja')) return;
+    var meta = (document.querySelector('meta[name="recept:maskiner"]') || {}).content || '';
+    var delar = meta.split('|').map(function (s) { return s.trim(); }).filter(Boolean);
+    if (delar.length < 2) return;   /* kedja kräver minst 2 maskinsteg */
+
+    var kort = delar.map(function (d) {
+      var moment = d.indexOf(':') !== -1 ? d.split(':')[0].trim() : 'Steg';
+      var resten = d.indexOf(':') !== -1 ? d.slice(d.indexOf(':') + 1).trim() : d;
+      return '<span style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;' +
+        'background:#fff;border:2px solid #e8e2d8;border-radius:12px;padding:8px 14px;min-width:110px;text-align:center;">' +
+        '<span style="font-size:1.3rem;">' + kedjeIkon(moment + ' ' + resten) + '</span>' +
+        '<b style="font-size:.78rem;">' + moment + '</b>' +
+        '<span style="font-size:.7rem;color:#7f8c8d;max-width:150px;">' + resten + '</span></span>';
+    }).join('<span style="font-size:1.3rem;color:#e67e22;font-weight:800;align-self:center;">→</span>');
+
+    var rad = document.createElement('div');
+    rad.id = 'mk-kedja';
+    rad.className = 'no-print';
+    rad.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:0 0 16px;' +
+      'font-family:Segoe UI,system-ui,sans-serif;';
+    rad.innerHTML = kort;
+
+    var ov = document.getElementById('mk-oversikt');
+    if (ov && ov.parentNode) ov.parentNode.insertBefore(rad, ov.nextSibling);
+    else {
+      var header = document.querySelector('header');
+      if (header && header.parentNode) header.parentNode.insertBefore(rad, header.nextSibling);
+    }
+  }
+
   /* ---------- Start (efter att ingrediens.js ev. flyttat steg) ---------- */
   function start() {
-    setTimeout(function () { byggOversikt(); markeraSteg(); }, 400);
+    setTimeout(function () { byggOversikt(); byggKedja(); markeraSteg(); }, 400);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
