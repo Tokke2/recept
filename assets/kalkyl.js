@@ -109,7 +109,7 @@
     var td = tr.querySelector('td');
     if (!td) return '';
     var c = td.cloneNode(true);
-    c.querySelectorAll('.mk-saknas, .mk-prodlank, .drop, .mk-rowbtn, .mk-bytsmak').forEach(function (x) { x.remove(); });
+    c.querySelectorAll('.mk-saknas, .mk-prodlank, .drop, .mk-rowbtn, .mk-bytsmak, .mk-smakval').forEach(function (x) { x.remove(); });
     return c.textContent.replace(/💧/g, '').trim();
   }
   function readRows() {
@@ -142,6 +142,17 @@
     return rows;
   }
 
+  /* ---------- 🍫 Smakval (whey m.fl. med varianter): sparas per recept ---------- */
+  function smakKey() { return 'mk-smak:' + decodeURIComponent(location.pathname.split('/').pop()); }
+  function smakGet() {
+    try { return JSON.parse(localStorage.getItem(smakKey()) || '{}'); } catch (e) { return {}; }
+  }
+  function smakSet(ingId, smak) {
+    var m = smakGet();
+    if (smak) m[ingId] = smak; else delete m[ingId];
+    try { localStorage.setItem(smakKey(), JSON.stringify(m)); } catch (e) {}
+  }
+
   function fmt(n, dec) {
     return n.toLocaleString('sv-SE', { minimumFractionDigits: dec === undefined ? 0 : dec, maximumFractionDigits: dec === undefined ? 1 : dec });
   }
@@ -152,7 +163,7 @@
     /* Riv gammalt (så omkörning efter redigering ger färska värden) */
     var oldBox = document.getElementById('mk-kalkyl');
     if (oldBox) oldBox.remove();
-    document.querySelectorAll('.mk-saknas, .mk-prodlank, .mk-ingsub, .mk-bytsmak').forEach(function (x) { x.remove(); });
+    document.querySelectorAll('.mk-saknas, .mk-prodlank, .mk-ingsub, .mk-bytsmak, .mk-smakval').forEach(function (x) { x.remove(); });
 
     var rows = readRows();
     if (rows.length < 2) return;
@@ -218,6 +229,50 @@
           });
         }
       }
+      /* 🍫 SMAKVAL: ingrediensen har varianter (whey-smaker m.m.) →
+         dropdown på raden. Vald smak ersätter näringen i kalkylen
+         (pris är samma för alla smaker). Sparas per recept. */
+      var basVarianter = ing && ing.varianter;
+      if (ing && basVarianter && basVarianter.length > 1 && r.el) {
+        var valda = smakGet();
+        var valdSmak = valda[ing.id || ing.namn];
+        var vald = valdSmak ? basVarianter.find(function (v) { return v.smak === valdSmak; }) : null;
+        if (vald) {
+          /* klona posten med smakens näring – originalet röres ej */
+          ing = {
+            id: ing.id, namn: ing.namn + ' (' + vald.smak + ')',
+            pris_kr_per_kg: ing.pris_kr_per_kg, lank: ing.lank, kalla: ing.kalla,
+            kcal: vald.kcal, protein: vald.protein,
+            kolhydrat: vald.kolhydrat, fett: vald.fett, fiber: ing.fiber || 0
+          };
+        }
+        var ncell0 = r.el.querySelector('td');
+        if (ncell0 && !ncell0.querySelector('.mk-smakval')) {
+          var sel = document.createElement('select');
+          sel.className = 'mk-smakval no-print';
+          sel.title = 'Vilken smak använder du? Kalkylen räknas om direkt med smakens egen näring.';
+          sel.style.cssText = 'margin-left:8px;padding:2px 6px;border:1.5px solid #8e44ad;color:#8e44ad;' +
+            'border-radius:999px;font-size:.72rem;font-weight:700;background:#f4ecfb;cursor:pointer;' +
+            'font-family:inherit;max-width:170px;vertical-align:middle;';
+          var basIng = db.find(function (d) { return d.id === ing.id; }) || ing;
+          var opts = '<option value="">🍫 Snitt av ' + (basIng.varianter || []).length + ' smaker</option>' +
+            (basIng.varianter || []).map(function (v) {
+              return '<option value="' + String(v.smak).replace(/"/g, '&quot;') + '"' +
+                (valdSmak === v.smak ? ' selected' : '') + '>' + v.smak + ' · ' + fmt(+v.kcal || 0, 0) + ' kcal</option>';
+            }).join('');
+          sel.innerHTML = opts;
+          (function (ingId) {
+            sel.addEventListener('change', function () {
+              smakSet(ingId, sel.value);
+              if (window.__MK_TOAST) window.__MK_TOAST(sel.value ? '🍫 ' + sel.value + ' – kalkylen räknas om' : '🍫 Snitt av alla smaker');
+              run();
+            });
+            sel.addEventListener('click', function (e) { e.stopPropagation(); });
+          })(ing.id || ing.namn);
+          ncell0.appendChild(sel);
+        }
+      }
+
       if (!ing) {
         missed.push(r.namn);
         /* 🔴 RÖD rad: ingrediensen finns INTE i databasen */
