@@ -50,11 +50,11 @@
 <div class="card">
   <h2>🛒 Lägg till via butikslänk (Willys / Hemköp / ICA)</h2>
   <p style="font-size:.88rem;color:var(--muted);margin-bottom:8px;">Klistra in produktlänken → sparas direkt i databasen → roboten hämtar <b>riktigt jämförpris (kr/kg) och näring per 100 g</b> inom ~1 minut.</p>
-  <input type="text" id="lank" placeholder="https://www.willys.se/produkt/...  eller  https://handlaprivatkund.ica.se/stores/.../products/...">
+  <input type="text" id="lank" placeholder="https://www.willys.se/produkt/... · gymgrossisten.com/... · valfri butiks produktsida">
   <button class="btn orange" id="lankBtn" onclick="sendLink()">💾 Spara länken i databasen</button>
   <div id="lankResult"></div>
   <div class="hint">💡 Fler länkar? Klistra in flera på samma gång (mellanslag/radbrytning emellan). Finns ingrediensen redan uppdateras pris &amp; näring.<br>
-  ⚠️ <b>ICA:</b> länkar från handlaprivatkund.ica.se funkar, men ICA visar inte näringsvärden publikt och har ibland botskydd – då hämtas bara namnet (ev. pris) och du fyller i resten i formuläret nedan. Willys/Hemköp ger alltid komplett data.</div>
+  🌐 <b>Alla butiker funkar!</b> Willys/Hemköp ger alltid komplett data (öppet API). Andra butiker (Gymgrossisten, Coop, tillverkare...) läses generiskt – namn, pris och näring hämtas när sidan visar dem, annars fyller du i resten med ✏️. ⚠️ ICA visar aldrig näring publikt.</div>
 </div>
 
 <!-- ============ 2. LÄGG TILL MANUELLT ============ -->
@@ -163,6 +163,7 @@ function renderList() {
         ? ' <a href="' + i.lank + '" target="_blank" rel="noopener" title="Butikslänk kopplad – priset auto-uppdateras månadsvis. Klicka för att öppna butiken." style="display:inline-block;background:#eaf7ef;color:#27ae60;border:1px solid #27ae60;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;text-decoration:none;">🔗 Länkad</a>'
         : ` <button onclick="openEdit('${i.id}')" title="Ingen butikslänk – klicka för att klistra in en" style="background:#fdecea;color:#c0392b;border:1px solid #c0392b;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit;">✖ Länk saknas</button>`}
       ${i.recept ? ' <a href="recept/' + encodeURIComponent(i.recept) + '" title="Hemgjord – gjord av eget recept, klicka för att öppna det" style="display:inline-block;background:#fff8ec;color:#b8860b;border:1px solid #e6a817;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;text-decoration:none;">🫙 Eget recept</a>' : ''}
+      ${(i.varianter && i.varianter.length) ? ` <button onclick="toggleVarianter('${i.id}')" title="${i.varianter.length} smakvarianter med egen näring – klicka för att fälla ut" style="background:#f4ecfb;color:#8e44ad;border:1px solid #8e44ad;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit;">🍫 ${i.varianter.length} smaker</button>` : ''}
       ${i.uppdaterad ? ' <span class="src">uppd. ' + i.uppdaterad + '</span>' : ''}</td>
     <td class="num"><b>${(+i.pris_kr_per_kg || 0).toLocaleString('sv-SE')}${(!+i.pris_kr_per_kg && !i.noll_ok) ? ' <span title="Pris saknas – klicka ✏️ och fyll i (eller kryssa 0-ok)" style="color:#c0392b;">⚠️</span>' : ''}</b></td>
     <td class="num">${i.kcal || 0}${(!+i.kcal && !i.noll_ok) ? ' <span title="Kcal saknas – klicka ✏️ och fyll i, eller kryssa i att varan verkligen har 0 kcal" style="color:#c0392b;">⚠️</span>' : ''}</td>
@@ -170,7 +171,16 @@ function renderList() {
     <td class="num">${i.kolhydrat || 0}</td>
     <td class="num">${i.fett || 0}</td>
     <td class="num">${i.fiber || 0}</td>
-  </tr>`).join('') || '<tr><td colspan="8">🤔 Ingen träff.</td></tr>';
+  </tr>${(i.varianter && i.varianter.length) ? i.varianter.map(v => `<tr class="variantrad variant-${i.id}" style="display:none;background:rgba(142,68,173,.05);">
+    <td></td>
+    <td style="padding-left:34px;font-size:.85rem;color:#7f8c8d;">↳ ${v.smak}</td>
+    <td class="num" style="color:#a5967e;font-size:.82rem;">–</td>
+    <td class="num" style="font-size:.85rem;">${v.kcal || 0}</td>
+    <td class="num" style="font-size:.85rem;">${v.protein || 0}</td>
+    <td class="num" style="font-size:.85rem;">${v.kolhydrat || 0}</td>
+    <td class="num" style="font-size:.85rem;">${v.fett || 0}</td>
+    <td class="num" style="color:#a5967e;">–</td>
+  </tr>`).join('') : ''}`).join('') || '<tr><td colspan="8">🤔 Ingen träff.</td></tr>';
   chkChanged();
   updateBtnInfo();
 }
@@ -294,6 +304,12 @@ function toggleAll(box) {
   document.querySelectorAll('.rowChk').forEach(c => c.checked = box.checked);
   chkChanged();
 }
+function toggleVarianter(id) {
+  /* 🍫 fäll ut/ihop smakvarianternas underrader */
+  document.querySelectorAll('.variant-' + id).forEach(tr => {
+    tr.style.display = tr.style.display === 'none' ? '' : 'none';
+  });
+}
 function chkChanged() {
   const n = document.querySelectorAll('.rowChk:checked').length;
   const btn = document.getElementById('delBtn');
@@ -356,7 +372,7 @@ async function deleteChecked() {
 function monthKey() { return new Date().toISOString().slice(0, 7); }  /* "2026-08" */
 
 function autoLankad(i) {
-  return i.lank && /willys\.se|hemkop\.se|handlaprivatkund\.ica\.se/i.test(i.lank);
+  return i.lank && /^https:\/\//i.test(i.lank);   /* 🌐 ALLA butiker – roboten läser JSON-LD/og generiskt */
 }
 function updateBtnInfo() {
   const linked = ING.filter(autoLankad).length;
@@ -441,7 +457,7 @@ async function sendLink() {
   const links = raw.replace(/\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g, '$2')
     .split(/[\s\n]+/).filter(l => /^https?:\/\//.test(l));
   if (!links.length) { alert('Hittade ingen giltig länk (ska börja med https://)'); return; }
-  const auto = links.filter(l => /willys\.se|hemkop\.se|handlaprivatkund\.ica\.se/i.test(l));
+  const auto = links.filter(l => /^https:\/\//i.test(l));   /* 🌐 alla butiker till importkön */
   const other = links.filter(l => !auto.includes(l));
   if (other.length && !auto.length) {
     /* Annan butik (Systembolaget, tillverkare...) → priset kan inte hämtas
@@ -529,5 +545,5 @@ async function saveManual() {
 loadDb();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2bdd843ba482d6f',t:'MTc4Njg1NjEwNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a32719169c2ec8cb',t:'MTc4Nzk1OTc2NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
