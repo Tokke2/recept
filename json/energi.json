@@ -159,6 +159,13 @@
     "min": 1440,
     "moment": "Tillagning (🤖 auto ur receptets meta)"
    }
+  ],
+  "brod-med-rivet-apple-bakmaskin.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 180,
+    "moment": "Tillagning (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }
