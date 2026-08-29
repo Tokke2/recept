@@ -22,7 +22,7 @@
    ============================================================ */
 'use strict';
 
-const VERSION = 'maskinkok-v94';
+const VERSION = 'maskinkok-v101';
 const CACHE_CORE = VERSION + '-core';     // assets + startsida (förcachas)
 const CACHE_PAGES = VERSION + '-pages';   // recept & övriga sidor
 const CACHE_IMG = VERSION + '-img';       // bilder
@@ -66,6 +66,7 @@ const CORE = [
   'json/maskindatabas.json',
   'json/energi.json',
   'json/maskiner-index.json',
+  'images/logo-mark.svg',
   'manifest.json'
 ];
 
