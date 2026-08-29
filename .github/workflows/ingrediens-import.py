@@ -9,6 +9,9 @@
 #    json/ingredienser.json automatiskt.
 #
 # En lank per rad. Rader som borjar med # ignoreras.
+# 🌱 "EGENODLAD" efter lanken pa samma rad = egenodlad vara:
+#    naring hamtas fran butiken, pris satts till 0 kr, namnet far
+#    tillagget "hemodlad" och varan skyddas fran prisuppdateringar.
 # Finns ingrediensen redan (samma lank eller samma namn) UPPDATERAS
 # den istallet for att dubbleras. Lankfilen toms efter lyckad import.
 #
@@ -471,16 +474,39 @@ def main():
     items = db.setdefault('ingredienser', [])
     rapport = []
 
-    for lank in lankar:
+    for rad in lankar:
+        # 🌱 EGENODLAD-flaggan: "https://... EGENODLAD" pa samma rad
+        #    -> naring hamtas fran butiken som vanligt, men priset satts
+        #       till 0 kr och namnet far tillagget "hemodlad".
+        egenodlad = bool(re.search(r'\bEGENODLAD\b', rad, re.I))
+        lank = re.sub(r'\s+EGENODLAD\b', '', rad, flags=re.I).strip()
+
         post, varning = fetch_product(lank)
         if post is None:
             rapport.append('FEL  %s -> %s' % (lank[:60], varning))
             continue
-        # Uppdatera om samma lank, id ELLER liknande namn redan finns
+
+        if egenodlad:
+            # Namn: "Applen Royal Gala" -> "Applen Royal Gala hemodlad"
+            if 'hemodlad' not in post['namn'].lower():
+                post['namn'] = post['namn'].rstrip() + ' hemodlad'
+            post['id'] = slug(post['namn'])
+            post['pris_kr_per_kg'] = 0
+            post['noll_ok'] = True          # 0 kr ar avsiktligt - varna inte
+            post['egenodlad'] = True
+            # Lanken behalls som naringsreferens men pris-uppdateringen
+            # far ALDRIG skriva over 0-priset (hanteras nedan vid UPPD).
+            post['kalla'] = 'egenodlad (naring: %s)' % post.get('kalla', 'butik')
+        # Uppdatera om samma lank, id ELLER liknande namn redan finns.
+        # OBS: egenodlade och vanliga butiksvaror halls ISAR - samma
+        # Willys-lank kan finnas bade som butiksvara (med pris) och som
+        # egenodlad (0 kr), t.ex. "Applen" och "Applen hemodlad".
         def norm(s):
             return re.sub(r'[^a-z0-9]', '', slug(str(s)))
         hittad = False
         for i, g in enumerate(items):
+            if bool(g.get('egenodlad')) != egenodlad:
+                continue  # blanda aldrig ihop egenodlad <-> butiksvara
             if (g.get('lank') == post['lank'] or g.get('id') == post['id']
                     or norm(g.get('namn')).startswith(norm(post['namn']))
                     or norm(post['namn']).startswith(norm(g.get('namn')))):
