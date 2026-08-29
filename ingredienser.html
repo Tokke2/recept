@@ -51,6 +51,9 @@
   <h2>🛒 Lägg till via butikslänk (Willys / Hemköp / ICA)</h2>
   <p style="font-size:.88rem;color:var(--muted);margin-bottom:8px;">Klistra in produktlänken → sparas direkt i databasen → roboten hämtar <b>riktigt jämförpris (kr/kg) och näring per 100 g</b> inom ~1 minut.</p>
   <input type="text" id="lank" placeholder="https://www.willys.se/produkt/... · gymgrossisten.com/... · valfri butiks produktsida">
+  <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;text-transform:none;letter-spacing:0;color:var(--dark);cursor:pointer;margin-top:8px;">
+    <input type="checkbox" id="lankEgen" style="width:18px;height:18px;accent-color:var(--green);">
+    🌱 <b>Egenodlad</b> – näringen hämtas från butiken men priset sätts till <b>0 kr</b> och namnet får tillägget "hemodlad" (t.ex. äpplen &amp; grönt från egna trädgården)</label>
   <button class="btn orange" id="lankBtn" onclick="sendLink()">💾 Spara länken i databasen</button>
   <div id="lankResult"></div>
   <div class="hint">💡 Fler länkar? Klistra in flera på samma gång (mellanslag/radbrytning emellan). Finns ingrediensen redan uppdateras pris &amp; näring.<br>
@@ -163,6 +166,7 @@ function renderList() {
         ? ' <a href="' + i.lank + '" target="_blank" rel="noopener" title="Butikslänk kopplad – priset auto-uppdateras månadsvis. Klicka för att öppna butiken." style="display:inline-block;background:#eaf7ef;color:#27ae60;border:1px solid #27ae60;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;text-decoration:none;">🔗 Länkad</a>'
         : ` <button onclick="openEdit('${i.id}')" title="Ingen butikslänk – klicka för att klistra in en" style="background:#fdecea;color:#c0392b;border:1px solid #c0392b;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit;">✖ Länk saknas</button>`}
       ${i.recept ? ' <a href="recept/' + encodeURIComponent(i.recept) + '" title="Hemgjord – gjord av eget recept, klicka för att öppna det" style="display:inline-block;background:#fff8ec;color:#b8860b;border:1px solid #e6a817;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;text-decoration:none;">🫙 Eget recept</a>' : ''}
+      ${i.egenodlad ? ' <span title="Egenodlad – priset är 0 kr (näring från butikslänken)" style="display:inline-block;background:#eaf7ef;color:#27ae60;border:1px solid #27ae60;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;">🌱 Egenodlad</span>' : ''}
       ${(i.varianter && i.varianter.length) ? ` <button onclick="toggleVarianter('${i.id}')" title="${i.varianter.length} smakvarianter med egen näring – klicka för att fälla ut" style="background:#f4ecfb;color:#8e44ad;border:1px solid #8e44ad;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit;">🍫 ${i.varianter.length} smaker</button>` : ''}
       ${i.uppdaterad ? ' <span class="src">uppd. ' + i.uppdaterad + '</span>' : ''}</td>
     <td class="num"><b>${(+i.pris_kr_per_kg || 0).toLocaleString('sv-SE')}${(!+i.pris_kr_per_kg && !i.noll_ok) ? ' <span title="Pris saknas – klicka ✏️ och fyll i (eller kryssa 0-ok)" style="color:#c0392b;">⚠️</span>' : ''}</b></td>
@@ -214,6 +218,9 @@ function openEdit(id) {
       <div class="row"><label style="display:flex;align-items:center;gap:8px;font-size:.85rem;text-transform:none;letter-spacing:0;color:var(--dark);cursor:pointer;">
         <input type="checkbox" id="ei-nollok" ${i.noll_ok ? 'checked' : ''} style="width:18px;height:18px;accent-color:var(--green);">
         Varan har verkligen 0 kcal (t.ex. vatten, salt, mineralvatten) – varna inte för nollvärden</label></div>
+      <div class="row"><label style="display:flex;align-items:center;gap:8px;font-size:.85rem;text-transform:none;letter-spacing:0;color:var(--dark);cursor:pointer;">
+        <input type="checkbox" id="ei-egen" ${i.egenodlad ? 'checked' : ''} style="width:18px;height:18px;accent-color:var(--green);">
+        🌱 <b>Egenodlad</b> – priset sätts till 0 kr (näringen behålls) och namnet får tillägget "hemodlad"</label></div>
       <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
         <button class="btn" style="margin:0;" id="ei-save">💾 Spara ändringarna</button>
         <button class="btn" style="margin:0;background:#ecf0f1;color:var(--dark);" id="ei-cancel">Avbryt</button>
@@ -223,7 +230,18 @@ function openEdit(id) {
   document.body.appendChild(bg);
   /* Ursprungsvärden – för att veta om något ändrats vid klick utanför */
   const eiOrig = ['ei-namn','ei-marke','ei-pris','ei-kcal','ei-prot','ei-kolh','ei-fett','ei-fiber','ei-lank']
-    .map(id => document.getElementById(id).value).join('|') + '|' + document.getElementById('ei-nollok').checked;
+    .map(id => document.getElementById(id).value).join('|') + '|' + document.getElementById('ei-nollok').checked +
+    '|' + document.getElementById('ei-egen').checked;
+  /* 🌱 Kryssas Egenodlad i: priset nollas + namnet får "hemodlad" direkt i fälten */
+  document.getElementById('ei-egen').addEventListener('change', function () {
+    const nf = document.getElementById('ei-namn'), pf = document.getElementById('ei-pris');
+    if (this.checked) {
+      if (!/hemodlad/i.test(nf.value)) nf.value = nf.value.trim() + ' hemodlad';
+      pf.value = 0;
+    } else if (/\s*hemodlad/i.test(nf.value)) {
+      nf.value = nf.value.replace(/\s*hemodlad\s*/i, ' ').replace(/\s+/g, ' ').trim();
+    }
+  });
   /* "Hårt klick" krävs: markerar man text i ett fält och släpper musen
      utanför rutan blir click-target = bakgrunden – det ska INTE räknas.
      Endast nedtryck + släpp direkt på bakgrunden = medvetet klick utanför. */
@@ -232,7 +250,8 @@ function openEdit(id) {
   bg.addEventListener('click', e => {
     if (e.target !== bg || !eiDownOnBg || !document.getElementById('ei-namn')) return;
     const nu = ['ei-namn','ei-marke','ei-pris','ei-kcal','ei-prot','ei-kolh','ei-fett','ei-fiber','ei-lank']
-      .map(id => document.getElementById(id).value).join('|') + '|' + document.getElementById('ei-nollok').checked;
+      .map(id => document.getElementById(id).value).join('|') + '|' + document.getElementById('ei-nollok').checked +
+      '|' + document.getElementById('ei-egen').checked;
     if (nu === eiOrig) { bg.remove(); return; }   /* inget ändrat = stäng tyst */
     /* Ändringar finns → fråga i dialogen (stängs ALDRIG av misstag) */
     let fr = bg.querySelector('#ei-fraga');
@@ -270,6 +289,15 @@ function openEdit(id) {
     if (g('ei-marke')) post.varumarke = g('ei-marke');
     if (lank) { post.lank = lank; post.uppdaterad = i.uppdaterad || ''; }
     if (document.getElementById('ei-nollok').checked) post.noll_ok = true;
+    if (document.getElementById('ei-egen').checked) {
+      /* 🌱 Egenodlad: pris tvingas till 0, noll-varning av, namn "... hemodlad" */
+      post.egenodlad = true;
+      post.pris_kr_per_kg = 0;
+      post.noll_ok = true;
+      if (!/hemodlad/i.test(post.namn)) post.namn = post.namn + ' hemodlad';
+    }
+    if (i.varianter) post.varianter = i.varianter;
+    if (i.recept) post.recept = i.recept;
     if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas.'); return; }
     const btn = bg.querySelector('#ei-save');
     btn.disabled = true; btn.textContent = '⏳ Sparar...';
@@ -428,7 +456,10 @@ async function updatePrices() {
   try {
     let txt = await __MK_SPARA.load('json/ingrediens-lankar.txt');
     if (txt === null) txt = '# ingrediens-lankar\n';
-    txt = txt.replace(/\s+$/, '') + '\n' + linked.map(i => i.lank).join('\n') + '\n';
+    /* 🌱 Egenodlade varor skickar med EGENODLAD-flaggan → näringen
+       uppdateras men priset förblir 0 kr och namnet "... hemodlad" */
+    txt = txt.replace(/\s+$/, '') + '\n' +
+      linked.map(i => i.lank + (i.egenodlad ? ' EGENODLAD' : '')).join('\n') + '\n';
     res = await __MK_SPARA.save('json/ingrediens-lankar.txt', txt,
       'Månatlig prisuppdatering: ' + linked.length + ' varor');
   } catch (e) { res = { ok: false, error: e.message }; }
@@ -480,15 +511,22 @@ async function sendLink() {
   try {
     let txt = await __MK_SPARA.load('json/ingrediens-lankar.txt');
     if (txt === null) txt = '# ingrediens-lankar\n';
-    txt = txt.replace(/\s+$/, '') + '\n' + links.join('\n') + '\n';
+    /* 🌱 Egenodlad ikryssad → flaggan EGENODLAD efter länken på samma rad
+       (roboten läser flaggan: näring hämtas, pris = 0, namn får "hemodlad") */
+    const egen = document.getElementById('lankEgen') && document.getElementById('lankEgen').checked;
+    const rader = links.map(l => egen ? l + ' EGENODLAD' : l);
+    txt = txt.replace(/\s+$/, '') + '\n' + rader.join('\n') + '\n';
     res = await __MK_SPARA.save('json/ingrediens-lankar.txt', txt,
-      'Ingredienslänk via sajten (' + links.length + ' st)');
+      'Ingredienslänk via sajten (' + links.length + ' st' + (egen ? ', egenodlad' : '') + ')');
   } catch (e) { res = { ok: false, error: e.message }; }
   btn.disabled = false; btn.textContent = '💾 Spara länken i databasen';
 
   if (res.ok) {
+    const varEgen = document.getElementById('lankEgen') && document.getElementById('lankEgen').checked;
     document.getElementById('lank').value = '';
+    if (document.getElementById('lankEgen')) document.getElementById('lankEgen').checked = false;
     out.innerHTML = '<div class="okbox">🎉 <b>' + links.length + (links.length === 1 ? ' länk sparad!' : ' länkar sparade!') +
+      (varEgen ? '</b> 🌱 <b>Egenodlad:</b> näringen hämtas från butiken, priset blir 0 kr och namnet får tillägget "hemodlad".<b>' : '') +
       '</b> Roboten hämtar pris &amp; näring nu – ingrediensen dyker upp i listan nedan om <b>~1 minut</b> ' +
       '(grön bock i <a href="https://github.com/Tokke2/recept/actions" target="_blank" rel="noopener">Actions</a> → klicka 🔄 nedan).' +
       '<br><button class="btn" style="margin-top:8px;padding:8px 16px;font-size:.85rem;" onclick="loadDb()">🔄 Uppdatera listan</button></div>';
@@ -545,5 +583,5 @@ async function saveManual() {
 loadDb();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a32719169c2ec8cb',t:'MTc4Nzk1OTc2NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
