@@ -206,7 +206,8 @@
   }
 
   /* ---------- Spara (skapa eller uppdatera) en fil ---------- */
-  async function save(path, content, message) {
+  /* redanB64 = true → content är REDAN base64 (binärt: bilder m.m.) */
+  async function save(path, content, message, redanB64) {
     /* 🔒 Lösenord först (samma som las.json), sedan GitHub-nyckel */
     if (!(await requireUnlock())) return { ok: false, error: 'Avbrutet – lösenord krävs.' };
     if (!getToken()) {
@@ -225,7 +226,7 @@
         }
         if (head.ok) sha = (await head.json()).sha;
 
-        var body = { message: message || ('Sparad via sajten: ' + path), content: b64(content), branch: BRANCH };
+        var body = { message: message || ('Sparad via sajten: ' + path), content: redanB64 ? content : b64(content), branch: BRANCH };
         if (sha) body.sha = sha;
 
         var res = await api('contents/' + encodeURIComponent(path).replace(/%2F/g, '/'), {
