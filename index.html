@@ -129,6 +129,26 @@
   .reveal.in { opacity:1; transform:none; }
   @media (prefers-reduced-motion: reduce) { .reveal { opacity:1; transform:none; transition:none; } }
 
+  /* ================= 📱 MOBILANPASSNING (små skärmar) ================= */
+  @media (max-width:640px) {
+    body { -webkit-text-size-adjust:100%; }
+    .hero { padding:44px 16px 92px; }
+    .hero .est { font-size:.62rem; letter-spacing:.2em; padding:5px 14px; }
+    .hero .sub { font-size:.98rem; }
+    .hero .stats { gap:7px; }
+    .hero .stat { padding:7px 14px; font-size:.8rem; }
+    .hero .cta-row { margin-top:24px; gap:10px; flex-direction:column; align-items:stretch; padding:0 6px; }
+    .hero .cta { padding:15px 20px; font-size:1.02rem; text-align:center; }
+    .hero::after { font-size:13rem; right:-4rem; bottom:-4rem; }
+    .wrap { padding:0 14px 40px; }
+    .main-cards { margin-top:-46px; gap:12px; }
+    .mcard { padding:20px 18px; }
+    .how .step { padding:15px 16px; gap:12px; }
+    .how .step::before { width:34px; height:34px; font-size:1.1rem; }
+    section h2 { font-size:1.25rem !important; }
+    footer { padding:28px 14px; margin-top:40px; }
+  }
+
   footer {
     text-align:center; color:var(--muted); font-size:.82rem; padding:38px 20px;
     border-top:3px double var(--paper); margin-top:60px; font-family:Georgia,serif;
@@ -142,7 +162,7 @@
 
 <!-- ================= TOPPMENY ================= -->
 <nav class="topnav no-print">
-  <a class="brand" href="index.html">🍳 Mitt Maskinkök</a>
+  <a class="brand" href="index.html"><img src="images/logo-mark.svg" alt="" width="26" height="26" style="display:block;" onerror="this.outerHTML='🍳'"> Mitt Maskinkök</a>
   <a class="link hot" href="recept.html">📖 <span>Recept</span></a>
   <a class="link" href="maskindatabas.html">🔧 <span>Maskiner</span></a>
   <a class="link" href="generator.html">🧪 <span>Generator</span></a>
@@ -151,6 +171,9 @@
 
 <!-- ================= HERO ================= -->
 <header class="hero">
+  <img src="images/logo-mark.svg" alt="Mitt Maskinkök – logotyp" width="86" height="86"
+       style="display:block;margin:0 auto 10px;background:#f6f3ee;border-radius:22px;padding:9px;box-shadow:0 10px 28px rgba(0,0,0,.3);"
+       onerror="this.style.display='none'">
   <h1>Mitt Maskinkök</h1>
   <div class="tagline">— rätt maskin, rätt program, varje gång —</div>
   <p class="sub">En komplett receptsajt byggd kring köksmaskinerna: varje recept anger exakt
@@ -164,6 +187,9 @@
   <div class="cta-row">
     <a class="cta" href="recept.html">📖 Öppna receptsamlingen</a>
     <a class="cta ghost" href="maskindatabas.html">🔧 Maskindatabasen</a>
+    <button class="cta ghost" id="pwaInstallBtn" type="button"
+      style="cursor:pointer;font-family:inherit;border:1px solid rgba(255,255,255,.45);"
+      title="Installera Mitt Maskinkök som app – recepten funkar offline i köket">📱 Installera appen</button>
   </div>
 </header>
 
@@ -292,7 +318,7 @@
 </div>
 
 <footer>
-  <div class="fbrand">🍳 Mitt Maskinkök</div>
+  <div class="fbrand"><img src="images/logo-mark.svg" alt="" width="20" height="20" style="vertical-align:-4px;" onerror="this.outerHTML='🍳'"> Mitt Maskinkök</div>
   Alla program och tider verifierade mot maskinernas bruksanvisningar ·
   Kostnadsberäkningar © Rickard Längkvist<br><br>
   <a href="recept.html">Recept</a> · <a href="maskindatabas.html">Maskiner</a> ·
@@ -351,5 +377,5 @@
 })();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f8c8116f96eff0',t:'MTc4NzQ3NDEwMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3345e8b3ecb958c',t:'MTc4ODA5ODkyNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
