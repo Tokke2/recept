@@ -86,6 +86,18 @@
   })();
 
   /* ============================================================
+     CENTRAL FAVICON (logotypmärket – alla sidor från EN fil)
+     ============================================================ */
+  (function favicon() {
+    if (document.querySelector('link[rel="icon"]')) return;
+    var l = document.createElement('link');
+    l.rel = 'icon';
+    l.type = 'image/svg+xml';
+    l.href = root + 'images/logo-mark.svg';
+    document.head.appendChild(l);
+  })();
+
+  /* ============================================================
      CENTRAL TOPPMENY (hoppar över sidor med egen .topnav)
      ============================================================ */
   (function topNav() {
@@ -102,7 +114,9 @@
     nav.id = 'mk-nav';
     nav.className = 'no-print';
     nav.innerHTML =
-      '<a class="brand" href="' + root + 'index.html">🍳 Mitt Maskinkök</a>' +
+      '<a class="brand" href="' + root + 'index.html">' +
+        '<img src="' + root + 'images/logo-mark.svg" alt="" width="26" height="26" ' +
+        'style="display:block;" onerror="this.outerHTML=\'🍳\'"> Mitt Maskinkök</a>' +
       pages.map(function (p) {
         var on = here === p.file || (isRecipePage && p.file === 'recept.html');
         return '<a class="lnk' + (on ? ' on' : '') + '" href="' + root + p.file + '">' +
@@ -346,9 +360,9 @@
   ensureCss('print.css');
   ensureCss('design.css');   /* 🎨 central designfil – vinner över sidornas :root */
   var scripts = ['print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js', 'emoji.js', 'seo.js', 'hero.js'];
-  if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js');
+  if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js');
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');
-  if (/(nytt-recept|generator|maskin-import|ingredienser|maskindatabas)\.html$/i.test(location.pathname)) scripts.push('spara.js');
+  if (/(nytt-recept|generator|maskin-import|ingredienser|maskindatabas|forslag)\.html$/i.test(location.pathname)) scripts.push('spara.js');
   if (/(index\.html$|\/recept\/?$)/i.test(location.pathname)) scripts.push('hem.js');   /* 🏠 Startsidan 2.0 */
 
   Promise.all(scripts.map(function (f) { return loadScript(f); }))
