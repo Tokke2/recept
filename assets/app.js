@@ -119,6 +119,63 @@
     if (b) b.style.display = 'flex';
   });
 
+  /* ============================================================
+     📱 PWA-KNAPP PÅ STARTSIDAN (#pwaInstallBtn i hero:n)
+     · Chrome/Edge/Android: äkta install-prompt (beforeinstallprompt)
+     · iPhone/iPad & webbläsare utan prompt (Brave/Firefox): egen
+       instruktionsdialog med rätt steg för just den enheten
+     · Körs sajten redan som app → knappen döljs helt
+     ============================================================ */
+  function kopplaPwaKnapp() {
+    var btn = document.getElementById('pwaInstallBtn');
+    if (!btn) return;
+    var arApp = window.matchMedia('(display-mode: standalone)').matches ||
+                window.navigator.standalone === true;
+    if (arApp) { btn.style.display = 'none'; return; }
+
+    btn.addEventListener('click', async function () {
+      /* Äkta prompten om webbläsaren erbjuder den */
+      if (installEvent) {
+        installEvent.prompt();
+        var res = await installEvent.userChoice;
+        if (res && res.outcome === 'accepted') toast('📱 Appen installeras!');
+        installEvent = null;
+        return;
+      }
+      /* Ingen prompt (iOS, Brave, Firefox...) → visa rätt instruktioner */
+      var arIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      var old = document.getElementById('mk-pwa-bg');
+      if (old) { old.remove(); return; }
+      var bg = document.createElement('div');
+      bg.id = 'mk-pwa-bg';
+      bg.className = 'no-print';
+      bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:320;display:flex;align-items:flex-end;justify-content:center;padding:16px;';
+      bg.innerHTML =
+        '<div style="background:#fff;border-radius:18px 18px 14px 14px;max-width:430px;width:100%;padding:24px 24px 18px;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
+          '<div style="text-align:center;font-size:2.2rem;">📱</div>' +
+          '<h3 style="margin:6px 0 10px;text-align:center;">Lägg Maskinkök på hemskärmen</h3>' +
+          (arIos
+            ? '<ol style="font-size:.92rem;line-height:1.8;padding-left:22px;margin:0 0 12px;">' +
+              '<li>Tryck på <b>Dela-knappen</b> <span style="border:1.5px solid #7f8c8d;border-radius:6px;padding:0 7px;">⎋</span> längst ner i Safari</li>' +
+              '<li>Bläddra ner och välj <b>”Lägg till på hemskärmen”</b> ➕</li>' +
+              '<li>Tryck <b>Lägg till</b> – klart! 🎉</li></ol>'
+            : '<ol style="font-size:.92rem;line-height:1.8;padding-left:22px;margin:0 0 12px;">' +
+              '<li>Öppna webbläsarens <b>meny</b> (⋮ eller ☰ uppe i hörnet)</li>' +
+              '<li>Välj <b>”Installera app”</b> eller <b>”Lägg till på startskärmen”</b></li>' +
+              '<li>Bekräfta – klart! 🎉</li></ol>') +
+          '<p style="font-size:.8rem;color:#7f8c8d;margin:0 0 12px;text-align:center;">Som app öppnas recepten i helskärm och funkar <b>offline i köket</b> – även utan täckning.</p>' +
+          '<button id="mk-pwa-ok" style="display:block;width:100%;background:#c0392b;color:#fff;border:none;border-radius:11px;padding:13px;font-weight:700;font-size:.95rem;cursor:pointer;font-family:inherit;">Jag förstår</button>' +
+        '</div>';
+      document.body.appendChild(bg);
+      bg.querySelector('#mk-pwa-ok').onclick = function () { bg.remove(); };
+      var dn = false;
+      bg.addEventListener('mousedown', function (e) { dn = (e.target === bg); });
+      bg.addEventListener('click', function (e) { if (e.target === bg && dn) bg.remove(); });
+    });
+  }
+  if (document.body) kopplaPwaKnapp();
+  else document.addEventListener('DOMContentLoaded', kopplaPwaKnapp);
+
   function buildFab() {
     if (document.getElementById('mk-fab') || document.querySelector('.share-btn')) return;
 
@@ -224,6 +281,11 @@
   var isApp = window.matchMedia('(display-mode: standalone)').matches ||
               window.navigator.standalone === true ||
               location.search.indexOf('source=pwa') !== -1;
+
+  /* isSubPage = receptsida (i recept-mappen, har recept:namn-metan).
+     🐛 BUGGFIX: variabeln användes utan att vara definierad →
+     ReferenceError stoppade "Fortsätt laga"-spårningen + install-bannern. */
+  var isSubPage = !!document.querySelector('meta[name="recept:namn"]');
 
   /* ---------- Spåra senast öppnade recept (för Fortsätt laga) ---------- */
   if (isSubPage) {
