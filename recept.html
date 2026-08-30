@@ -318,6 +318,7 @@ async function init() {
         beskrivning: get('beskrivning') || 'Öppna receptet för detaljer.',
         taggar: get('taggar') ? get('taggar').split(',').map(t => t.trim()).filter(Boolean) : [],
         kategori: get('kategori'),   /* ✏️ manuellt vald i redigeringsläget – vinner över gissningen */
+        verifierad: get('verifierad'),  /* 🌟 "ÅÅÅÅ-MM-DD" = bakat & godkänt av kocken */
         maskiner,
         maskin_ids: DB.maskiner.filter(m =>
           maskiner.join(' ').toLowerCase().includes((m.modellnamn || '§').toLowerCase()) ||
@@ -400,8 +401,12 @@ function card(r) {
   const stars = r.rating
     ? `<span class="stars">${'★'.repeat(Math.round(r.rating))}${r.votes ? ` ${r.rating.toFixed(1).replace('.', ',')} (${r.votes})` : ''}</span>`
     : '';
+  /* 🌟 Verifierat = grön stjärna uppe i vänstra hörnet (betygen bor i högra) */
+  const verif = r.verifierad
+    ? `<span title="Verifierat recept – bakat &amp; godkänt av kocken ${r.verifierad}" style="position:absolute;top:10px;left:10px;width:32px;height:32px;background:#27ae60;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.05rem;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);line-height:1;">★</span>`
+    : '';
   return `<a class="rcard" href="${r.file}"${r.isPdf ? ' target="_blank" rel="noopener"' : ''}>
-    <div class="media"><span class="big-emoji">${r.emoji}</span>
+    <div class="media"><span class="big-emoji">${r.emoji}</span>${verif}
       <img src="${r.bild}" alt="" loading="lazy" data-namn="${(r.namn || '').replace(/"/g, '&quot;')}" data-emoji="${r.emoji || ''}" onerror="window.__MK_HERO_SVG ? (this.onerror=null, this.src=window.__MK_HERO_SVG(this.dataset.namn, this.dataset.emoji, 600, 320)) : this.remove()">${stars}</div>
     <div class="body">
       <h3>${r.namn}</h3>
@@ -507,5 +512,5 @@ function handleFile(file) {
 }
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a332263a6bfd5571',t:'MTc4ODA3NTY0Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
