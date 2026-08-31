@@ -89,12 +89,28 @@
      CENTRAL FAVICON (logotypmärket – alla sidor från EN fil)
      ============================================================ */
   (function favicon() {
-    if (document.querySelector('link[rel="icon"]')) return;
-    var l = document.createElement('link');
-    l.rel = 'icon';
-    l.type = 'image/svg+xml';
-    l.href = root + 'images/logo-mark.svg';
-    document.head.appendChild(l);
+    if (!document.querySelector('link[rel="icon"]')) {
+      var l = document.createElement('link');
+      l.rel = 'icon';
+      l.type = 'image/svg+xml';
+      l.href = root + 'images/logo-mark.svg';
+      document.head.appendChild(l);
+      /* 🍎 Safari stödjer INTE SVG-favicon → PNG-reserv */
+      var p = document.createElement('link');
+      p.rel = 'icon';
+      p.type = 'image/png';
+      p.setAttribute('sizes', '32x32');
+      p.href = root + 'images/favicon-32.png';
+      document.head.appendChild(p);
+    }
+    /* 🍎 iPhone/iPad "Lägg till på hemskärmen" kräver apple-touch-icon (PNG) */
+    if (!document.querySelector('link[rel="apple-touch-icon"]')) {
+      var a = document.createElement('link');
+      a.rel = 'apple-touch-icon';
+      a.setAttribute('sizes', '180x180');
+      a.href = root + 'images/apple-touch-icon.png';
+      document.head.appendChild(a);
+    }
   })();
 
   /* ============================================================
