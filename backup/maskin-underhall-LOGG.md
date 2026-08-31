@@ -22,3 +22,4 @@
 | silonn-ismaskin.json | 🔗 död manuallänk borttagen |
 | silonn-ismaskin.json | 📖 manual hittad: https://www.manualslib.com/manual/4176040/Silonn-Slim01.html |
 | 2026-08-24 | ✅ allt friskt – inga åtgärder |
+| 2026-08-31 | ✅ allt friskt – inga åtgärder |
