@@ -208,10 +208,7 @@
       "protein": 2,
       "kolhydrat": 2.8,
       "fett": 40,
-      "fiber": 0,
-      "kalla": "redigerad 2026-08-31",
-      "lank": "https://www.willys.se/produkt/Vispgradde-Farsk-40procent-101361504_ST",
-      "uppdaterad": ""
+      "fiber": 0
     },
     {
       "id": "havregryn",
@@ -318,7 +315,10 @@
       "protein": 6.5,
       "kolhydrat": 30,
       "fett": 0.5,
-      "fiber": 2.1
+      "fiber": 2.1,
+      "kalla": "redigerad 2026-08-31",
+      "lank": "https://www.willys.se/produkt/Lok-Vit-Stor-Klass-1-101331906_ST",
+      "uppdaterad": ""
     },
     {
       "id": "tomatkross",
