@@ -37,6 +37,10 @@
     '#mk-fab,#mk-top,#mk-lang{display:none!important;}' +
     /* Luft i botten så raden inte täcker innehållet */
     'body{padding-bottom:86px!important;}' +
+    /* 📱 ENDAST upp/ner-scroll på receptsidor: ingen sidledsscroll/
+       gummiband i x-led (pan-y = vertikal panorering + nyp-zoom OK).
+       Receptbyte sker ENDAST via klick på sidopilarna/bottenraden. */
+    'html,body{overflow-x:hidden!important;touch-action:pan-y pinch-zoom;}' +
 
     /* ---------- Verktygsraden ---------- */
     '#mk-rnav{position:fixed;bottom:0;left:0;right:0;z-index:115;' +
@@ -188,10 +192,12 @@
   });
 
   /* ============================================================
-     3b) ⬅️➡️ SIDOPILAR på sidorna av receptet (breda skärmar):
+     3b) ⬅️➡️ SIDOPILAR på sidorna av receptet (ALLA skärmar):
      stora fasta pilar mitt på vänster-/högerkant → föregående/
-     nästa recept med namn-tooltip. Döljs under 1150 px (mobil/
-     surfplatta har bottenraden + svepgester) och vid utskrift.
+     nästa recept med namn-tooltip. På mobil: smalare, halv-
+     genomskinliga (skymmer ej texten) men fortfarande ≥44 px
+     träffyta. Receptbyte sker ENDAST via klick på pilarna –
+     aldrig via svep (sidan scrollar bara upp/ner).
      ============================================================ */
   function byggSidopilar() {
     if (!prevFile && !nextFile) return;
@@ -203,12 +209,17 @@
         'width:52px;height:88px;border:none;cursor:pointer;color:#fff;font-size:1.7rem;font-weight:800;' +
         'background:rgba(44,62,80,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:flex;flex-direction:column;' +
         'align-items:center;justify-content:center;gap:4px;transition:background .15s,width .15s;' +
-        'font-family:Segoe UI,system-ui,sans-serif;}' +
+        'font-family:Segoe UI,system-ui,sans-serif;-webkit-tap-highlight-color:transparent;}' +
       '.mk-sidepil:hover{background:#c0392b;width:60px;}' +
       '.mk-sidepil.v{left:0;border-radius:0 16px 16px 0;}' +
       '.mk-sidepil.h{right:0;border-radius:16px 0 0 16px;}' +
       '.mk-sidepil small{font-size:.55rem;font-weight:700;opacity:.85;letter-spacing:.03em;}' +
-      '@media (max-width:1149px){.mk-sidepil{display:none!important;}}' +
+      /* 📱 Mobil/surfplatta: smalare & diskretare men lätta att träffa (≥44px) */
+      '@media (max-width:1149px){' +
+        '.mk-sidepil{width:44px;height:72px;font-size:1.35rem;background:rgba(44,62,80,.5);}' +
+        '.mk-sidepil:hover{width:44px;}' +
+        '.mk-sidepil small{font-size:.5rem;}' +
+        '.mk-sidepil:active{background:#c0392b;}}' +
       '@media print{.mk-sidepil{display:none!important;}}';
     document.head.appendChild(pcss);
     function namn(f) { return f.replace(/\.html$/i, '').replace(/[-_]+/g, ' '); }
