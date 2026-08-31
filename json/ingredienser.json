@@ -919,6 +919,19 @@
           "fett": 7.2
         }
       ]
+    },
+    {
+      "id": "vispgradde-lang-hallbarhet-36",
+      "namn": "Vispgrädde Lång Hållbarhet 36%",
+      "pris_kr_per_kg": 53.8,
+      "kcal": 345.0,
+      "protein": 2.3,
+      "kolhydrat": 3.0,
+      "fett": 36.0,
+      "fiber": 0,
+      "lank": "https://www.willys.se/produkt/Vispgradde-Lang-Hallbarhet-36procent-101173865_ST",
+      "kalla": "willys.se (jamforpris kr/l)",
+      "uppdaterad": "2026-08-31"
     }
   ]
 }
