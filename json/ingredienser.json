@@ -187,8 +187,10 @@
       "kolhydrat": 4.6,
       "fett": 3,
       "fiber": 0,
+      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-31",
       "varumarke": "Garant",
-      "kalla": "import ingredienser.json v5.1.1"
+      "lank": "https://www.willys.se/produkt/Mjolk-Langre-Hallbarhet-3procent-101233931_ST",
+      "uppdaterad": ""
     },
     {
       "id": "smor",
@@ -626,295 +628,295 @@
       "varianter": [
         {
           "smak": "Vaniljdrömmar",
-          "kcal": 395.0,
-          "protein": 75.0,
+          "kcal": 395,
+          "protein": 75,
           "kolhydrat": 8.2,
           "fett": 6.9
         },
         {
           "smak": "Kladdkaka",
-          "kcal": 384.0,
-          "protein": 71.0,
+          "kcal": 384,
+          "protein": 71,
           "kolhydrat": 8.3,
           "fett": 7.2
         },
         {
           "smak": "Kanelbulle",
-          "kcal": 386.0,
-          "protein": 74.0,
-          "kolhydrat": 7.0,
-          "fett": 7.0
+          "kcal": 386,
+          "protein": 74,
+          "kolhydrat": 7,
+          "fett": 7
         },
         {
           "smak": "Tunga Bananer med choklad",
-          "kcal": 386.0,
-          "protein": 72.0,
+          "kcal": 386,
+          "protein": 72,
           "kolhydrat": 7.9,
           "fett": 7.2
         },
         {
           "smak": "Päronglass",
-          "kcal": 392.0,
-          "protein": 75.0,
+          "kcal": 392,
+          "protein": 75,
           "kolhydrat": 7.5,
           "fett": 7.1
         },
         {
           "smak": "Mintchoklad",
-          "kcal": 384.0,
-          "protein": 71.0,
+          "kcal": 384,
+          "protein": 71,
           "kolhydrat": 7.3,
           "fett": 7.3
         },
         {
           "smak": "Chokladboll",
-          "kcal": 380.0,
-          "protein": 68.0,
+          "kcal": 380,
+          "protein": 68,
           "kolhydrat": 9.7,
           "fett": 7.2
         },
         {
           "smak": "Gräddkola",
-          "kcal": 389.0,
-          "protein": 72.0,
-          "kolhydrat": 10.0,
+          "kcal": 389,
+          "protein": 72,
+          "kolhydrat": 10,
           "fett": 6.8
         },
         {
           "smak": "Kladdkaka med jordnötssmör och kolasås",
-          "kcal": 382.0,
-          "protein": 70.0,
+          "kcal": 382,
+          "protein": 70,
           "kolhydrat": 8.2,
           "fett": 7.1
         },
         {
           "smak": "Nougatpralin",
-          "kcal": 381.0,
-          "protein": 68.0,
-          "kolhydrat": 8.0,
+          "kcal": 381,
+          "protein": 68,
+          "kolhydrat": 8,
           "fett": 7.5
         },
         {
           "smak": "Chokladtryffel",
-          "kcal": 379.0,
-          "protein": 67.0,
-          "kolhydrat": 10.0,
+          "kcal": 379,
+          "protein": 67,
+          "kolhydrat": 10,
           "fett": 7.2
         },
         {
           "smak": "Krämig Jordgubbsglass",
-          "kcal": 392.0,
-          "protein": 74.0,
+          "kcal": 392,
+          "protein": 74,
           "kolhydrat": 8.7,
           "fett": 6.9
         },
         {
           "smak": "Varm Choklad",
-          "kcal": 384.0,
-          "protein": 73.0,
+          "kcal": 384,
+          "protein": 73,
           "kolhydrat": 5.8,
           "fett": 7.4
         },
         {
           "smak": "Gammaldags Vanilj",
-          "kcal": 393.0,
-          "protein": 75.0,
+          "kcal": 393,
+          "protein": 75,
           "kolhydrat": 6.8,
-          "fett": 7.0
+          "fett": 7
         },
         {
           "smak": "Mjölkchoklad med havssalt",
-          "kcal": 387.0,
-          "protein": 72.0,
+          "kcal": 387,
+          "protein": 72,
           "kolhydrat": 6.2,
           "fett": 7.3
         },
         {
           "smak": "Cappuccino",
-          "kcal": 389.0,
-          "protein": 73.0,
+          "kcal": 389,
+          "protein": 73,
           "kolhydrat": 8.4,
-          "fett": 7.0
+          "fett": 7
         },
         {
           "smak": "Smultron",
-          "kcal": 390.0,
-          "protein": 76.0,
+          "kcal": 390,
+          "protein": 76,
           "kolhydrat": 5.8,
           "fett": 7.3
         },
         {
           "smak": "Solmogna Citroner",
-          "kcal": 392.0,
-          "protein": 74.0,
+          "kcal": 392,
+          "protein": 74,
           "kolhydrat": 8.7,
           "fett": 6.9
         },
         {
           "smak": "Cortado",
-          "kcal": 387.0,
-          "protein": 72.0,
+          "kcal": 387,
+          "protein": 72,
           "kolhydrat": 8.7,
           "fett": 6.9
         },
         {
           "smak": "Chocolate Chip Cookie",
-          "kcal": 383.0,
-          "protein": 73.0,
+          "kcal": 383,
+          "protein": 73,
           "kolhydrat": 6.2,
           "fett": 7.2
         },
         {
           "smak": "Mangoglass",
-          "kcal": 389.0,
-          "protein": 75.0,
-          "kolhydrat": 6.0,
+          "kcal": 389,
+          "protein": 75,
+          "kolhydrat": 6,
           "fett": 7.2
         },
         {
           "smak": "Salted Caramel Cookies",
-          "kcal": 384.0,
-          "protein": 73.0,
-          "kolhydrat": 7.0,
-          "fett": 7.0
+          "kcal": 384,
+          "protein": 73,
+          "kolhydrat": 7,
+          "fett": 7
         },
         {
           "smak": "Naturell",
-          "kcal": 392.0,
-          "protein": 77.0,
+          "kcal": 392,
+          "protein": 77,
           "kolhydrat": 4.3,
           "fett": 7.4
         },
         {
           "smak": "Vaniljdrömmar Mindre Söt Smak",
-          "kcal": 388.0,
-          "protein": 74.0,
+          "kcal": 388,
+          "protein": 74,
           "kolhydrat": 6.8,
           "fett": 7.1
         },
         {
           "smak": "Mjölkchoklad med Havssalt Mindre Söt Sma",
-          "kcal": 380.0,
-          "protein": 72.0,
+          "kcal": 380,
+          "protein": 72,
           "kolhydrat": 5.8,
           "fett": 7.4
         },
         {
           "smak": "Krämig Jordgubbsglass Mindre Söt Smak",
-          "kcal": 388.0,
-          "protein": 73.0,
+          "kcal": 388,
+          "protein": 73,
           "kolhydrat": 7.8,
           "fett": 7.1
         },
         {
           "smak": "Chocolate Chip Cookies Mindre Söt Smak",
-          "kcal": 383.0,
-          "protein": 73.0,
+          "kcal": 383,
+          "protein": 73,
           "kolhydrat": 5.9,
           "fett": 7.3
         },
         {
           "smak": "Päronglass Mindre Söt Smak",
-          "kcal": 388.0,
-          "protein": 75.0,
+          "kcal": 388,
+          "protein": 75,
           "kolhydrat": 6.2,
           "fett": 7.2
         },
         {
           "smak": "Kladdkaka Mindre Söt Smak",
-          "kcal": 382.0,
-          "protein": 71.0,
+          "kcal": 382,
+          "protein": 71,
           "kolhydrat": 7.4,
           "fett": 7.3
         },
         {
           "smak": "Rocky Road",
-          "kcal": 382.0,
-          "protein": 71.0,
+          "kcal": 382,
+          "protein": 71,
           "kolhydrat": 7.4,
           "fett": 7.3
         },
         {
           "smak": "Rocky Road Mindre Söt Smak",
-          "kcal": 382.0,
-          "protein": 71.0,
+          "kcal": 382,
+          "protein": 71,
           "kolhydrat": 7.1,
           "fett": 7.3
         },
         {
           "smak": "Mjukglass",
-          "kcal": 389.0,
-          "protein": 74.0,
+          "kcal": 389,
+          "protein": 74,
           "kolhydrat": 7.2,
           "fett": 7.1
         },
         {
           "smak": "Mjukglass Mindre Söt Smak",
-          "kcal": 389.0,
-          "protein": 74.0,
-          "kolhydrat": 7.0,
+          "kcal": 389,
+          "protein": 74,
+          "kolhydrat": 7,
           "fett": 7.1
         },
         {
           "smak": "Pistage",
-          "kcal": 390.0,
-          "protein": 75.0,
+          "kcal": 390,
+          "protein": 75,
           "kolhydrat": 6.8,
           "fett": 7.2
         },
         {
           "smak": "Pistage Mindre Söt Smak",
-          "kcal": 390.0,
-          "protein": 75.0,
+          "kcal": 390,
+          "protein": 75,
           "kolhydrat": 6.7,
           "fett": 7.2
         },
         {
           "smak": "& Kreatin Vaniljdrömmar",
-          "kcal": 334.0,
-          "protein": 63.0,
+          "kcal": 334,
+          "protein": 63,
           "kolhydrat": 6.5,
-          "fett": 6.0
+          "fett": 6
         },
         {
           "smak": "& Kreatin Jordgubbsglass",
-          "kcal": 334.0,
-          "protein": 63.0,
+          "kcal": 334,
+          "protein": 63,
           "kolhydrat": 7.5,
-          "fett": 6.0
+          "fett": 6
         },
         {
           "smak": "& Kreatin Mjölkchoklad havssalt",
-          "kcal": 324.0,
-          "protein": 61.0,
+          "kcal": 324,
+          "protein": 61,
           "kolhydrat": 5.4,
           "fett": 6.3
         },
         {
           "smak": "Apelsinchoklad",
-          "kcal": 387.0,
-          "protein": 72.0,
+          "kcal": 387,
+          "protein": 72,
           "kolhydrat": 6.4,
           "fett": 7.4
         },
         {
           "smak": "& Kreatin Kladdkaka",
-          "kcal": 328.0,
-          "protein": 60.0,
+          "kcal": 328,
+          "protein": 60,
           "kolhydrat": 7.3,
           "fett": 6.2
         },
         {
           "smak": "& Kreatin Gammaldags Vanilj",
-          "kcal": 389.0,
-          "protein": 76.0,
+          "kcal": 389,
+          "protein": 76,
           "kolhydrat": 5.7,
           "fett": 7.2
         },
         {
           "smak": "& Kreatin Päronglass",
-          "kcal": 388.0,
-          "protein": 75.0,
+          "kcal": 388,
+          "protein": 75,
           "kolhydrat": 6.5,
           "fett": 7.2
         }
