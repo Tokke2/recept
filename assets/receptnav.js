@@ -184,7 +184,53 @@
       nb.title = 'Nästa: ' + nextFile.replace(/\.html$/i, '').replace(/[-_]+/g, ' ');
       nb.addEventListener('click', function () { location.href = encodeURIComponent(nextFile); });
     }
+    byggSidopilar();
   });
+
+  /* ============================================================
+     3b) ⬅️➡️ SIDOPILAR på sidorna av receptet (breda skärmar):
+     stora fasta pilar mitt på vänster-/högerkant → föregående/
+     nästa recept med namn-tooltip. Döljs under 1150 px (mobil/
+     surfplatta har bottenraden + svepgester) och vid utskrift.
+     ============================================================ */
+  function byggSidopilar() {
+    if (!prevFile && !nextFile) return;
+    if (document.getElementById('mk-sidepil-css')) return;
+    var pcss = document.createElement('style');
+    pcss.id = 'mk-sidepil-css';
+    pcss.textContent =
+      '.mk-sidepil{position:fixed;top:50%;transform:translateY(-50%);z-index:96;' +
+        'width:52px;height:88px;border:none;cursor:pointer;color:#fff;font-size:1.7rem;font-weight:800;' +
+        'background:rgba(44,62,80,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:flex;flex-direction:column;' +
+        'align-items:center;justify-content:center;gap:4px;transition:background .15s,width .15s;' +
+        'font-family:Segoe UI,system-ui,sans-serif;}' +
+      '.mk-sidepil:hover{background:#c0392b;width:60px;}' +
+      '.mk-sidepil.v{left:0;border-radius:0 16px 16px 0;}' +
+      '.mk-sidepil.h{right:0;border-radius:16px 0 0 16px;}' +
+      '.mk-sidepil small{font-size:.55rem;font-weight:700;opacity:.85;letter-spacing:.03em;}' +
+      '@media (max-width:1149px){.mk-sidepil{display:none!important;}}' +
+      '@media print{.mk-sidepil{display:none!important;}}';
+    document.head.appendChild(pcss);
+    function namn(f) { return f.replace(/\.html$/i, '').replace(/[-_]+/g, ' '); }
+    if (prevFile) {
+      var vp = document.createElement('button');
+      vp.className = 'mk-sidepil v no-print';
+      vp.title = 'Föregående recept: ' + namn(prevFile);
+      vp.setAttribute('aria-label', vp.title);
+      vp.innerHTML = '←<small>Förra</small>';
+      vp.addEventListener('click', function () { location.href = encodeURIComponent(prevFile); });
+      document.body.appendChild(vp);
+    }
+    if (nextFile) {
+      var hp = document.createElement('button');
+      hp.className = 'mk-sidepil h no-print';
+      hp.title = 'Nästa recept: ' + namn(nextFile);
+      hp.setAttribute('aria-label', hp.title);
+      hp.innerHTML = '→<small>Nästa</small>';
+      hp.addEventListener('click', function () { location.href = encodeURIComponent(nextFile); });
+      document.body.appendChild(hp);
+    }
+  }
 
   /* ---------- Piltangenter (när inget kockläge/dialog är öppet) ---------- */
   document.addEventListener('keydown', function (e) {
