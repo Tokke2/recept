@@ -87,6 +87,24 @@
   }
   function match(namn, db) { var l = matchAll(namn, db); return l.length ? l[0] : null; }
 
+  /* 🌱 Para ihop hemodlad↔köpt: exakt träff på "Äpplen Royal Gala"
+     vinner annars ensam över "Äpplen Royal Gala hemodlad" (och tvärtom)
+     → motparten läggs till så källfrågan alltid kan visas. */
+  function medMotpart(kandidater, db) {
+    if (!kandidater.length) return kandidater;
+    var ut = kandidater.slice();
+    kandidater.forEach(function (k) {
+      var bas = norm(String(k.namn).replace(/hemodlad/ig, ''));
+      db.forEach(function (d) {
+        if (ut.indexOf(d) !== -1) return;
+        if (!!d.egenodlad === !!k.egenodlad) return;   /* motpart = andra sorten */
+        var dbas = norm(String(d.namn).replace(/hemodlad/ig, ''));
+        if (dbas && dbas === bas) ut.push(d);
+      });
+    });
+    return ut;
+  }
+
   /* ---------- Flera träffar → UNDERRADER i tabellen ----------
      "Hemmagjord sylt 30 g" blir en titelrad och varje databas-
      post som matchar visas som egen underrad med kcal per sylt.
@@ -109,7 +127,7 @@
     var td = tr.querySelector('td');
     if (!td) return '';
     var c = td.cloneNode(true);
-    c.querySelectorAll('.mk-saknas, .mk-prodlank, .drop, .mk-rowbtn, .mk-bytsmak, .mk-smakval').forEach(function (x) { x.remove(); });
+    c.querySelectorAll('.mk-saknas, .mk-prodlank, .drop, .mk-rowbtn, .mk-bytsmak, .mk-smakval, .mk-kallval').forEach(function (x) { x.remove(); });
     return c.textContent.replace(/💧/g, '').trim();
   }
   function readRows() {
@@ -153,6 +171,17 @@
     try { localStorage.setItem(smakKey(), JSON.stringify(m)); } catch (e) {}
   }
 
+  /* ---------- 🌱/🛒 Källval (hemodlad ELLER köpt): sparas per recept ---------- */
+  function kallaKey() { return 'mk-kalla:' + decodeURIComponent(location.pathname.split('/').pop()); }
+  function kallaGet() {
+    try { return JSON.parse(localStorage.getItem(kallaKey()) || '{}'); } catch (e) { return {}; }
+  }
+  function kallaSet(radNamn, ingId) {
+    var m = kallaGet();
+    if (ingId) m[radNamn] = ingId; else delete m[radNamn];
+    try { localStorage.setItem(kallaKey(), JSON.stringify(m)); } catch (e) {}
+  }
+
   function fmt(n, dec) {
     return n.toLocaleString('sv-SE', { minimumFractionDigits: dec === undefined ? 0 : dec, maximumFractionDigits: dec === undefined ? 1 : dec });
   }
@@ -163,7 +192,7 @@
     /* Riv gammalt (så omkörning efter redigering ger färska värden) */
     var oldBox = document.getElementById('mk-kalkyl');
     if (oldBox) oldBox.remove();
-    document.querySelectorAll('.mk-saknas, .mk-prodlank, .mk-ingsub, .mk-bytsmak, .mk-smakval').forEach(function (x) { x.remove(); });
+    document.querySelectorAll('.mk-saknas, .mk-prodlank, .mk-ingsub, .mk-bytsmak, .mk-smakval, .mk-kallval').forEach(function (x) { x.remove(); });
 
     var rows = readRows();
     if (rows.length < 2) return;
@@ -192,9 +221,65 @@
     }
 
     rows.forEach(function (r) {
-      var kandidater = matchAll(r.namn, db);
+      var kandidater = medMotpart(matchAll(r.namn, db), db);
       var ing = kandidater[0] || null;
       var g = toGrams(r.mangd, r.namn);
+
+      /* 🌱/🛒 KÄLLVAL: finns ingrediensen BÅDE som egenodlad (0 kr)
+         och köpt vara → receptet FRÅGAR vilken som används.
+         Dropdown på raden, valet sparas per recept, kalkylen räknar
+         med vald källa (hemodlad = pris 0, näringen kvar). */
+      var egna = kandidater.filter(function (k) { return k.egenodlad; });
+      var kopta = kandidater.filter(function (k) { return !k.egenodlad; });
+      if (egna.length && kopta.length) {
+        var valdaKallor = kallaGet();
+        var valtId = valdaKallor[norm(r.namn)];
+        var valdKalla = valtId ? kandidater.find(function (k) { return k.id === valtId; }) : null;
+        if (valdKalla) {
+          kandidater = [valdKalla];
+          ing = valdKalla;
+        } else {
+          /* Inget val gjort än → räkna försiktigt med KÖPTA (snitt),
+             men visa frågan tydligt på raden */
+          kandidater = kopta;
+          ing = kopta.length > 1 ? snitt(kopta) : kopta[0];
+        }
+        if (r.el) {
+          var kc = r.el.querySelector('td');
+          if (kc && !kc.querySelector('.mk-kallval')) {
+            var ks = document.createElement('select');
+            ks.className = 'mk-kallval no-print';
+            ks.title = 'Ingrediensen finns både hemodlad (0 kr) och köpt – vilken använder du? Kalkylen räknas om direkt.';
+            ks.style.cssText = 'margin-left:8px;padding:2px 6px;border:1.5px solid #27ae60;color:#27ae60;' +
+              'border-radius:999px;font-size:.72rem;font-weight:700;background:#eaf7ef;cursor:pointer;' +
+              'font-family:inherit;max-width:180px;vertical-align:middle;' +
+              (!valdKalla ? 'box-shadow:0 0 0 3px rgba(39,174,96,.25);' : '');
+            var kopts = '<option value="">❓ Hemodlad eller köpt?</option>' +
+              egna.map(function (k) {
+                return '<option value="' + k.id + '"' + (valtId === k.id ? ' selected' : '') + '>🌱 ' +
+                  k.namn + ' · 0 kr</option>';
+              }).join('') +
+              kopta.map(function (k) {
+                return '<option value="' + k.id + '"' + (valtId === k.id ? ' selected' : '') + '>🛒 ' +
+                  k.namn + ((+k.pris_kr_per_kg || 0) > 0 ? ' · ' + fmt(+k.pris_kr_per_kg, 0) + ' kr/kg' : '') + '</option>';
+              }).join('');
+            ks.innerHTML = kopts;
+            (function (radNamn) {
+              ks.addEventListener('change', function () {
+                kallaSet(radNamn, ks.value);
+                if (window.__MK_TOAST) {
+                  var o = ks.options[ks.selectedIndex];
+                  window.__MK_TOAST(ks.value ? o.text + ' – kalkylen räknas om' : '❓ Inget val – räknar med köpt');
+                }
+                run();
+              });
+              ks.addEventListener('click', function (e) { e.stopPropagation(); });
+            })(norm(r.namn));
+            kc.appendChild(ks);
+          }
+        }
+      }
+
       if (kandidater.length > 1) {
         /* 🔽 FLERA TRÄFFAR: raden blir titel, varianterna visas som
            underrader med kcal för RECEPTETS MÄNGD (t.ex. 30 g).
