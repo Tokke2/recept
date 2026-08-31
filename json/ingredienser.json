@@ -407,7 +407,10 @@
       "protein": 0,
       "kolhydrat": 0,
       "fett": 100,
-      "fiber": 0
+      "fiber": 0,
+      "kalla": "redigerad 2026-08-31",
+      "lank": "https://www.willys.se/produkt/Olivolja-Classico-Extra-Virgin-101290880_ST",
+      "uppdaterad": ""
     },
     {
       "id": "rapsolja",
