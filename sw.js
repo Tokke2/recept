@@ -22,7 +22,7 @@
    ============================================================ */
 'use strict';
 
-const VERSION = 'maskinkok-v104';
+const VERSION = 'maskinkok-v106';
 const CACHE_CORE = VERSION + '-core';     // assets + startsida (förcachas)
 const CACHE_PAGES = VERSION + '-pages';   // recept & övriga sidor
 const CACHE_IMG = VERSION + '-img';       // bilder
@@ -68,6 +68,8 @@ const CORE = [
   'json/energi.json',
   'json/maskiner-index.json',
   'images/logo-mark.svg',
+  'images/favicon-32.png',
+  'images/apple-touch-icon.png',
   'manifest.json'
 ];
 
