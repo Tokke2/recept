@@ -175,7 +175,7 @@
       "kolhydrat": 0,
       "fett": 0,
       "fiber": 0,
-      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-16",
+      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-16 · redigerad 2026-08-31",
       "noll_ok": true
     },
     {
@@ -187,10 +187,8 @@
       "kolhydrat": 4.6,
       "fett": 3,
       "fiber": 0,
-      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-31",
       "varumarke": "Garant",
-      "lank": "https://www.willys.se/produkt/Mjolk-Langre-Hallbarhet-3procent-101233931_ST",
-      "uppdaterad": ""
+      "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "smor",
