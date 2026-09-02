@@ -96,9 +96,13 @@
       var kcEl = document.getElementById('mk-ov-kcal');
       if (!krEl || !kcEl) return;
       if (tot && tot.g) {
-        if (portTal) {
-          krEl.textContent = (tot.kr / portTal).toLocaleString('sv-SE', { maximumFractionDigits: 2 }) + ' kr/portion';
-          kcEl.textContent = Math.round(tot.kcal / portTal) + ' kcal/portion';
+        /* 🍽️ kalkylens portionsinfo (antal ELLER vikt "500 g/bägare")
+           vinner över egen gissning */
+        var pi = window.__MK_KALKYL_PORT;
+        var del = pi ? (pi.typ === 'vikt' ? tot.g / pi.g : pi.n) : (portTal || 0);
+        if (del) {
+          krEl.textContent = (tot.kr / del).toLocaleString('sv-SE', { maximumFractionDigits: 2 }) + ' kr/portion';
+          kcEl.textContent = Math.round(tot.kcal / del) + ' kcal/portion';
         } else {
           krEl.textContent = tot.kr.toLocaleString('sv-SE', { maximumFractionDigits: 2 }) + ' kr totalt';
           kcEl.textContent = Math.round(tot.kcal) + ' kcal totalt';
