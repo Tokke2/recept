@@ -54,6 +54,8 @@
     if (b) b.remove();
   }
   window.__MK_SKALA_RESET = aterstall;
+  /* 🍽️ portion.js skalar ingredienserna när antal portioner ändras */
+  window.__MK_SKALA_APPLY = function (f) { applicera(f); };
 
   function applicera(f) {
     aterstall();
