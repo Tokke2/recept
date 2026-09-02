@@ -186,6 +186,28 @@
     return n.toLocaleString('sv-SE', { minimumFractionDigits: dec === undefined ? 0 : dec, maximumFractionDigits: dec === undefined ? 1 : dec });
   }
 
+  /* ---------- 🍽️ Portionsdetektering (antal ELLER vikt) ----------
+     1) Antal ur beskrivningen: "6 portioner", "12 bitar", "3 bägare"
+     2) VIKT ur sidtexten: "500 g smet i varje", "Per bägare (500 g)",
+        "portionsstorlek 500 g" → per portion = totalen × 500/totG
+        (viktbaserat är oberoende av omatchade ingredienser). */
+  function portionsInfo(totG) {
+    var beskr = (document.querySelector('meta[name="recept:beskrivning"]') || {}).content || '';
+    var pm = beskr.match(/(\d+)\s*(portioner|port\b|bitar|hundportioner|klickar|glas|bullar|pizzor|b[äa]gare|burkar|tumblers?)/i);
+    if (pm) return { typ: 'antal', n: +pm[1], rubrik: 'Per portion (' + pm[1] + ' st)' };
+    var body = document.body ? document.body.textContent : '';
+    var vm = body.match(/[Pp]er\s+(?:b[äa]gare|portion|burk|glas|tumbler)\s*\(\s*(\d{2,4})\s*g\s*\)/) ||
+             body.match(/(\d{2,4})\s*g\s+(?:smet\s+)?i\s+varje/i) ||
+             body.match(/portionsstorlek\s*(?:p[åa]|:)?\s*(\d{2,4})\s*g/i);
+    if (vm && totG > 0) {
+      var vikt = +vm[1];
+      if (vikt >= 50 && vikt <= totG) {
+        return { typ: 'vikt', g: vikt, n: Math.max(1, Math.round(totG / vikt)), rubrik: 'Per portion (' + vikt + ' g)' };
+      }
+    }
+    return null;
+  }
+
   var dbCache = null;
 
   async function run() {
@@ -470,6 +492,7 @@
 
     /* ♻️ UTBYTES-NOTIS – alltid, på alla recept (även utan kalkyl) */
     window.__MK_KALKYL_TOT = tot;   /* delas med etikett.js (burketiketter) m.fl. */
+    window.__MK_KALKYL_PORT = portionsInfo(tot.g);   /* 🍽️ delas med tydlig.js (översiktspillren) */
     (function bytesNotis() {
       if (document.getElementById('mk-byt-notis')) return;
       var ingCard0 = document.querySelector('.mk-ing-card') ||
@@ -489,8 +512,6 @@
       ingCard0.appendChild(n);
     })();
 
-    if (matched < 2) return;   /* för få träffar för att vara meningsfullt */
-
     /* ============================================================
        📊 AUTO-KORRIGERAD NÄRING (användarens regel): inklistrade
        recept kan ha egna näringstal – de RÄKNAS ALLTID OM mot
@@ -501,19 +522,32 @@
        + märks "🔄 live ur databasen". Källfilen röres aldrig.
        ============================================================ */
     (function korrigeraNaring() {
-      if (matched / rows.length < 0.8) return;
       var kort = null;
       document.querySelectorAll('.card').forEach(function (c) {
         var h = c.querySelector('h2');
         if (!kort && h && /näringsvärde/i.test(h.textContent) && !c.id) kort = c;
       });
       if (!kort || kort.getAttribute('data-mk-livekorr')) return;
+      /* 🧮 ALLA recept kontrollräknas mot databasen (användarens regel).
+         <80 % matchade → korrigera INTE siffrorna (databasen vet för
+         lite) men flagga ändå tydligt att kortet inte kunnat verifieras. */
+      if (matched / rows.length < 0.8) {
+        if (!kort.querySelector('.mk-naring-varn')) {
+          var varn = document.createElement('p');
+          varn.className = 'no-print mk-naring-varn';
+          varn.innerHTML = '⚠️ <b>Kunde inte kontrollräknas:</b> bara ' + matched + ' av ' + rows.length +
+            ' ingredienser finns i databasen – siffrorna ovan är receptets egna. ' +
+            '<a href="../ingredienser.html" style="color:#c0392b;">Lägg till de saknade</a> så live-verifieras kortet.';
+          varn.style.cssText = 'font-size:.76rem;color:#c0392b;background:#fdecea;border-radius:8px;padding:6px 10px;margin-top:8px;';
+          kort.appendChild(varn);
+        }
+        return;
+      }
 
-      var beskr0 = (document.querySelector('meta[name="recept:beskrivning"]') || {}).content || '';
-      var pm0 = beskr0.match(/(\d+)\s*(portioner|port\b|bitar|hundportioner|klickar|glas|bullar|pizzor)/i);
-      var port0 = pm0 ? +pm0[1] : 0;
-      var perPortion = /per (boll|portion|bit|glas|bulle|klick|styck)/i.test(kort.textContent) && port0;
-      var d = perPortion ? port0 : 1;
+      var pinfo0 = portionsInfo(tot.g);
+      var perPortion = /per (boll|portion|bit|glas|bulle|klick|styck|b[äa]gare|burk|tumbler)/i.test(kort.textContent) && pinfo0;
+      /* antal → dela med antalet; viktportion → andel av totalvikten */
+      var d = perPortion ? (pinfo0.typ === 'vikt' ? tot.g / pinfo0.g : pinfo0.n) : 1;
 
       var VARDEN = [
         [/^kcal|^energi/i, Math.round(tot.kcal / d) + (perPortion ? '' : ' totalt')],
@@ -550,10 +584,14 @@
       }
     })();
 
-    /* Portioner ur beskrivningen: "12 bitar", "6 portioner" */
-    var beskr = (document.querySelector('meta[name="recept:beskrivning"]') || {}).content || '';
-    var pm = beskr.match(/(\d+)\s*(portioner|port\b|bitar|hundportioner|klickar|glas)/i);
-    var port = pm ? +pm[1] : 0;
+    if (matched < 2) return;   /* för få träffar → ingen kalkylbox (varningen ovan visas ändå) */
+
+    /* 🍽️ Portioner: antal ur beskrivningen ELLER portionsvikt ur
+       sidtexten ("500 g i varje") → BÅDE totalt & per portion visas */
+    var pinfo = portionsInfo(tot.g);
+    var port = pinfo ? pinfo.n : 0;
+    /* delare: antal → dela med antalet; vikt → andel av totalvikten */
+    var pdel = pinfo ? (pinfo.typ === 'vikt' ? tot.g / pinfo.g : pinfo.n) : 1;
 
     var rad = function (et, tv, pv) {
       return '<tr><td>' + et + '</td><td style="text-align:right;font-weight:700;">' + tv + '</td>' +
@@ -569,14 +607,15 @@
       '<table style="' + css + '">' +
       '<tr><th style="text-align:left;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;"></th>' +
       '<th style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;">Totalt (~' + fmt(tot.g, 0) + ' g)</th>' +
-      (port ? '<th style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;">Per portion (' + port + ' st)</th>' : '') + '</tr>' +
-      rad('💰 Kostnad', fmt(tot.kr, 2) + ' kr', fmt(tot.kr / (port || 1), 2) + ' kr') +
-      rad('🔥 Kcal', fmt(tot.kcal, 0), fmt(tot.kcal / (port || 1), 0)) +
-      rad('💪 Protein', fmt(tot.prot) + ' g', fmt(tot.prot / (port || 1)) + ' g') +
-      rad('🍞 Kolhydrat', fmt(tot.kolh) + ' g', fmt(tot.kolh / (port || 1)) + ' g') +
-      rad('🧈 Fett', fmt(tot.fett) + ' g', fmt(tot.fett / (port || 1)) + ' g') +
-      rad('🌾 Fiber', fmt(tot.fiber) + ' g', fmt(tot.fiber / (port || 1)) + ' g') +
+      (port ? '<th style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;">' + pinfo.rubrik + '</th>' : '') + '</tr>' +
+      rad('💰 Kostnad', fmt(tot.kr, 2) + ' kr', fmt(tot.kr / pdel, 2) + ' kr') +
+      rad('🔥 Kcal', fmt(tot.kcal, 0), fmt(tot.kcal / pdel, 0)) +
+      rad('💪 Protein', fmt(tot.prot) + ' g', fmt(tot.prot / pdel) + ' g') +
+      rad('🍞 Kolhydrat', fmt(tot.kolh) + ' g', fmt(tot.kolh / pdel) + ' g') +
+      rad('🧈 Fett', fmt(tot.fett) + ' g', fmt(tot.fett / pdel) + ' g') +
+      rad('🌾 Fiber', fmt(tot.fiber) + ' g', fmt(tot.fiber / pdel) + ' g') +
       '</table>' +
+      (pinfo && pinfo.typ === 'vikt' ? '<p style="font-size:.74rem;color:#7f8c8d;margin-top:6px;">🍽️ Portionsstorlek ' + pinfo.g + ' g hittad i receptet (~' + pinfo.n + ' portioner av totalen).</p>' : '') +
       (hyd.mjol >= 50 ? (function () {
         var pct = Math.round(hyd.vatska / hyd.mjol * 100);
         var beskr = pct < 50 ? 'fast deg (bagels, kex)' :
