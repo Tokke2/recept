@@ -376,7 +376,7 @@
   ensureCss('print.css');
   ensureCss('design.css');   /* 🎨 central designfil – vinner över sidornas :root */
   var scripts = ['print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js', 'emoji.js', 'seo.js', 'hero.js'];
-  if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js');
+  if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js', 'portion.js');
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');
   if (/(nytt-recept|generator|maskin-import|ingredienser|maskindatabas|forslag)\.html$/i.test(location.pathname)) scripts.push('spara.js');
   if (/(index\.html$|\/recept\/?$)/i.test(location.pathname)) scripts.push('hem.js');   /* 🏠 Startsidan 2.0 */
