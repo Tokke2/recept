@@ -23,3 +23,7 @@
 **2026-08-29**
 
 | brod-med-rivet-apple-bakmaskin.html | ⚡ energidata skapad: clatronic-bba3774 180 min |
+
+**2026-09-04**
+
+| pizzadeg-med-50-g-rivet-apple.html | ⚡ energidata skapad: clatronic-bba3774 90 min |

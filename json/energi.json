@@ -166,6 +166,13 @@
     "min": 180,
     "moment": "Tillagning (🤖 auto ur receptets meta)"
    }
+  ],
+  "pizzadeg-med-50-g-rivet-apple.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 90,
+    "moment": "Tillagning (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }
