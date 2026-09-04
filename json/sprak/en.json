@@ -789,7 +789,22 @@
   "Jag har...": "I have...",
   "portioner": "servings",
   "maskiner": "machines",
-  "maskin": "machine"
+  "maskin": "machine",
+  "(1:30 h) och låt hela programmet gå klart": "(1:30 h) and let the whole program finish",
+  "(effekt saknas i json/maskiner/)": "(effect missing in json/machines/)",
+  "(färsk jäst: lös i vätskan först)": "(fresh yeast: dissolve in the liquid first)",
+  "(får inte röra varandra före start)": "(must not touch each other before start)",
+  "(gratis konto krävs – har du inget tar registreringen 2 minuter och du behöver aldrig mer använda det). Ditt förslag hamnar i listan nedan där alla kan rösta på det. 👍": "(free account required - if you don't have one, registration takes 2 minutes and you never need to use it again). Your suggestion ends up in the list below where everyone can vote on it. 👍",
+  "(grön knapp) → vänta på grön bock i Actions → klart! ✅": "(green button) → wait for green tick in Actions → done! ✅",
+  "(håll Start/Stop tills signal). Degen ska vara samlad men lätt klibbig – inte helt slät": "(hold Start/Stop until signal). The dough should come together but slightly sticky - not completely smooth",
+  "(krämigast)": "(creamiest)",
+  "(laddas upp automatiskt till images/),": "(automatically uploaded to images/),",
+  "(länken hamnar på maskinkortet).": "(the link ends up on the machine card).",
+  "(max 480 px)": "(max 480px)",
+  "(rör + gräddar)": "(pipes + creams)",
+  "(över- + undervärme) i 10–15 min": "(top + bottom heat) for 10–15 min",
+  "(💧 blöta överst – i maskinen först)": "(💧 wet at the top - in the machine first)",
+  "(💧 vätskor överst – i maskinen först)": "(💧 liquids at the top – in the machine first)"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -799,6 +814,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 788,
+ "_auto_genererade": 803,
  "_senast_robot": "2026-09-04"
 }
