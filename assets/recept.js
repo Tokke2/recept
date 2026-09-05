@@ -201,6 +201,7 @@
   function close() {
     stopAllaTimers();
     stopSpeak();
+    rostStopp();   /* 🎤 mikrofonen ALLTID av när kockläget stängs */
     if (overlay) overlay.remove();
     overlay = null;
     document.body.style.overflow = '';
@@ -344,6 +345,88 @@
     if (el) el.textContent = speaking ? '🔇 Tyst' : '🔊 Läs upp';
   }
 
+  /* ============================================================
+     🗣️ RÖSTSTYRNING (roadmap 12): Web Speech API (sv-SE).
+     Kommandon: "nästa" · "tillbaka"/"föregående" · "timer"/
+     "starta timern" · "läs upp" · "tyst" · "stäng".
+     🎤-knappen slår PÅ/AV – mikrofonen är ALDRIG på utan aktivt
+     val och stängs alltid när kockläget stängs. Saknas stödet
+     (Brave/Firefox) visas ingen knapp alls.
+     ============================================================ */
+  var RostAPI = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  var rostAktiv = false, rostIgang = false, rec = null, rostFeedback = '';
+
+  function rostStart() {
+    if (!RostAPI || rostIgang) return;
+    rec = new RostAPI();
+    rec.lang = 'sv-SE';
+    rec.continuous = true;
+    rec.interimResults = false;
+    rec.onresult = function (e) {
+      var txt = '';
+      for (var i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) txt += e.results[i][0].transcript + ' ';
+      }
+      txt = txt.toLowerCase().trim();
+      if (txt) rostKommando(txt);
+    };
+    rec.onend = function () {
+      rostIgang = false;
+      /* håll igång så länge användaren inte stängt av (webbläsare
+         avbryter själva efter tystnad) */
+      if (rostAktiv && overlay) { try { rec.start(); rostIgang = true; } catch (e) {} }
+      else paintRost();
+    };
+    rec.onerror = function (e) {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        rostAktiv = false; rostIgang = false;
+        rostFeedback = '🚫 Mikrofon nekad';
+        paintRost();
+      }
+    };
+    try { rec.start(); rostIgang = true; } catch (e) {}
+    paintRost();
+  }
+  function rostStopp() {
+    rostAktiv = false;
+    if (rec) { try { rec.stop(); } catch (e) {} }
+    rostIgang = false;
+    paintRost();
+  }
+  function rostKommando(txt) {
+    var s = steps[idx];
+    if (/\bnästa\b|\bnesta\b|framåt/.test(txt)) { blink('→ Nästa'); next(); }
+    else if (/tillbaka|föregående|backa/.test(txt)) { blink('← Tillbaka'); prev(); }
+    else if (/starta.*(timer|klocka)|\btimer\b/.test(txt)) {
+      var t = findTimes(s.plain);
+      if (t.length) { blink('⏱️ ' + t[0].label); startTimer(t[0].sec, t[0].label); }
+      else blink('⏱️ Ingen tid i steget');
+    }
+    else if (/läs\s*upp|läsupp/.test(txt)) { blink('🔊 Läser'); speak(s.plain); }
+    else if (/\btyst\b|sluta läs/.test(txt)) { blink('🔇 Tyst'); stopSpeak(); paintSpeak(); }
+    else if (/stäng kockläge|avsluta kockläge/.test(txt)) { close(); }
+  }
+  function blink(msg) {
+    rostFeedback = msg;
+    paintRost();
+    setTimeout(function () { rostFeedback = ''; paintRost(); }, 2500);
+  }
+  function paintRost() {
+    if (!overlay) return;
+    var b = overlay.querySelector('#cmRost');
+    if (b) {
+      b.textContent = rostAktiv ? '🎤' : '🎙️';
+      b.style.background = rostAktiv ? '#27ae60' : 'rgba(255,255,255,.15)';
+      b.title = rostAktiv ? 'Röststyrning PÅ – säg "nästa", "tillbaka", "timer", "läs upp", "tyst" (klicka för att stänga av)'
+                          : 'Röststyrning: bläddra med rösten – mjöliga händer? (klicka för att slå på)';
+    }
+    var f = overlay.querySelector('#cmRostInfo');
+    if (f) {
+      f.textContent = rostFeedback || (rostAktiv ? '🎤 Lyssnar: "nästa" · "tillbaka" · "timer" · "läs upp" · "tyst"' : '');
+      f.style.display = (rostAktiv || rostFeedback) ? 'block' : 'none';
+    }
+  }
+
   /* ================== RENDERING ================== */
   function render() {
     stopSpeak();   /* multitimern rullar vidare över stegbyten */
@@ -358,6 +441,7 @@
         '<div style="display:flex;gap:6px;flex-shrink:0;">' +
           '<button id="cmFontM" title="Mindre text (' + Math.round(fontScale * 100) + '%)" style="' + miniBtn() + '">A−</button>' +
           '<button id="cmFontP" title="Större text (' + Math.round(fontScale * 100) + '%)" style="' + miniBtn() + '">A+</button>' +
+          (RostAPI ? '<button id="cmRost" style="' + miniBtn() + '">🎙️</button>' : '') +
           (ingHTML ? '<button id="cmIng" style="' + miniBtn() + '">🧾</button>' : '') +
           '<button id="cmClose" style="' + miniBtn() + '">✕</button>' +
         '</div>' +
@@ -371,6 +455,8 @@
       '</div>' +
       /* ⏲️ Multitimer-rad: överlever stegbyten (fylls av paintTimers) */
       '<div id="cmTimers" style="display:none;flex-wrap:wrap;gap:7px;margin-bottom:8px;"></div>' +
+      /* 🎤 Röststyrningens statusrad (fylls av paintRost) */
+      '<div id="cmRostInfo" style="display:none;background:rgba(39,174,96,.2);border:1px solid rgba(39,174,96,.5);border-radius:9px;padding:6px 12px;font-size:.85rem;margin-bottom:8px;"></div>' +
       /* Steget + ingrediensmängder som nämns i steget */
       /* margin:auto 0 istället för justify-content:center → toppen klipps
          ALDRIG bort vid stor zoom (flex-centrering + overflow-bugg) */
@@ -422,6 +508,15 @@
     overlay.querySelector('#cmFontP').onclick = function () { fontScale = Math.min(3.0, fontScale + 0.25); save(); render(); };
     overlay.querySelector('#cmFontM').onclick = function () { fontScale = Math.max(0.7, fontScale - 0.25); save(); render(); };
     overlay.querySelector('#cmSpeak').onclick = function () { speaking ? (stopSpeak(), paintSpeak()) : speak(s.plain); };
+    /* 🎤 Röststyrning på/av (knappen finns bara när webbläsaren stödjer det) */
+    var rostBtn = overlay.querySelector('#cmRost');
+    if (rostBtn) {
+      rostBtn.onclick = function () {
+        if (rostAktiv) { rostStopp(); }
+        else { rostAktiv = true; rostFeedback = ''; rostStart(); }
+      };
+      paintRost();   /* återställ knappens läge efter stegbyte */
+    }
     overlay.querySelectorAll('.cmT').forEach(function (b) {
       b.onclick = function () { startTimer(+b.dataset.s, b.dataset.l); };
     });
