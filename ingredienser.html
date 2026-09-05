@@ -156,16 +156,18 @@ function renderList() {
   });
   document.getElementById('count').textContent = list.length === ING.length
     ? ING.length + ' ingredienser' : list.length + ' av ' + ING.length + ' ingredienser';
-  document.getElementById('rows').innerHTML = list.map(i => `<tr style="background:${i.lank ? 'rgba(39,174,96,.06)' : 'rgba(192,57,43,.05)'};">
+  document.getElementById('rows').innerHTML = list.map(i => `<tr style="background:${i.recept ? 'rgba(230,168,23,.14)' : i.lank ? 'rgba(39,174,96,.06)' : 'rgba(192,57,43,.05)'};${i.recept ? 'border-left:4px solid #e6a817;' : ''}">
     <td><input type="checkbox" class="rowChk" data-id="${i.id}" onclick="chkChanged()"></td>
     <td>
       <button class="editIng no-print" data-id="${i.id}" onclick="openEdit('${i.id}')" title="Redigera ingrediensen (ändra värden eller klistra in butikslänk)"
         style="background:#f0ebe3;border:none;border-radius:6px;cursor:pointer;font-size:.85rem;padding:3px 8px;margin-right:6px;">✏️</button>
       ${i.namn}${i.varumarke ? ' <span class="src">' + i.varumarke + '</span>' : ''}
-      ${i.lank
+      ${i.recept ? '' : i.lank
         ? ' <a href="' + i.lank + '" target="_blank" rel="noopener" title="Butikslänk kopplad – priset auto-uppdateras månadsvis. Klicka för att öppna butiken." style="display:inline-block;background:#eaf7ef;color:#27ae60;border:1px solid #27ae60;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;text-decoration:none;">🔗 Länkad</a>'
         : ` <button onclick="openEdit('${i.id}')" title="Ingen butikslänk – klicka för att klistra in en" style="background:#fdecea;color:#c0392b;border:1px solid #c0392b;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit;">✖ Länk saknas</button>`}
-      ${i.recept ? ' <a href="recept/' + encodeURIComponent(i.recept) + '" title="Hemgjord – gjord av eget recept, klicka för att öppna det" style="display:inline-block;background:#fff8ec;color:#b8860b;border:1px solid #e6a817;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;text-decoration:none;">🫙 Eget recept</a>' : ''}
+      ${i.recept ? ' <a href="recept/' + encodeURIComponent(i.recept) + '" title="Hemgjord – pris & näring räknas från receptet den skapades av. Klicka för att öppna receptet." style="display:inline-block;background:#e6a817;color:#fff;border:1px solid #b8860b;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;text-decoration:none;">🫙 Eget recept</a>' : ''}
+      ${i.grupp ? ' <span title="Grupp: byt sort/smak direkt i recepten" style="display:inline-block;background:#fff8ec;color:#b8860b;border:1px dashed #b8860b;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;">📦 ' + i.grupp + '</span>' : ''}
+      ${(i.alias && i.alias.length) ? ' <span title="Alias (matchade receptnamn): ' + i.alias.join(' · ').replace(/"/g,'&quot;') + '" style="display:inline-block;background:#eef7fb;color:#3498db;border:1px solid #3498db;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;">🔗 ' + i.alias.length + ' alias</span>' : ''}
       ${i.egenodlad ? ' <span title="Egenodlad – priset är 0 kr (näring från butikslänken)" style="display:inline-block;background:#eaf7ef;color:#27ae60;border:1px solid #27ae60;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;">🌱 Egenodlad</span>' : ''}
       ${(i.varianter && i.varianter.length) ? ` <button onclick="toggleVarianter('${i.id}')" title="${i.varianter.length} smakvarianter med egen näring – klicka för att fälla ut" style="background:#f4ecfb;color:#8e44ad;border:1px solid #8e44ad;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit;">🍫 ${i.varianter.length} smaker</button>` : ''}
       ${i.uppdaterad ? ' <span class="src">uppd. ' + i.uppdaterad + '</span>' : ''}</td>
@@ -212,7 +214,10 @@ function openEdit(id) {
       <div class="row">${f('Namn *', 'ei-namn', i.namn)}${f('Varumärke', 'ei-marke', i.varumarke || '')}</div>
       <div class="row">${f('Pris kr/kg *', 'ei-pris', i.pris_kr_per_kg, '0.01')}${f('Kcal /100 g *', 'ei-kcal', i.kcal, '0.1')}</div>
       <div class="row">${f('Protein g', 'ei-prot', i.protein || 0, '0.1')}${f('Kolhydrat g', 'ei-kolh', i.kolhydrat || 0, '0.1')}${f('Fett g', 'ei-fett', i.fett || 0, '0.1')}${f('Fiber g', 'ei-fiber', i.fiber || 0, '0.1')}</div>
-      <div class="row"><div style="flex:1;"><label>🔗 Länk – valfri butik ${i.lank ? '– kopplad ✅' : '– SAKNAS, klistra in!'}</label>
+      <div class="row"><div style="flex:1;"><label>📦 Grupp (valfri – t.ex. "hemgjord sylt": alla i samma grupp kan skiftas i recepten)</label>
+        <input type="text" id="ei-grupp" list="ei-grupplista" value="${(i.grupp || '').replace(/"/g, '&quot;')}" placeholder="t.ex. hemgjord sylt · proteinpulver · müsli">
+        <datalist id="ei-grupplista">${[...new Set(ING.map(x => x.grupp).filter(Boolean))].map(g => '<option value="' + String(g).replace(/"/g, '&quot;') + '">').join('')}</datalist></div></div>
+      <div class="row"><div style="flex:1;"><label>🔗 Länk – valfri butik ${i.recept ? '– hemgjord (🫙 näring & pris ur receptet, ingen butikslänk behövs)' : i.lank ? '– kopplad ✅' : '– SAKNAS, klistra in!'}</label>
         <input type="text" id="ei-lank" value="${(i.lank || '').replace(/"/g, '&quot;')}" placeholder="Willys/Hemköp/ICA = auto-prisuppdatering · Systembolaget m.fl. = referenslänk">
         <div style="font-size:.72rem;color:var(--muted);margin-top:3px;">Willys/Hemköp/ICA-länkar prisuppdateras automatiskt varje månad. Andra butiker (t.ex. Systembolaget) sparas som klickbar referens.</div></div></div>
       <div class="row"><label style="display:flex;align-items:center;gap:8px;font-size:.85rem;text-transform:none;letter-spacing:0;color:var(--dark);cursor:pointer;">
@@ -229,7 +234,7 @@ function openEdit(id) {
     </div>`;
   document.body.appendChild(bg);
   /* Ursprungsvärden – för att veta om något ändrats vid klick utanför */
-  const eiOrig = ['ei-namn','ei-marke','ei-pris','ei-kcal','ei-prot','ei-kolh','ei-fett','ei-fiber','ei-lank']
+  const eiOrig = ['ei-namn','ei-marke','ei-pris','ei-kcal','ei-prot','ei-kolh','ei-fett','ei-fiber','ei-lank','ei-grupp']
     .map(id => document.getElementById(id).value).join('|') + '|' + document.getElementById('ei-nollok').checked +
     '|' + document.getElementById('ei-egen').checked;
   /* 🌱 Kryssas Egenodlad i: priset nollas + namnet får "hemodlad" direkt i fälten */
@@ -249,7 +254,7 @@ function openEdit(id) {
   bg.addEventListener('mousedown', e => { eiDownOnBg = (e.target === bg); });
   bg.addEventListener('click', e => {
     if (e.target !== bg || !eiDownOnBg || !document.getElementById('ei-namn')) return;
-    const nu = ['ei-namn','ei-marke','ei-pris','ei-kcal','ei-prot','ei-kolh','ei-fett','ei-fiber','ei-lank']
+    const nu = ['ei-namn','ei-marke','ei-pris','ei-kcal','ei-prot','ei-kolh','ei-fett','ei-fiber','ei-lank','ei-grupp']
       .map(id => document.getElementById(id).value).join('|') + '|' + document.getElementById('ei-nollok').checked +
       '|' + document.getElementById('ei-egen').checked;
     if (nu === eiOrig) { bg.remove(); return; }   /* inget ändrat = stäng tyst */
@@ -288,6 +293,8 @@ function openEdit(id) {
     };
     if (g('ei-marke')) post.varumarke = g('ei-marke');
     if (lank) { post.lank = lank; post.uppdaterad = i.uppdaterad || ''; }
+    if (g('ei-grupp')) post.grupp = g('ei-grupp');           /* 📦 skiftbar i recepten */
+    if (i.alias && i.alias.length) post.alias = i.alias;      /* 🔗 matchade receptnamn behålls */
     if (document.getElementById('ei-nollok').checked) post.noll_ok = true;
     if (document.getElementById('ei-egen').checked) {
       /* 🌱 Egenodlad: pris tvingas till 0, noll-varning av, namn "... hemodlad" */
