@@ -154,7 +154,16 @@
     if (!recept.length) return;
 
     var v = veckonr(new Date());
-    var veckans = recept[v % recept.length];
+    /* 🎲 SLUMPAS per vecka: seedad slump (år+vecka) → hoppar oförutsägbart
+       i samlingen men är SAMMA för alla besökare hela veckan. Byts måndag. */
+    var seed = (new Date().getFullYear() * 100 + v) | 0;
+    function slump(s) {
+      s = (s ^ 0x9e3779b9) | 0;
+      s = Math.imul(s ^ (s >>> 16), 0x45d9f3b);
+      s = Math.imul(s ^ (s >>> 16), 0x45d9f3b);
+      return ((s ^ (s >>> 16)) >>> 0) / 4294967296;
+    }
+    var veckans = recept[Math.floor(slump(seed) * recept.length)];
 
     var billigast = null, lagst = Infinity;
     try {
