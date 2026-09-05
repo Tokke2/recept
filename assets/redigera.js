@@ -1081,7 +1081,7 @@
     clone.querySelectorAll('#mk-editbar, .mk-rowbtn, .mk-addrow, #mk-rnav, #mk-fab, #mk-top, #mk-qty, #mk-komp, ' +
       '#mk-lang, #mk-auto-qr, #mk-provenance, #mk-betyg, #mk-maskinmatch, #mk-kalkyl, #mk-donation, #mk-aff-disclosure, ' +
       '.share-btn, .print-btn, [id^="mk-pd"], [id^="mk-pw"], [id^="mk-swish"], ' +
-      '.mk-saknas, .mk-prodlank, .mk-ingsub, #mk-byt-notis, .mk-ingsok, .mk-bytsmak, .mk-smakval, .mk-kallval, #mk-kedja, #mk-kommentarer, #mk-komm-pill, ' +
+      '.mk-saknas, .mk-prodlank, .mk-ingsub, #mk-byt-notis, .mk-ingsok, .mk-bytsmak, .mk-smakval, .mk-kallval, .mk-gruppval, #mk-match-bg, #mk-kedja, #mk-kommentarer, #mk-komm-pill, ' +
       '#mk-verif-badge, #mk-verif-info, #mk-verif-bg, .mk-sidepil, #mk-sidepil-css, #cmResume, #mk-portion').forEach(function (el) { el.remove(); });
     /* 🌡️ Enhets-spans + ⚖️ skalnings-spans + ✨ steg-markeringar → exakt originaltext */
     clone.querySelectorAll('span.mk-enh, span.mk-skala, span.mk-stegmark').forEach(function (s) {
