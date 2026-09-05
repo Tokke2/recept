@@ -167,8 +167,13 @@
       <input type="text" id="q" placeholder="🔍 Sök i fliken..." oninput="apply()">
       <select id="sort" onchange="apply()">
         <option value="name">A–Ö</option>
-        <option value="rating">Betyg</option>
-        <option value="new">Nyast</option>
+        <option value="nameRev">Ö–A</option>
+        <option value="rating">⭐ Bäst betyg</option>
+        <option value="billig">💰 Billigast/portion</option>
+        <option value="snabb">⏱️ Kortast maskintid</option>
+        <option value="verif">🌟 Verifierade först</option>
+        <option value="new">🆕 Nyast</option>
+        <option value="random">🎲 Slumpa</option>
       </select>
     </div>
     <div class="result-count" id="count"></div>
@@ -417,12 +422,33 @@ function card(r) {
     </div></a>`;
 }
 
+/* 💰⏱️ Sorteringshjälpare: pris ur beskrivningen ("~56 kr", "0,09 kr/portion"),
+   maskintid ur recept:maskiner-metan ("25–40 min", "3:00 h", "24 h") */
+function prisUr(r) {
+  const m = (r.beskrivning || '').match(/([\d]+[.,]?\d*)\s*kr/i);
+  return m ? parseFloat(m[1].replace(',', '.')) : null;
+}
+function tidUr(r) {
+  const txt = (r.maskiner || []).join(' ');
+  let min = null;
+  let m = txt.match(/(\d+)(?:\s*[–-]\s*\d+)?\s*min/i);
+  if (m) min = +m[1];
+  m = txt.match(/(\d+)(?::(\d+))?\s*h\b/i);
+  if (m) { const h = +m[1] * 60 + (+m[2] || 0); min = min === null ? h : Math.max(min, h); }
+  return min;
+}
+
 function apply() {
   const q = (document.getElementById('q').value || '').trim().toLowerCase();
   const sort = document.getElementById('sort').value;
   let list = [...RECIPES];
   if (sort === 'rating') list.sort((a, b) => b.rating - a.rating);
   else if (sort === 'new') list.reverse();
+  else if (sort === 'nameRev') list.sort((a, b) => b.namn.localeCompare(a.namn, 'sv'));
+  else if (sort === 'billig') list.sort((a, b) => (prisUr(a) ?? 1e9) - (prisUr(b) ?? 1e9));
+  else if (sort === 'snabb') list.sort((a, b) => (tidUr(a) ?? 1e9) - (tidUr(b) ?? 1e9));
+  else if (sort === 'verif') list.sort((a, b) => (b.verifierad ? 1 : 0) - (a.verifierad ? 1 : 0) || b.rating - a.rating || a.namn.localeCompare(b.namn, 'sv'));
+  else if (sort === 'random') { for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; } }
 
   const filtered = list.filter(r => {
     const text = (r.namn + ' ' + r.beskrivning + ' ' + r.taggar.join(' ') + ' ' + r.maskiner.join(' ')).toLowerCase();
