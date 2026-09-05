@@ -70,15 +70,23 @@
     for (var i = 0; i < db.length; i++) {
       var d = norm(db[i].namn);
       var score = 0;
-      if (d === n) score = 100;
-      else if (n.indexOf(d) === 0 || d.indexOf(n) === 0) score = 80;
-      else {
-        /* ordöverlapp: andel av db-ordens träffar i receptnamnet */
-        var dw = d.split(' ').filter(function (w) { return w.length > 2; });
-        var hits = dw.filter(function (w) { return (' ' + n + ' ').indexOf(' ' + w + ' ') !== -1; }).length;
-        if (dw.length && hits === dw.length) score = 60;
-        else if (hits >= 2) score = 40;
-        else if (hits === 1 && dw.length === 1) score = 30;
+      /* 🔗 ALIAS: manuellt kopplade receptnamn ("Hemgjord sylt (t.ex.
+         svartvinbär)" → svartvinbärssylt-posten) vinner alltid */
+      var alias = db[i].alias || [];
+      for (var ai = 0; ai < alias.length; ai++) {
+        if (norm(alias[ai]) === n) { score = 100; break; }
+      }
+      if (!score) {
+        if (d === n) score = 100;
+        else if (n.indexOf(d) === 0 || d.indexOf(n) === 0) score = 80;
+        else {
+          /* ordöverlapp: andel av db-ordens träffar i receptnamnet */
+          var dw = d.split(' ').filter(function (w) { return w.length > 2; });
+          var hits = dw.filter(function (w) { return (' ' + n + ' ').indexOf(' ' + w + ' ') !== -1; }).length;
+          if (dw.length && hits === dw.length) score = 60;
+          else if (hits >= 2) score = 40;
+          else if (hits === 1 && dw.length === 1) score = 30;
+        }
       }
       if (score > bestScore) { bestScore = score; list = [db[i]]; }
       else if (score === bestScore && score >= 30) list.push(db[i]);
@@ -86,6 +94,89 @@
     return bestScore >= 30 ? list : [];
   }
   function match(namn, db) { var l = matchAll(namn, db); return l.length ? l[0] : null; }
+
+  /* ============================================================
+     🔗 MATCHA SAKNAD INGREDIENS: receptets rad ("Hemgjord sylt
+     (t.ex. svartvinbär)") kopplas till en BEFINTLIG databaspost →
+     receptnamnet sparas som alias på posten (json/ingredienser.json,
+     lösenordsskyddat via __MK_SPARA). Alla recept med samma
+     formulering matchar sedan direkt. Egen dialog, hårt-klick.
+     ============================================================ */
+  function oppnaMatchning(radNamn, db) {
+    var old = document.getElementById('mk-match-bg');
+    if (old) old.remove();
+    var bg = document.createElement('div');
+    bg.id = 'mk-match-bg';
+    bg.className = 'no-print';
+    bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:320;display:flex;align-items:center;justify-content:center;padding:16px;';
+    var sorterade = db.slice().sort(function (a, b) { return String(a.namn).localeCompare(String(b.namn), 'sv'); });
+    bg.innerHTML =
+      '<div style="background:#fff;border-radius:16px;max-width:480px;width:100%;padding:24px 26px;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
+        '<h3 style="margin:0 0 4px;">🔗 Matcha ingrediensen</h3>' +
+        '<p style="font-size:.85rem;color:#7f8c8d;margin:0 0 12px;">Receptet skriver <b>"' + radNamn + '"</b> – vilken vara i databasen är det? ' +
+        'Kopplingen sparas som alias: alla recept med samma formulering matchar sedan automatiskt.</p>' +
+        '<input id="mk-match-sok" type="text" placeholder="🔍 Sök vara..." style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.92rem;font-family:inherit;margin-bottom:8px;">' +
+        '<div id="mk-match-lista" style="max-height:260px;overflow:auto;border:1.5px solid #f0ebe3;border-radius:10px;"></div>' +
+        '<div style="display:flex;gap:8px;margin-top:12px;">' +
+          '<a href="../ingredienser.html" style="flex:1;text-align:center;background:#f0ebe3;color:#2c3e50;border-radius:10px;padding:11px;font-weight:700;font-size:.85rem;text-decoration:none;">➕ Finns inte – lägg till ny</a>' +
+          '<button id="mk-match-avbryt" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;font-family:inherit;">Avbryt</button>' +
+        '</div>' +
+        '<div id="mk-match-result" style="margin-top:8px;font-size:.85rem;"></div>' +
+      '</div>';
+    document.body.appendChild(bg);
+    var lista = bg.querySelector('#mk-match-lista');
+    function rita(filter) {
+      var f = norm(filter || '');
+      lista.innerHTML = sorterade.filter(function (d) {
+        return !f || norm(d.namn).indexOf(f) !== -1;
+      }).slice(0, 60).map(function (d) {
+        return '<button class="mk-match-val" data-id="' + d.id + '" style="display:block;width:100%;text-align:left;background:none;' +
+          'border:none;border-bottom:1px solid #f0ebe3;padding:9px 12px;font-size:.88rem;cursor:pointer;font-family:inherit;color:#2c3e50;">' +
+          (d.egenodlad ? '🌱 ' : d.recept ? '🫙 ' : '🛒 ') + d.namn +
+          ' <span style="color:#a5967e;font-size:.75rem;">' + fmt(+d.kcal || 0, 0) + ' kcal · ' +
+          ((+d.pris_kr_per_kg || 0) > 0 ? fmt(+d.pris_kr_per_kg, 0) + ' kr/kg' : '0 kr') + '</span></button>';
+      }).join('') || '<p style="padding:12px;font-size:.85rem;color:#7f8c8d;">Ingen träff.</p>';
+      lista.querySelectorAll('.mk-match-val').forEach(function (b) {
+        b.onclick = function () { sparaAlias(bg, radNamn, b.getAttribute('data-id')); };
+      });
+    }
+    rita('');
+    bg.querySelector('#mk-match-sok').addEventListener('input', function () { rita(this.value); });
+    bg.querySelector('#mk-match-avbryt').onclick = function () { bg.remove(); };
+    var dn = false;
+    bg.addEventListener('mousedown', function (e) { dn = (e.target === bg); });
+    bg.addEventListener('click', function (e) { if (e.target === bg && dn) bg.remove(); });
+  }
+
+  async function sparaAlias(bg, radNamn, ingId) {
+    var out = bg.querySelector('#mk-match-result');
+    if (!window.__MK_SPARA) { out.innerHTML = '<span style="color:#c0392b;">Spara-modulen saknas – ladda om sidan.</span>'; return; }
+    out.innerHTML = '⏳ Sparar kopplingen...';
+    var res = { ok: false, error: 'okänt fel' };
+    try {
+      var raw = await window.__MK_SPARA.load('json/ingredienser.json');
+      if (!raw) throw new Error('kunde inte läsa databasen');
+      var db2 = JSON.parse(raw);
+      var post = (db2.ingredienser || []).find(function (x) { return x.id === ingId; });
+      if (!post) throw new Error('varan hittades inte');
+      post.alias = post.alias || [];
+      if (post.alias.indexOf(radNamn) === -1) post.alias.push(radNamn);
+      res = await window.__MK_SPARA.save('json/ingredienser.json', JSON.stringify(db2, null, 2),
+        'Alias: "' + radNamn.slice(0, 50) + '" → ' + post.namn);
+    } catch (e) { res = { ok: false, error: e.message }; }
+    if (res.ok) {
+      /* uppdatera lokala cachen + räkna om direkt */
+      if (dbCache) {
+        var lokal = dbCache.find(function (x) { return x.id === ingId; });
+        if (lokal) { lokal.alias = lokal.alias || []; if (lokal.alias.indexOf(radNamn) === -1) lokal.alias.push(radNamn); }
+      }
+      bg.remove();
+      if (window.__MK_TOAST) window.__MK_TOAST('🔗 Matchad! Kalkylen räknas om.');
+      run();
+    } else {
+      out.innerHTML = '<span style="color:#c0392b;">⚠️ ' + res.error + '</span>';
+    }
+  }
 
   /* 🌱 Para ihop hemodlad↔köpt: exakt träff på "Äpplen Royal Gala"
      vinner annars ensam över "Äpplen Royal Gala hemodlad" (och tvärtom)
@@ -127,7 +218,7 @@
     var td = tr.querySelector('td');
     if (!td) return '';
     var c = td.cloneNode(true);
-    c.querySelectorAll('.mk-saknas, .mk-prodlank, .drop, .mk-rowbtn, .mk-bytsmak, .mk-smakval, .mk-kallval').forEach(function (x) { x.remove(); });
+    c.querySelectorAll('.mk-saknas, .mk-prodlank, .drop, .mk-rowbtn, .mk-bytsmak, .mk-smakval, .mk-kallval, .mk-gruppval').forEach(function (x) { x.remove(); });
     return c.textContent.replace(/💧/g, '').trim();
   }
   function readRows() {
@@ -214,7 +305,7 @@
     /* Riv gammalt (så omkörning efter redigering ger färska värden) */
     var oldBox = document.getElementById('mk-kalkyl');
     if (oldBox) oldBox.remove();
-    document.querySelectorAll('.mk-saknas, .mk-prodlank, .mk-ingsub, .mk-bytsmak, .mk-smakval, .mk-kallval').forEach(function (x) { x.remove(); });
+    document.querySelectorAll('.mk-saknas, .mk-prodlank, .mk-ingsub, .mk-bytsmak, .mk-smakval, .mk-kallval, .mk-gruppval').forEach(function (x) { x.remove(); });
 
     var rows = readRows();
     if (rows.length < 2) return;
@@ -336,6 +427,42 @@
           });
         }
       }
+      /* 🫙 GRUPPVAL: ingrediensen tillhör en GRUPP (fält "grupp",
+         t.ex. "hemgjord sylt" på 10 syltposter) → dropdown på raden
+         som skiftar mellan gruppens medlemmar – som whey-smakvalet
+         men mellan HELA POSTER (pris & näring byts). Sparas per recept. */
+      if (ing && ing.grupp && r.el) {
+        var gruppMedl = db.filter(function (d) { return d.grupp === ing.grupp; });
+        if (gruppMedl.length > 1) {
+          var gVal = kallaGet();
+          var gValtId = gVal['g:' + norm(r.namn)];
+          var gVald = gValtId ? gruppMedl.find(function (k) { return k.id === gValtId; }) : null;
+          if (gVald) ing = gVald;
+          var gc = r.el.querySelector('td');
+          if (gc && !gc.querySelector('.mk-gruppval')) {
+            var gs = document.createElement('select');
+            gs.className = 'mk-gruppval no-print';
+            gs.title = 'Byt smak/sort inom gruppen "' + ing.grupp + '" – pris & näring räknas om direkt.';
+            gs.style.cssText = 'margin-left:8px;padding:2px 6px;border:1.5px solid #b8860b;color:#b8860b;' +
+              'border-radius:999px;font-size:.72rem;font-weight:700;background:#fff8ec;cursor:pointer;' +
+              'font-family:inherit;max-width:190px;vertical-align:middle;';
+            gs.innerHTML = gruppMedl.map(function (k) {
+              return '<option value="' + k.id + '"' + (k.id === ing.id ? ' selected' : '') + '>🫙 ' +
+                k.namn + ' · ' + fmt(+k.kcal || 0, 0) + ' kcal</option>';
+            }).join('');
+            (function (radNamn) {
+              gs.addEventListener('change', function () {
+                kallaSet('g:' + radNamn, gs.value);
+                if (window.__MK_TOAST) window.__MK_TOAST('🫙 ' + gs.options[gs.selectedIndex].text.replace(/^🫙 /, '') + ' – räknas om');
+                run();
+              });
+              gs.addEventListener('click', function (e) { e.stopPropagation(); });
+            })(norm(r.namn));
+            gc.appendChild(gs);
+          }
+        }
+      }
+
       /* 🍫 SMAKVAL: ingrediensen har varianter (whey-smaker m.m.) →
          dropdown på raden. Vald smak ersätter näringen i kalkylen
          (pris är samma för alla smaker). Sparas per recept. */
@@ -391,9 +518,15 @@
             var s = document.createElement('a');
             s.className = 'mk-saknas no-print';
             s.href = '../ingredienser.html';
-            s.title = 'Ingrediensen saknas i databasen – klicka för att lägga till den (räknas inte med i kalkylen)';
-            s.textContent = '✖ saknas i databasen';
-            s.style.cssText = 'display:inline-block;margin-left:8px;background:#fdecea;color:#c0392b;border:1px solid #c0392b;border-radius:999px;padding:0 8px;font-size:.68rem;font-weight:700;text-decoration:none;vertical-align:middle;';
+            s.title = 'Ingrediensen saknas i databasen – klicka för att MATCHA den mot en befintlig vara (alias) eller lägga till den';
+            s.textContent = '✖ saknas – matcha?';
+            s.style.cssText = 'display:inline-block;margin-left:8px;background:#fdecea;color:#c0392b;border:1px solid #c0392b;border-radius:999px;padding:0 8px;font-size:.68rem;font-weight:700;text-decoration:none;vertical-align:middle;cursor:pointer;';
+            (function (radNamn) {
+              s.addEventListener('click', function (e) {
+                e.preventDefault();
+                oppnaMatchning(radNamn, db);
+              });
+            })(r.namn);
             namnCell.appendChild(s);
           }
         }
