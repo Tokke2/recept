@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<!-- PLATS: /matratter.html  (repo-roten – 🍽️ MATRÄTTER: slå ihop recept till kompletta rätter) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍽️ Maträtter – Mitt Maskinkök</title>
+<meta name="description" content="Slå ihop recept till kompletta maträtter – ange mängd av varje del så räknas näring och pris ihop automatiskt.">
+<style>
+  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:980px; margin:0 auto; }
+  header { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:18px; }
+  header h1 { font-size:1.5rem; margin-bottom:4px; }
+  header p { opacity:.92; font-size:.92rem; }
+  header a { color:#fff; opacity:.85; text-decoration:none; font-size:.9rem; }
+  .card { background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  .card h2 { font-size:1.05rem; margin-bottom:10px; }
+  input[type=text], input[type=number], select { padding:10px 12px; border:2px solid #e8e2d8; border-radius:10px; font-size:.95rem; font-family:inherit; }
+  input:focus, select:focus { outline:none; border-color:var(--accent2); }
+  .btn { background:var(--green); color:#fff; border:none; border-radius:10px; padding:11px 20px; font-weight:700; font-size:.92rem; cursor:pointer; font-family:inherit; }
+  .btn.orange { background:var(--accent2); }
+  .btn.red { background:var(--accent); }
+  .btn.gra { background:#ecf0f1; color:var(--dark); }
+  .btn:disabled { opacity:.55; cursor:not-allowed; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; }
+  th { text-align:left; padding:8px 10px; background:#f0ebe3; font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
+  th.num, td.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  td { padding:8px 10px; border-bottom:1.5px solid #f0ebe3; }
+  .total td { font-weight:700; background:#faf7f2; border-bottom:none; }
+  .hint { background:#fff8ec; border-left:4px solid var(--accent2); border-radius:8px; padding:12px 16px; font-size:.88rem; margin-top:12px; }
+  .okbox { border-left:4px solid var(--green); background:#eaf7ef; border-radius:8px; padding:12px 16px; font-size:.88rem; margin-top:10px; }
+  .errbox { border-left:4px solid var(--accent); background:#fdecea; border-radius:8px; padding:12px 16px; font-size:.88rem; margin-top:10px; }
+  .ratt { border:2px solid #e8e2d8; border-radius:14px; padding:16px 18px; margin-bottom:12px; }
+  .ratt h3 { font-size:1.05rem; margin-bottom:6px; }
+  .ratt .delar { font-size:.85rem; color:var(--muted); margin-bottom:8px; }
+  .npill { display:inline-block; background:#f0ebe3; border-radius:999px; padding:4px 12px; font-size:.8rem; font-weight:700; margin:2px 4px 2px 0; }
+  footer { text-align:center; color:var(--muted); font-size:.8rem; padding:20px; }
+  @media (max-width:640px){ body{ padding:14px; } .card{ padding:16px 14px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div style="margin-bottom:8px;"><a href="index.html">← Till startsidan</a></div>
+  <h1>🍽️ Maträtter</h1>
+  <p>Slå ihop dina recept till kompletta rätter – t.ex. stekt kyckling + kokt ris + sås. Ange mängd av varje del så räknas näring &amp; pris ihop automatiskt ur recepten.</p>
+</header>
+
+<!-- ============ 1. BYGG EN MATRÄTT ============ -->
+<div class="card">
+  <h2>➕ Bygg en maträtt</h2>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px;">
+    <div style="flex:2;min-width:200px;">
+      <label style="display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Maträttens namn</label>
+      <input type="text" id="rNamn" placeholder="t.ex. Kycklingmiddag med ris & sås" style="width:100%;">
+    </div>
+    <div>
+      <label style="display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Emoji</label>
+      <input type="text" id="rEmoji" value="🍽️" style="width:70px;text-align:center;">
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:8px;">
+    <div style="flex:2;min-width:220px;">
+      <label style="display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Recept (del av rätten)</label>
+      <select id="valRecept" style="width:100%;"><option>⏳ Laddar recepten...</option></select>
+    </div>
+    <div>
+      <label style="display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Mängd på tallriken</label>
+      <span style="white-space:nowrap;"><input type="number" id="valMangd" value="150" min="1" step="10" style="width:90px;text-align:right;"> <b>g</b></span>
+    </div>
+    <button class="btn orange" onclick="laggTillDel()">➕ Lägg till del</button>
+  </div>
+
+  <table id="delTabell" style="display:none;">
+    <thead><tr><th>Del (recept)</th><th class="num">Mängd</th><th class="num">Kcal</th><th class="num">Protein</th><th class="num">Kolh.</th><th class="num">Fett</th><th class="num">Pris</th><th></th></tr></thead>
+    <tbody id="delRader"></tbody>
+    <tfoot><tr class="total" id="delTotal"></tr></tfoot>
+  </table>
+
+  <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="btn" id="sparaBtn" onclick="sparaRatt()" disabled>💾 Spara maträtten</button>
+    <button class="btn gra" onclick="rensaBygge()">Rensa</button>
+  </div>
+  <div id="byggResultat"></div>
+  <div class="hint">💡 Näringen räknas <b>per gram ur varje recepts live-kalkyl</b> (samma databas som recepten). Ändras ett recept eller ett pris räknas maträtten om automatiskt nästa gång sidan öppnas.</div>
+</div>
+
+<!-- ============ 2. SPARADE MATRÄTTER ============ -->
+<div class="card">
+  <h2>📖 Dina maträtter</h2>
+  <div id="rattLista"><p style="color:var(--muted);font-size:.9rem;">⏳ Laddar...</p></div>
+</div>
+
+<footer>Maträtter = kombinerade recept · näring & pris ur receptens live-kalkyler · sparas i json/matratter.json</footer>
+
+<script>
+/* ============================================================
+   🍽️ MATRÄTTER – slå ihop recept till kompletta rätter
+   · Varje recepts näring/pris per gram hämtas genom att läsa
+     receptfilen och räkna ihop ingredienstabellen mot
+     json/ingredienser.json (samma logik som kalkyl.js, förenklad)
+   · Delarna anges i gram på tallriken → allt skalas per gram
+   · Sparas i json/matratter.json via __MK_SPARA (lösenordsskyddat);
+     besökare ser rätterna (läses via fetch), endast admin sparar
+   ============================================================ */
+let RECEPT = [];        /* [{fil, namn, perG:{kcal,prot,kolh,fett,kr}}] */
+let DELAR = [];         /* bygglistan */
+let RATTER = [];        /* sparade maträtter */
+let DB = [];
+
+function norm(s) {
+  return String(s).toLowerCase().replace(/\([^)]*\)/g, '')
+    .replace(/å/g, 'a').replace(/ä/g, 'a').replace(/ö/g, 'o')
+    .replace(/[^a-z0-9%]+/g, ' ').trim();
+}
+function gram(m) {
+  const x = String(m).replace(',', '.');
+  let r = x.match(/([\d.]+)\s*kg/i); if (r) return parseFloat(r[1]) * 1000;
+  r = x.match(/([\d.]+)\s*g\b/i); if (r) return parseFloat(r[1]);
+  r = x.match(/([\d.]+)\s*dl/i); if (r) return parseFloat(r[1]) * 100;
+  r = x.match(/([\d.]+)\s*ml/i); if (r) return parseFloat(r[1]);
+  r = x.match(/([\d.]+)\s*l\b/i); if (r) return parseFloat(r[1]) * 1000;
+  return null;
+}
+function matcha(namn) {
+  const n = norm(namn);
+  if (!n) return null;
+  let bast = null, poang = 0;
+  DB.forEach(d => {
+    const dn = norm(d.namn);
+    let p = 0;
+    if ((d.alias || []).some(a => norm(a) === n)) p = 4;
+    else if (dn === n) p = 3;
+    else if (n.indexOf(dn) === 0 || dn.indexOf(n) === 0) p = 2;
+    else {
+      const dw = dn.split(' ').filter(w => w.length > 2);
+      if (dw.length && dw.every(w => (' ' + n + ' ').includes(' ' + w + ' '))) p = 1;
+    }
+    if (p > poang) { poang = p; bast = d; }
+  });
+  return bast;
+}
+
+/* Läs ett recepts totala näring → per gram */
+async function receptPerGram(fil) {
+  try {
+    const html = await (await fetch('recept/' + encodeURIComponent(fil))).text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    let tot = { g: 0, kcal: 0, prot: 0, kolh: 0, fett: 0, kr: 0 };
+    let rader = 0;
+    doc.querySelectorAll('.card table tr, table tr').forEach(tr => {
+      const namn = tr.getAttribute('data-namn') ||
+        (tr.querySelectorAll('td')[0] || {}).textContent || '';
+      const mangd = tr.getAttribute('data-mangd') ||
+        (tr.querySelectorAll('td')[1] || {}).textContent || '';
+      if (!namn.trim() || /^total/i.test(namn.trim())) return;
+      const card = tr.closest('.card');
+      const h = card && card.querySelector('h2');
+      if (h && !/ingrediens/i.test(h.textContent)) return;
+      const g = gram(mangd);
+      const ing = matcha(namn);
+      if (g && ing) {
+        tot.g += g;
+        tot.kcal += (+ing.kcal || 0) * g / 100;
+        tot.prot += (+ing.protein || 0) * g / 100;
+        tot.kolh += (+ing.kolhydrat || 0) * g / 100;
+        tot.fett += (+ing.fett || 0) * g / 100;
+        tot.kr += (+ing.pris_kr_per_kg || 0) * g / 1000;
+        rader++;
+      } else if (g) { tot.g += g; }
+    });
+    if (rader < 1 || tot.g < 50) return null;
+    return { kcal: tot.kcal / tot.g, prot: tot.prot / tot.g, kolh: tot.kolh / tot.g,
+             fett: tot.fett / tot.g, kr: tot.kr / tot.g };
+  } catch (e) { return null; }
+}
+
+function fmt(n, dec) {
+  return n.toLocaleString('sv-SE', { minimumFractionDigits: 0, maximumFractionDigits: dec === undefined ? 1 : dec });
+}
+
+/* ---------- Ladda allt ---------- */
+async function init() {
+  try {
+    DB = (await (await fetch('json/ingredienser.json', { cache: 'no-store' })).json()).ingredienser || [];
+  } catch (e) { DB = []; }
+
+  let files = [];
+  try {
+    const parts = location.pathname.split('/').filter(Boolean);
+    const user = location.hostname.split('.')[0];
+    const repo = parts.length ? parts[0] : user + '.github.io';
+    const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/recept?ref=main`);
+    if (res.ok) files = (await res.json())
+      .filter(i => i.type === 'file' && /\.html?$/i.test(i.name)).map(i => i.name);
+  } catch (e) {}
+
+  const sel = document.getElementById('valRecept');
+  sel.innerHTML = '<option value="">Välj recept...</option>';
+  await Promise.all(files.map(async f => {
+    const perG = await receptPerGram(f);
+    if (!perG) return;
+    const namn = f.replace(/\.html?$/i, '').replace(/[-_]+/g, ' ');
+    RECEPT.push({ fil: f, namn, perG });
+  }));
+  RECEPT.sort((a, b) => a.namn.localeCompare(b.namn, 'sv'));
+  sel.innerHTML = '<option value="">Välj recept...</option>' +
+    RECEPT.map((r, i) => `<option value="${i}">${r.namn} · ${fmt(r.perG.kcal * 100, 0)} kcal/100 g</option>`).join('');
+
+  laddaRatter();
+}
+
+/* ---------- Bygglistan ---------- */
+function laggTillDel() {
+  const i = document.getElementById('valRecept').value;
+  const g = parseFloat(document.getElementById('valMangd').value);
+  if (i === '' || !RECEPT[i]) { alert('Välj ett recept först!'); return; }
+  if (!g || g <= 0) { alert('Ange mängd i gram!'); return; }
+  DELAR.push({ fil: RECEPT[i].fil, namn: RECEPT[i].namn, g, perG: RECEPT[i].perG });
+  ritaDelar();
+}
+function taBortDel(i) { DELAR.splice(i, 1); ritaDelar(); }
+function ritaDelar() {
+  const t = document.getElementById('delTabell');
+  const tb = document.getElementById('delRader');
+  t.style.display = DELAR.length ? 'table' : 'none';
+  document.getElementById('sparaBtn').disabled = DELAR.length < 1;
+  let tot = { g: 0, kcal: 0, prot: 0, kolh: 0, fett: 0, kr: 0 };
+  tb.innerHTML = DELAR.map((d, i) => {
+    const k = d.perG;
+    tot.g += d.g; tot.kcal += k.kcal * d.g; tot.prot += k.prot * d.g;
+    tot.kolh += k.kolh * d.g; tot.fett += k.fett * d.g; tot.kr += k.kr * d.g;
+    return `<tr>
+      <td>${d.namn}</td>
+      <td class="num"><input type="number" value="${d.g}" min="1" step="10" style="width:76px;text-align:right;padding:4px 6px;"
+        onchange="DELAR[${i}].g=+this.value||1;ritaDelar()"> g</td>
+      <td class="num">${fmt(k.kcal * d.g, 0)}</td>
+      <td class="num">${fmt(k.prot * d.g)} g</td>
+      <td class="num">${fmt(k.kolh * d.g)} g</td>
+      <td class="num">${fmt(k.fett * d.g)} g</td>
+      <td class="num">${fmt(k.kr * d.g, 2)} kr</td>
+      <td><button onclick="taBortDel(${i})" style="background:none;border:none;cursor:pointer;color:#c0392b;font-weight:700;">✕</button></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('delTotal').innerHTML =
+    `<td>🍽️ Hela tallriken</td><td class="num">${fmt(tot.g, 0)} g</td>` +
+    `<td class="num">${fmt(tot.kcal, 0)}</td><td class="num">${fmt(tot.prot)} g</td>` +
+    `<td class="num">${fmt(tot.kolh)} g</td><td class="num">${fmt(tot.fett)} g</td>` +
+    `<td class="num">${fmt(tot.kr, 2)} kr</td><td></td>`;
+}
+function rensaBygge() { DELAR = []; document.getElementById('rNamn').value = ''; ritaDelar(); }
+
+/* ---------- Spara / lista maträtter ---------- */
+async function sparaRatt() {
+  const namn = document.getElementById('rNamn').value.trim();
+  if (!namn) { alert('Ge maträtten ett namn!'); return; }
+  if (!DELAR.length) return;
+  if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas.'); return; }
+  const out = document.getElementById('byggResultat');
+  const btn = document.getElementById('sparaBtn');
+  btn.disabled = true; btn.textContent = '⏳ Sparar...';
+  let res = { ok: false, error: 'okänt fel' };
+  try {
+    let db = { _plats: '/json/matratter.json (maträtter = kombinerade recept)', ratter: [] };
+    const raw = await __MK_SPARA.load('json/matratter.json');
+    if (raw) db = JSON.parse(raw);
+    db.ratter = db.ratter || [];
+    const post = {
+      id: namn.toLowerCase().replace(/å/g,'a').replace(/ä/g,'a').replace(/ö/g,'o').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''),
+      namn, emoji: document.getElementById('rEmoji').value.trim() || '🍽️',
+      delar: DELAR.map(d => ({ fil: d.fil, g: d.g })),
+      skapad: new Date().toISOString().slice(0, 10)
+    };
+    const idx = db.ratter.findIndex(r => r.id === post.id);
+    if (idx >= 0) db.ratter[idx] = post; else db.ratter.push(post);
+    res = await __MK_SPARA.save('json/matratter.json', JSON.stringify(db, null, 2), 'Maträtt: ' + namn);
+  } catch (e) { res = { ok: false, error: e.message }; }
+  btn.disabled = false; btn.textContent = '💾 Spara maträtten';
+  if (res.ok) {
+    out.innerHTML = '<div class="okbox">🎉 <b>' + namn + '</b> sparad! Syns i listan nedan.</div>';
+    rensaBygge();
+    laddaRatter(true);
+  } else {
+    out.innerHTML = '<div class="errbox">⚠️ Kunde inte spara: ' + res.error + '</div>';
+  }
+}
+
+async function laddaRatter(direkt) {
+  RATTER = [];
+  try {
+    if (direkt && window.__MK_SPARA && __MK_SPARA.hasToken && __MK_SPARA.hasToken()) {
+      const raw = await __MK_SPARA.load('json/matratter.json');
+      if (raw) RATTER = JSON.parse(raw).ratter || [];
+    }
+  } catch (e) {}
+  if (!RATTER.length) {
+    try {
+      RATTER = (await (await fetch('json/matratter.json', { cache: 'no-store' })).json()).ratter || [];
+    } catch (e) { RATTER = []; }
+  }
+  const ut = document.getElementById('rattLista');
+  if (!RATTER.length) {
+    ut.innerHTML = '<p style="color:var(--muted);font-size:.9rem;">Inga maträtter än – bygg din första ovan! 👆</p>';
+    return;
+  }
+  ut.innerHTML = RATTER.map(r => {
+    let tot = { g: 0, kcal: 0, prot: 0, kolh: 0, fett: 0, kr: 0 };
+    const delRader = r.delar.map(d => {
+      const rec = RECEPT.find(x => x.fil === d.fil);
+      if (rec) {
+        tot.g += d.g; tot.kcal += rec.perG.kcal * d.g; tot.prot += rec.perG.prot * d.g;
+        tot.kolh += rec.perG.kolh * d.g; tot.fett += rec.perG.fett * d.g; tot.kr += rec.perG.kr * d.g;
+        return '<a href="recept/' + encodeURIComponent(d.fil) + '" style="color:var(--accent);">' + rec.namn + '</a> ' + d.g + ' g';
+      }
+      return d.fil.replace(/\.html?$/i, '') + ' ' + d.g + ' g <span style="color:#c0392b;">(receptet saknas)</span>';
+    }).join(' · ');
+    return `<div class="ratt">
+      <h3>${r.emoji} ${r.namn} <button class="no-print" onclick="taBortRatt('${r.id}')" title="Ta bort maträtten (lösenord krävs)" style="background:none;border:none;cursor:pointer;font-size:.85rem;color:#c0392b;">🗑️</button></h3>
+      <div class="delar">${delRader}</div>
+      <span class="npill">🔥 ${fmt(tot.kcal, 0)} kcal</span>
+      <span class="npill">💪 ${fmt(tot.prot)} g protein</span>
+      <span class="npill">🍞 ${fmt(tot.kolh)} g kolh</span>
+      <span class="npill">🧈 ${fmt(tot.fett)} g fett</span>
+      <span class="npill">💰 ${fmt(tot.kr, 2)} kr</span>
+      <span class="npill">⚖️ ${fmt(tot.g, 0)} g</span>
+    </div>`;
+  }).join('');
+}
+
+async function taBortRatt(id) {
+  if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas.'); return; }
+  const r = RATTER.find(x => x.id === id);
+  /* egen dialog – aldrig confirm() (Brave) */
+  const ok = await new Promise(resolve => {
+    const bg = document.createElement('div');
+    bg.className = 'no-print';
+    bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;display:flex;align-items:center;justify-content:center;padding:16px;';
+    bg.innerHTML = `<div style="background:#fff;border-radius:16px;max-width:380px;width:100%;padding:24px;text-align:center;">
+      <div style="font-size:2rem;">🗑️</div><h3 style="margin:6px 0;">Ta bort "${r ? r.namn : id}"?</h3>
+      <div style="display:flex;gap:10px;margin-top:12px;">
+        <button id="tb-ja" style="flex:1;background:#c0392b;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-family:inherit;">Ta bort</button>
+        <button id="tb-nej" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-family:inherit;">Avbryt</button>
+      </div></div>`;
+    document.body.appendChild(bg);
+    bg.querySelector('#tb-ja').onclick = () => { bg.remove(); resolve(true); };
+    bg.querySelector('#tb-nej').onclick = () => { bg.remove(); resolve(false); };
+    let dn = false;
+    bg.addEventListener('mousedown', e => { dn = (e.target === bg); });
+    bg.addEventListener('click', e => { if (e.target === bg && dn) { bg.remove(); resolve(false); } });
+  });
+  if (!ok) return;
+  try {
+    const raw = await __MK_SPARA.load('json/matratter.json');
+    if (!raw) return;
+    const db = JSON.parse(raw);
+    db.ratter = (db.ratter || []).filter(x => x.id !== id);
+    const res = await __MK_SPARA.save('json/matratter.json', JSON.stringify(db, null, 2), 'Maträtt borttagen: ' + id);
+    if (res.ok) { RATTER = RATTER.filter(x => x.id !== id); laddaRatter(true); }
+  } catch (e) {}
+}
+
+init();
+</script>
+<script src="assets/site.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a36d35f1ed22c8cb',t:'MTc4ODY5NDk1MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
