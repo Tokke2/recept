@@ -506,6 +506,26 @@ function download() {
 /* ============================================================
    💾 SPARA DIREKT PÅ SAJTEN (via assets/spara.js → GitHub API)
    ============================================================ */
+/* ⚡ DIREKTÖPPNING: lägg nybyggda HTML:en i service workerns sid-
+   cache → receptet kan öppnas OMEDELBART efter sparning, utan att
+   vänta på att GitHub Pages bygger om (~1 min). SW:n serverar den
+   cachade versionen direkt (stale-while-revalidate) och uppdaterar
+   från nätet i bakgrunden när Pages är klar. */
+async function cachaDirekt(fil, html) {
+  try {
+    if (!('caches' in window)) return false;
+    const keys = await caches.keys();
+    const namn = keys.find(k => /-pages$/.test(k));
+    if (!namn) return false;
+    const c = await caches.open(namn);
+    const url = new URL('recept/' + encodeURIComponent(fil), location.href).href;
+    await c.put(new Request(url), new Response(html, {
+      status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' }
+    }));
+    return true;
+  } catch (e) { return false; }
+}
+
 async function saveDirect() {
   if (!PARSED) return;
   if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas – prova ⬇️ Ladda ner istället.'); return; }
@@ -513,15 +533,22 @@ async function saveDirect() {
   const btn = document.getElementById('saveBtn');
   const out = document.getElementById('saveResult');
   btn.disabled = true; btn.textContent = '⏳ Sparar...';
-  const res = await __MK_SPARA.save('recept/' + fil, buildHtml(),
+  const html = buildHtml();
+  const res = await __MK_SPARA.save('recept/' + fil, html,
     'Nytt recept via sajten: ' + (document.getElementById('fNamn').value || fil));
   btn.disabled = false; btn.textContent = '💾 Spara direkt på sajten';
   if (res.ok) {
+    const direkt = await cachaDirekt(fil, html);
     out.innerHTML = '<div class="hint" style="border-left-color:#27ae60;background:#eaf7ef;">🎉 <b>Sparat!</b> ' +
-      'Receptet ligger nu i recept-mappen och dyker upp i <a href="recept.html">receptsamlingen</a> inom ~1 minut ' +
-      '(GitHub Pages bygger om sajten – grön bock i Actions, sen Ctrl+Shift+R).<br>' +
-      '📄 <a href="recept/' + encodeURIComponent(fil) + '" target="_blank" rel="noopener">Öppna receptet</a>' +
+      (direkt
+        ? '⚡ Receptet kan öppnas <b>DIREKT</b> (lokalt cachad kopia – nätet tar över inom ~1 min när Pages byggt om).'
+        : 'Receptet dyker upp i <a href="recept.html">receptsamlingen</a> inom ~1 minut (GitHub Pages bygger om).') +
+      '<br>📄 <a href="recept/' + encodeURIComponent(fil) + '" target="_blank" rel="noopener"><b>Öppna receptet nu</b></a>' +
       (res.url ? ' · <a href="' + res.url + '" target="_blank" rel="noopener">Visa på GitHub</a>' : '') + '</div>';
+    if (direkt) {
+      /* öppna receptet automatiskt i ny flik */
+      try { window.open('recept/' + encodeURIComponent(fil), '_blank'); } catch (e) {}
+    }
   } else {
     out.innerHTML = '<div class="hint" style="border-left-color:#c0392b;background:#fdecea;">⚠️ <b>Kunde inte spara:</b> ' +
       res.error + '<br>Prova igen, eller använd ⬇️ Ladda ner + 📤 GitHub-uppladdning som reserv.</div>';
@@ -529,5 +556,5 @@ async function saveDirect() {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a31d7508de6ede4e',t:'MTc4Nzg1ODY3NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a36d370e4a78c8cb',t:'MTc4ODY5NDk5Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
