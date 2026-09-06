@@ -1868,7 +1868,25 @@
   "🫙 Grundrecept glass i Ninja CREAMi (NC502EU) – mjölk, yoghurt, protein & hemgjord sylt": "🫙 Basic ice cream recipe in Ninja CREAMi (NC502EU) – milk, yogurt, protein & homemade jam",
   "🫙 Grundrecept glass i Ninja CREAMi (NC502EU) – mjölk, yoghurt, protein & hemgjord sylt – Recept": "🫙 Basic ice cream recipe in Ninja CREAMi (NC502EU) – milk, yogurt, protein & homemade jam – Recipe",
   "🫙 Svartvinbärssylt – klassiskt recept": "🫙 Blackcurrant jam - classic recipe",
-  "🫙 Svartvinbärssylt – klassiskt recept – Recept": "🫙 Black currant jam - classic recipe - Recipe"
+  "🫙 Svartvinbärssylt – klassiskt recept – Recept": "🫙 Black currant jam - classic recipe - Recipe",
+  "(samma databas som recepten). Ändras ett recept eller ett pris räknas maträtten om automatiskt nästa gång sidan öppnas.": "(same database as the recipes). If a recipe or price is changed, the dish is automatically recalculated the next time the page is opened.",
+  "Del (recept)": "Part (recipe)",
+  "Maträttens namn": "The name of the dish",
+  "Mängd på tallriken": "Amount on the plate",
+  "Recept (del av rätten)": "Recipe (part of the dish)",
+  "Rensa": "Clear",
+  "Slå ihop dina recept till kompletta rätter – t.ex. stekt kyckling + kokt ris + sås. Ange mängd av varje del så räknas näring & pris ihop automatiskt ur recepten.": "Combine your recipes into complete dishes – e.g. fried chicken + boiled rice + sauce. Enter the quantity of each part and nutrition & price are calculated automatically from the recipes.",
+  "Slå ihop recept till kompletta maträtter – ange mängd av varje del så räknas näring och pris ihop automatiskt.": "Combine recipes for complete meals - enter the quantity of each part and the nutrition and price will be calculated automatically.",
+  "per gram ur varje recepts live-kalkyl": "per gram from each recipe's live calculation",
+  "t.ex. Kycklingmiddag med ris & sås": "e.g. Chicken dinner with rice & sauce",
+  "⏳ Laddar recepten...": "⏳ Loading the recipes...",
+  "➕ Bygg en maträtt": "➕ Build a dish",
+  "➕ Lägg till del": "➕ Add part",
+  "🍽️ Maträtter": "🍽️ Dishes",
+  "🍽️ Maträtter – Mitt Maskinkök": "🍽️ Dishes – My Machine Kitchen",
+  "💡 Näringen räknas": "💡 Nutrition counts",
+  "💾 Spara maträtten": "💾 Save the dish",
+  "📖 Dina maträtter": "📖 Your dishes"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -1878,6 +1896,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 1867,
+ "_auto_genererade": 1885,
  "_senast_robot": "2026-09-06"
 }

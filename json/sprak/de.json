@@ -1939,13 +1939,31 @@
   "🫙 Grundrecept glass i Ninja CREAMi (NC502EU) – mjölk, yoghurt, protein & hemgjord sylt": "🫙 Grundrezept für Eis in Ninja CREAMi (NC502EU) – Milch, Joghurt, Protein und hausgemachte Marmelade",
   "🫙 Grundrecept glass i Ninja CREAMi (NC502EU) – mjölk, yoghurt, protein & hemgjord sylt – Recept": "🫙 Grundrezept für Eis in Ninja CREAMi (NC502EU) – Milch, Joghurt, Protein und hausgemachte Marmelade – Rezept",
   "🫙 Svartvinbärssylt – klassiskt recept": "🫙 Schwarze Johannisbeermarmelade – klassisches Rezept",
-  "🫙 Svartvinbärssylt – klassiskt recept – Recept": "🫙 Schwarze Johannisbeermarmelade – klassisches Rezept – Rezept"
+  "🫙 Svartvinbärssylt – klassiskt recept – Recept": "🫙 Schwarze Johannisbeermarmelade – klassisches Rezept – Rezept",
+  "(samma databas som recepten). Ändras ett recept eller ett pris räknas maträtten om automatiskt nästa gång sidan öppnas.": "(gleiche Datenbank wie die Rezepte). Bei einer Rezept- oder Preisänderung wird das Gericht beim nächsten Seitenaufruf automatisch neu berechnet.",
+  "Del (recept)": "Teil (Rezept)",
+  "Maträttens namn": "Der Name des Gerichts",
+  "Mängd på tallriken": "Menge auf dem Teller",
+  "Recept (del av rätten)": "Rezept (Teil des Gerichts)",
+  "Rensa": "Klar",
+  "Slå ihop dina recept till kompletta rätter – t.ex. stekt kyckling + kokt ris + sås. Ange mängd av varje del så räknas näring & pris ihop automatiskt ur recepten.": "Kombinieren Sie Ihre Rezepte zu kompletten Gerichten – z.B. Gebratenes Hähnchen + gekochter Reis + Soße. Geben Sie die Menge jedes Teils ein und Nährwert und Preis werden automatisch aus den Rezepten berechnet.",
+  "Slå ihop recept till kompletta maträtter – ange mängd av varje del så räknas näring och pris ihop automatiskt.": "Kombinieren Sie Rezepte für komplette Mahlzeiten – geben Sie die Menge jedes Teils ein und Nährwert und Preis werden automatisch berechnet.",
+  "per gram ur varje recepts live-kalkyl": "pro Gramm aus der Live-Berechnung jedes Rezepts",
+  "t.ex. Kycklingmiddag med ris & sås": "z.B. Hühnchen-Abendessen mit Reis und Soße",
+  "⏳ Laddar recepten...": "⏳ Laden der Rezepte...",
+  "➕ Bygg en maträtt": "➕ Baue eine Schüssel",
+  "➕ Lägg till del": "➕ Teil hinzufügen",
+  "🍽️ Maträtter": "🍽️ Gerichte",
+  "🍽️ Maträtter – Mitt Maskinkök": "🍽️ Gerichte – Meine Maschinenküche",
+  "💡 Näringen räknas": "💡Ernährung zählt",
+  "💾 Spara maträtten": "💾 Bewahren Sie das Gericht auf",
+  "📖 Dina maträtter": "📖 Deine Gerichte"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 1938,
+ "_auto_genererade": 1956,
  "_senast_robot": "2026-09-06"
 }
