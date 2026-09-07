@@ -167,6 +167,7 @@ function renderList() {
         : ` <button onclick="openEdit('${i.id}')" title="Ingen butikslänk – klicka för att klistra in en" style="background:#fdecea;color:#c0392b;border:1px solid #c0392b;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit;">✖ Länk saknas</button>`}
       ${i.recept ? ' <a href="recept/' + encodeURIComponent(i.recept) + '" title="Hemgjord – pris & näring räknas från receptet den skapades av. Klicka för att öppna receptet." style="display:inline-block;background:#e6a817;color:#fff;border:1px solid #b8860b;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;text-decoration:none;">🫙 Eget recept</a>' : ''}
       ${i.grupp ? ' <span title="Grupp: byt sort/smak direkt i recepten" style="display:inline-block;background:#fff8ec;color:#b8860b;border:1px dashed #b8860b;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;">📦 ' + i.grupp + '</span>' : ''}
+      ${i.mat ? ' <span title="Mat – kan läggas till som del i maträtter (🍽️ Maträtter-fliken)" style="display:inline-block;background:#fdf6ee;color:#e67e22;border:1px solid #e67e22;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;">🍽️ Mat</span>' : ''}
       ${(i.alias && i.alias.length) ? ' <span title="Alias (matchade receptnamn): ' + i.alias.join(' · ').replace(/"/g,'&quot;') + '" style="display:inline-block;background:#eef7fb;color:#3498db;border:1px solid #3498db;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;">🔗 ' + i.alias.length + ' alias</span>' : ''}
       ${i.egenodlad ? ' <span title="Egenodlad – priset är 0 kr (näring från butikslänken)" style="display:inline-block;background:#eaf7ef;color:#27ae60;border:1px solid #27ae60;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;">🌱 Egenodlad</span>' : ''}
       ${(i.varianter && i.varianter.length) ? ` <button onclick="toggleVarianter('${i.id}')" title="${i.varianter.length} smakvarianter med egen näring – klicka för att fälla ut" style="background:#f4ecfb;color:#8e44ad;border:1px solid #8e44ad;border-radius:999px;padding:0 8px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit;">🍫 ${i.varianter.length} smaker</button>` : ''}
@@ -226,6 +227,9 @@ function openEdit(id) {
       <div class="row"><label style="display:flex;align-items:center;gap:8px;font-size:.85rem;text-transform:none;letter-spacing:0;color:var(--dark);cursor:pointer;">
         <input type="checkbox" id="ei-egen" ${i.egenodlad ? 'checked' : ''} style="width:18px;height:18px;accent-color:var(--green);">
         🌱 <b>Egenodlad</b> – priset sätts till 0 kr (näringen behålls) och namnet får tillägget "hemodlad"</label></div>
+      <div class="row"><label style="display:flex;align-items:center;gap:8px;font-size:.85rem;text-transform:none;letter-spacing:0;color:var(--dark);cursor:pointer;">
+        <input type="checkbox" id="ei-mat" ${i.mat ? 'checked' : ''} style="width:18px;height:18px;accent-color:var(--accent2);">
+        🍽️ <b>Mat</b> – kan läggas till som DEL i maträtter (t.ex. tacosås som sås, ris, sallad)</label></div>
       <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
         <button class="btn" style="margin:0;" id="ei-save">💾 Spara ändringarna</button>
         <button class="btn" style="margin:0;background:#ecf0f1;color:var(--dark);" id="ei-cancel">Avbryt</button>
@@ -236,7 +240,7 @@ function openEdit(id) {
   /* Ursprungsvärden – för att veta om något ändrats vid klick utanför */
   const eiOrig = ['ei-namn','ei-marke','ei-pris','ei-kcal','ei-prot','ei-kolh','ei-fett','ei-fiber','ei-lank','ei-grupp']
     .map(id => document.getElementById(id).value).join('|') + '|' + document.getElementById('ei-nollok').checked +
-    '|' + document.getElementById('ei-egen').checked;
+    '|' + document.getElementById('ei-egen').checked + '|' + document.getElementById('ei-mat').checked;
   /* 🌱 Kryssas Egenodlad i: priset nollas + namnet får "hemodlad" direkt i fälten */
   document.getElementById('ei-egen').addEventListener('change', function () {
     const nf = document.getElementById('ei-namn'), pf = document.getElementById('ei-pris');
@@ -256,7 +260,7 @@ function openEdit(id) {
     if (e.target !== bg || !eiDownOnBg || !document.getElementById('ei-namn')) return;
     const nu = ['ei-namn','ei-marke','ei-pris','ei-kcal','ei-prot','ei-kolh','ei-fett','ei-fiber','ei-lank','ei-grupp']
       .map(id => document.getElementById(id).value).join('|') + '|' + document.getElementById('ei-nollok').checked +
-      '|' + document.getElementById('ei-egen').checked;
+      '|' + document.getElementById('ei-egen').checked + '|' + document.getElementById('ei-mat').checked;
     if (nu === eiOrig) { bg.remove(); return; }   /* inget ändrat = stäng tyst */
     /* Ändringar finns → fråga i dialogen (stängs ALDRIG av misstag) */
     let fr = bg.querySelector('#ei-fraga');
@@ -294,6 +298,7 @@ function openEdit(id) {
     if (g('ei-marke')) post.varumarke = g('ei-marke');
     if (lank) { post.lank = lank; post.uppdaterad = i.uppdaterad || ''; }
     if (g('ei-grupp')) post.grupp = g('ei-grupp');           /* 📦 skiftbar i recepten */
+    if (document.getElementById('ei-mat').checked) post.mat = true;   /* 🍽️ kan vara del i maträtter */
     if (i.alias && i.alias.length) post.alias = i.alias;      /* 🔗 matchade receptnamn behålls */
     if (document.getElementById('ei-nollok').checked) post.noll_ok = true;
     if (document.getElementById('ei-egen').checked) {
@@ -590,5 +595,5 @@ async function saveManual() {
 loadDb();
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a37786843e892d62',t:'MTc4ODgwMzEwOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
