@@ -262,6 +262,29 @@ function ritaDelar() {
 }
 function rensaBygge() { DELAR = []; document.getElementById('rNamn').value = ''; ritaDelar(); }
 
+/* ---------- ✏️ Redigera befintlig maträtt ----------
+   Laddar rätten i byggaren ovan: ändra mängder direkt i tabellen,
+   ✕ tar bort delar, dropdownen lägger till nya recept/mat-varor.
+   Spara med SAMMA namn = rätten + egna sidan uppdateras. */
+function redigeraRatt(id) {
+  const r = RATTER.find(x => x.id === id);
+  if (!r) return;
+  DELAR = [];
+  const saknade = [];
+  r.delar.forEach(d => {
+    const rec = RECEPT.find(x => x.fil === d.fil);
+    if (rec) DELAR.push({ fil: rec.fil, namn: rec.namn, g: d.g, perG: rec.perG });
+    else saknade.push(d.fil);
+  });
+  document.getElementById('rNamn').value = r.namn;
+  document.getElementById('rEmoji').value = r.emoji || '🍽️';
+  ritaDelar();
+  document.getElementById('byggResultat').innerHTML =
+    '<div class="okbox">✏️ <b>' + r.namn + '</b> laddad i byggaren ovan – ändra mängder i tabellen, ta bort med ✕, lägg till fler delar med dropdownen. <b>Spara med samma namn</b> så uppdateras rätten och dess egna sida.' +
+    (saknade.length ? '<br><span style="color:#c0392b;">⚠️ Kunde inte ladda: ' + saknade.join(', ') + ' (finns ej längre)</span>' : '') + '</div>';
+  try { document.getElementById('rNamn').scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+}
+
 /* ---------- Spara / lista maträtter ---------- */
 /* 🍽️ Varje maträtt får EGEN SIDA i ratter/-mappen (likt recepten).
    Sidan innehåller endast metadata – assets/ratt.js ritar allt. */
@@ -389,6 +412,8 @@ async function laddaRatter(direkt) {
     return `<div class="ratt">
       <h3><a href="ratter/${encodeURIComponent(r.id)}.html" style="color:var(--dark);text-decoration:none;">${r.emoji} ${r.namn}</a>
         <a href="ratter/${encodeURIComponent(r.id)}.html" style="font-size:.75rem;color:var(--accent);font-weight:700;">📄 Egen sida →</a>
+        <button class="no-print" onclick="redigeraRatt('${r.id}')" title="Redigera maträtten – ändra mängder, ta bort eller lägg till delar" style="background:#f0ebe3;border:none;border-radius:6px;cursor:pointer;font-size:.8rem;padding:2px 8px;">✏️ Redigera</button>
+        <button class="no-print" id="fix-${r.id}" onclick="skapaOmSida('${r.id}')" title="Saknas egna sidan (404)? Skapa om den här (lösenord krävs)" style="background:#fdf6ee;border:1px solid #e67e22;color:#e67e22;border-radius:6px;cursor:pointer;font-size:.75rem;padding:2px 8px;display:none;">🔧 Skapa om sidan</button>
         <button class="no-print" onclick="taBortRatt('${r.id}')" title="Ta bort maträtten (lösenord krävs)" style="background:none;border:none;cursor:pointer;font-size:.85rem;color:#c0392b;">🗑️</button></h3>
       <div class="delar">${delRader}</div>
       <span class="npill">🔥 ${fmt(tot.kcal, 0)} kcal</span>
@@ -399,6 +424,39 @@ async function laddaRatter(direkt) {
       <span class="npill">⚖️ ${fmt(tot.g, 0)} g</span>
     </div>`;
   }).join('');
+  kollaSidor();   /* 🔧 visa "Skapa om sidan" där egna sidan saknas (404) */
+}
+
+/* ---------- 🔧 Skapa om egna sidan (efter 404/misslyckad sparning) ----------
+   Sidan kollas efter listning – saknas den live visas 🔧-knappen. */
+async function kollaSidor() {
+  for (const r of RATTER) {
+    try {
+      const res = await fetch('ratter/' + encodeURIComponent(r.id) + '.html', { method: 'HEAD', cache: 'no-store' });
+      const btn = document.getElementById('fix-' + r.id);
+      if (btn && !res.ok) btn.style.display = 'inline-block';
+    } catch (e) {
+      const btn = document.getElementById('fix-' + r.id);
+      if (btn) btn.style.display = 'inline-block';
+    }
+  }
+}
+
+async function skapaOmSida(id) {
+  const r = RATTER.find(x => x.id === id);
+  if (!r) return;
+  if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas.'); return; }
+  const btn = document.getElementById('fix-' + id);
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Skapar...'; }
+  const res = await __MK_SPARA.save('ratter/' + r.id + '.html', byggRattSida(r), 'Maträttssida återskapad: ' + r.namn);
+  if (btn) { btn.disabled = false; btn.textContent = '🔧 Skapa om sidan'; }
+  if (res.ok) {
+    if (btn) btn.style.display = 'none';
+    document.getElementById('actionResult') ||
+      (document.getElementById('byggResultat').innerHTML = '<div class="okbox">🔧 Sidan för <b>' + r.namn + '</b> återskapad – live inom ~1 min!</div>');
+  } else {
+    alert('Kunde inte skapa sidan: ' + res.error);
+  }
 }
 
 async function taBortRatt(id) {
@@ -440,5 +498,5 @@ async function taBortRatt(id) {
 init();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3779e4f78561ecb',t:'MTc4ODgwNDA4Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a37834bd2a0580fa',t:'MTc4ODgxMDI0NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
