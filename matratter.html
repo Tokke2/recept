@@ -205,8 +205,18 @@ async function init() {
     const namn = f.replace(/\.html?$/i, '').replace(/[-_]+/g, ' ');
     RECEPT.push({ fil: f, namn, perG });
   }));
+  /* 🍽️ MAT-MARKERADE INGREDIENSER (t.ex. tacosås, färdigris) blir
+     också valbara delar – näringen direkt ur databasen per gram */
+  DB.filter(d => d.mat).forEach(d => {
+    RECEPT.push({
+      fil: 'ing:' + d.id, namn: '🥫 ' + d.namn, arIngrediens: true,
+      perG: { kcal: (+d.kcal || 0) / 100, prot: (+d.protein || 0) / 100,
+              kolh: (+d.kolhydrat || 0) / 100, fett: (+d.fett || 0) / 100,
+              kr: (+d.pris_kr_per_kg || 0) / 1000 }
+    });
+  });
   RECEPT.sort((a, b) => a.namn.localeCompare(b.namn, 'sv'));
-  sel.innerHTML = '<option value="">Välj recept...</option>' +
+  sel.innerHTML = '<option value="">Välj recept eller 🥫 mat-vara...</option>' +
     RECEPT.map((r, i) => `<option value="${i}">${r.namn} · ${fmt(r.perG.kcal * 100, 0)} kcal/100 g</option>`).join('');
 
   laddaRatter();
@@ -312,9 +322,13 @@ async function laddaRatter(direkt) {
       if (rec) {
         tot.g += d.g; tot.kcal += rec.perG.kcal * d.g; tot.prot += rec.perG.prot * d.g;
         tot.kolh += rec.perG.kolh * d.g; tot.fett += rec.perG.fett * d.g; tot.kr += rec.perG.kr * d.g;
+        /* 🥫 mat-ingrediens → länka till ingredienssidan, recept → receptet */
+        if (rec.arIngrediens) {
+          return '<a href="ingredienser.html" style="color:var(--accent2);">' + rec.namn + '</a> ' + d.g + ' g';
+        }
         return '<a href="recept/' + encodeURIComponent(d.fil) + '" style="color:var(--accent);">' + rec.namn + '</a> ' + d.g + ' g';
       }
-      return d.fil.replace(/\.html?$/i, '') + ' ' + d.g + ' g <span style="color:#c0392b;">(receptet saknas)</span>';
+      return d.fil.replace(/^ing:/, '').replace(/\.html?$/i, '') + ' ' + d.g + ' g <span style="color:#c0392b;">(saknas)</span>';
     }).join(' · ');
     return `<div class="ratt">
       <h3>${r.emoji} ${r.namn} <button class="no-print" onclick="taBortRatt('${r.id}')" title="Ta bort maträtten (lösenord krävs)" style="background:none;border:none;cursor:pointer;font-size:.85rem;color:#c0392b;">🗑️</button></h3>
@@ -364,5 +378,5 @@ async function taBortRatt(id) {
 init();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a36d35f1ed22c8cb',t:'MTc4ODY5NDk1MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a37787607cd138b7',t:'MTc4ODgwMzE0Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
