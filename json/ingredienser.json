@@ -583,8 +583,11 @@
       "kolhydrat": 5.8,
       "fett": 0,
       "fiber": 1.9,
+      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-09-07",
       "varumarke": "Santa Maria",
-      "kalla": "import ingredienser.json v5.1.1"
+      "lank": "https://www.willys.se/produkt/Taco-Sauce-Hot-101255233_ST",
+      "uppdaterad": "",
+      "mat": true
     },
     {
       "id": "peanut-butter-creamy-jordnotssmor",
