@@ -1,0 +1,19 @@
+{
+ "_plats": "/json/maskiner/vevor-sus420.json  (en maskinfil per maskin – läses in automatiskt)",
+ "id": "vevor-sus420",
+ "namn": "Vevor SUS420",
+ "typ": "Annan köksmaskin",
+ "varumarke": "Vevor",
+ "modellnamn": "SUS420",
+ "effekt_w": 1000,
+ "effekt_kalla": "UPPSKATTAD av roboten – kontrollera!",
+ "egenskaper": [
+  "🤖 Importerad automatiskt – kontrollera uppgifterna"
+ ],
+ "lankar": {
+  "kop": "https://www.amazon.se/dp/B0GV4VNL7Q/",
+  "tillverkare": "https://www.vevor.com/cutters-slicers-c_10662/vevor-meat-slicer-340w-electric-deli-food-slicer-with-10-sus420-stainless-steel-blade-and-built-in-sharpening-stone-0-0-6-inch-adjustable-thickness-for-commercial-and-home-use-cut-meat-and-cheese-p_010875629016"
+ },
+ "bild": "images/vevor-sus420.jpg",
+ "asin": "B0GV4VNL7Q"
+}
