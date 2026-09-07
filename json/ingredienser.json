@@ -207,7 +207,10 @@
       "protein": 2,
       "kolhydrat": 2.8,
       "fett": 40,
-      "fiber": 0
+      "fiber": 0,
+      "kalla": "redigerad 2026-09-07",
+      "lank": "https://www.willys.se/produkt/Vispgradde-Farsk-40procent-101361504_ST",
+      "uppdaterad": ""
     },
     {
       "id": "havregryn",
@@ -336,10 +339,7 @@
       "protein": 1.3,
       "kolhydrat": 4.5,
       "fett": 0.3,
-      "fiber": 1.5,
-      "kalla": "redigerad 2026-09-07",
-      "lank": "https://www.willys.se/produkt/Tomat-Finhackad-101608142_ST",
-      "uppdaterad": ""
+      "fiber": 1.5
     },
     {
       "id": "kokosmjolk",
