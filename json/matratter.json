@@ -1,4 +1,21 @@
 {
   "_plats": "/json/matratter.json  (maträtter = kombinerade recept: delar med gram, näring räknas live)",
-  "ratter": []
+  "ratter": [
+    {
+      "id": "ris-med-flaskytterfille",
+      "namn": "Ris med fläskytterfille",
+      "emoji": "🍽️",
+      "delar": [
+        {
+          "fil": "kokt-ris-i-riskokare-500-g-ris-1000-g-vatten.html",
+          "g": 150
+        },
+        {
+          "fil": "helstekt-flaskytterfil-i-airfryer-800-g-kallskuren-med-kottslicer.html",
+          "g": 150
+        }
+      ],
+      "skapad": "2026-09-07"
+    }
+  ]
 }
