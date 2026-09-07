@@ -35,3 +35,7 @@
 **2026-09-07**
 
 | helstekt-flaskytterfil-i-airfryer-800-g-kallskuren-med-kottslicer.html | ⚡ energidata skapad: cosori-twinfry-10l 120 min, ninja-af500eucp 62 min |
+
+**2026-09-07**
+
+| ratter/ris-med-flaskytterfille.html | 🍽️ maträttssida byggd (saknades för "Ris med fläskytterfille") |
