@@ -173,6 +173,13 @@
     "min": 90,
     "moment": "Tillagning (🤖 auto ur receptets meta)"
    }
+  ],
+  "kokt-ris-i-riskokare-500-g-ris-1000-g-vatten.html": [
+   {
+    "maskin": "midea-mb-fs5017",
+    "min": 13,
+    "moment": "Alternativ (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }

@@ -27,3 +27,7 @@
 **2026-09-04**
 
 | pizzadeg-med-50-g-rivet-apple.html | ⚡ energidata skapad: clatronic-bba3774 90 min |
+
+**2026-09-07**
+
+| kokt-ris-i-riskokare-500-g-ris-1000-g-vatten.html | ⚡ energidata skapad: midea-mb-fs5017 13 min |
