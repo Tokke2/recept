@@ -494,8 +494,10 @@
       "kolhydrat": 0,
       "fett": 26,
       "fiber": 0,
+      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-09-07",
       "varumarke": "Arla",
-      "kalla": "import ingredienser.json v5.1.1"
+      "lank": "https://www.willys.se/produkt/Hushallsost-26procent-101197478_KG",
+      "uppdaterad": ""
     },
     {
       "id": "jordnotssmor-crunchy",
