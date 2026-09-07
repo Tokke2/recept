@@ -518,8 +518,8 @@
             var s = document.createElement('a');
             s.className = 'mk-saknas no-print';
             s.href = '../ingredienser.html';
-            s.title = 'Ingrediensen saknas i databasen – klicka för att MATCHA den mot en befintlig vara (alias) eller lägga till den';
-            s.textContent = '✖ saknas – matcha?';
+            s.title = 'Ingrediensen saknas i databasen – välj rätt vara i listan eller klicka för fler alternativ';
+            s.textContent = '✖ saknas';
             s.style.cssText = 'display:inline-block;margin-left:8px;background:#fdecea;color:#c0392b;border:1px solid #c0392b;border-radius:999px;padding:0 8px;font-size:.68rem;font-weight:700;text-decoration:none;vertical-align:middle;cursor:pointer;';
             (function (radNamn) {
               s.addEventListener('click', function (e) {
@@ -528,6 +528,36 @@
               });
             })(r.namn);
             namnCell.appendChild(s);
+            /* 🔽 SNABB-DROPDOWN direkt på raden: välj rätt vara utan
+               dialog → sparas som alias (samma flöde som dialogen) */
+            var dd = document.createElement('select');
+            dd.className = 'mk-saknas no-print';
+            dd.title = 'Matcha manuellt: välj vilken vara i databasen detta är – sparas som alias.';
+            dd.style.cssText = 'margin-left:6px;padding:2px 6px;border:1.5px solid #c0392b;color:#c0392b;' +
+              'border-radius:999px;font-size:.7rem;font-weight:700;background:#fff;cursor:pointer;' +
+              'font-family:inherit;max-width:160px;vertical-align:middle;';
+            dd.innerHTML = '<option value="">🔽 Matcha mot...</option>' +
+              db.slice().sort(function (a, b) { return String(a.namn).localeCompare(String(b.namn), 'sv'); })
+                .map(function (d2) { return '<option value="' + d2.id + '">' + d2.namn + '</option>'; }).join('');
+            (function (radNamn, cell) {
+              dd.addEventListener('change', function () {
+                if (!dd.value) return;
+                /* återanvänd dialog-sparningen: mini-"bg" med SYNLIG
+                   resultatruta på raden (fel visas där, lyckat → run()) */
+                var res = document.createElement('span');
+                res.className = 'mk-saknas no-print';
+                res.id = 'mk-match-result';
+                res.style.cssText = 'margin-left:6px;font-size:.72rem;';
+                cell.appendChild(res);
+                var fejk = {
+                  remove: function () { res.remove(); },
+                  querySelector: function (sel) { return sel === '#mk-match-result' ? res : null; }
+                };
+                sparaAlias(fejk, radNamn, dd.value);
+              });
+              dd.addEventListener('click', function (e) { e.stopPropagation(); });
+            })(r.namn, namnCell);
+            namnCell.appendChild(dd);
           }
         }
         return;
