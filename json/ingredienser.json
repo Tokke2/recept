@@ -217,10 +217,7 @@
       "protein": 13,
       "kolhydrat": 58,
       "fett": 7,
-      "fiber": 10,
-      "kalla": "redigerad 2026-09-07",
-      "lank": "https://www.willys.se/produkt/Havregryn-101833307_ST",
-      "uppdaterad": ""
+      "fiber": 10
     },
     {
       "id": "ris-jasmin",
@@ -230,7 +227,10 @@
       "protein": 7,
       "kolhydrat": 79,
       "fett": 0.6,
-      "fiber": 1.2
+      "fiber": 1.2,
+      "kalla": "redigerad 2026-09-07",
+      "lank": "https://www.willys.se/produkt/Jasminris-101220577_ST",
+      "uppdaterad": ""
     },
     {
       "id": "risgryn",
