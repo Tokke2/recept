@@ -35,10 +35,13 @@
   /* RECEPTSIDA = sidan HAR recept-metadata. (Sökvägskoll funkar INTE
      live: repot heter "recept" så ALLA adresser innehåller /recept/!) */
   var isRecipePage = !!document.querySelector('meta[name="recept:namn"]');
+  /* 🍽️ MATRÄTTSSIDA = sidan har ratt:namn-metadata (ratter/-mappen) */
+  var isRattPage = !!document.querySelector('meta[name="ratt:namn"]');
 
   /* Delas med alla moduler – EN källa till sanning */
   window.__MK_ROOT = root;
   window.__MK_IS_RECIPE = isRecipePage;
+  window.__MK_IS_RATT = isRattPage;
 
   var report = { loaded: [], present: [], failed: [] };
 
@@ -378,6 +381,7 @@
   ensureCss('design.css');   /* 🎨 central designfil – vinner över sidornas :root */
   var scripts = ['print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js', 'emoji.js', 'seo.js', 'hero.js'];
   if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js', 'portion.js');
+  if (isRattPage) scripts.push('ratt.js');   /* 🍽️ maträttssidor (ratter/) */
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');
   if (/(nytt-recept|generator|maskin-import|ingredienser|maskindatabas|forslag|matratter)\.html$/i.test(location.pathname)) scripts.push('spara.js');
   if (/(index\.html$|\/recept\/?$)/i.test(location.pathname)) scripts.push('hem.js');   /* 🏠 Startsidan 2.0 */
