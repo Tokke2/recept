@@ -19,6 +19,7 @@ on:
     paths:
       - 'recept/**.html'
       - 'json/maskiner/**.json'
+      - 'json/matratter.json'   # 🍽️ ny maträtt → sidan byggs DIREKT (~30 sek)
   workflow_dispatch: {}
 
 permissions:
@@ -43,7 +44,7 @@ jobs:
           set -euo pipefail
           git config user.name  "Läknings-robot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A json/ recept/ backup/
+          git add -A json/ recept/ ratter/ backup/
           if git diff --cached --quiet; then
             echo "Allt friskt."
           else
