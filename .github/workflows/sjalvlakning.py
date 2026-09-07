@@ -20,6 +20,11 @@
 #      inte finns men annan ändelse finns (jpg/png/webp) → rättas.
 #   4. 🗑️ VERIFIERINGSFILER i recept/ (google*/bing*) → tas bort
 #      (de hör hemma i roten; kopior blir trasiga "recept").
+#   5. 🍽️ MATRÄTTSSIDOR: rätt i json/matratter.json saknar sin
+#      ratter/<id>.html? → sidan byggs automatiskt (samma skelett
+#      som matratter.html:s byggRattSida). Sidor vars rätt tagits
+#      bort ur JSON:en städas bort. Körs även vid push av
+#      json/matratter.json → sidan finns inom ~30 sek.
 # FÖRBÄTTRAR ENDAST – skriver aldrig över ägarens data.
 # Logg: backup/sjalvlakning-LOGG.md
 # ============================================================
@@ -195,12 +200,99 @@ def steg4_verifieringsfiler():
             rader.append('| %s | 🗑️ verifieringsfil borttagen ur recept/ (hör hemma i roten) |' % os.path.basename(f))
 
 
+RATT_MALL = '''<!DOCTYPE html>
+<!-- PLATS: /ratter/{id}.html  (ratter-mappen - matratt, renderas av assets/ratt.js) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{emoji} {namn} - Matratt</title>
+<meta name="ratt:namn" content="{namn}">
+<meta name="ratt:emoji" content="{emoji}">
+<meta name="ratt:delar" content="{delar}">
+<style>
+  :root {{ --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; }}
+  * {{ box-sizing:border-box; margin:0; padding:0; }}
+  body {{ font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:900px; margin:0 auto; }}
+  header {{ background:linear-gradient(135deg,#e67e22,#f1c40f); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:20px; }}
+  header h1 {{ font-size:1.6rem; margin-bottom:4px; }}
+  header p {{ opacity:.95; font-size:.92rem; }}
+  .card {{ background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.07); }}
+  h2 {{ font-size:1.1rem; margin-bottom:10px; }}
+  td.num, th.num {{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }}
+  td {{ padding:7px 10px; border-bottom:1px solid #eee; }}
+  a {{ color:var(--accent); }}
+  footer {{ text-align:center; color:var(--muted); font-size:.8rem; margin-top:20px; }}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>{emoji} {namn}</h1>
+  <p>Komplett matratt &middot; delar &amp; naring raknas live nedan</p>
+</header>
+
+<div id="ratt-innehall"><p style="color:var(--muted);">&#9203; Raknar naring &amp; pris live...</p></div>
+
+<footer>Matratt ur Mitt Maskinkok &middot; <a href="../matratter.html">Alla matratter</a></footer>
+
+<script src="../assets/site.js"></script>
+</body>
+</html>
+'''
+
+
+def steg5_matrattssidor():
+    """🍽️ Bygg saknade ratter/<id>.html ur json/matratter.json + städa
+    sidor vars rätt tagits bort. Sidan innehåller endast metadata –
+    assets/ratt.js ritar allt (Centralt-principen)."""
+    if not os.path.exists('json/matratter.json'):
+        return
+    try:
+        with open('json/matratter.json', encoding='utf-8') as fp:
+            db = json.load(fp)
+    except (json.JSONDecodeError, OSError):
+        return
+    ratter = db.get('ratter') or []
+    os.makedirs('ratter', exist_ok=True)
+    ids = set()
+    for r in ratter:
+        rid = str(r.get('id') or '').strip()
+        namn = str(r.get('namn') or '').strip()
+        delar = r.get('delar') or []
+        if not rid or not namn or not delar:
+            continue
+        ids.add(rid)
+        mal = 'ratter/%s.html' % rid
+        if os.path.exists(mal):
+            continue  # aldrig skriva över befintlig sida (kan vara handjusterad)
+        delstr = '|'.join('%s:%s' % (d.get('fil', ''), d.get('g', 0))
+                          for d in delar if d.get('fil') and d.get('g'))
+        if not delstr:
+            continue
+        html = RATT_MALL.format(
+            id=rid,
+            namn=namn.replace('"', '&quot;'),
+            emoji=str(r.get('emoji') or '\U0001F37D\uFE0F'),
+            delar=delstr.replace('"', '&quot;'))
+        with open(mal, 'w', encoding='utf-8') as fp:
+            fp.write(html)
+        rader.append('| ratter/%s.html | 🍽️ maträttssida byggd (saknades för "%s") |' % (rid, namn))
+    # städa sidor vars rätt inte längre finns i JSON:en
+    for f in glob.glob('ratter/*.html'):
+        base = os.path.splitext(os.path.basename(f))[0]
+        if base not in ids:
+            os.remove(f)
+            rader.append('| ratter/%s.html | 🗑️ borttagen (rätten finns ej i matratter.json) |' % base)
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
     steg2_energi(maskiner)
     steg3_bildvagar(maskiner)
     steg4_verifieringsfiler()
+    steg5_matrattssidor()
 
     os.makedirs('backup', exist_ok=True)
     if not os.path.exists(LOGG):
