@@ -253,7 +253,10 @@
       "protein": 23,
       "kolhydrat": 0,
       "fett": 1.5,
-      "fiber": 0
+      "fiber": 0,
+      "kalla": "redigerad 2026-09-07",
+      "lank": "https://www.willys.se/produkt/Kyckling-File-Fryst-101266948_ST",
+      "uppdaterad": ""
     },
     {
       "id": "notfars",
@@ -948,10 +951,10 @@
       "id": "flaskytterfile",
       "namn": "Fläskytterfilé",
       "pris_kr_per_kg": 89.81,
-      "kcal": 110.0,
-      "protein": 17.0,
-      "kolhydrat": 2.0,
-      "fett": 4.0,
+      "kcal": 110,
+      "protein": 17,
+      "kolhydrat": 2,
+      "fett": 4,
       "fiber": 0,
       "lank": "https://www.willys.se/produkt/Flaskytterfile-101290660_KG",
       "kalla": "willys.se (jamforpris kr/kg)",
