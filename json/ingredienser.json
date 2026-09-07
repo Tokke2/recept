@@ -447,14 +447,16 @@
     },
     {
       "id": "bobmjol-vita-bonor",
-      "namn": "Böbmjöl / vita bönor",
+      "namn": "Bönmjöl / vita bönor",
       "pris_kr_per_kg": 35.36,
       "kcal": 378,
       "protein": 21,
       "kolhydrat": 62,
       "fett": 1.6,
       "fiber": 16,
-      "kalla": "import ingredienser.json v5.1.1"
+      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-09-07",
+      "lank": "https://www.willys.se/produkt/Sma-Vita-Bonor-101334235_ST",
+      "uppdaterad": ""
     },
     {
       "id": "falukorv-garant",
