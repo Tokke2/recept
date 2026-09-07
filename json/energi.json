@@ -180,6 +180,18 @@
     "min": 13,
     "moment": "Alternativ (🤖 auto ur receptets meta)"
    }
+  ],
+  "helstekt-flaskytterfil-i-airfryer-800-g-kallskuren-med-kottslicer.html": [
+   {
+    "maskin": "cosori-twinfry-10l",
+    "min": 120,
+    "moment": "Tillagning (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "ninja-af500eucp",
+    "min": 62,
+    "moment": "Alternativ (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }

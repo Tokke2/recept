@@ -31,3 +31,7 @@
 **2026-09-07**
 
 | kokt-ris-i-riskokare-500-g-ris-1000-g-vatten.html | ⚡ energidata skapad: midea-mb-fs5017 13 min |
+
+**2026-09-07**
+
+| helstekt-flaskytterfil-i-airfryer-800-g-kallskuren-med-kottslicer.html | ⚡ energidata skapad: cosori-twinfry-10l 120 min, ninja-af500eucp 62 min |
