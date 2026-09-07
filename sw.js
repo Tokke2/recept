@@ -22,7 +22,7 @@
    ============================================================ */
 'use strict';
 
-const VERSION = 'maskinkok-v117';
+const VERSION = 'maskinkok-v118';
 const CACHE_CORE = VERSION + '-core';     // assets + startsida (förcachas)
 const CACHE_PAGES = VERSION + '-pages';   // recept & övriga sidor
 const CACHE_IMG = VERSION + '-img';       // bilder
@@ -63,6 +63,7 @@ const CORE = [
   'assets/kommentarer.js',
   'assets/verifierad.js',
   'assets/portion.js',
+  'assets/ratt.js',
   'json/donation.json',
   'json/affiliate.json',
   'json/maskindatabas.json',
@@ -111,7 +112,7 @@ self.addEventListener('fetch', e => {
 
   if (NEVER_CACHE.some(h => url.includes(h))) return;
 
-  const isRecipeHtml = url.includes('/recept/') && /\.html?(\?|$)/i.test(url);
+  const isRecipeHtml = (url.includes('/recept/') || url.includes('/ratter/')) && /\.html?(\?|$)/i.test(url);
   const isRecipePdf  = url.includes('/recept/') && /\.pdf(\?|$)/i.test(url);
   const isAsset      = url.includes('/assets/') || url.includes('/json/');
   const isImage      = /\.(jpe?g|png|webp|gif|svg|ico)(\?|$)/i.test(url);
