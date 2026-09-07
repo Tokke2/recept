@@ -1,1 +1,6 @@
 
+PLATS: /ratter/  (repo-roten - EN .html-FIL PER MATRÄTT)
+Sidorna byggs AUTOMATISKT av matratter.html när en maträtt sparas.
+Innehåller endast metadata (ratt:namn/emoji/delar) - assets/ratt.js
+ritar allt innehåll och räknar näring & pris live.
+Ändra aldrig dessa filer för hand - redigera på matratter.html.
