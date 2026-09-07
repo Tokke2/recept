@@ -95,16 +95,69 @@
     var machines = await loadMachines();
     if (!machines.length) return;
 
+    /* 🧪 TESTAD-MED-VILKEN? (användarens regel): finns FLERA maskiner
+       av samma typ i parken (t.ex. 2 riskokare: Midea + Yum Asia) ska
+       receptet tydligt visa VILKEN som receptet testats med.
+       Typgrupp = första ledet i "typ" ("Riskokare / Multikokare" →
+       "riskokare"). */
+    function typKey(m) {
+      return String(m.typ || '').split('/')[0].trim().toLowerCase();
+    }
+    var typAntal = {};
+    machines.forEach(function (m) {
+      var t = typKey(m);
+      if (t) typAntal[t] = (typAntal[t] || 0) + 1;
+    });
+    function arKand(m) {
+      return (m.varumarke && known.indexOf(String(m.varumarke).toLowerCase()) !== -1) ||
+             (m.modellnamn && known.indexOf(String(m.modellnamn).toLowerCase()) !== -1);
+    }
+    var testade = machines.filter(arKand);
+    var testadeTyper = {};
+    testade.forEach(function (m) { var t = typKey(m); if (t) testadeTyper[t] = m; });
+
+    /* 🧪 Badge på maskinstegen: receptets maskin har typ-syskon i
+       parken → "Testad med denna – du har även X" */
+    document.querySelectorAll('.machine-step h3').forEach(function (h3) {
+      if (h3.querySelector('.mk-testad')) return;
+      var txt = h3.textContent.toLowerCase();
+      testade.forEach(function (m) {
+        var modell = String(m.modellnamn || '').toLowerCase();
+        var marke = String(m.varumarke || '').toLowerCase();
+        var traff = (modell && txt.indexOf(modell) !== -1) ||
+                    (marke && modell && txt.indexOf(marke) !== -1 && txt.indexOf(modell.split(' ')[0]) !== -1);
+        if (!traff) return;
+        var t = typKey(m);
+        if (!t || (typAntal[t] || 0) < 2) return;   /* bara när det FINNS syskon */
+        var syskon = machines.filter(function (x) {
+          return typKey(x) === t && x.id !== m.id;
+        }).map(function (x) {
+          return ((x.varumarke || '') + ' ' + (x.modellnamn || '')).trim() || x.namn || x.id;
+        });
+        var b = document.createElement('span');
+        b.className = 'mk-testad no-print';
+        b.title = 'Du har ' + typAntal[t] + ' ' + t + ' – receptet är testat med just DENNA. ' +
+          (syskon.length ? 'Din andra (' + syskon.join(', ') + ') kan kräva andra tider/program.' : '');
+        b.textContent = '🧪 Testad med denna';
+        b.style.cssText = 'display:inline-block;margin-left:8px;background:#eaf7ef;color:#27ae60;' +
+          'border:1px solid #27ae60;border-radius:999px;padding:1px 9px;font-size:.68rem;' +
+          'font-weight:700;vertical-align:middle;cursor:help;';
+        h3.appendChild(b);
+      });
+    });
+
     var hits = [];
     machines.forEach(function (m) {
       var name = ((m.varumarke || '') + ' ' + (m.modellnamn || '')).trim();
       /* hoppa över maskiner som redan står i receptet */
-      var already =
-        (m.varumarke && known.indexOf(String(m.varumarke).toLowerCase()) !== -1) ||
-        (m.modellnamn && known.indexOf(String(m.modellnamn).toLowerCase()) !== -1);
-      if (already) return;
+      if (arKand(m)) return;
       var b = bestProgram(m, text);
-      if (b) hits.push({ m: m, name: name || m.namn || m.id, p: b.program, score: b.score });
+      if (b) {
+        /* ⚠️ samma typ som en TESTAD maskin → märk som ej testad */
+        var t = typKey(m);
+        var otestad = !!(t && testadeTyper[t]);
+        hits.push({ m: m, name: name || m.namn || m.id, p: b.program, score: b.score, otestad: otestad });
+      }
     });
     if (!hits.length) return;
     hits.sort(function (a, b) { return b.score - a.score; });
@@ -116,9 +169,15 @@
         'onerror="this.remove()">' : '';
       var tid = h.p.standardtid ? ' · ' + h.p.standardtid : '';
       var beskr = h.p.beskrivning ? '<div style="color:#7f8c8d;font-size:.82rem;margin-top:2px;">' + h.p.beskrivning + '</div>' : '';
+      /* ⚠️ receptet är testat med en ANNAN maskin av samma typ */
+      var otestadBadge = h.otestad
+        ? ' <span title="Receptet är testat med din andra maskin av samma typ – tider/program kan behöva justeras för denna." ' +
+          'style="display:inline-block;background:#fdf6ee;color:#e67e22;border:1px solid #e67e22;border-radius:999px;' +
+          'padding:0 8px;font-size:.68rem;font-weight:700;vertical-align:middle;cursor:help;">⚠️ Ej testad med denna</span>'
+        : '';
       return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0ebe3;">' +
         img +
-        '<div><b>' + h.name + '</b> · <span style="color:#27ae60;font-weight:700;">' +
+        '<div><b>' + h.name + '</b>' + otestadBadge + ' · <span style="color:#27ae60;font-weight:700;">' +
         (h.p.namn || '') + tid + '</span>' + beskr + '</div></div>';
     }).join('');
 
