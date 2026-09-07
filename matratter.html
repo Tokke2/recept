@@ -263,6 +263,51 @@ function ritaDelar() {
 function rensaBygge() { DELAR = []; document.getElementById('rNamn').value = ''; ritaDelar(); }
 
 /* ---------- Spara / lista maträtter ---------- */
+/* 🍽️ Varje maträtt får EGEN SIDA i ratter/-mappen (likt recepten).
+   Sidan innehåller endast metadata – assets/ratt.js ritar allt. */
+function byggRattSida(post) {
+  const delar = post.delar.map(d => d.fil + ':' + d.g).join('|');
+  return `<!DOCTYPE html>
+<!-- PLATS: /ratter/${post.id}.html  (ratter-mappen – maträtt, renderas av assets/ratt.js) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${post.emoji} ${post.namn} – Maträtt</title>
+<meta name="ratt:namn" content="${post.namn.replace(/"/g, '&quot;')}">
+<meta name="ratt:emoji" content="${post.emoji}">
+<meta name="ratt:delar" content="${delar.replace(/"/g, '&quot;')}">
+<style>
+  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:900px; margin:0 auto; }
+  header { background:linear-gradient(135deg,#e67e22,#f1c40f); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:20px; }
+  header h1 { font-size:1.6rem; margin-bottom:4px; }
+  header p { opacity:.95; font-size:.92rem; }
+  .card { background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  h2 { font-size:1.1rem; margin-bottom:10px; }
+  td.num, th.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  td { padding:7px 10px; border-bottom:1px solid #eee; }
+  a { color:var(--accent); }
+  footer { text-align:center; color:var(--muted); font-size:.8rem; margin-top:20px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>${post.emoji} ${post.namn}</h1>
+  <p>Komplett maträtt · delar & näring räknas live nedan</p>
+</header>
+
+<div id="ratt-innehall"><p style="color:var(--muted);">⏳ Räknar näring & pris live...</p></div>
+
+<footer>Maträtt ur Mitt Maskinkök · <a href="../matratter.html">Alla maträtter</a></footer>
+
+<scr` + `ipt src="../assets/site.js"></scr` + `ipt>
+</body>
+</html>`;
+}
+
 async function sparaRatt() {
   const namn = document.getElementById('rNamn').value.trim();
   if (!namn) { alert('Ge maträtten ett namn!'); return; }
@@ -286,10 +331,21 @@ async function sparaRatt() {
     const idx = db.ratter.findIndex(r => r.id === post.id);
     if (idx >= 0) db.ratter[idx] = post; else db.ratter.push(post);
     res = await __MK_SPARA.save('json/matratter.json', JSON.stringify(db, null, 2), 'Maträtt: ' + namn);
+    /* 🍽️ EGEN SIDA i ratter/-mappen (likt recepten) */
+    if (res.ok) {
+      const sidRes = await __MK_SPARA.save('ratter/' + post.id + '.html', byggRattSida(post),
+        'Maträttssida: ' + namn);
+      res.sida = sidRes.ok ? post.id + '.html' : null;
+      res.sidFel = sidRes.ok ? null : sidRes.error;
+    }
   } catch (e) { res = { ok: false, error: e.message }; }
   btn.disabled = false; btn.textContent = '💾 Spara maträtten';
   if (res.ok) {
-    out.innerHTML = '<div class="okbox">🎉 <b>' + namn + '</b> sparad! Syns i listan nedan.</div>';
+    out.innerHTML = '<div class="okbox">🎉 <b>' + namn + '</b> sparad!' +
+      (res.sida
+        ? ' 📄 <a href="ratter/' + encodeURIComponent(res.sida) + '" target="_blank" rel="noopener"><b>Öppna maträttens egen sida</b></a> (live inom ~1 min).'
+        : (res.sidFel ? ' <span style="color:#c0392b;">(sidan kunde inte skapas: ' + res.sidFel + ')</span>' : '')) +
+      '</div>';
     rensaBygge();
     laddaRatter(true);
   } else {
@@ -331,7 +387,9 @@ async function laddaRatter(direkt) {
       return d.fil.replace(/^ing:/, '').replace(/\.html?$/i, '') + ' ' + d.g + ' g <span style="color:#c0392b;">(saknas)</span>';
     }).join(' · ');
     return `<div class="ratt">
-      <h3>${r.emoji} ${r.namn} <button class="no-print" onclick="taBortRatt('${r.id}')" title="Ta bort maträtten (lösenord krävs)" style="background:none;border:none;cursor:pointer;font-size:.85rem;color:#c0392b;">🗑️</button></h3>
+      <h3><a href="ratter/${encodeURIComponent(r.id)}.html" style="color:var(--dark);text-decoration:none;">${r.emoji} ${r.namn}</a>
+        <a href="ratter/${encodeURIComponent(r.id)}.html" style="font-size:.75rem;color:var(--accent);font-weight:700;">📄 Egen sida →</a>
+        <button class="no-print" onclick="taBortRatt('${r.id}')" title="Ta bort maträtten (lösenord krävs)" style="background:none;border:none;cursor:pointer;font-size:.85rem;color:#c0392b;">🗑️</button></h3>
       <div class="delar">${delRader}</div>
       <span class="npill">🔥 ${fmt(tot.kcal, 0)} kcal</span>
       <span class="npill">💪 ${fmt(tot.prot)} g protein</span>
@@ -371,12 +429,16 @@ async function taBortRatt(id) {
     const db = JSON.parse(raw);
     db.ratter = (db.ratter || []).filter(x => x.id !== id);
     const res = await __MK_SPARA.save('json/matratter.json', JSON.stringify(db, null, 2), 'Maträtt borttagen: ' + id);
-    if (res.ok) { RATTER = RATTER.filter(x => x.id !== id); laddaRatter(true); }
+    if (res.ok) {
+      /* 🗑️ ta bort egna sidan också (failar tyst om den saknas) */
+      try { if (__MK_SPARA.remove) await __MK_SPARA.remove('ratter/' + id + '.html', 'Maträttssida borttagen: ' + id); } catch (e) {}
+      RATTER = RATTER.filter(x => x.id !== id); laddaRatter(true);
+    }
   } catch (e) {}
 }
 
 init();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a37787607cd138b7',t:'MTc4ODgwMzE0Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3779e4f78561ecb',t:'MTc4ODgwNDA4Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
