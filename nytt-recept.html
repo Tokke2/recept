@@ -174,17 +174,28 @@ function parseHtml(raw) {
   const namn = (doc.querySelector('h1') || doc.querySelector('title') || {}).textContent || 'Nytt recept';
   const ings = [], steps = [], others = [];
 
+  /* 🧮 Näringstabell? (kcal/protein/fett-etiketter) → HOPPAS ÖVER helt.
+     Näringen tas BORT ur inklistrade recept – live-kalkylen räknar
+     alltid om mot ingrediensdatabasen (användarens regel). */
+  function arNaringstabell(rows) {
+    const etiketter = rows.map(r => (r[0] || '').toLowerCase());
+    const traffar = etiketter.filter(e => /^(kcal|energi|kalorier|protein|kolhydrat|fett|fiber|salt|socker)/.test(e)).length;
+    return traffar >= 2;
+  }
+
   /* Ingredienser: tabell med mängder, annars ul-lista med mängder */
   let found = false;
   doc.querySelectorAll('table').forEach(tbl => {
     if (found) return;
     const rows = [...tbl.querySelectorAll('tr')].map(tr => [...tr.querySelectorAll('td,th')].map(c => c.textContent.trim()));
+    if (arNaringstabell(rows)) return;   /* 🧮 näringstabell → släng */
     const withAmount = rows.filter(r => r.some(c => /\d+\s*(g|kg|dl|cl|ml|l|msk|tsk|krm|st)\b/i.test(c)));
     if (withAmount.length >= 2) {
       found = true;
       rows.forEach(r => {
         if (r.length < 2) return;
         if (/^(ingrediens|mängd|totalt|summa|total)/i.test(r[0])) return;  // rubrik- & summeringsrader bort
+        if (/^(kcal|energi|protein|kolhydrat|fett|fiber|salt)/i.test(r[0])) return;  // 🧮 näringsrad
         ings.push([r[0], r[1]]);  // endast mängd-kolumnen (ev. kostnadskolumn ignoreras)
       });
     }
@@ -224,6 +235,21 @@ function parseText(raw) {
     const low = l.toLowerCase().replace(/[:#]+/g, '').trim();
     if (/ingredien/.test(low) && low.length < 40) { section = 'ing'; continue; }
     if (/^(gör så här|gor sa har|steg|instruktion|tillagning|gör)$/.test(low) && low.length < 40) { section = 'steg'; continue; }
+    /* 🧮 Näringssektion → HELA sektionen slängs (live-kalkylen räknar om
+       mot ingrediensdatabasen). "Näringsvärde", "Näring per portion"... */
+    if (/^(näringsvärde|naringsvarde|näring|naring|nutrition)/.test(low) && low.length < 45) { section = 'naring'; continue; }
+    if (section === 'naring') {
+      /* stanna i näringsläget tills nästa rubrik – näringsrader slängs */
+      if (/^(kcal|energi|kalorier|protein|kolhydrat|fett|fiber|salt|socker)/i.test(low) ||
+          /^\|/.test(l) || /\d+\s*(kcal|kj|g)\b/i.test(low)) continue;
+      section = '';   /* ny icke-näringsrad → lämna läget och tolka nedan */
+    }
+    /* 📝 Beskrivningssektion: uttrycklig rubrik → others (ALDRIG ingrediens) */
+    if (/^(beskrivning|om receptet|intro)$/.test(low) && low.length < 30) { section = 'beskr'; continue; }
+    if (section === 'beskr') {
+      if (/ingredien|^gör|^steg/i.test(low) && low.length < 40) { section = ''; }
+      else { others.push(l); continue; }
+    }
     /* Markdown-tabellrad: | Vetemjöl (Garant) | 450 g | 3,40 kr | */
     if (l.startsWith('|')) {
       const celler = l.split('|').map(c => c.trim()).filter(Boolean);
@@ -234,14 +260,20 @@ function parseText(raw) {
       if (celler.length >= 2) continue;      /* rubrik-/totalrad – hoppa */
     }
     const mi = l.match(ING_RE), mr = l.match(ING_REV_RE), ms = l.match(STEP_RE);
+    /* 📝 Beskrivande MENING ≠ ingrediens: verb/lång text/skiljetecken →
+       others även om den råkar innehålla en mängd ("Häll i 200 g mjöl
+       och rör om." är ett steg/beskrivning, inte en ingrediensrad) */
+    const serUtSomMening = /[.!?]$/.test(l) || l.split(' ').length > 7 ||
+      /\b(häll|blanda|rör|vispa|tillsätt|låt|servera|koka|stek|grädda|mixa|är|blir|ger|passar|serveras)\b/i.test(l);
     if (section === 'ing') {
+      if (serUtSomMening) { others.push(l); continue; }   /* 📝 mening i ing-sektionen → beskrivning */
       if (mi) ings.push([mi[2].trim(), mi[1].trim()]);
       else if (mr) ings.push([mr[1].trim(), mr[2] + ' ' + mr[3]]);
       else ings.push([l.replace(/^[-•*·]\s*/, ''), '']);
     } else if (section === 'steg') {
       steps.push(ms ? ms[1].trim() : l.replace(/^[-•*·]\s*/, ''));
-    } else if (mi && l.length < 65) ings.push([mi[2].trim(), mi[1].trim()]);
-    else if (mr) ings.push([mr[1].trim(), mr[2] + ' ' + mr[3]]);
+    } else if (mi && l.length < 65 && !serUtSomMening) ings.push([mi[2].trim(), mi[1].trim()]);
+    else if (mr && !serUtSomMening) ings.push([mr[1].trim(), mr[2] + ' ' + mr[3]]);
     else if (ms) steps.push(ms[1].trim());
     else others.push(l);
   }
@@ -556,5 +588,5 @@ async function saveDirect() {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a36d370e4a78c8cb',t:'MTc4ODY5NDk5Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a38062759de913b8',t:'MTc4ODg5NjAwMw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
