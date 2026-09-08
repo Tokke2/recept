@@ -73,6 +73,30 @@
     <button class="btn orange" onclick="laggTillDel()">➕ Lägg till del</button>
   </div>
 
+  <!-- ✍️ FRI DEL: publicera maträtt UTAN kopplade recept – skriv valfri
+       del (t.ex. "Stekt kyckling") med egen näring per 100 g -->
+  <details style="margin-bottom:10px;">
+    <summary style="cursor:pointer;font-size:.88rem;font-weight:700;color:var(--muted);">✍️ Egen del utan recept (skriv namn + näring själv)</summary>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:8px;">
+      <div style="flex:2;min-width:160px;">
+        <label style="display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">Namn</label>
+        <input type="text" id="friNamn" placeholder="t.ex. Stekt kyckling" style="width:100%;">
+      </div>
+      <div><label style="display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">Kcal/100g</label>
+        <input type="number" id="friKcal" style="width:80px;text-align:right;" placeholder="165"></div>
+      <div><label style="display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">Prot</label>
+        <input type="number" id="friProt" style="width:64px;text-align:right;" placeholder="31"></div>
+      <div><label style="display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">Kolh</label>
+        <input type="number" id="friKolh" style="width:64px;text-align:right;" placeholder="0"></div>
+      <div><label style="display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">Fett</label>
+        <input type="number" id="friFett" style="width:64px;text-align:right;" placeholder="3.6"></div>
+      <div><label style="display:block;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">Gram</label>
+        <input type="number" id="friG" value="150" style="width:70px;text-align:right;"></div>
+      <button class="btn orange" onclick="laggTillFri()">➕ Lägg till</button>
+    </div>
+    <p style="font-size:.75rem;color:var(--muted);margin-top:6px;">💡 Delen sparas i rättens data (fri:-post) – inget recept behövs. Koppla ett riktigt recept senare via ✏️ Redigera om du vill.</p>
+  </details>
+
   <table id="delTabell" style="display:none;">
     <thead><tr><th>Del (recept)</th><th class="num">Mängd</th><th class="num">Kcal</th><th class="num">Protein</th><th class="num">Kolh.</th><th class="num">Fett</th><th class="num">Pris</th><th></th></tr></thead>
     <tbody id="delRader"></tbody>
@@ -232,6 +256,33 @@ function laggTillDel() {
   ritaDelar();
 }
 function taBortDel(i) { DELAR.splice(i, 1); ritaDelar(); }
+
+/* ✍️ Fri del utan recept: näring per 100 g anges direkt.
+   Sparas som "fri:Namn:kcal,prot,kolh,fett" i delens fil-fält. */
+function laggTillFri() {
+  const namn = document.getElementById('friNamn').value.trim();
+  const kcal = parseFloat(document.getElementById('friKcal').value) || 0;
+  const prot = parseFloat(document.getElementById('friProt').value) || 0;
+  const kolh = parseFloat(document.getElementById('friKolh').value) || 0;
+  const fett = parseFloat(document.getElementById('friFett').value) || 0;
+  const g = parseFloat(document.getElementById('friG').value);
+  if (!namn) { alert('Ge delen ett namn!'); return; }
+  if (!g || g <= 0) { alert('Ange mängd i gram!'); return; }
+  DELAR.push({
+    fil: 'fri:' + namn.replace(/[|:]/g, ' ') + ':' + [kcal, prot, kolh, fett].join(','),
+    namn: '✍️ ' + namn, g,
+    perG: { kcal: kcal / 100, prot: prot / 100, kolh: kolh / 100, fett: fett / 100, kr: 0 }
+  });
+  ['friNamn','friKcal','friProt','friKolh','friFett'].forEach(id => document.getElementById(id).value = '');
+  ritaDelar();
+}
+
+/* Tolka fri:-referens tillbaka till en del (för redigering/listning) */
+function tolkaFri(ref) {
+  const m = String(ref).match(/^fri:([^:]+):([\d.]+),([\d.]+),([\d.]+),([\d.]+)$/);
+  if (!m) return null;
+  return { namn: '✍️ ' + m[1], perG: { kcal: +m[2] / 100, prot: +m[3] / 100, kolh: +m[4] / 100, fett: +m[5] / 100, kr: 0 } };
+}
 function ritaDelar() {
   const t = document.getElementById('delTabell');
   const tb = document.getElementById('delRader');
@@ -273,8 +324,10 @@ function redigeraRatt(id) {
   const saknade = [];
   r.delar.forEach(d => {
     const rec = RECEPT.find(x => x.fil === d.fil);
-    if (rec) DELAR.push({ fil: rec.fil, namn: rec.namn, g: d.g, perG: rec.perG });
-    else saknade.push(d.fil);
+    if (rec) { DELAR.push({ fil: rec.fil, namn: rec.namn, g: d.g, perG: rec.perG }); return; }
+    const fri = tolkaFri(d.fil);   /* ✍️ fri del utan recept */
+    if (fri) { DELAR.push({ fil: d.fil, namn: fri.namn, g: d.g, perG: fri.perG }); return; }
+    saknade.push(d.fil);
   });
   document.getElementById('rNamn').value = r.namn;
   document.getElementById('rEmoji').value = r.emoji || '🍽️';
@@ -331,6 +384,25 @@ function byggRattSida(post) {
 </html>`;
 }
 
+/* ⚡ DIREKTÖPPNING (som recepten i nytt-recept.html): lägg nybyggda
+   sidan i service workerns sid-cache → maträttens egna sida kan
+   öppnas OMEDELBART efter sparning, utan att vänta på att GitHub
+   Pages bygger om (~1 min). Nätet tar över automatiskt sen. */
+async function cachaDirekt(fil, html) {
+  try {
+    if (!('caches' in window)) return false;
+    const keys = await caches.keys();
+    const namn = keys.find(k => /-pages$/.test(k));
+    if (!namn) return false;
+    const c = await caches.open(namn);
+    const url = new URL('ratter/' + encodeURIComponent(fil), location.href).href;
+    await c.put(new Request(url), new Response(html, {
+      status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' }
+    }));
+    return true;
+  } catch (e) { return false; }
+}
+
 async function sparaRatt() {
   const namn = document.getElementById('rNamn').value.trim();
   if (!namn) { alert('Ge maträtten ett namn!'); return; }
@@ -356,19 +428,29 @@ async function sparaRatt() {
     res = await __MK_SPARA.save('json/matratter.json', JSON.stringify(db, null, 2), 'Maträtt: ' + namn);
     /* 🍽️ EGEN SIDA i ratter/-mappen (likt recepten) */
     if (res.ok) {
-      const sidRes = await __MK_SPARA.save('ratter/' + post.id + '.html', byggRattSida(post),
+      const sidHtml = byggRattSida(post);
+      const sidRes = await __MK_SPARA.save('ratter/' + post.id + '.html', sidHtml,
         'Maträttssida: ' + namn);
       res.sida = sidRes.ok ? post.id + '.html' : null;
       res.sidFel = sidRes.ok ? null : sidRes.error;
+      /* ⚡ direktöppning: cacha lokalt → sidan funkar OMEDELBART */
+      if (sidRes.ok) res.direkt = await cachaDirekt(post.id + '.html', sidHtml);
     }
   } catch (e) { res = { ok: false, error: e.message }; }
   btn.disabled = false; btn.textContent = '💾 Spara maträtten';
   if (res.ok) {
     out.innerHTML = '<div class="okbox">🎉 <b>' + namn + '</b> sparad!' +
       (res.sida
-        ? ' 📄 <a href="ratter/' + encodeURIComponent(res.sida) + '" target="_blank" rel="noopener"><b>Öppna maträttens egen sida</b></a> (live inom ~1 min).'
+        ? (res.direkt
+            ? ' ⚡ Egna sidan kan öppnas <b>DIREKT</b> (lokalt cachad – nätet tar över inom ~1 min).'
+            : ' 📄 Egna sidan skapad (live inom ~1 min).') +
+          ' <a href="ratter/' + encodeURIComponent(res.sida) + '" target="_blank" rel="noopener"><b>Öppna maträtten nu</b></a>'
         : (res.sidFel ? ' <span style="color:#c0392b;">(sidan kunde inte skapas: ' + res.sidFel + ')</span>' : '')) +
       '</div>';
+    if (res.direkt) {
+      /* öppna egna sidan automatiskt i ny flik – precis som recepten */
+      try { window.open('ratter/' + encodeURIComponent(res.sida), '_blank'); } catch (e) {}
+    }
     rensaBygge();
     laddaRatter(true);
   } else {
@@ -406,6 +488,12 @@ async function laddaRatter(direkt) {
           return '<a href="ingredienser.html" style="color:var(--accent2);">' + rec.namn + '</a> ' + d.g + ' g';
         }
         return '<a href="recept/' + encodeURIComponent(d.fil) + '" style="color:var(--accent);">' + rec.namn + '</a> ' + d.g + ' g';
+      }
+      const fri = tolkaFri(d.fil);   /* ✍️ fri del utan recept */
+      if (fri) {
+        tot.g += d.g; tot.kcal += fri.perG.kcal * d.g; tot.prot += fri.perG.prot * d.g;
+        tot.kolh += fri.perG.kolh * d.g; tot.fett += fri.perG.fett * d.g;
+        return fri.namn + ' ' + d.g + ' g';
       }
       return d.fil.replace(/^ing:/, '').replace(/\.html?$/i, '') + ' ' + d.g + ' g <span style="color:#c0392b;">(saknas)</span>';
     }).join(' · ');
@@ -498,5 +586,5 @@ async function taBortRatt(id) {
 init();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a37834bd2a0580fa',t:'MTc4ODgxMDI0NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3803cb93825dcff',t:'MTc4ODg5NDQ1Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
