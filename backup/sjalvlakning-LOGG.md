@@ -39,3 +39,7 @@
 **2026-09-07**
 
 | ratter/ris-med-flaskytterfille.html | 🍽️ maträttssida byggd (saknades för "Ris med fläskytterfille") |
+
+**2026-09-08**
+
+| kyckling-med-ris-tacosas-stor-sats-2-kg-kyckling.html | ⚡ energidata skapad: ninja-af500eucp 23 min |
