@@ -71,10 +71,36 @@
       '#mk-nav .brand{font-family:Georgia,serif;font-weight:700;font-size:1.02rem;color:#2c3e50;' +
         'text-decoration:none;margin-right:auto;display:flex;align-items:center;gap:7px;}' +
       '#mk-nav a.lnk{color:#2c3e50;text-decoration:none;font-size:.86rem;font-weight:600;' +
-        'padding:8px 12px;border-radius:9px;transition:background .14s;white-space:nowrap;}' +
+        'padding:8px 12px;border-radius:9px;transition:background .14s;white-space:nowrap;' +
+        '-webkit-tap-highlight-color:transparent;}' +
       '#mk-nav a.lnk:hover{background:#eee5d6;}' +
       '#mk-nav a.lnk.on{background:#c0392b;color:#fff;}' +
-      '@media (max-width:640px){#mk-nav a.lnk span{display:none;}#mk-nav a.lnk{padding:8px 10px;}}' +
+      /* 📱 MOBIL: ikon + LÄSBAR text under (inte bara emojis!), scrollbar
+         rad med stora träffytor – aktiv sida tydligt röd */
+      '@media (max-width:640px){' +
+        '#mk-nav{padding:6px 8px;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;' +
+          'scrollbar-width:none;}' +
+        '#mk-nav::-webkit-scrollbar{display:none;}' +
+        '#mk-nav .brand{font-size:0;gap:0;margin-right:6px;flex-shrink:0;}' +      /* bara loggan */
+        '#mk-nav .brand img{width:30px;height:30px;}' +
+        '#mk-nav a.lnk{display:flex;flex-direction:column;align-items:center;gap:2px;' +
+          'font-size:1.15rem;line-height:1;padding:6px 9px;min-width:54px;flex-shrink:0;border-radius:11px;}' +
+        '#mk-nav a.lnk span{display:block;font-size:.58rem;font-weight:700;letter-spacing:.01em;}' +
+        '#mk-nav a.lnk.on{box-shadow:0 2px 8px rgba(192,57,43,.35);}}' +
+      /* 📲 APP-LÄGE (installerad PWA, ej receptsidor): riktiga APPFLIKAR
+         i botten – ser ut som en riktig app (roadmap 48) */
+      '#mk-nav.app-bottom{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:120;' +
+        'border-bottom:none;border-top:1px solid #e5ddd0;justify-content:space-around;' +
+        'padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));overflow-x:visible;' +
+        'box-shadow:0 -4px 16px rgba(0,0,0,.08);}' +
+      '#mk-nav.app-bottom .brand{display:none;}' +
+      '#mk-nav.app-bottom a.lnk{display:flex;flex-direction:column;align-items:center;gap:2px;' +
+        'flex:1;min-width:0;font-size:1.25rem;line-height:1;padding:6px 2px;border-radius:11px;}' +
+      '#mk-nav.app-bottom a.lnk span{display:block;font-size:.6rem;font-weight:700;}' +
+      'body.mk-has-bottomnav{padding-bottom:76px!important;}' +
+      /* flytande knappar lyfts över bottenflikar i app-läge */
+      'body.mk-has-bottomnav #mk-top{bottom:88px;}' +
+      'body.mk-has-bottomnav #mk-fab{bottom:88px;}' +
       /* Till toppen-knapp */
       '#mk-top{position:fixed;bottom:22px;left:22px;z-index:98;width:46px;height:46px;border-radius:50%;' +
         'background:#2c3e50;color:#fff;border:none;font-size:1.15rem;cursor:pointer;' +
@@ -122,27 +148,52 @@
   (function topNav() {
     if (document.querySelector('.topnav') || document.getElementById('mk-nav')) return;
     var here = location.pathname.split('/').pop() || 'index.html';
+    /* kortNamn = får plats under ikonen på mobil/appflikar */
     var pages = [
-      { file: 'recept.html', ikon: '📖', namn: 'Recept' },
-      { file: 'matratter.html', ikon: '🍽️', namn: 'Maträtter' },
-      { file: 'maskindatabas.html', ikon: '🔧', namn: 'Maskiner' },
-      { file: 'ingredienser.html', ikon: '🥫', namn: 'Ingredienser' },
-      { file: 'generator.html', ikon: '🧪', namn: 'Generator' },
-      { file: 'status.html', ikon: '🩺', namn: 'Status' }
+      { file: 'recept.html', ikon: '📖', namn: 'Recept', kort: 'Recept' },
+      { file: 'matratter.html', ikon: '🍽️', namn: 'Maträtter', kort: 'Rätter' },
+      { file: 'maskindatabas.html', ikon: '🔧', namn: 'Maskiner', kort: 'Maskiner' },
+      { file: 'ingredienser.html', ikon: '🥫', namn: 'Ingredienser', kort: 'Varor' },
+      { file: 'generator.html', ikon: '🧪', namn: 'Generator', kort: 'Skapa' },
+      { file: 'status.html', ikon: '🩺', namn: 'Status', kort: 'Status' }
     ];
+    /* 📲 App-läge (installerad PWA) → bottenflikar som riktig app.
+       EJ på receptsidor (verktygsraden mk-rnav äger botten där). */
+    var isApp = false;
+    try {
+      isApp = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+              window.navigator.standalone === true;
+    } catch (e) {}
+    var bottenlage = isApp && !isRecipePage && !isRattPage;
+
+    var smal = false;
+    try { smal = window.matchMedia && window.matchMedia('(max-width: 640px)').matches; } catch (e) {}
+
     var nav = document.createElement('nav');
     nav.id = 'mk-nav';
-    nav.className = 'no-print';
+    nav.className = 'no-print' + (bottenlage ? ' app-bottom' : '');
+    nav.setAttribute('aria-label', 'Huvudmeny');
     nav.innerHTML =
-      '<a class="brand" href="' + root + 'index.html">' +
+      '<a class="brand" href="' + root + 'index.html" aria-label="Startsidan">' +
         '<img src="' + root + 'images/logo-mark.svg" alt="" width="26" height="26" ' +
         'style="display:block;" onerror="this.outerHTML=\'🍳\'"> Mitt Maskinkök</a>' +
       pages.map(function (p) {
-        var on = here === p.file || (isRecipePage && p.file === 'recept.html');
-        return '<a class="lnk' + (on ? ' on' : '') + '" href="' + root + p.file + '">' +
-               p.ikon + ' <span>' + p.namn + '</span></a>';
+        var on = here === p.file || (isRecipePage && p.file === 'recept.html') ||
+                 (isRattPage && p.file === 'matratter.html');
+        var visNamn = (bottenlage || smal) ? p.kort : p.namn;
+        return '<a class="lnk' + (on ? ' on' : '') + '" href="' + root + p.file + '"' +
+               (on ? ' aria-current="page"' : '') + '>' +
+               p.ikon + ' <span>' + visNamn + '</span></a>';
       }).join('');
     document.body.insertBefore(nav, document.body.firstChild);
+    if (bottenlage) document.body.classList.add('mk-has-bottomnav');
+    /* 📱 scrolla den aktiva fliken i synfältet på mobil */
+    if (smal && !bottenlage) {
+      var akt = nav.querySelector('a.lnk.on');
+      if (akt && akt.scrollIntoView) {
+        try { akt.scrollIntoView({ inline: 'center', block: 'nearest' }); } catch (e) {}
+      }
+    }
   })();
 
   /* ============================================================
