@@ -386,10 +386,12 @@ def convert_file(f, energi):
     if ing_tbl:
         ing = ('<div class="card mk-ing-card">\n  <h2>\U0001F9FE Ingredienser</h2>\n  '
                + clean_table(ing_tbl) + '\n</div>')
+    # 🧮 NARINGSTABELL TAS BORT (anvandarens regel): inklistrade recepts
+    # egna naringsvarden ar ofta fel/foraldrade - live-kalkylen raknar
+    # ALLTID om mot ingrediensdatabasen och visar farska varden.
     naring = ''
     if nar_tbl:
-        naring = ('<div class="card">\n  <h2>\U0001F4CA Naringsvarde</h2>\n  '
-                  + clean_table(nar_tbl) + '\n</div>')
+        log.append('naringstabell BORTTAGEN (live-kalkylen raknar om mot databasen)')
 
     # ---------- Varningar & tips ----------
     warn_list, tip_list, _used = extract_boxes(paras)
