@@ -27,7 +27,17 @@
   .topnav a.link { color:var(--dark); text-decoration:none; font-size:.88rem; font-weight:600; padding:8px 13px; border-radius:9px; transition:background .14s; }
   .topnav a.link:hover { background:#eee5d6; }
   .topnav a.link.hot { background:var(--accent); color:#fff; }
-  @media (max-width:640px){ .topnav a.link span{ display:none; } .topnav a.link{ padding:8px 10px; } }
+  /* 📱 Mobil: ikon + läsbar text under (samma stil som centrala menyn) */
+  @media (max-width:640px){
+    .topnav { padding:6px 8px; gap:2px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+    .topnav::-webkit-scrollbar { display:none; }
+    .topnav .brand { font-size:0; gap:0; margin-right:6px; flex-shrink:0; }
+    .topnav .brand img { width:30px; height:30px; }
+    .topnav a.link { display:flex; flex-direction:column; align-items:center; gap:2px;
+      font-size:1.15rem; line-height:1; padding:6px 9px; min-width:54px; flex-shrink:0; border-radius:11px; }
+    .topnav a.link span { display:block; font-size:.58rem; font-weight:700; }
+    .topnav a.link.hot { box-shadow:0 2px 8px rgba(192,57,43,.35); }
+  }
 
   /* ================= HERO ================= */
   .hero {
@@ -161,12 +171,13 @@
 <body>
 
 <!-- ================= TOPPMENY ================= -->
-<nav class="topnav no-print">
+<nav class="topnav no-print" aria-label="Huvudmeny">
   <a class="brand" href="index.html"><img src="images/logo-mark.svg" alt="" width="26" height="26" style="display:block;" onerror="this.outerHTML='🍳'"> Mitt Maskinkök</a>
   <a class="link hot" href="recept.html">📖 <span>Recept</span></a>
+  <a class="link" href="matratter.html">🍽️ <span>Rätter</span></a>
   <a class="link" href="maskindatabas.html">🔧 <span>Maskiner</span></a>
-  <a class="link" href="generator.html">🧪 <span>Generator</span></a>
-  <a class="link" href="status.html">🩺 <span>Status</span></a>
+  <a class="link" href="ingredienser.html">🥫 <span>Varor</span></a>
+  <a class="link" href="generator.html">🧪 <span>Skapa</span></a>
 </nav>
 
 <!-- ================= HERO ================= -->
@@ -377,5 +388,5 @@
 })();
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a38048b54adaa61e',t:'MTc4ODg5NDk0OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
