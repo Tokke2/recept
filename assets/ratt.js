@@ -121,6 +121,18 @@
     var rader = [];
     for (var i = 0; i < delar.length; i++) {
       var d = delar[i], namn, perG, lank;
+      /* ✍️ FRI DEL utan recept: "fri:Namn:kcal,prot,kolh,fett" */
+      var friM = d.ref.match(/^fri:([^:]+):([\d.]+),([\d.]+),([\d.]+),([\d.]+)$/);
+      if (friM) {
+        namn = '✍️ ' + friM[1];
+        lank = null;
+        perG = { kcal: +friM[2] / 100, prot: +friM[3] / 100, kolh: +friM[4] / 100,
+                 fett: +friM[5] / 100, kr: 0 };
+        tot.g += d.g; tot.kcal += perG.kcal * d.g; tot.prot += perG.prot * d.g;
+        tot.kolh += perG.kolh * d.g; tot.fett += perG.fett * d.g;
+        rader.push({ namn: namn, g: d.g, perG: perG, lank: null });
+        continue;
+      }
       if (d.ref.indexOf('ing:') === 0) {
         var ing = DB.find(function (x) { return x.id === d.ref.slice(4); });
         if (!ing) { rader.push({ namn: d.ref.slice(4), g: d.g, saknas: true }); continue; }
@@ -147,7 +159,8 @@
           ' <span style="color:#c0392b;font-size:.75rem;font-weight:700;">✖ hittas inte</span></td>' +
           '<td class="num">' + fmt(r.g, 0) + ' g</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>';
       }
-      return '<tr><td><a href="' + r.lank + '" style="color:#c0392b;">' + r.namn + '</a></td>' +
+      var namnHtml = r.lank ? '<a href="' + r.lank + '" style="color:#c0392b;">' + r.namn + '</a>' : r.namn;
+      return '<tr><td>' + namnHtml + '</td>' +
         '<td class="num">' + fmt(r.g, 0) + ' g</td>' +
         '<td class="num">' + fmt(r.perG.kcal * r.g, 0) + '</td>' +
         '<td class="num">' + fmt(r.perG.prot * r.g) + ' g</td>' +
@@ -175,6 +188,23 @@
         '</table>' +
         '<p style="font-size:.78rem;color:#7f8c8d;margin-top:8px;">🧮 Räknas live ur recepten & ingrediensdatabasen – alltid dagens priser & näring.</p>' +
       '</div>' +
+      /* 🍽️ PORTIONSPANEL (användarens regel): rätten byggs som STOR
+         SATS – här anger besökaren sin portionsstorlek så räknas
+         näring & pris per portion + antal portioner ur satsen.
+         Även omvänt: önskad kcal → portionsstorlek. Sparas per rätt. */
+      '<div class="card no-print" id="mk-ratt-portion" style="border:2px solid #e67e22;">' +
+        '<h2>🍽️ Din portion & uppdelning</h2>' +
+        '<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;">' +
+          '<div><span style="' + LBL + '">Portionsstorlek</span>' +
+            '<span style="white-space:nowrap;"><input id="rp-g" type="text" inputmode="numeric" style="' + INP + '" value="' + (sparadPort() || 400) + '"> <b style="font-size:.9rem;">g</b></span></div>' +
+          '<div><span style="' + LBL + '">🔥 Önskad kcal/portion</span>' +
+            '<span style="white-space:nowrap;"><input id="rp-kcal" type="text" inputmode="numeric" style="' + INP + '" placeholder="t.ex. 500"> <b style="font-size:.9rem;">kcal</b></span></div>' +
+          '<div><span style="' + LBL + '">🍱 Eller: dela satsen i</span>' +
+            '<span style="white-space:nowrap;"><input id="rp-antal" type="text" inputmode="numeric" style="' + INP + 'width:64px;" placeholder="t.ex. 5"> <b style="font-size:.9rem;">lådor</b></span></div>' +
+        '</div>' +
+        '<div id="rp-ut" style="margin-top:10px;padding:9px 12px;background:#fdf6ee;border-radius:9px;font-size:.9rem;line-height:1.6;"></div>' +
+        '<div id="rp-lador" style="margin-top:10px;"></div>' +
+      '</div>' +
       '<div class="card no-print">' +
         '<h2>✏️ Ändra maträtten</h2>' +
         '<p style="font-size:.88rem;color:#7f8c8d;">Delar och mängder redigeras på <a href="' + root + 'matratter.html" style="color:#c0392b;">🍽️ Maträtter-sidan</a> (spara med samma namn så uppdateras denna sida).</p>' +
@@ -182,6 +212,78 @@
 
     /* dela totalen med etikett/portionsmoduler om de laddas i framtiden */
     window.__MK_RATT_TOT = tot;
+
+    /* ---------- 🍽️ Portionslogik + 🍱 uppdelning ---------- */
+    kopplaPortion(tot, rader);
+  }
+
+  var LBL = 'font-size:.72rem;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;';
+  var INP = 'width:84px;padding:7px 9px;border:2px solid #e8e2d8;border-radius:9px;font-size:.95rem;font-family:inherit;text-align:right;font-weight:700;';
+
+  function portKey() { return 'mk-rport:' + decodeURIComponent(location.pathname.split('/').pop()); }
+  function sparadPort() {
+    try { return +localStorage.getItem(portKey()) || 0; } catch (e) { return 0; }
+  }
+  function kopplaPortion(tot, rader) {
+    var gEl = document.getElementById('rp-g');
+    var kcEl = document.getElementById('rp-kcal');
+    var anEl = document.getElementById('rp-antal');
+    var ut = document.getElementById('rp-ut');
+    var ladorEl = document.getElementById('rp-lador');
+    if (!gEl || !tot.g) return;
+    var perG = { kcal: tot.kcal / tot.g, prot: tot.prot / tot.g, kolh: tot.kolh / tot.g,
+                 fett: tot.fett / tot.g, kr: tot.kr / tot.g };
+    function tal(el, fb) {
+      var v = parseFloat(String(el.value || '').replace(',', '.').replace(/[^\d.]/g, ''));
+      return (isNaN(v) || v <= 0) ? fb : v;
+    }
+    function visa() {
+      var g = tal(gEl, 400);
+      ut.innerHTML = '<b>Per portion (' + fmt(g, 0) + ' g):</b> ' +
+        '🔥 <b>' + fmt(perG.kcal * g, 0) + ' kcal</b> · ' +
+        '💪 ' + fmt(perG.prot * g) + ' g protein · ' +
+        '🍞 ' + fmt(perG.kolh * g) + ' g kolh · ' +
+        '🧈 ' + fmt(perG.fett * g) + ' g fett · ' +
+        '💰 ' + fmt(perG.kr * g, 2) + ' kr' +
+        '<br><span style="color:#7f8c8d;font-size:.82rem;">Hela satsen (' + fmt(tot.g, 0) + ' g) räcker till ' +
+        '<b>' + fmt(tot.g / g, 1) + ' portioner</b> à ' + fmt(g, 0) + ' g</span>';
+      try { localStorage.setItem(portKey(), String(Math.round(g))); } catch (e) {}
+    }
+    /* 🍱 UPPDELNING (användarens regel: "2 kg kyckling i crockpotten →
+       dela upp"): ange antal lådor → VARJE LÅDAS INNEHÅLL visas per
+       del ("i varje låda: 400 g kycklinggryta, 150 g potatis...") +
+       näring & pris per låda. Perfekt för meal prep-uppdelning. */
+    function visaLador() {
+      var n = Math.round(tal(anEl, 0));
+      if (!n || n < 2) { ladorEl.innerHTML = ''; return; }
+      var perLada = rader.filter(function (r) { return !r.saknas; }).map(function (r) {
+        return '<tr><td>' + r.namn.replace(/<[^>]*>/g, '') + '</td>' +
+          '<td class="num" style="text-align:right;font-weight:700;">' + fmt(r.g / n, 0) + ' g</td></tr>';
+      }).join('');
+      ladorEl.innerHTML =
+        '<div style="border:1.5px dashed #e67e22;border-radius:10px;padding:12px 14px;background:#fffdf9;">' +
+        '<b>🍱 Delat i ' + n + ' lådor – i VARJE låda:</b>' +
+        '<table style="width:100%;border-collapse:collapse;font-size:.88rem;margin-top:6px;">' + perLada +
+        '<tr style="font-weight:700;background:#faf7f2;"><td>Totalt per låda</td>' +
+        '<td style="text-align:right;">' + fmt(tot.g / n, 0) + ' g</td></tr></table>' +
+        '<div style="margin-top:8px;font-size:.9rem;">' +
+          '🔥 <b>' + fmt(tot.kcal / n, 0) + ' kcal</b> · 💪 ' + fmt(tot.prot / n) + ' g protein · ' +
+          '🍞 ' + fmt(tot.kolh / n) + ' g kolh · 🧈 ' + fmt(tot.fett / n) + ' g fett · ' +
+          '💰 ' + fmt(tot.kr / n, 2) + ' kr per låda</div>' +
+        '<div style="margin-top:4px;font-size:.78rem;color:#7f8c8d;">💡 Väg upp med våg för exakthet – eller ögonmåtta: dela varje del i ' + n + ' lika högar.</div>' +
+        '</div>';
+      /* synka portionsfältet till lådstorleken */
+      gEl.value = Math.round(tot.g / n);
+      visa();
+    }
+    gEl.addEventListener('input', function () { kcEl.value = ''; if (anEl) anEl.value = ''; if (ladorEl) ladorEl.innerHTML = ''; visa(); });
+    /* 🔥 omvänt: önskad kcal → gram räknas ut */
+    kcEl.addEventListener('input', function () {
+      var vill = tal(kcEl, 0);
+      if (vill > 0 && perG.kcal > 0) { gEl.value = Math.round(vill / perG.kcal); if (anEl) anEl.value = ''; if (ladorEl) ladorEl.innerHTML = ''; visa(); }
+    });
+    if (anEl) anEl.addEventListener('input', visaLador);
+    visa();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
