@@ -202,8 +202,14 @@
           '<div><span style="' + LBL + '">🍱 Eller: dela satsen i</span>' +
             '<span style="white-space:nowrap;"><input id="rp-antal" type="text" inputmode="numeric" style="' + INP + 'width:64px;" placeholder="t.ex. 5"> <b style="font-size:.9rem;">lådor</b></span></div>' +
         '</div>' +
+        /* 🥘 BLANDAT-VÄXEL: allt ihopblandat i grytan → väg bara upp
+           per låda (enklare än att väga varje del separat) */
+        '<label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.88rem;cursor:pointer;">' +
+          '<input type="checkbox" id="rp-blandat" style="width:18px;height:18px;accent-color:#e67e22;">' +
+          '🥘 <b>Allt är ihopblandat</b> (gryta/crockpot) – visa bara totalvikt att väga upp, inte per del</label>' +
         '<div id="rp-ut" style="margin-top:10px;padding:9px 12px;background:#fdf6ee;border-radius:9px;font-size:.9rem;line-height:1.6;"></div>' +
         '<div id="rp-lador" style="margin-top:10px;"></div>' +
+        '<div id="rp-skivor" style="margin-top:10px;"></div>' +
       '</div>' +
       '<div class="card no-print">' +
         '<h2>✏️ Ändra maträtten</h2>' +
@@ -221,6 +227,7 @@
   var INP = 'width:84px;padding:7px 9px;border:2px solid #e8e2d8;border-radius:9px;font-size:.95rem;font-family:inherit;text-align:right;font-weight:700;';
 
   function portKey() { return 'mk-rport:' + decodeURIComponent(location.pathname.split('/').pop()); }
+  function blKey() { return 'mk-rbland:' + decodeURIComponent(location.pathname.split('/').pop()); }
   function sparadPort() {
     try { return +localStorage.getItem(portKey()) || 0; } catch (e) { return 0; }
   }
@@ -228,6 +235,21 @@
     var gEl = document.getElementById('rp-g');
     var kcEl = document.getElementById('rp-kcal');
     var anEl = document.getElementById('rp-antal');
+    var blEl = document.getElementById('rp-blandat');
+    var skivEl = document.getElementById('rp-skivor');
+    /* 🥘 blandat-läget: FÖRVAL ur rättens metadata (valt när rätten
+       skapades: ratt:servering = blandat/separat) – besökarens egen
+       växling sparas per rätt och vinner över förvalet */
+    if (blEl) {
+      var sparatVal = null;
+      try { sparatVal = localStorage.getItem(blKey()); } catch (e) {}
+      if (sparatVal === '1') blEl.checked = true;
+      else if (sparatVal === '0') blEl.checked = false;
+      else {
+        var servMeta = document.querySelector('meta[name="ratt:servering"]');
+        if (servMeta && servMeta.getAttribute('content') === 'blandat') blEl.checked = true;
+      }
+    }
     var ut = document.getElementById('rp-ut');
     var ladorEl = document.getElementById('rp-lador');
     if (!gEl || !tot.g) return;
@@ -256,26 +278,74 @@
     function visaLador() {
       var n = Math.round(tal(anEl, 0));
       if (!n || n < 2) { ladorEl.innerHTML = ''; return; }
-      var perLada = rader.filter(function (r) { return !r.saknas; }).map(function (r) {
-        return '<tr><td>' + r.namn.replace(/<[^>]*>/g, '') + '</td>' +
-          '<td class="num" style="text-align:right;font-weight:700;">' + fmt(r.g / n, 0) + ' g</td></tr>';
-      }).join('');
+      var blandat = blEl && blEl.checked;
+      var inre;
+      if (blandat) {
+        /* 🥘 BLANDAT (användarens regel): allt är ihopblandat i grytan –
+           per-del-vägning är omöjlig. Visa BARA totalvikten att väga upp
+           per låda; näringen blir ungefärlig (snitt av blandningen). */
+        inre = '<b>🥘 Blandat & delat i ' + n + ' lådor:</b>' +
+          '<div style="font-size:1.3rem;font-weight:800;margin:8px 0;">⚖️ Väg upp ' + fmt(tot.g / n, 0) + ' g per låda</div>' +
+          '<div style="font-size:.78rem;color:#7f8c8d;">Näringen per låda är ett GENOMSNITT av blandningen – ' +
+          'exakt fördelning varierar med hur väl det blandats (~±10 %).</div>';
+      } else {
+        var perLada = rader.filter(function (r) { return !r.saknas; }).map(function (r) {
+          return '<tr><td>' + r.namn.replace(/<[^>]*>/g, '') + '</td>' +
+            '<td class="num" style="text-align:right;font-weight:700;">' + fmt(r.g / n, 0) + ' g</td></tr>';
+        }).join('');
+        inre = '<b>🍱 Delat i ' + n + ' lådor – i VARJE låda:</b>' +
+          '<table style="width:100%;border-collapse:collapse;font-size:.88rem;margin-top:6px;">' + perLada +
+          '<tr style="font-weight:700;background:#faf7f2;"><td>Totalt per låda</td>' +
+          '<td style="text-align:right;">' + fmt(tot.g / n, 0) + ' g</td></tr></table>' +
+          '<div style="margin-top:4px;font-size:.78rem;color:#7f8c8d;">💡 Väg upp med våg för exakthet – eller ögonmåtta: dela varje del i ' + n + ' lika högar.</div>';
+      }
       ladorEl.innerHTML =
         '<div style="border:1.5px dashed #e67e22;border-radius:10px;padding:12px 14px;background:#fffdf9;">' +
-        '<b>🍱 Delat i ' + n + ' lådor – i VARJE låda:</b>' +
-        '<table style="width:100%;border-collapse:collapse;font-size:.88rem;margin-top:6px;">' + perLada +
-        '<tr style="font-weight:700;background:#faf7f2;"><td>Totalt per låda</td>' +
-        '<td style="text-align:right;">' + fmt(tot.g / n, 0) + ' g</td></tr></table>' +
+        inre +
         '<div style="margin-top:8px;font-size:.9rem;">' +
-          '🔥 <b>' + fmt(tot.kcal / n, 0) + ' kcal</b> · 💪 ' + fmt(tot.prot / n) + ' g protein · ' +
+          '🔥 <b>' + (blandat ? '~' : '') + fmt(tot.kcal / n, 0) + ' kcal</b> · 💪 ' + fmt(tot.prot / n) + ' g protein · ' +
           '🍞 ' + fmt(tot.kolh / n) + ' g kolh · 🧈 ' + fmt(tot.fett / n) + ' g fett · ' +
           '💰 ' + fmt(tot.kr / n, 2) + ' kr per låda</div>' +
-        '<div style="margin-top:4px;font-size:.78rem;color:#7f8c8d;">💡 Väg upp med våg för exakthet – eller ögonmåtta: dela varje del i ' + n + ' lika högar.</div>' +
         '</div>';
       /* synka portionsfältet till lådstorleken */
       gEl.value = Math.round(tot.g / n);
       visa();
     }
+
+    /* ============================================================
+       🔪 SKIVLÄGE (användarens regel): skivat kött räknas i SKIVOR.
+       Kött-delar (fläsk/kyckling/nöt/karré/filé/stek...) upptäcks →
+       "Skivade du köttet? Ange antal skivor" → per skiva: vikt,
+       kcal, protein. "2 skivor på mackan = X kcal".
+       ============================================================ */
+    function byggSkivor() {
+      var kottRe = /fläsk|flask|kyckling|nöt|biff|karré|karre|filé|file|stek|skinka|kalkon|kött|kott/i;
+      var kott = rader.filter(function (r) { return !r.saknas && kottRe.test(r.namn); });
+      if (!kott.length || !skivEl) return;
+      skivEl.innerHTML = kott.map(function (r, i) {
+        var rent = r.namn.replace(/<[^>]*>/g, '').replace(/^[✍️🥫\s]+/, '');
+        return '<div style="border:1.5px dashed #8e44ad;border-radius:10px;padding:10px 14px;background:#fdfbff;margin-bottom:8px;">' +
+          '🔪 <b>' + rent + '</b> (' + fmt(r.g, 0) + ' g) – skivad? ' +
+          '<span style="white-space:nowrap;">Antal skivor: <input type="text" inputmode="numeric" data-skiv="' + i + '" ' +
+          'style="width:64px;padding:5px 8px;border:2px solid #e8e2d8;border-radius:8px;text-align:right;font-weight:700;font-family:inherit;" placeholder="t.ex. 20"></span>' +
+          '<div class="skivut" data-ut="' + i + '" style="margin-top:6px;font-size:.88rem;"></div></div>';
+      }).join('');
+      skivEl.querySelectorAll('[data-skiv]').forEach(function (inp) {
+        inp.addEventListener('input', function () {
+          var i = +inp.getAttribute('data-skiv');
+          var r = kott[i];
+          var antal = Math.round(parseFloat(String(inp.value).replace(',', '.')) || 0);
+          var utEl = skivEl.querySelector('[data-ut="' + i + '"]');
+          if (!antal || antal < 1) { utEl.innerHTML = ''; return; }
+          var perSkiva = r.g / antal;
+          utEl.innerHTML = '≈ <b>' + fmt(perSkiva, 0) + ' g/skiva</b> · ' +
+            '🔥 ' + fmt(r.perG.kcal * perSkiva, 0) + ' kcal · 💪 ' + fmt(r.perG.prot * perSkiva) + ' g protein per skiva' +
+            '<br><span style="color:#7f8c8d;font-size:.8rem;">2 skivor = ' + fmt(r.perG.kcal * perSkiva * 2, 0) + ' kcal · ' +
+            '3 skivor = ' + fmt(r.perG.kcal * perSkiva * 3, 0) + ' kcal</span>';
+        });
+      });
+    }
+
     gEl.addEventListener('input', function () { kcEl.value = ''; if (anEl) anEl.value = ''; if (ladorEl) ladorEl.innerHTML = ''; visa(); });
     /* 🔥 omvänt: önskad kcal → gram räknas ut */
     kcEl.addEventListener('input', function () {
@@ -283,6 +353,12 @@
       if (vill > 0 && perG.kcal > 0) { gEl.value = Math.round(vill / perG.kcal); if (anEl) anEl.value = ''; if (ladorEl) ladorEl.innerHTML = ''; visa(); }
     });
     if (anEl) anEl.addEventListener('input', visaLador);
+    if (blEl) blEl.addEventListener('change', function () {
+      /* '1'/'0' (inte tomt) så besökarens AV-val också vinner över förvalet */
+      try { localStorage.setItem(blKey(), blEl.checked ? '1' : '0'); } catch (e) {}
+      visaLador();
+    });
+    byggSkivor();
     visa();
   }
 
