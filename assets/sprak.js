@@ -46,6 +46,10 @@
   var attrOriginals = new WeakMap();          /* el → {placeholder: "...", title: "..."} */
   var attrElement = [];                        /* lista för återställning (WeakMap kan ej itereras) */
   var pending = {}, queue = [], busy = false, saveTimer = null;
+  /* v4: noder VI skrivit – observern ska inte re-översätta våra egna
+     skrivningar (annars loop: de→de→de...) */
+  var skrivna = new Set();
+  function sattNod(n, v) { skrivna.add(n); n.nodeValue = v; }
 
   /* ============================================================
      MODERN SPRÅKVÄLJARE (pillerknapp + utfällbar meny)
@@ -165,6 +169,7 @@
       var store = attrOriginals.get(el);
       if (!store) return;
       Object.keys(store).forEach(function (a) {
+        if (a.indexOf('__satt_') === 0) { delete store[a]; return; }  /* markör, ej attribut */
         try { el.setAttribute(a, store[a]); } catch (e) {}
       });
     });
@@ -217,7 +222,7 @@
     if (!t) return;
     if (!originals.has(n)) originals.set(n, raw);
     var out = tr(t);
-    if (out !== null) { n.nodeValue = raw.replace(t, out); return; }
+    if (out !== null) { sattNod(n, raw.replace(t, out)); return; }
     if (translatable(t)) queueAuto(t, { typ: 'nod', n: n });
   }
 
@@ -248,8 +253,14 @@
         if (!attrOriginals.has(els[i])) { attrOriginals.set(els[i], {}); attrElement.push(els[i]); }
         var store = attrOriginals.get(els[i]);
         if (store[a] === undefined) store[a] = v;
+        if (store['__satt_' + a] === v) return;   /* vår egen skrivning */
         var out = tr(t);
-        if (out !== null) { els[i].setAttribute(a, v.replace(t, out)); return; }
+        if (out !== null) {
+          var nyV = v.replace(t, out);
+          store['__satt_' + a] = nyV;
+          els[i].setAttribute(a, nyV);
+          return;
+        }
         if (translatable(t)) queueAuto(t, { typ: 'attr', el: els[i], attr: a });
       });
     }
@@ -284,11 +295,16 @@
         if (mal.typ === 'nod' || mal.n) {
           var n = mal.n || mal;
           if (n.nodeValue && n.nodeValue.trim() === text) {
-            n.nodeValue = n.nodeValue.replace(text, out);
+            sattNod(n, n.nodeValue.replace(text, out));
           }
         } else if (mal.typ === 'attr') {
           var v = mal.el.getAttribute(mal.attr);
-          if (v && v.trim() === text) mal.el.setAttribute(mal.attr, v.replace(text, out));
+          if (v && v.trim() === text) {
+            var nyV = v.replace(text, out);
+            var st2 = attrOriginals.get(mal.el);
+            if (st2) st2['__satt_' + mal.attr] = nyV;
+            mal.el.setAttribute(mal.attr, nyV);
+          }
         } else if (mal.typ === 'titel') {
           if (document.title.trim() === text) document.title = out;
         }
@@ -343,14 +359,50 @@
   }
 
   /* ============================================================
-     START + bevaka dynamiskt innehåll
+     START + bevaka dynamiskt innehåll (v4 – INGET svenskt får
+     bli kvar: nya noder, ÄNDRADE textnoder och ändrade attribut
+     fångas alla; egna skrivningar hoppas över via skrivna-setet)
      ============================================================ */
   new MutationObserver(function (muts) {
     if (lang === 'sv') return;
     muts.forEach(function (m) {
-      for (var i = 0; i < m.addedNodes.length; i++) translateAll(m.addedNodes[i]);
+      if (m.type === 'childList') {
+        for (var i = 0; i < m.addedNodes.length; i++) translateAll(m.addedNodes[i]);
+      } else if (m.type === 'characterData') {
+        /* modul skrev NY svensk text i befintlig nod (kalkyl, timers...) */
+        var n = m.target;
+        if (skrivna.has(n)) { skrivna.delete(n); return; }   /* vår egen skrivning */
+        var p = n.parentNode;
+        if (!p || /^(SCRIPT|STYLE|NOSCRIPT)$/.test(p.tagName || '')) return;
+        if (p.closest && p.closest('#mk-lang')) return;
+        originals.set(n, n.nodeValue);   /* nya originalet (svenska) */
+        handleNode(n);
+      } else if (m.type === 'attributes') {
+        var el = m.target;
+        if (el.closest && el.closest('#mk-lang')) return;
+        var a = m.attributeName;
+        var v = el.getAttribute(a);
+        if (!v || !v.trim()) return;
+        var t = v.trim();
+        /* redan översatt? (vi satte det själva) → hoppa */
+        var st = attrOriginals.get(el);
+        if (st && st['__satt_' + a] === v) return;
+        if (!attrOriginals.has(el)) { attrOriginals.set(el, {}); attrElement.push(el); }
+        attrOriginals.get(el)[a] = v;
+        var out = tr(t);
+        if (out !== null) {
+          var nyV = v.replace(t, out);
+          attrOriginals.get(el)['__satt_' + a] = nyV;
+          el.setAttribute(a, nyV);
+        } else if (translatable(t)) {
+          queueAuto(t, { typ: 'attr', el: el, attr: a });
+        }
+      }
     });
-  }).observe(document.body, { childList: true, subtree: true });
+  }).observe(document.body, {
+    childList: true, subtree: true, characterData: true,
+    attributes: true, attributeFilter: ['placeholder', 'title', 'alt', 'aria-label']
+  });
 
   if (lang !== 'sv') {
     document.documentElement.lang = lang;
