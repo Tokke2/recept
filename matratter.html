@@ -59,6 +59,13 @@
       <label style="display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Emoji</label>
       <input type="text" id="rEmoji" value="🍽️" style="width:70px;text-align:center;">
     </div>
+    <div>
+      <label style="display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Servering</label>
+      <select id="rServering" style="padding:10px 12px;">
+        <option value="separat">🍽️ Separata delar (väg var för sig)</option>
+        <option value="blandat">🥘 Ihopblandad (gryta – väg bara totalvikt)</option>
+      </select>
+    </div>
   </div>
 
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:8px;">
@@ -331,6 +338,7 @@ function redigeraRatt(id) {
   });
   document.getElementById('rNamn').value = r.namn;
   document.getElementById('rEmoji').value = r.emoji || '🍽️';
+  document.getElementById('rServering').value = r.blandad ? 'blandat' : 'separat';
   ritaDelar();
   document.getElementById('byggResultat').innerHTML =
     '<div class="okbox">✏️ <b>' + r.namn + '</b> laddad i byggaren ovan – ändra mängder i tabellen, ta bort med ✕, lägg till fler delar med dropdownen. <b>Spara med samma namn</b> så uppdateras rätten och dess egna sida.' +
@@ -353,6 +361,7 @@ function byggRattSida(post) {
 <meta name="ratt:namn" content="${post.namn.replace(/"/g, '&quot;')}">
 <meta name="ratt:emoji" content="${post.emoji}">
 <meta name="ratt:delar" content="${delar.replace(/"/g, '&quot;')}">
+<meta name="ratt:servering" content="${post.blandad ? 'blandat' : 'separat'}">
 <style>
   :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -420,6 +429,7 @@ async function sparaRatt() {
     const post = {
       id: namn.toLowerCase().replace(/å/g,'a').replace(/ä/g,'a').replace(/ö/g,'o').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''),
       namn, emoji: document.getElementById('rEmoji').value.trim() || '🍽️',
+      blandad: document.getElementById('rServering').value === 'blandat',   /* 🥘 valbart per rätt */
       delar: DELAR.map(d => ({ fil: d.fil, g: d.g })),
       skapad: new Date().toISOString().slice(0, 10)
     };
@@ -586,5 +596,5 @@ async function taBortRatt(id) {
 init();
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3803cb93825dcff',t:'MTc4ODg5NDQ1Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
