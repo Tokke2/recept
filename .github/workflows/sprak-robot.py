@@ -90,9 +90,11 @@ def oversattbar(t):
 
 def skorda():
     texter = set()
-    # HTML-sidor
+    # HTML-sidor: ROT + recept/ + ratter/ (maträtternas egna sidor)
     filer = [f for f in os.listdir('.') if f.endswith('.html')]
-    filer += ['recept/' + f for f in os.listdir('recept') if f.endswith('.html')] if os.path.isdir('recept') else []
+    for mapp in ('recept', 'ratter'):
+        if os.path.isdir(mapp):
+            filer += [mapp + '/' + f for f in os.listdir(mapp) if f.endswith('.html')]
     for fil in filer:
         try:
             p = TextSkordare()
@@ -118,15 +120,50 @@ def skorda():
                             texter.add(k)
             except Exception:
                 pass
-    # Ingredienser
+    # Ingredienser (namn + grupper + varianternas smaknamn)
     try:
         d = json.load(open('json/ingredienser.json', encoding='utf-8'))
         for ing in d.get('ingredienser', []):
-            n = str(ing.get('namn', '')).strip()
+            for k in [ing.get('namn'), ing.get('grupp')] + \
+                     [v.get('smak') for v in (ing.get('varianter') or [])]:
+                if isinstance(k, str) and oversattbar(k.strip()):
+                    texter.add(k.strip())
+    except Exception:
+        pass
+    # Maträtter (namn – delarna är receptnamn som redan skördas)
+    try:
+        d = json.load(open('json/matratter.json', encoding='utf-8'))
+        for r in d.get('ratter', []):
+            n = str(r.get('namn', '')).strip()
             if oversattbar(n):
                 texter.add(n)
     except Exception:
         pass
+    # 🌐 JS-MODULERNAS UI-STRÄNGAR (v4: knappar/dialoger/etiketter som
+    # skapas dynamiskt – "Skriv ut", "Kockläge", "Din portion"...).
+    # Skördas ur assets/*.js: svenska strängliteraler i citattecken.
+    if os.path.isdir('assets'):
+        for fil in os.listdir('assets'):
+            if not fil.endswith('.js'):
+                continue
+            try:
+                src = open('assets/' + fil, encoding='utf-8', errors='ignore').read()
+            except OSError:
+                continue
+            # strängar '...' eller "..." med svenska tecken/ord, utan kod-tecken
+            for m in re.finditer(r'''['"]([^'"<>{}=;`]{3,120})['"]''', src):
+                s = m.group(1).strip()
+                # kräver: börjar med stor bokstav/emoji ELLER innehåller å/ä/ö,
+                # minst ett riktigt ord, inga uppenbara kod-mönster
+                if not re.search(r'[åäöÅÄÖ]|^[A-ZÅÄÖ✓✕✔️⚠️🔥💪🍞🧈💰⚖️🍽️📖🔧🥫🧪🩺]', s):
+                    continue
+                if re.search(r'[_/\\#]|px|rem|rgba|http|function|var |const ', s):
+                    continue
+                if not re.search(r'[a-zåäöA-ZÅÄÖ]{3}', s):
+                    continue
+                s2 = re.sub(r'\s+', ' ', s).strip()
+                if oversattbar(s2):
+                    texter.add(s2)
     return texter
 
 
