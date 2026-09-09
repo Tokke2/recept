@@ -430,7 +430,7 @@
      ============================================================ */
   ensureCss('print.css');
   ensureCss('design.css');   /* 🎨 central designfil – vinner över sidornas :root */
-  var scripts = ['print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js', 'emoji.js', 'seo.js', 'hero.js'];
+  var scripts = ['logg.js', 'print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js', 'emoji.js', 'seo.js', 'hero.js'];
   if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js', 'portion.js');
   if (isRattPage) scripts.push('ratt.js');   /* 🍽️ maträttssidor (ratter/) */
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');
