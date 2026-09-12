@@ -300,18 +300,49 @@ function progName(p) {
   /* "8. Dough (Deg)" → "dough" – siffra och parentes bort */
   return String(p.namn || '').split('(')[0].replace(/^\s*\d+[.)]\s*/, '').trim();
 }
-function suggestMachines(text) {
+/* 🎯 TITELN VÄGER TYNGST (användarens regel): "Ananaskaka..." ska ge
+   Kaka-programmet – även som SAMMANSATT ord (suffixmatch: ...kaka).
+   Nyckelord som BARA finns bland ingredienserna ("yoghurt" i turkisk
+   yoghurt) väger lätt – annars föreslås Yoghurt-programmet på kakor! */
+function titelHit(titel, k) {
+  k = String(k).toLowerCase().trim();
+  if (k.length < 3) return false;
+  return new RegExp(k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[^a-zåäö])').test(titel);
+}
+function suggestMachines(text, titel, ingText) {
+  titel = (titel || '').toLowerCase();
+  ingText = (ingText || '').toLowerCase();
   const hits = [];
   MACHINES.forEach(m => {
     let best = null, bs = 0;
+    const kandidater = [];   /* alla program med poäng → osäkert = fråga */
     (m.program || []).forEach(p => {
       if (/reng|clean|extrude/i.test(p.namn || '')) return;
-      let s = (p.nyckelord || []).filter(k => wordHit(text, k)).length;
-      /* Nämns programmets NAMN i texten? ("Air Fry", "Dough") → vinner */
+      let s = 0, sTitel = 0;   /* sTitel = poäng som kom från TITELN */
+      (p.nyckelord || []).forEach(k => {
+        if (!wordHit(text, k) && !titelHit(titel, k)) return;
+        /* bara i ingredienslistan (t.ex. "yoghurt" som vara)? → lätt vikt */
+        const iSteg = wordHit(text.replace(ingText, ' '), k);
+        const iTitel = titelHit(titel, k);
+        s += iTitel ? 5 : (iSteg ? 2 : 1);
+        if (iTitel) sTitel += 5;
+      });
+      /* Nämns programmets NAMN? I TITELN (även sammansatt: ananasKAKA) = jackpot */
       const pn = progName(p);
-      if (pn.length > 3 && wordHit(text, pn)) s += 3;
+      if (pn.length > 3 && titelHit(titel, pn)) { s += 6; sTitel += 6; }
+      else if (pn.length > 3 && wordHit(text, pn)) s += 3;
+      if (s > 0) kandidater.push({ p, s, sTitel });
       if (s > bs) { bs = s; best = p; }
     });
+    /* ❓ OSÄKERT → användaren får VÄLJA program (användarens regel:
+       "ska se i titeln att det står kaka, eller om osäker fråga"):
+       · TITELN pekar ut vinnaren ("Ananaskaka" → Kaka) → säkert
+       · annars: finns ett andra program med riktig träff (≥2 p,
+         dvs. mer än bara ett ingrediensord) → FRÅGA användaren */
+    kandidater.sort((a, b) => b.s - a.s);
+    const titelSaker = kandidater.length && kandidater[0].sTitel >= 5;
+    m.__val = (!titelSaker && kandidater.length > 1 && kandidater[1].s >= 2)
+      ? kandidater.slice(0, 3) : null;
     /* Alias: "bakmaskinen"/"airfryern" (även bestämd form) → stark träff */
     for (const [w, id] of Object.entries(ALIAS)) {
       const re = new RegExp('(^|[^a-zåäö])' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(s|n|en|ern)?($|[^a-zåäö])');
@@ -322,7 +353,7 @@ function suggestMachines(text) {
     }
     /* Nämns maskinen vid namn? Stark träff */
     if ((m.varumarke && wordHit(text, m.varumarke)) || (m.modellnamn && wordHit(text, String(m.modellnamn)))) bs += 3;
-    if (bs >= 1 && best) hits.push({ m, p: best, score: bs });
+    if (bs >= 1 && best) hits.push({ m, p: best, score: bs, val: m.__val });
   });
   hits.sort((a, b) => b.score - a.score);
   return hits.slice(0, 5);
@@ -338,8 +369,11 @@ async function analyze() {
     return;
   }
   await loadMachines();
-  const allText = (PARSED.namn + ' ' + PARSED.others.join(' ') + ' ' + PARSED.steps.join(' ') + ' ' + PARSED.ings.map(i => i[0]).join(' ')).toLowerCase();
-  SUGGESTED = suggestMachines(allText);
+  const ingText = PARSED.ings.map(i => i[0]).join(' ').toLowerCase();
+  const allText = (PARSED.namn + ' ' + PARSED.others.join(' ') + ' ' + PARSED.steps.join(' ') + ' ' + ingText).toLowerCase();
+  /* 🎯 titeln väger tyngst; ingrediensnamn väger lätt (yoghurt som VARA
+     ska inte ge Yoghurt-PROGRAMMET på en kaka) */
+  SUGGESTED = suggestMachines(allText, PARSED.namn, ingText);
 
   /* Fyll i fälten – finns recept:-metadata i inklistrad HTML återanvänds den */
   const srcRaw = document.getElementById('src').value;
@@ -361,14 +395,32 @@ async function analyze() {
 
   document.getElementById('mList').innerHTML = SUGGESTED.length ? SUGGESTED.map((h, i) => {
     const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
+    /* ❓ OSÄKER programmatchning → dropdown så ANVÄNDAREN väljer
+       (t.ex. Kaka vs Yoghurt på Midea när båda orden finns i texten) */
+    const valHtml = h.val
+      ? '<div style="margin-top:4px;"><span style="color:#e67e22;font-weight:700;font-size:.8rem;">❓ Osäker – vilket program menas?</span> ' +
+        '<select id="mv' + i + '" data-vi="' + i + '" ' +
+        'style="padding:4px 8px;border:1.5px solid #e67e22;border-radius:8px;font-family:inherit;font-size:.82rem;">' +
+        h.val.map(v => '<option>' + esc(v.p.namn || '') + (v.p.standardtid ? ' · ' + esc(v.p.standardtid) : '') + '</option>').join('') +
+        '</select></div>'
+      : '';
     return '<div class="mrow">' +
       '<input type="checkbox" id="mk' + i + '" ' + (i === 0 ? 'checked' : '') + ' onchange="rebuild()">' +
       (h.m.bild ? '<img src="' + h.m.bild + '" onerror="this.remove()">' : '') +
       '<div><b>' + esc(name) + '</b> · <span class="prog">' + esc(h.p.namn || '') +
       (h.p.standardtid ? ' · ' + esc(h.p.standardtid) : '') + '</span>' +
       (h.p.beskrivning ? '<div class="why">' + esc(h.p.beskrivning) + '</div>' : '') +
+      valHtml +
       '</div></div>';
   }).join('') : '<em style="color:var(--muted);">Inga maskiner matchade – receptet fungerar ändå, maskiner kan läggas till senare med ✏️.</em>';
+
+  /* ❓ koppla program-väljarna (riktiga lyssnare – inte inline-onchange) */
+  document.querySelectorAll('#mList select[data-vi]').forEach(sel => {
+    sel.addEventListener('change', () => {
+      const h = SUGGESTED[+sel.getAttribute('data-vi')];
+      if (h && h.val && h.val[sel.selectedIndex]) { h.p = h.val[sel.selectedIndex].p; rebuild(); }
+    });
+  });
 
   document.getElementById('resBox').style.display = 'block';
   exFyllValjare();   /* ➕ bläddra bland ALLA maskiner */
@@ -588,5 +640,5 @@ async function saveDirect() {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a38062759de913b8',t:'MTc4ODg5NjAwMw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3a03ef9c9c8c725',t:'MTc4OTIzMDA5NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
