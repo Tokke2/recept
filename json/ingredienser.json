@@ -83,10 +83,7 @@
       "kolhydrat": 5.1,
       "fett": 10,
       "fiber": 0,
-      "kalla": "import ingredienser.json v5.1.1",
-      "alias": [
-        "Matyoghurt 10%"
-      ]
+      "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "margarin",
