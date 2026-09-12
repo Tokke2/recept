@@ -26,7 +26,10 @@
       "fiber": 3.6,
       "lank": "https://www.willys.se/produkt/Majsmjol-Finmalet-100272483_ST",
       "kalla": "willys.se (jamforpris kr/kg)",
-      "uppdaterad": "2026-08-31"
+      "uppdaterad": "2026-08-31",
+      "alias": [
+        "Majsmjöl finmalt"
+      ]
     },
     {
       "id": "whey80",
