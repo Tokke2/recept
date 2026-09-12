@@ -43,3 +43,7 @@
 **2026-09-08**
 
 | kyckling-med-ris-tacosas-stor-sats-2-kg-kyckling.html | ⚡ energidata skapad: ninja-af500eucp 23 min |
+
+**2026-09-12**
+
+| ananaskaka-med-svartvinbarssylt-i-riskokare.html | ⚡ energidata skapad: midea-mb-fs5017 40 min |
