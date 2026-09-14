@@ -24,3 +24,7 @@
 | 2026-08-24 | ✅ allt friskt – inga åtgärder |
 | 2026-08-31 | ✅ allt friskt – inga åtgärder |
 | 2026-09-07 | ✅ allt friskt – inga åtgärder |
+
+**2026-09-14**
+
+| vevor-sus420.json | 📖 manual hittad: https://m.media-amazon.com/images/I/91IPw3HXjOL.pdf |
