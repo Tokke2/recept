@@ -978,6 +978,19 @@
       "lank": "https://www.willys.se/produkt/Flaskytterfile-101290660_KG",
       "kalla": "willys.se (jamforpris kr/kg)",
       "uppdaterad": "2026-09-07"
+    },
+    {
+      "id": "tomater-passerade",
+      "namn": "Tomater Passerade",
+      "pris_kr_per_kg": 15.8,
+      "kcal": 20.0,
+      "protein": 1.7,
+      "kolhydrat": 2.3,
+      "fett": 0.0,
+      "fiber": 2.2,
+      "lank": "https://www.willys.se/produkt/Tomater-Passerade-101350968_ST",
+      "kalla": "willys.se (jamforpris kr/kg)",
+      "uppdaterad": "2026-09-14"
     }
   ]
 }
