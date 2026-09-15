@@ -6,3 +6,5 @@
 # Amazon ger ASIN/köpknapp · tillverkarsidan ger namn, 🖼️ produktbild och 📖 manual
 # (hittas manual-PDF läses programnamnen ur den). Bilder hämtas ALDRIG från Amazon.
 # KLAR 2026-09-07 https://www.amazon.se/VEVOR-K%C3%B6ttsk%C3%A4rmaskin-k%C3%B6ttsk%C3%A4rmaskin-SUS420-knivar-hush%C3%A5llsmatsk%C3%A4rmaskin/dp/B0GV4VNL7Q/ref=sr_1_16?sr=8-16 → vevor-sus420 (skapad)
+
+https://www.amazon.se/Crock-Pot-CSC063X-Kokare-7-5-Silver/dp/B082BG5229/ref=sr_1_7?sr=8-7
