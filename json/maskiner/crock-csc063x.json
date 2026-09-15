@@ -1,0 +1,20 @@
+{
+ "_plats": "/json/maskiner/crock-csc063x.json  (en maskinfil per maskin – läses in automatiskt)",
+ "id": "crock-csc063x",
+ "namn": "Crock CSC063X – Slow cooker",
+ "typ": "Slow cooker",
+ "varumarke": "Crock",
+ "modellnamn": "CSC063X",
+ "effekt_w": 1000,
+ "effekt_kalla": "UPPSKATTAD av roboten – kontrollera!",
+ "egenskaper": [
+  "🥛 7.5 L"
+ ],
+ "lankar": {
+  "kop": "https://www.amazon.se/dp/B082BG5229/",
+  "bruksanvisning": "https://www.manualslib.com/manual/2370860/Crock-Pot-Csc063x.html",
+  "tillverkare": "https://crockpot.co.uk/products/CSC063X/"
+ },
+ "bild": "images/crock-csc063x.jpg",
+ "asin": "B082BG5229"
+}
