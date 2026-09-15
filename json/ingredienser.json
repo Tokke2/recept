@@ -404,7 +404,10 @@
       "protein": 20,
       "kolhydrat": 12,
       "fett": 21,
-      "fiber": 30
+      "fiber": 30,
+      "kalla": "redigerad 2026-09-14",
+      "lank": "https://www.willys.se/produkt/Kakao-101734464_ST",
+      "uppdaterad": ""
     },
     {
       "id": "citron",
