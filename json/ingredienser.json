@@ -121,7 +121,10 @@
       "fett": 0,
       "fiber": 0,
       "kalla": "import ingredienser.json v5.1.1",
-      "noll_ok": true
+      "noll_ok": true,
+      "alias": [
+        "Falksalt Mineralsalt12 g"
+      ]
     },
     {
       "id": "torrjast",
@@ -133,10 +136,7 @@
       "fett": 1.7,
       "fiber": 8.1,
       "varumarke": "Kronjäst",
-      "kalla": "import ingredienser.json v5.1.1",
-      "alias": [
-        "Torrjäst (Kronjäst)2 g"
-      ]
+      "kalla": "import ingredienser.json v5.1.1"
     },
     {
       "id": "ananas-fryst",
