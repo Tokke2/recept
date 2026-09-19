@@ -2391,13 +2391,14 @@
   "Tillagning: Midea MB-FS5017 · Kaka (Cake) 40 min (30 min–2 h) | Tillagning: Ninja TB401EU · BlendSense™ auto – stannar själv": "Kochen: Midea MB-FS5017 · Kuchen (Kuchen) 40 Min. (30 Min.–2 Std.) | Brühen: Ninja TB401EU · BlendSense™ automatisch – stoppt von selbst",
   "Tomater Passerade": "Tomaten bestanden",
   "🫙 Ananaskaka med svartvinbärssylt i riskokare": "🫙 Ananaskuchen mit schwarzer Johannisbeermarmelade im Reiskocher",
-  "🫙 Ananaskaka med svartvinbärssylt i riskokare – Recept": "🫙 Ananaskuchen mit schwarzer Johannisbeermarmelade im Reiskocher – Rezept"
+  "🫙 Ananaskaka med svartvinbärssylt i riskokare – Recept": "🫙 Ananaskuchen mit schwarzer Johannisbeermarmelade im Reiskocher – Rezept",
+  "bara 0 av 7 ingredienser finns i databasen – siffrorna ovan är receptets egna.": "Nur 0 von 7 Zutaten sind in der Datenbank enthalten – die Zahlen oben stammen vom Rezept."
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2390,
- "_senast_robot": "2026-09-18"
+ "_auto_genererade": 2391,
+ "_senast_robot": "2026-09-19"
 }

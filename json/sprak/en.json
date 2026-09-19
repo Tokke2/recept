@@ -2295,7 +2295,8 @@
   "Tillagning: Midea MB-FS5017 · Kaka (Cake) 40 min (30 min–2 h) | Tillagning: Ninja TB401EU · BlendSense™ auto – stannar själv": "Cooking: Midea MB-FS5017 · Cake (Cake) 40 min (30 min–2 h) | Brewing: Ninja TB401EU · BlendSense™ auto – stops by itself",
   "Tomater Passerade": "Tomatoes Passed",
   "🫙 Ananaskaka med svartvinbärssylt i riskokare": "🫙 Pineapple cake with blackcurrant jam in a rice cooker",
-  "🫙 Ananaskaka med svartvinbärssylt i riskokare – Recept": "🫙 Pineapple cake with blackcurrant jam in a rice cooker - Recipe"
+  "🫙 Ananaskaka med svartvinbärssylt i riskokare – Recept": "🫙 Pineapple cake with blackcurrant jam in a rice cooker - Recipe",
+  "bara 0 av 7 ingredienser finns i databasen – siffrorna ovan är receptets egna.": "only 0 out of 7 ingredients are in the database - the numbers above are the recipe's own."
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2305,6 +2306,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2294,
- "_senast_robot": "2026-09-18"
+ "_auto_genererade": 2295,
+ "_senast_robot": "2026-09-19"
 }
