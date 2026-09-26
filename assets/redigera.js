@@ -78,6 +78,23 @@
     '#mk-komp button{flex:1;border:none;border-radius:9px;padding:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85rem;}' +
     '#mk-komp .kja{background:#27ae60;color:#fff;}' +
     '#mk-komp .knej{background:rgba(255,255,255,.18);color:#fff;}' +
+    /* 🧹 Textstädning vid borttagen ingrediens */
+    '#mk-txt{position:fixed;left:50%;transform:translateX(-50%);top:64px;z-index:136;background:#fff;color:#2c3e50;' +
+      'border-radius:14px;padding:14px 18px;box-shadow:0 12px 36px rgba(0,0,0,.35);max-width:560px;width:calc(100% - 32px);' +
+      'font-family:Segoe UI,system-ui,sans-serif;font-size:.88rem;max-height:70vh;overflow-y:auto;}' +
+    '#mk-txt h4{margin:0 0 8px;font-size:.95rem;}' +
+    '#mk-txt .trad{border-left:4px solid #27ae60;background:#f4fbf6;border-radius:8px;padding:8px 10px;margin-bottom:8px;font-size:.82rem;}' +
+    '#mk-txt .trad.fraga{border-left-color:#e67e22;background:#fdf6ee;}' +
+    '#mk-txt .told{color:#95a5a6;text-decoration:line-through;}' +
+    '#mk-txt .tny{color:#27ae60;font-weight:600;}' +
+    '#mk-txt .trow{display:flex;gap:8px;margin-top:6px;}' +
+    '#mk-txt .trow button{flex:1;border:none;border-radius:8px;padding:7px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.8rem;}' +
+    '#mk-txt .tja{background:#c0392b;color:#fff;}' +
+    '#mk-txt .tnej{background:#ecf0f1;color:#2c3e50;}' +
+    '#mk-txt .tfoot{display:flex;gap:8px;margin-top:4px;}' +
+    '#mk-txt .tfoot button{flex:1;border:none;border-radius:9px;padding:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85rem;}' +
+    '#mk-txt .tok{background:#27ae60;color:#fff;}' +
+    '#mk-txt .tangra{background:#ecf0f1;color:#2c3e50;}' +
     '#mk-editbar .eb{border:none;border-radius:10px;padding:9px 16px;font-size:.85rem;font-weight:700;' +
       'cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;}' +
     '#mk-editbar .save{background:#fff;color:#c0392b;}' +
@@ -381,6 +398,7 @@
       dirty = true;
       if (window.__MK_KALKYL_REFRESH) window.__MK_KALKYL_REFRESH();
       closeQty();
+      textCleanup(namn);   /* 🧹 städa steg & beskrivning från ingrediensen */
       if (q && cellq > 0) offerCompensation(null, cellq, q.unit, namn);
       else if (window.__MK_TOAST) window.__MK_TOAST('🗑️ ' + namn + ' borttagen');
     };
@@ -429,6 +447,447 @@
     };
     box.querySelector('#mk-komp-nej').onclick = function () { box.remove(); };
     setTimeout(function () { if (box.parentNode) box.remove(); }, 30000);
+  }
+
+  /* ============================================================
+     🧹 TEXTSTÄDNING (användarens regel): tas en ingrediens bort ur
+     tabellen ska den OCKSÅ försvinna ur "Gör så här"-stegen och
+     beskrivningarna – och meningen skrivas om LOGISKT:
+       "Tillsätt vetemjöl, majsmjöl och proteinpulver"
+         → "Tillsätt vetemjöl och proteinpulver"
+       "vatten + yoghurt" (yoghurt bort) → "vatten"
+     SÄKERT (uppräkning) = städas automatiskt, med Ångra-knapp.
+     OSÄKERT (hela raden handlar om ingrediensen, t.ex. "Pudra
+     majsmjöl på bordet") = ❓-fråga – ANVÄNDAREN bestämmer om
+     hela raden ska bort. Aldrig tyst radering av hela steg.
+     ============================================================ */
+  function escRe(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+  /* Ordkandidater ur tabellnamnet: "Majsmjöl Finmalt (Favero)" →
+     ["majsmjöl","finmalt"] · "Turkisk Yoghurt 10%" → ["turkisk","yoghurt"].
+     Märken i parentes, procent och siffror åker bort. */
+  function ordKandidater(namn) {
+    return String(namn).toLowerCase()
+      .replace(/\(.*?\)/g, ' ')
+      .replace(/[\d%,.]+/g, ' ')
+      .split(/[\s\/+&-]+/)
+      .filter(function (w) {
+        /* 3 tecken räcker (ägg, lök, ris) – men aldrig småord/beskrivare */
+        return w.length >= 3 && ['och', 'med', 'utan', 'eller', 'samt', 'som', 'den', 'det', 'för',
+          'hela', 'färsk', 'fryst', 'gul', 'röd', 'grön', 'vit', 'stor', 'liten', 'mald', 'torr'].indexOf(w) === -1;
+      });
+  }
+  function harOrd(text, kandidater) {
+    return kandidater.some(function (w) {
+      return new RegExp('(^|[^a-zåäöé])' + escRe(w) + '[a-zåäöé]*', 'i').test(text);
+    });
+  }
+
+  /* Skriv om EN textsträng utan ingrediensen. Returnerar ny sträng. */
+  var MANGD = '(?:\\d+[\\d.,\\/]*\\s*(?:g|kg|dl|cl|ml|l|msk|tsk|krm|st)\\.?\\s+)?';
+  function rensaText(t, kandidater) {
+    kandidater.forEach(function (w) {
+      var W = escRe(w) + '[a-zåäöé]*';
+      /* 1) mitt i uppräkning: ", majsmjöl" (före "och/samt/&/,") */
+      t = t.replace(new RegExp(',\\s*' + MANGD + W + '(?=\\s*(?:,|och\\s|samt\\s|&|\\+))', 'gi'), '');
+      /* 2) slutet: "och/samt/&/+ majsmjöl" */
+      var föreOch = t;
+      t = t.replace(new RegExp('\\s*(?:och|samt|&|\\+)\\s+' + MANGD + W + '(?=$|[^a-zåäöé])', 'gi'), '');
+      /* uppräkningen tappade sitt "och" → sista ", X" blir " och X" */
+      if (t !== föreOch && /,/.test(t) && !/\s(och|samt)\s/.test(t)) {
+        t = t.replace(/,\s*([^,]+)$/, ' och $1');
+      }
+      /* 3) början av uppräkning: "majsmjöl, " / "majsmjöl + " */
+      t = t.replace(new RegExp('(^|[^a-zåäöé])' + MANGD + W + '\\s*(?:,|\\+)\\s*', 'gi'), '$1');
+      /* 4) ensam med mängd: "30 g majsmjöl" */
+      t = t.replace(new RegExp('(^|[^a-zåäöé])\\d+[\\d.,\\/]*\\s*(?:g|kg|dl|cl|ml|l|msk|tsk|krm|st)\\.?\\s+' + W, 'gi'), '$1');
+    });
+    /* efterstäd: dubbla mellanslag, "mellanslag före skiljetecken",
+       kvarbliven komma-start – MEN bevara ETT inledande mellanslag
+       (textnoden efter </b> börjar ofta med " ovanpå" – klipps den
+       bort klistras orden ihop: "proteinpulverovanpå") */
+    return t.replace(/ {2,}/g, ' ').replace(/ +([,.!?])/g, '$1').replace(/^,\s*/, '');
+  }
+
+  /* Prova omskrivning på ett element (behåller <b> m.m. – jobbar per
+     textnod). Returnerar {ok, apply} – ok=true om ordet är HELT borta. */
+  function provaRensaEl(el, kandidater) {
+    var doc = el.ownerDocument;
+    var walker = doc.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+    var noder = [], n;
+    while ((n = walker.nextNode())) noder.push(n);
+    var plan = [];
+    noder.forEach(function (nd) {
+      if (nd.parentNode && nd.parentNode.closest && nd.parentNode.closest('.mk-rowbtn,.no-print')) return;
+      var ny = rensaText(nd.nodeValue, kandidater);
+      if (ny !== nd.nodeValue) plan.push({ nd: nd, ny: ny });
+    });
+    if (!plan.length) return { ok: false };
+    /* provkör i det tysta: blir hela elementet rent? */
+    var provText = noder.map(function (nd) {
+      var p = plan.find(function (x) { return x.nd === nd; });
+      return p ? p.ny : nd.nodeValue;
+    }).join(' ');
+    if (harOrd(provText, kandidater)) return { ok: false };
+    return {
+      ok: true,
+      apply: function () { plan.forEach(function (p) { p.nd.nodeValue = p.ny; }); }
+    };
+  }
+
+  /* Elementen som skannas: steg-li, beskrivningar, varningar, tips,
+     maskinrutornas why – ALDRIG ingredienstabellen (raden är ju redan
+     borttagen där) och aldrig våra egna injektioner. */
+  function textElement() {
+    var tbl = ingTable();
+    var ingCard = tbl ? tbl.closest('.card') : null;
+    var alla = document.querySelectorAll('.card ol li, .card ul li, .machine-step .why, .warn, .tip, .card p, header p');
+    var els = [];
+    alla.forEach(function (el) {
+      if (ingCard && ingCard.contains(el)) return;
+      if (el.closest('#mk-txt, #mk-qty, #mk-komp, #mk-editbar, .no-print')) return;
+      els.push(el);
+    });
+    /* nästlade träffar (t.ex. .tip som innehåller li) → behåll bara innersta */
+    return els.filter(function (el) {
+      return !els.some(function (o) { return o !== el && el.contains(o); });
+    });
+  }
+
+  function textCleanup(namn, kandidaterIn) {
+    var kandidater = kandidaterIn || ordKandidater(namn);
+    if (!kandidater.length) return;
+    var safe = [], fragor = [];
+    textElement().forEach(function (el) {
+      if (!harOrd(el.textContent, kandidater)) return;
+      var före = el.innerHTML;
+      var res = provaRensaEl(el, kandidater);
+      if (res.ok) {
+        var föreText = el.textContent.replace(/\s+/g, ' ').trim();
+        res.apply();                       /* ✅ säkert → städas direkt */
+        safe.push({ el: el, foreHtml: före, foreText: föreText,
+                    nyText: el.textContent.replace(/\s+/g, ' ').trim() });
+      } else {
+        fragor.push({ el: el });           /* ❓ hela raden → fråga */
+      }
+    });
+    /* meta-beskrivningen städas tyst (syns ej på skärmen) */
+    var meta = document.querySelector('meta[name="recept:beskrivning"]');
+    if (meta && harOrd(meta.getAttribute('content') || '', kandidater)) {
+      var mNy = rensaText(meta.getAttribute('content'), kandidater);
+      if (!harOrd(mNy, kandidater)) meta.setAttribute('content', mNy);
+    }
+    if (!safe.length && !fragor.length) return;
+    dirty = true;
+    visaTxtPanel(safe, fragor, namn);
+  }
+
+  /* ============================================================
+     🧹 EFTERSTÄDNING VID REDIGERINGSSTART (användarens regel):
+     hittar FÖRÄLDRALÖSA ingrediensord – ord som omnämns i stegen/
+     beskrivningarna men vars ingrediens INTE längre finns i
+     tabellen. Fångar gamla synder: ingredienser som togs bort
+     INNAN textstädningen fanns (t.ex. majsmjöl kvar i "Tillsätt
+     vetemjöl, majsmjöl och proteinpulver" fast raden är borta).
+     Ordlistan hämtas ur ingrediensDATABASEN (loadIngDb) så bara
+     riktiga ingrediensord flaggas – aldrig vanliga ord.
+     Skyddsregler:
+       · ordet skippas om NÅGOT tabellord är samma/sammansatt med
+         det ("jäst" flaggas inte när tabellen har "Torrjäst")
+       · körs EN gång per redigeringspass
+       · hittas något → samma 🧹-panel med Ångra/❓-frågor
+     ============================================================ */
+  var orphanScanKord = false;
+  async function skannaForaldralosa() {
+    if (orphanScanKord) return;
+    orphanScanKord = true;
+    var tbl = ingTable();
+    if (!tbl) return;
+    /* alla kandidatord som FINNS i tabellen */
+    var tabellOrd = [];
+    tbl.querySelectorAll('tr').forEach(function (tr) {
+      var n = rowName(tr);
+      if (!n || /^(total|summa|ingrediens)/i.test(n)) return;
+      ordKandidater(n).forEach(function (w) { tabellOrd.push(w); });
+    });
+    if (!tabellOrd.length) return;
+    /* riktiga ingrediensord ur databasen (namn + alias) */
+    var db = await loadIngDb();
+    var dbOrd = {};
+    (db || []).forEach(function (ing) {
+      ordKandidater(ing.namn || '').forEach(function (w) { dbOrd[w] = 1; });
+      (ing.alias || []).forEach(function (a) {
+        ordKandidater(a).forEach(function (w) { dbOrd[w] = 1; });
+      });
+    });
+    /* ordet "finns" i tabellen även som del av sammansatt ord:
+       "jäst" täcks av "torrjäst", "mjölk" av "havremjölk" osv */
+    function iTabellen(w) {
+      return tabellOrd.some(function (t) {
+        return t === w || t.slice(-w.length) === w || w.slice(-t.length) === t;
+      });
+    }
+    /* skanna text-elementen efter db-ord som saknas i tabellen */
+    var traffade = {};
+    var text = textElement().map(function (el) { return el.textContent; }).join(' ');
+    Object.keys(dbOrd).forEach(function (w) {
+      if (w.length < 4) return;               /* korta ord = för osäkert */
+      if (iTabellen(w)) return;
+      if (harOrd(text, [w])) traffade[w] = 1;
+    });
+    var ord = Object.keys(traffade);
+    if (!ord.length) return;
+    /* samma städflöde som vid borttagning – alla orden i EN panel */
+    textCleanup('🧹 Borttagna ingredienser: ' + ord.join(', '), ord);
+  }
+
+  /* ============================================================
+     ➕ TEXT-TILLÄGG (användarens regel): läggs en NY ingrediens till
+     i tabellen ska den OCKSÅ in i "Gör så här"-texten – logiskt:
+       tabellrad "Rågmjöl 50 g" →
+       "Tillsätt vetemjöl, majsmjöl och proteinpulver"
+         → "Tillsätt vetemjöl, rågmjöl, majsmjöl och proteinpulver"
+     SÄKERT (steg med uppräkning av andra tabellingredienser hittat)
+     = skrivs in automatiskt efter första ingrediensordet, med
+     Ångra + 🔁 flytta till annat steg. OSÄKERT (inget lämpligt
+     steg) = ❓-fråga: välj steg eller lägg som eget steg.
+     ============================================================ */
+
+  /* Bästa "textordet" ur ett tabellnamn: längsta kandidaten, vid
+     lika vinner den sista ("Turkisk Yoghurt" → yoghurt,
+     "Majsmjöl Finmalt" → majsmjöl) */
+  function textOrd(namn) {
+    var k = ordKandidater(namn);
+    if (!k.length) return String(namn).toLowerCase().trim();
+    var best = k[0];
+    for (var i = 1; i < k.length; i++) if (k[i].length >= best.length) best = k[i];
+    return best;
+  }
+
+  /* Alla ANDRA ingrediensnamn ur tabellen (för ankar-sökning) */
+  function tabellNamn(utomNamn) {
+    var tbl = ingTable();
+    var ut = [];
+    if (!tbl) return ut;
+    tbl.querySelectorAll('tr').forEach(function (tr) {
+      var n = rowName(tr);
+      if (!n || /^(total|summa|ingrediens)/i.test(n)) return;
+      if (utomNamn && sokNorm(n) === sokNorm(utomNamn)) return;
+      ut.push(n);
+    });
+    return ut;
+  }
+
+  /* Sätt in ordet efter FÖRSTA andra-ingrediensen i elementets text.
+     Uppräkning ("A, B och C" / "A + B") → ", ord" · ensam ("Häll
+     vatten i formen") → " och ord". Returnerar true om det gick. */
+  function insEfterAnkare(el, ord, andraKand) {
+    var walker = el.ownerDocument.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+    var noder = [], n;
+    while ((n = walker.nextNode())) noder.push(n);
+    var helText = el.textContent;
+    for (var i = 0; i < noder.length; i++) {
+      var nd = noder[i];
+      if (nd.parentNode && nd.parentNode.closest && nd.parentNode.closest('.mk-rowbtn,.no-print')) continue;
+      for (var j = 0; j < andraKand.length; j++) {
+        var re = new RegExp('(^|[^a-zåäöé])(' + escRe(andraKand[j]) + '[a-zåäöé]*)', 'i');
+        var m = nd.nodeValue.match(re);
+        if (!m) continue;
+        /* uppräkning? finns YTTERLIGARE tabellingrediens efter ankaret i hela texten */
+        var efterPos = helText.toLowerCase().indexOf(m[2].toLowerCase()) + m[2].length;
+        var resten = helText.slice(efterPos);
+        var flera = andraKand.some(function (k2) {
+          return k2 !== andraKand[j] && new RegExp('(^|[^a-zåäöé])' + escRe(k2), 'i').test(resten);
+        }) || /,|\+| och | samt /.test(resten.slice(0, 40));
+        var sep = flera ? ', ' : ' och ';
+        var pos = m.index + m[1].length + m[2].length;
+        nd.nodeValue = nd.nodeValue.slice(0, pos) + sep + ord + nd.nodeValue.slice(pos);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* ➕ Ny tabellrad färdignamnad? (data-mk-ny sätts av "+ Lägg till
+     ingrediens") → kör textInsert EN gång, när namnet inte längre är
+     platshållaren. Ändrar man BEFINTLIGA rader händer inget. */
+  function nyRadKlar(td) {
+    var tr = td && td.closest ? td.closest('tr') : null;
+    if (!tr || !tr.hasAttribute('data-mk-ny')) return;
+    var namn = cellText(td);
+    if (!namn || /^ny ingrediens$/i.test(namn)) return;
+    tr.removeAttribute('data-mk-ny');   /* bara en gång */
+    textInsert(namn);
+  }
+
+  function textInsert(namn) {
+    var ord = textOrd(namn);
+    if (!ord) return;
+    var alla = textElement().filter(function (el) { return el.tagName === 'LI'; });
+    if (!alla.length) return;
+    /* redan omnämnd? (användaren skrev kanske dit den själv) → gör inget.
+       Även SUFFIXMATCH på sammansatta ord: "Torrjäst" räknas som omnämnd
+       när steget säger "jäst" ("AnanasKAKA"-regeln fast åt andra hållet) */
+    var kand = ordKandidater(namn);
+    var redan = kand.length && alla.some(function (el) {
+      if (harOrd(el.textContent, kand)) return true;
+      var textOrdLista = el.textContent.toLowerCase().split(/[^a-zåäöé]+/);
+      return kand.some(function (w) {
+        return textOrdLista.some(function (o) {
+          return o.length >= 3 && w.length > o.length && w.slice(-o.length) === o;
+        });
+      });
+    });
+    if (redan) return;
+    /* poängsätt stegen: antal ANDRA tabellingredienser + verbbonus */
+    var andra = tabellNamn(namn).map(function (n2) { return ordKandidater(n2); })
+      .filter(function (k) { return k.length; });
+    var basta = null, bs = 0;
+    alla.forEach(function (el) {
+      var t = el.textContent;
+      var s = 0;
+      andra.forEach(function (k) { if (harOrd(t, k)) s++; });
+      if (s && /\b(tillsätt|blanda|häll|rör|vispa|lägg)/i.test(t)) s += 2;
+      if (s > bs) { bs = s; basta = el; }
+    });
+    var andraKandPlatta = [];
+    andra.forEach(function (k) { k.forEach(function (w) { andraKandPlatta.push(w); }); });
+    if (basta && bs >= 1) {
+      var fore = basta.innerHTML, foreText = basta.textContent.replace(/\s+/g, ' ').trim();
+      if (insEfterAnkare(basta, ord, andraKandPlatta)) {
+        dirty = true;
+        visaInsPanel(namn, ord, basta, fore, foreText, alla, andraKandPlatta, false);
+        return;
+      }
+    }
+    /* ❓ inget säkert steg → fråga användaren */
+    visaInsPanel(namn, ord, null, '', '', alla, andraKandPlatta, true);
+  }
+
+  function visaInsPanel(namn, ord, el, foreHtml, foreText, alla, ankarKand, osaker) {
+    var old = document.getElementById('mk-txt');
+    if (old) old.remove();
+    var box = document.createElement('div');
+    box.id = 'mk-txt';
+    box.className = 'no-print';
+    box.contentEditable = 'false';
+    var stegOpts = alla.map(function (li, i) {
+      return '<option value="' + i + '">Steg ' + (i + 1) + ': ' +
+        li.textContent.replace(/\s+/g, ' ').trim().slice(0, 45) + '…</option>';
+    }).join('');
+    var h = '<h4>➕ <b>' + namn.slice(0, 40) + '</b> tillagd – in i texten också</h4>';
+    if (!osaker) {
+      h += '<div class="trad">✅ Inskrivet i steget:<br>' +
+        '<span class="told">' + foreText.slice(0, 110) + '</span><br>' +
+        '<span class="tny">' + el.textContent.replace(/\s+/g, ' ').trim().slice(0, 110) + '</span>' +
+        '<div class="trow"><button class="tnej" id="mk-ins-angra">↩️ Ångra</button></div></div>' +
+        '<div class="trad fraga">🔁 Hellre i ett annat steg?<br>' +
+        '<select id="mk-ins-sel" style="width:100%;padding:7px;border-radius:8px;border:1.5px solid #e8e2d8;margin-top:5px;font-family:inherit;font-size:.82rem;">' + stegOpts + '</select>' +
+        '<div class="trow"><button class="tja" id="mk-ins-flytta">🔁 Flytta dit</button></div></div>';
+    } else {
+      h += '<div class="trad fraga">❓ Hittade inget självklart steg för <b>' + ord + '</b>. Var ska den in?<br>' +
+        '<select id="mk-ins-sel" style="width:100%;padding:7px;border-radius:8px;border:1.5px solid #e8e2d8;margin-top:5px;font-family:inherit;font-size:.82rem;">' + stegOpts + '</select>' +
+        '<div class="trow"><button class="tja" id="mk-ins-valj">✔ Lägg in i steget</button>' +
+        '<button class="tja" id="mk-ins-nytt" style="background:#27ae60;">➕ Eget steg</button>' +
+        '<button class="tnej" id="mk-ins-skip">Hoppa över</button></div></div>';
+    }
+    h += '<div class="tfoot"><button class="tok" id="mk-txt-ok">✔ Klart</button></div>';
+    box.innerHTML = h;
+    document.body.appendChild(box);
+
+    var aktEl = el, aktFore = foreHtml;
+    function laggIn(li) {
+      var f = li.innerHTML;
+      if (!insEfterAnkare(li, ord, ankarKand)) {
+        /* inget ankare i valt steg → egen mening på slutet */
+        li.appendChild(li.ownerDocument.createTextNode(' Tillsätt även ' + ord + '.'));
+      }
+      dirty = true;
+      return f;
+    }
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      if (b.id === 'mk-ins-angra') {
+        if (aktEl) { aktEl.innerHTML = aktFore; aktEl = null; }
+        box.remove();
+      } else if (b.id === 'mk-ins-flytta') {
+        if (aktEl) aktEl.innerHTML = aktFore;                     /* bort från gamla */
+        var li = alla[+box.querySelector('#mk-ins-sel').value];
+        if (li) { aktFore = laggIn(li); aktEl = li; }
+        box.remove();
+        if (window.__MK_TOAST) window.__MK_TOAST('🔁 ' + ord + ' flyttad – glöm inte 💾 Spara!');
+      } else if (b.id === 'mk-ins-valj') {
+        var li2 = alla[+box.querySelector('#mk-ins-sel').value];
+        if (li2) laggIn(li2);
+        box.remove();
+        if (window.__MK_TOAST) window.__MK_TOAST('➕ ' + ord + ' inskriven – glöm inte 💾 Spara!');
+      } else if (b.id === 'mk-ins-nytt') {
+        var ol = alla.length ? alla[0].closest('ol') : document.querySelector('.card ol');
+        if (ol) {
+          var nyLi = document.createElement('li');
+          nyLi.textContent = 'Tillsätt ' + ord + '.';
+          ol.appendChild(nyLi);
+          dirty = true;
+        }
+        box.remove();
+        if (window.__MK_TOAST) window.__MK_TOAST('➕ Nytt steg tillagt – glöm inte 💾 Spara!');
+      } else if (b.id === 'mk-ins-skip' || b.id === 'mk-txt-ok') {
+        box.remove();
+      }
+    });
+  }
+
+  function visaTxtPanel(safe, fragor, namn) {
+    var old = document.getElementById('mk-txt');
+    if (old) old.remove();
+    var box = document.createElement('div');
+    box.id = 'mk-txt';
+    box.className = 'no-print';
+    box.contentEditable = 'false';
+    var h = '<h4>🧹 <b>' + namn.slice(0, 40) + '</b> togs bort – texten städas</h4>';
+    safe.forEach(function (s, i) {
+      h += '<div class="trad" data-si="' + i + '">✅ Omskrivet:<br>' +
+        '<span class="told">' + s.foreText.slice(0, 110) + '</span><br>' +
+        '<span class="tny">' + (s.nyText.slice(0, 110) || '(raden blev tom)') + '</span>' +
+        '<div class="trow"><button class="tnej" data-angra="' + i + '">↩️ Ångra denna</button></div></div>';
+    });
+    fragor.forEach(function (f, i) {
+      h += '<div class="trad fraga" data-fi="' + i + '">❓ Hela raden handlar om ingrediensen – ta bort den?<br>' +
+        '<span class="told" style="text-decoration:none;color:#2c3e50;">«' + f.el.textContent.replace(/\s+/g, ' ').trim().slice(0, 120) + '»</span>' +
+        '<div class="trow"><button class="tja" data-tabort="' + i + '">🗑️ Ta bort raden</button>' +
+        '<button class="tnej" data-behall="' + i + '">Behåll</button></div></div>';
+    });
+    h += '<div class="tfoot"><button class="tok" id="mk-txt-ok">✔ Klart</button></div>';
+    box.innerHTML = h;
+    document.body.appendChild(box);
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      if (b.dataset.angra !== undefined) {
+        var s = safe[+b.dataset.angra];
+        if (s) s.el.innerHTML = s.foreHtml;
+        b.closest('.trad').remove();
+      } else if (b.dataset.tabort !== undefined) {
+        var f = fragor[+b.dataset.tabort];
+        if (f && f.el) {
+          /* li/why tas bort helt – p/warn/tip töms bara på meningen */
+          if (f.el.tagName === 'LI' || f.el.classList.contains('why')) f.el.remove();
+          else f.el.remove();
+        }
+        dirty = true;
+        b.closest('.trad').remove();
+      } else if (b.dataset.behall !== undefined) {
+        b.closest('.trad').remove();
+      } else if (b.id === 'mk-txt-ok') {
+        box.remove();
+        if (window.__MK_TOAST) window.__MK_TOAST('🧹 Texten städad – glöm inte 💾 Spara!');
+      }
+      /* panelen tom (bara footern kvar)? → stäng själv */
+      if (box.querySelectorAll('.trad').length === 0 && box.parentNode) {
+        setTimeout(function () { if (box.parentNode) box.remove(); }, 400);
+      }
+    });
   }
 
   /* ============================================================
@@ -508,6 +967,7 @@
     td.textContent = ing.namn;   /* rensar även gamla märken – kalkylen sätter nya */
     markDirty();
     if (window.__MK_KALKYL_REFRESH) window.__MK_KALKYL_REFRESH();
+    nyRadKlar(td);   /* ➕ NY rad? → skriv in ingrediensen i Gör så här-texten */
     /* markören sist i cellen så man kan fortsätta direkt */
     try {
       var rng = document.createRange();
@@ -571,6 +1031,13 @@
   });
   document.addEventListener('focusout', function (e) {
     if (arNamncell(e.target)) setTimeout(closeSok, 150);
+    /* ➕ NY rad vars namn just blev klart (fritext utan dropdown-val)?
+       Egen vakt via data-mk-ny (finns bara under redigering) – väntar
+       ut ev. pickSok-klick som också kör nyRadKlar */
+    var td = e.target && e.target.closest ? e.target.closest('td') : null;
+    if (td && td.cellIndex === 0 && td.closest('tr[data-mk-ny]')) {
+      setTimeout(function () { nyRadKlar(td); }, 200);
+    }
   });
   document.addEventListener('keydown', function (e) {
     if (!sokBox) return;
@@ -596,6 +1063,10 @@
     /* ✨ Steg-markeringar + 🔗 maskinlänkar packas upp – ren text redigeras */
     if (window.__MK_STEGMARK_RESET) window.__MK_STEGMARK_RESET();
     if (window.__MK_MASKLANK_RESET) window.__MK_MASKLANK_RESET();
+
+    /* 🧹 hitta föräldralösa ingrediensord (borttagna ur tabellen men
+       kvar i stegen) – gamla synder städas med samma panel */
+    setTimeout(function () { skannaForaldralosa()['catch'](function () {}); }, 600);
 
     /* Gör innehåll redigerbart */
     // Rubrik + beskrivning
@@ -677,7 +1148,21 @@
             '<label style="display:block;font-size:.8rem;font-weight:700;margin-bottom:3px;">Program</label>' +
             '<select id="mv-prog" style="width:100%;padding:10px;border:2px solid #e8e2d8;border-radius:9px;font-size:.9rem;font-family:inherit;margin-bottom:10px;"></select>' +
             '<label style="display:block;font-size:.8rem;font-weight:700;margin-bottom:3px;">Moment (visas i metan, t.ex. "Gräddning")</label>' +
-            '<input id="mv-moment" type="text" placeholder="t.ex. Gräddning, Alternativ, Jäsning" style="width:100%;padding:10px;border:2px solid #e8e2d8;border-radius:9px;font-size:.9rem;font-family:inherit;box-sizing:border-box;margin-bottom:14px;">' +
+            '<input id="mv-moment" type="text" placeholder="t.ex. Gräddning, Alternativ, Jäsning" style="width:100%;padding:10px;border:2px solid #e8e2d8;border-radius:9px;font-size:.9rem;font-family:inherit;box-sizing:border-box;margin-bottom:10px;">' +
+            /* 🧩 MASKIN PER DEL (användarens regel): välj VAR i receptet
+               maskinen hör hemma – rutan placeras vid det steget */
+            '<label style="display:block;font-size:.8rem;font-weight:700;margin-bottom:3px;">📍 Placering – vilken del av receptet gäller maskinen?</label>' +
+            '<select id="mv-plats" style="width:100%;padding:10px;border:2px solid #e8e2d8;border-radius:9px;font-size:.9rem;font-family:inherit;margin-bottom:14px;">' +
+              '<option value="-1">Överst (hela receptet / före steg 1)</option>' +
+              (function () {
+                var ol0 = stegKort.querySelector('ol');
+                if (!ol0) return '';
+                return [].map.call(ol0.querySelectorAll('li'), function (li, i) {
+                  var t = li.textContent.replace(/\s+/g, ' ').trim().slice(0, 55);
+                  return '<option value="' + i + '">Före steg ' + (i + 1) + ': "' + t.replace(/"/g, '&quot;') + '..."</option>';
+                }).join('');
+              })() +
+            '</select>' +
             '<div style="display:flex;gap:10px;">' +
               '<button id="mv-ok" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-family:inherit;">➕ Lägg till</button>' +
               '<button id="mv-nej" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-family:inherit;">Avbryt</button>' +
@@ -707,15 +1192,35 @@
           var moment = bg.querySelector('#mv-moment').value.trim() || 'Tillagning';
           var kort = (m.varumarke ? m.varumarke + ' ' : '') + (m.modellnamn || m.namn || m.id);
 
-          /* 1) Ny maskinsteg-ruta i Gör så här-kortet */
+          /* 1) Ny maskinsteg-ruta – 📍 PLACERAS VID VALT STEG (maskin
+             per del): "Överst" = före hela listan; annars delas <ol>
+             vid steget och rutan hamnar mellan delarna */
           var ruta = document.createElement('div');
           ruta.className = 'machine-step';
-          ruta.innerHTML = '<h3>⚙️ ' + kort + ' · <span class="prog">' + p.namn +
+          ruta.innerHTML = '<h3>⚙️ ' + (moment ? moment + ': ' : '') + kort + ' · <span class="prog">' + p.namn +
             (p.standardtid ? ' · ' + p.standardtid : '') + '</span></h3>' +
             (p.beskrivning ? '<div class="why">' + p.beskrivning + '</div>' : '');
           var ol = stegKort.querySelector('ol');
-          if (ol) stegKort.insertBefore(ruta, ol);
-          else stegKort.appendChild(ruta);
+          var plats = +(bg.querySelector('#mv-plats') ? bg.querySelector('#mv-plats').value : -1);
+          if (!ol) {
+            stegKort.appendChild(ruta);
+          } else if (plats < 0) {
+            stegKort.insertBefore(ruta, ol);
+          } else {
+            var lis = ol.querySelectorAll('li');
+            if (plats === 0 || !lis.length) {
+              stegKort.insertBefore(ruta, ol);
+            } else if (plats >= lis.length) {
+              stegKort.insertBefore(ruta, ol.nextSibling);
+            } else {
+              /* dela listan: steg 0..plats-1 | ruta | steg plats.. */
+              var ol2 = document.createElement('ol');
+              ol2.setAttribute('start', plats + 1);
+              while (lis[plats]) { ol2.appendChild(lis[plats]); lis = ol.querySelectorAll('li'); }
+              stegKort.insertBefore(ruta, ol.nextSibling);
+              stegKort.insertBefore(ol2, ruta.nextSibling);
+            }
+          }
           var del = document.createElement('button');
           del.className = 'mk-rowbtn del no-print';
           del.textContent = '✕'; del.contentEditable = 'false';
@@ -769,7 +1274,12 @@
           del.textContent = '✕';
           del.title = 'Ta bort raden';
           del.contentEditable = 'false';
-          del.onclick = function () { tr.remove(); markDirty(); if (window.__MK_KALKYL_REFRESH) window.__MK_KALKYL_REFRESH(); };
+          del.onclick = function () {
+            var namn = rowName(tr);   /* namnet FÖRE raden försvinner */
+            tr.remove(); markDirty();
+            if (window.__MK_KALKYL_REFRESH) window.__MK_KALKYL_REFRESH();
+            if (namn) textCleanup(namn);   /* 🧹 städa steg & beskrivning */
+          };
           tds[tds.length - 1].appendChild(del);
         }
         /* ✍️ Autocomplete ur databasen på namncellen */
@@ -783,6 +1293,7 @@
         add.onclick = function () {
           var cols = ing.querySelector('tr') ? ing.querySelector('tr').children.length : 2;
           var tr = document.createElement('tr');
+          tr.setAttribute('data-mk-ny', '1');   /* ➕ markera: text-tillägg när namnet är klart */
           var html = '<td contenteditable="true">Ny ingrediens</td><td contenteditable="true">0 g</td>';
           for (var c = 2; c < cols; c++) html += '<td contenteditable="true">–</td>';
           tr.innerHTML = html;
@@ -1082,7 +1593,7 @@
       '#mk-lang, #mk-auto-qr, #mk-provenance, #mk-betyg, #mk-maskinmatch, #mk-kalkyl, #mk-donation, #mk-aff-disclosure, ' +
       '.share-btn, .print-btn, [id^="mk-pd"], [id^="mk-pw"], [id^="mk-swish"], ' +
       '.mk-saknas, .mk-prodlank, .mk-ingsub, #mk-byt-notis, .mk-ingsok, .mk-bytsmak, .mk-smakval, .mk-kallval, .mk-gruppval, #mk-match-bg, #mk-kedja, #mk-kommentarer, #mk-komm-pill, ' +
-      '#mk-verif-badge, #mk-verif-info, #mk-verif-bg, .mk-sidepil, #mk-sidepil-css, #cmResume, #mk-portion, .mk-testad, #mk-testad-bg').forEach(function (el) { el.remove(); });
+      '#mk-verif-badge, #mk-verif-info, #mk-verif-bg, .mk-sidepil, #mk-sidepil-css, #cmResume, #mk-portion, .mk-testad, #mk-testad-bg, #mk-txt').forEach(function (el) { el.remove(); });
     /* 🌡️ Enhets-spans + ⚖️ skalnings-spans + ✨ steg-markeringar → exakt originaltext */
     clone.querySelectorAll('span.mk-enh, span.mk-skala, span.mk-stegmark').forEach(function (s) {
       s.parentNode.replaceChild(clone.ownerDocument.createTextNode(s.getAttribute('data-orig') || s.textContent), s);
@@ -1094,6 +1605,8 @@
     clone.querySelectorAll('#mk-skala-badge, #mk-skala-bg, #mk-etikett-ark, #mk-etikett-bg, #mk-etikett-css, #mk-oversikt, #mk-maskval-bg, #mk-bock-reset, #mk-bock-css').forEach(function (el) { el.remove(); });
     /* ✅ bock-status är privat (localStorage) – aldrig i sparad fil */
     clone.querySelectorAll('tr.mk-bockad').forEach(function (tr) { tr.classList.remove('mk-bockad'); });
+    /* ➕ ny-rad-markören är bara för redigeringspasset */
+    clone.querySelectorAll('[data-mk-ny]').forEach(function (tr) { tr.removeAttribute('data-mk-ny'); });
     /* 🖼️ Auto-genererad hero-SVG → återställ riktiga bildsökvägen */
     clone.querySelectorAll('img.mk-hero-auto').forEach(function (im) {
       var fn = decodeURIComponent(location.pathname.split('/').pop()).replace(/\.html?$/i, '');
