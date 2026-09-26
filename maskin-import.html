@@ -6,98 +6,221 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🔗 Lägg till maskin via länk – Mitt Maskinkök</title>
 <style>
-  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  :root {
+    --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22;
+    --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; --purple:#8e44ad; --blue:#2980b9;
+  }
   * { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:860px; margin:0 auto; }
-  header { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:18px; }
-  header h1 { font-size:1.5rem; margin-bottom:4px; }
-  header p { opacity:.93; font-size:.9rem; }
-  .card { background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
-  h2 { font-size:1.1rem; margin-bottom:10px; }
+  body {
+    font-family:'Segoe UI',system-ui,sans-serif;
+    background:
+      radial-gradient(circle at 10% 6%, rgba(142,68,173,.07), transparent 32%),
+      radial-gradient(circle at 90% 14%, rgba(230,126,34,.07), transparent 30%),
+      radial-gradient(circle at 50% 96%, rgba(39,174,96,.05), transparent 40%),
+      var(--bg);
+    color:var(--dark); padding:24px; max-width:860px; margin:0 auto;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    position:relative; overflow:hidden;
+    background:linear-gradient(120deg,#8e44ad 0%,#c0392b 55%,#e67e22 100%);
+    color:#fff; border-radius:20px; padding:28px 30px 24px; margin-bottom:20px;
+    box-shadow:0 10px 30px rgba(142,68,173,.25);
+  }
+  header::before {
+    content:'🤖 🔗 ⚙️ 🛒 🤖 🔗 ⚙️ 🛒 🤖 🔗 ⚙️ 🛒';
+    position:absolute; inset:auto -20px -16px -20px;
+    font-size:1.9rem; opacity:.14; letter-spacing:14px; white-space:nowrap; pointer-events:none;
+  }
+  header h1 { font-size:1.55rem; margin-bottom:5px; text-shadow:0 2px 6px rgba(0,0,0,.15); }
+  header p { opacity:.95; font-size:.92rem; max-width:600px; }
+
+  /* Stegvisare */
+  .stegrad { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .steg {
+    display:flex; align-items:center; gap:7px;
+    background:rgba(255,255,255,.16); border:1.5px solid rgba(255,255,255,.35);
+    border-radius:999px; padding:6px 15px; font-size:.82rem; font-weight:700;
+  }
+  .steg .nr {
+    background:#fff; color:#8e44ad; width:20px; height:20px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:800;
+  }
+
+  /* ===== KORT ===== */
+  .card {
+    background:var(--card); border-radius:16px; padding:20px 24px; margin-bottom:16px;
+    box-shadow:0 3px 12px rgba(0,0,0,.07); border-top:5px solid var(--tc,#e67e22);
+  }
+  h2 { font-size:1.1rem; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  h2 .knr {
+    background:var(--tc,#e67e22); color:#fff; width:26px; height:26px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center; font-size:.85rem; flex-shrink:0;
+  }
   label { font-size:.85rem; font-weight:600; color:var(--muted); display:block; margin:10px 0 4px; }
   input[type=text], select {
-    width:100%; padding:11px 14px; border:2px solid #ddd; border-radius:10px; font-size:.95rem; font-family:inherit; }
-  input:focus, select:focus { outline:none; border-color:var(--accent2); }
+    width:100%; padding:12px 14px; border:2px solid #e8e2d8; border-radius:12px;
+    font-size:.95rem; font-family:inherit; transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus, select:focus { outline:none; border-color:var(--accent2); box-shadow:0 0 0 4px rgba(230,126,34,.12); }
   .row { display:flex; gap:10px; flex-wrap:wrap; }
   .row > div { flex:1; min-width:160px; }
-  .btn { background:var(--accent); color:#fff; border:none; border-radius:10px; padding:12px 20px; font-size:.95rem; font-weight:700; cursor:pointer; margin:10px 6px 0 0; font-family:inherit; }
+
+  .btn {
+    background:var(--accent); color:#fff; border:none; border-radius:12px; padding:13px 20px;
+    font-size:.95rem; font-weight:700; cursor:pointer; margin:10px 6px 0 0; font-family:inherit;
+    box-shadow:0 4px 12px rgba(0,0,0,.12); transition:transform .12s, opacity .15s;
+  }
+  .btn:hover { opacity:.92; transform:translateY(-2px); }
+  .btn:active { transform:translateY(0); }
   .btn.sec { background:var(--dark); }
-  .btn:hover { opacity:.9; }
-  textarea { width:100%; min-height:280px; border:2px solid #ddd; border-radius:10px; padding:12px; font-size:.8rem; font-family:ui-monospace,Consolas,monospace; resize:vertical; }
-  .ok-box { border-left:5px solid var(--green); background:#f4fbf6; border-radius:10px; padding:14px 16px; margin-top:12px; font-size:.9rem; display:none; }
-  .info { border-left:5px solid var(--accent2); background:#fdf6ee; border-radius:10px; padding:12px 16px; margin-bottom:12px; font-size:.88rem; }
+
+  /* 🤖 Robotknappen – stjärnan på sidan */
+  .robotbtn {
+    display:block; width:100%;
+    background:linear-gradient(120deg,#8e44ad,#c0392b 60%,#e67e22);
+    color:#fff; border:none; border-radius:14px; padding:17px 22px;
+    font-size:1.05rem; font-weight:800; cursor:pointer; font-family:inherit; margin-top:14px;
+    box-shadow:0 8px 22px rgba(142,68,173,.35);
+    transition:transform .15s, box-shadow .15s;
+  }
+  .robotbtn:hover { transform:translateY(-2px) scale(1.005); box-shadow:0 12px 28px rgba(142,68,173,.45); }
+  .robotbtn:disabled { opacity:.7; transform:none; cursor:wait; }
+  .robotbtn .sub { display:block; font-weight:400; font-size:.8rem; opacity:.9; margin-top:2px; }
+
+  /* ASIN-rutan */
+  #asinbox {
+    display:none; margin-top:10px; border:2px solid var(--green); background:#eaf7ef;
+    border-radius:14px; padding:13px 16px; font-size:.9rem; animation:pop .25s ease;
+  }
+  @keyframes pop { from { opacity:0; transform:translateY(6px);} to { opacity:1; transform:none;} }
+
+  .info { border-left:5px solid var(--accent2); background:#fdf6ee; border-radius:12px; padding:12px 16px; margin-bottom:12px; font-size:.88rem; }
+  .ok-box { border-left:5px solid var(--green); background:#f4fbf6; border-radius:12px; padding:14px 16px; margin-top:12px; font-size:.9rem; display:none; animation:pop .25s ease; }
+
+  /* 🎨 TYP-VÄLJARE: färgglada emoji-knappar (synkar dolda selecten) */
+  .typgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(118px,1fr)); gap:8px; margin-top:6px; }
+  .typkort {
+    border:2px solid #eee2d2; background:#fff; border-radius:12px; padding:10px 6px 8px;
+    text-align:center; cursor:pointer; font-family:inherit; transition:all .13s;
+  }
+  .typkort .te { font-size:1.5rem; display:block; margin-bottom:3px; }
+  .typkort .tn { font-size:.72rem; font-weight:700; color:var(--dark); line-height:1.2; }
+  .typkort:hover { transform:translateY(-2px); border-color:var(--tk,#e67e22); }
+  .typkort.on { background:var(--tk,#e67e22); border-color:var(--tk,#e67e22); }
+  .typkort.on .tn { color:#fff; }
+
+  /* 👀 Förhandsgranskningskort */
+  #preview { display:none; margin-top:14px; border:2px solid #e8e2d8; border-radius:14px; padding:14px 16px; background:#faf7f2; animation:pop .25s ease; }
+  #preview .pv-title { font-weight:800; font-size:1.05rem; }
+  #preview .pv-sub { color:var(--muted); font-size:.82rem; margin-bottom:6px; }
+  #preview .pv-chip { display:inline-block; background:#fff; border:1px solid #e2d9cb; border-radius:999px; padding:3px 11px; font-size:.75rem; font-weight:600; margin:2px 4px 2px 0; }
+
+  textarea {
+    width:100%; min-height:260px; border:2px solid #e8e2d8; border-radius:12px; padding:12px;
+    font-size:.8rem; font-family:ui-monospace,Consolas,monospace; resize:vertical; background:#fbfaf8;
+  }
+  details summary { cursor:pointer; font-weight:700; color:var(--muted); padding:6px 0; }
+  details[open] summary { color:var(--accent2); }
   ol { padding-left:22px; line-height:1.8; font-size:.92rem; }
   a { color:var(--accent); font-weight:600; }
+  footer { text-align:center; color:var(--muted); font-size:.8rem; padding:20px; }
+
+  /* ===== 📱 MOBIL ===== */
+  @media (max-width:640px) {
+    body { padding:14px; }
+    header { padding:20px 18px 18px; border-radius:16px; }
+    header h1 { font-size:1.25rem; }
+    .steg { font-size:.74rem; padding:5px 11px; }
+    .card { padding:16px 16px; }
+    .btn { width:100%; margin-right:0; }
+    .typgrid { grid-template-columns:repeat(3,1fr); }
+    .robotbtn { font-size:.95rem; padding:15px 16px; }
+  }
 </style>
 <link rel="stylesheet" href="assets/print.css">
 </head>
 <body>
 
 <header>
-  <div class="no-print" style="margin-bottom:8px;"><a href="index.html" style="color:#fff;opacity:.85;text-decoration:none;font-size:.9rem;">← Till startsidan</a></div>
+  <div class="no-print" style="margin-bottom:8px;"><a href="index.html" style="color:#fff;opacity:.9;text-decoration:none;font-size:.9rem;">← Till startsidan</a></div>
   <h1>🔗 Lägg till maskin via länk</h1>
-  <p>Klistra in produktlänken (Amazon, Elgiganten, tillverkare...) → få en färdig maskinfil att ladda upp.</p>
+  <p>Klistra in produktlänken (Amazon, Elgiganten, tillverkare...) → 🤖 roboten bygger en komplett maskinfil åt dig.</p>
+  <div class="stegrad">
+    <span class="steg"><span class="nr">1</span> Klistra in länk</span>
+    <span class="steg"><span class="nr">2</span> 🤖 Roboten fixar</span>
+    <span class="steg"><span class="nr">3</span> Klart på ~2 min</span>
+  </div>
 </header>
 
-<div class="card">
-  <h2>1️⃣ Produktlänk</h2>
+<div class="card" style="--tc:#8e44ad;">
+  <h2><span class="knr">1</span>🛒 Produktlänk</h2>
   <input type="text" id="url" placeholder="https://www.amazon.se/dp/XXXXXXXXXX  eller annan produktsida..." oninput="parseUrl()">
-  <div id="asinbox" style="display:none;margin-top:10px;border:2px solid #27ae60;background:#eaf7ef;border-radius:12px;padding:12px 16px;font-size:.9rem;">
+  <div id="asinbox">
     ✅ <b>Amazon-produkt hittad!</b>
-    <div style="margin-top:4px;">ASIN: <b id="asinval" style="font-family:monospace;"></b> · <span id="asinmarket"></span></div>
+    <div style="margin-top:4px;">ASIN: <b id="asinval" style="font-family:monospace;background:#fff;border-radius:6px;padding:1px 8px;"></b> · <span id="asinmarket"></span></div>
     <div style="font-size:.8rem;color:#7f8c8d;margin-top:4px;">Länken normaliseras till ren produktlänk (amazon.se/dp/ASIN). Affiliate-taggen läggs på automatiskt av sajten när <code>json/affiliate.json</code> har din Associates-tag – den sparas ALDRIG i maskinfilen.</div>
   </div>
 
-  <label style="display:block;margin-top:12px;font-weight:700;font-size:.85rem;">🏭 Tillverkarens produktsida (valfritt – ger bild + manual + bättre namn!)</label>
+  <label style="margin-top:14px;font-weight:700;">🏭 Tillverkarens produktsida <span style="font-weight:400;">(valfritt – ger 🖼️ bild + 📖 manual + bättre namn!)</span></label>
   <input type="text" id="tillvUrl" placeholder="https://ninjakitchen.eu/product/... (tillverkarens egen sida för produkten)">
 
-  <button class="btn" id="autoBtn" style="background:linear-gradient(135deg,#8e44ad,#e67e22);font-size:1rem;padding:14px 22px;margin-top:12px;" onclick="autoImport()">🤖 Importera automatiskt – roboten fixar resten</button>
+  <button class="robotbtn no-print" id="autoBtn" onclick="autoImport()">🤖 Importera automatiskt – roboten fixar resten
+    <span class="sub">namn · typ · effekt · ASIN · manual · program – klart inom ~2 min</span></button>
   <div id="autoResult"></div>
-  <div class="info" style="margin-top:10px;">
+  <div class="info" style="margin-top:12px;">
     🤖 <b>Så funkar autoimporten:</b> länkarna läggs i robotens kö (lösenordsskyddat) → GitHub-roboten hittar namn, varumärke, modell, typ, effekt, ASIN, tillverkarens hemsida, bruksanvisning och program. Klar inom ~2 min (grön bock i Actions).<br>
     💪 <b>Bäst resultat med BÅDA länkarna:</b> Amazon-länken ger ASIN/köpknapp · tillverkarlänken ger <b>🖼️ produktbild</b> (laddas upp automatiskt till images/), <b>📖 manual-PDF</b> och – om manualen hittas – <b>programnamnen lästa direkt ur den</b>!<br>
     ⚠️ Tider/temperaturer måste alltid <b>verifieras mot bruksanvisningen</b> (länken hamnar på maskinkortet).
   </div>
+</div>
 
-  <details style="margin-top:14px;">
-    <summary style="cursor:pointer;font-weight:700;color:#7f8c8d;">✍️ Eller fyll i manuellt (gamla sättet)</summary>
-  <div class="row" style="margin-top:10px;">
-    <div><label>Varumärke *</label><input type="text" id="brand" placeholder="t.ex. Philips" oninput="build()"></div>
-    <div><label>Modell *</label><input type="text" id="model" placeholder="t.ex. HD9285" oninput="build()"></div>
-  </div>
-  <div class="row">
-    <div><label>Typ av maskin *</label>
-      <select id="type" onchange="build()">
-        <option value="">– välj –</option>
-        <option>Airfryer / Varmluftsfritös</option>
-        <option>Riskokare / Multikokare</option>
-        <option>Bakmaskin / Brödbakningsmaskin</option>
-        <option>Glassmaskin / Frozen Drink Maker</option>
-        <option>Torkautomat / Dehydrator</option>
-        <option>Ismaskin</option>
-        <option>Pizzaugn</option>
-        <option>Blender / Mixer</option>
-        <option>Sous vide</option>
-        <option>Annan köksmaskin</option>
-      </select></div>
-    <div><label>Effekt (W, för energiberäkning)</label><input type="text" id="watt" placeholder="t.ex. 2000" oninput="build()"></div>
-  </div>
+<div class="card" style="--tc:#2980b9;">
+  <details id="manuellDetails">
+    <summary>✍️ Eller fyll i manuellt (utan robot) – klicka här</summary>
+    <div class="row" style="margin-top:12px;">
+      <div><label>Varumärke *</label><input type="text" id="brand" placeholder="t.ex. Philips" oninput="build()"></div>
+      <div><label>Modell *</label><input type="text" id="model" placeholder="t.ex. HD9285" oninput="build()"></div>
+    </div>
+    <label style="margin-top:12px;">Typ av maskin *</label>
+    <div class="typgrid" id="typgrid"></div>
+    <select id="type" onchange="typSync();build()" style="display:none;">
+      <option value="">– välj –</option>
+      <option>Airfryer / Varmluftsfritös</option>
+      <option>Riskokare / Multikokare</option>
+      <option>Bakmaskin / Brödbakningsmaskin</option>
+      <option>Glassmaskin / Frozen Drink Maker</option>
+      <option>Torkautomat / Dehydrator</option>
+      <option>Ismaskin</option>
+      <option>Pizzaugn</option>
+      <option>Blender / Mixer</option>
+      <option>Sous vide</option>
+      <option>Annan köksmaskin</option>
+    </select>
+    <div class="row" style="margin-top:6px;">
+      <div><label>⚡ Effekt (W, för energiberäkning)</label><input type="text" id="watt" placeholder="t.ex. 2000" inputmode="numeric" oninput="build()"></div>
+    </div>
+
+    <div id="preview">
+      <div class="pv-title" id="pvTitle"></div>
+      <div class="pv-sub" id="pvSub"></div>
+      <div id="pvChips"></div>
+    </div>
+
+    <h2 style="margin-top:18px;"><span class="knr" style="background:#2980b9;">2</span>📄 Färdig maskinfil</h2>
+    <div class="info">💡 <b>Bästa vägen:</b> klistra in länken i en AI-chatt tillsammans med <a href="SPEC.md" download>SPEC.md</a> och be om "en komplett maskinfil med program verifierade mot bruksanvisningen". Mallen nedan är en snabbstart som fungerar direkt – programlistan kompletterar du (eller AI:n) sen.</div>
+    <textarea id="out" readonly onclick="this.select()">Fyll i fälten ovan så byggs maskinfilen här...</textarea>
+    <button class="btn" id="saveBtn" style="background:linear-gradient(135deg,#27ae60,#1e8449);" onclick="saveDirect()">💾 Spara direkt på sajten</button>
+    <button class="btn" id="dl" style="background:#e67e22;" onclick="download()">⬇️ Ladda ner maskinfilen</button>
+    <a class="btn sec" style="display:inline-block;text-decoration:none;text-align:center;" href="https://github.com/Tokke2/recept/upload/main/json/maskiner" target="_blank" rel="noopener">📤 GitHub-uppladdning (json/maskiner/)</a>
+    <div class="ok-box" id="okbox"></div>
+    <div id="saveResult"></div>
   </details>
 </div>
 
-<div class="card">
-  <h2>2️⃣ Färdig maskinfil</h2>
-  <div class="info">💡 <b>Bästa vägen:</b> klistra in länken i en AI-chatt tillsammans med <a href="SPEC.md" download>SPEC.md</a> och be om "en komplett maskinfil med program verifierade mot bruksanvisningen". Mallen nedan är en snabbstart som fungerar direkt – programlistan kompletterar du (eller AI:n) sen.</div>
-  <textarea id="out" readonly onclick="this.select()">Fyll i fälten ovan så byggs maskinfilen här...</textarea>
-  <button class="btn" id="saveBtn" style="background:#e67e22;" onclick="saveDirect()">💾 Spara direkt på sajten</button>
-  <button class="btn" id="dl" onclick="download()">⬇️ Ladda ner maskinfilen</button>
-  <a class="btn sec" style="display:inline-block;text-decoration:none;" href="https://github.com/Tokke2/recept/upload/main/json/maskiner" target="_blank" rel="noopener">📤 Öppna GitHub-uppladdning (json/maskiner/)</a>
-  <div class="ok-box" id="okbox"></div>
-  <div id="saveResult"></div>
-</div>
-
-<div class="card">
-  <h2>3️⃣ Så blir maskinen komplett</h2>
+<div class="card" style="--tc:#27ae60;">
+  <h2><span class="knr" style="background:#27ae60;">3</span>✅ Så blir maskinen komplett</h2>
   <ol>
     <li>Ladda upp <b>json-filen</b> till <b>json/maskiner/</b> → maskinen syns automatiskt i databasen, receptflikarna och generatorn</li>
     <li>Ladda upp en <b>produktbild</b> som <b>images/MASKIN-ID.jpg</b> (max 480 px)</li>
@@ -106,12 +229,49 @@
   </ol>
 </div>
 
-<footer style="text-align:center; color:var(--muted); font-size:.8rem; padding:20px;">Maskinen läses in automatiskt när filen ligger i json/maskiner/</footer>
+<footer>Maskinen läses in automatiskt när filen ligger i json/maskiner/</footer>
 
 <script>
 function slug(s) {
   return s.toLowerCase().replace(/å/g,'a').replace(/ä/g,'a').replace(/ö/g,'o')
     .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+
+/* 🎨 TYP-VÄLJARE: emoji-knappar som synkar den dolda <select id="type">
+   (all gammal kod läser selecten precis som förut). */
+var TYPER = [
+  { v:'Airfryer / Varmluftsfritös',        e:'🍟', n:'Airfryer',     f:'#e67e22' },
+  { v:'Riskokare / Multikokare',           e:'🍚', n:'Riskokare',    f:'#00897b' },
+  { v:'Bakmaskin / Brödbakningsmaskin',    e:'🍞', n:'Bakmaskin',    f:'#a1662f' },
+  { v:'Glassmaskin / Frozen Drink Maker',  e:'🍦', n:'Glassmaskin',  f:'#d81b60' },
+  { v:'Torkautomat / Dehydrator',          e:'🍇', n:'Torkautomat',  f:'#8e44ad' },
+  { v:'Ismaskin',                          e:'🧊', n:'Ismaskin',     f:'#2980b9' },
+  { v:'Pizzaugn',                          e:'🍕', n:'Pizzaugn',     f:'#c0392b' },
+  { v:'Blender / Mixer',                   e:'🥤', n:'Blender',      f:'#27ae60' },
+  { v:'Sous vide',                         e:'🌡️', n:'Sous vide',   f:'#16a085' },
+  { v:'Annan köksmaskin',                  e:'🔧', n:'Annan',        f:'#7f8c8d' }
+];
+function typRita() {
+  var g = document.getElementById('typgrid');
+  var val = document.getElementById('type').value;
+  g.innerHTML = TYPER.map(function (t) {
+    return '<button type="button" class="typkort' + (val === t.v ? ' on' : '') + '" data-v="' + t.v +
+      '" style="--tk:' + t.f + ';"><span class="te">' + t.e + '</span><span class="tn">' + t.n + '</span></button>';
+  }).join('');
+  g.querySelectorAll('.typkort').forEach(function (b) {
+    b.onclick = function () {
+      document.getElementById('type').value = b.dataset.v;
+      typRita(); build();
+    };
+  });
+}
+function typSync() { typRita(); }   /* selecten ändrad programmatiskt (parseUrl) → rita om */
+typRita();
+
+/* Typens emoji för förhandsgranskningen */
+function typEmoji(v) {
+  var t = TYPER.filter(function (x) { return x.v === v; })[0];
+  return t ? t.e : '🔧';
 }
 
 /* ============================================================
@@ -158,7 +318,7 @@ async function autoImport() {
     return;
   }
   var btn = document.getElementById('autoBtn');
-  btn.disabled = true; btn.textContent = '⏳ Lägger i robotens kö...';
+  btn.disabled = true; btn.innerHTML = '⏳ Lägger i robotens kö...<span class="sub">skickar länken säkert via GitHub</span>';
   var r = { ok: false, error: 'okänt fel' };
   try {
     var raw = await __MK_SPARA.load('json/maskin-ko.txt');
@@ -171,7 +331,8 @@ async function autoImport() {
         '🤖 Maskinimport-kö: ny produktlänk');
     }
   } catch (e) { r = { ok: false, error: e.message }; }
-  btn.disabled = false; btn.textContent = '🤖 Importera automatiskt – roboten fixar resten';
+  btn.disabled = false;
+  btn.innerHTML = '🤖 Importera automatiskt – roboten fixar resten<span class="sub">namn · typ · effekt · ASIN · manual · program – klart inom ~2 min</span>';
   if (r.ok) {
     res.innerHTML = '<div class="info" style="border-left-color:#27ae60;background:#eaf7ef;margin-top:10px;">' +
       '🎉 <b>Länken ligger i robotens kö!</b> Roboten bygger maskinfilen nu – klar inom ~2 min ' +
@@ -224,6 +385,7 @@ function parseUrl() {
     else if (/pizzaugn|pizza oven/.test(low)) t.value = 'Pizzaugn';
     else if (/blender|mixer/.test(low)) t.value = 'Blender / Mixer';
     else if (/sous vide/.test(low)) t.value = 'Sous vide';
+    if (t.value) typRita();   /* 🎨 markera gissad typ i knappgriden */
   }
   build();
 }
@@ -274,6 +436,16 @@ function build() {
     '✅ Fil: <b>' + id + '.json</b> → laddas upp till <b>json/maskiner/</b>' +
     '<br>🖼️ Bild: ladda upp <b>images/' + id + '.jpg</b>' +
     '<br>🤖 Tips: be en AI-chatt (med SPEC.md + länken) fylla i programlistan med verifierade tider!';
+
+  /* 👀 Förhandsgranskning: så kommer kortet se ut i maskindatabasen */
+  var pv = document.getElementById('preview');
+  pv.style.display = 'block';
+  document.getElementById('pvTitle').textContent = typEmoji(type) + ' ' + json.namn;
+  document.getElementById('pvSub').textContent = type + ' · Modell ' + model;
+  document.getElementById('pvChips').innerHTML =
+    (watt ? '<span class="pv-chip">⚡ ' + (watt >= 1000 ? (watt / 1000).toLocaleString('sv-SE') + ' kW' : watt + ' W') + '</span>' : '') +
+    (az ? '<span class="pv-chip" style="border-color:#f39c12;color:#b9770e;">🛒 Amazon: ' + az.asin + '</span>' : '') +
+    '<span class="pv-chip">🆔 ' + id + '</span>';
 }
 
 function download() {
@@ -335,5 +507,5 @@ async function saveDirect() {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f81f752c940a33',t:'MTc4NzQ2NzE5NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
