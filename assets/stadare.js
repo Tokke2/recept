@@ -46,7 +46,7 @@
   ];
   /* Prefix för nycklar som hör till EN receptfil/rättfil */
   var FILPREFIX = ['kock-', 'recept-', 'mk-bock:', 'mk-smak:', 'mk-kalla:',
-                   'mk-port:', 'mk-rport:', 'mk-rbland:'];
+                   'mk-port:', 'mk-rport:', 'mk-rbland:', 'mk-hydr:'];
   /* Prefix som är aktiva men fristående (röres ej i steg 3) */
   var AKTIVA_PREFIX = FILPREFIX.concat(['mk-auto-', 'mk-betyg-vote:', 'mk-idea-vote:']);
 
