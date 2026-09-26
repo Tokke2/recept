@@ -2392,13 +2392,36 @@
   "Tomater Passerade": "Tomaten bestanden",
   "🫙 Ananaskaka med svartvinbärssylt i riskokare": "🫙 Ananaskuchen mit schwarzer Johannisbeermarmelade im Reiskocher",
   "🫙 Ananaskaka med svartvinbärssylt i riskokare – Recept": "🫙 Ananaskuchen mit schwarzer Johannisbeermarmelade im Reiskocher – Rezept",
-  "bara 0 av 7 ingredienser finns i databasen – siffrorna ovan är receptets egna.": "Nur 0 von 7 Zutaten sind in der Datenbank enthalten – die Zahlen oben stammen vom Rezept."
+  "bara 0 av 7 ingredienser finns i databasen – siffrorna ovan är receptets egna.": "Nur 0 von 7 Zutaten sind in der Datenbank enthalten – die Zahlen oben stammen vom Rezept.",
+  "(bläddra bland alla)": "(durch alle scrollen)",
+  "(bocka i de som ska ingå)": "(kreuzen Sie an, was enthalten sein soll)",
+  "(text eller HTML-kod – spelar ingen roll)": "(Text oder HTML – egal)",
+  "Allt sker i din webbläsare – inget skickas någonstans förrän du själv sparar eller laddar upp filen.": "Alles geschieht in Ihrem Browser – nichts wird irgendwohin gesendet, bis Sie die Datei selbst speichern oder hochladen.",
+  "Justera & 💾 spara": "Anpassen & 💾 speichern",
+  "Klistra in": "Einfügen",
+  "Klistra in ett recept precis som det är (från en AI-chatt, hemsida eller anteckning) → sidan bygger en färdig receptfil och föreslår vilka av dina maskiner som klarar receptet – steg för steg.": "Fügen Sie ein Rezept genau so ein, wie es ist (aus einem KI-Chat, einer Website oder einer Notiz) → Die Seite erstellt eine vorgefertigte Rezeptdatei und schlägt Schritt für Schritt vor, welche Ihrer Maschinen mit dem Rezept umgehen können.",
+  "Matchade automatiskt mot din maskindatabas. 👣": "Automatischer Abgleich mit Ihrer Maschinendatenbank. 👣",
+  "Steg-märkta": "Mit Stufen markiert",
+  "hittar namn · ingredienser · steg · maskiner & program automatiskt": "findet Namen · Zutaten · Schritte · Maschinen & Programme automatisch",
+  "lägger filen i recept-mappen på GitHub åt dig – ingen nedladdning/uppladdning! (Första gången: en 2-minuters engångsinställning med GitHub-nyckel.) Filen är redan i standardutformningen (mk-std-v4) – roboten rör den inte. ⚡ Receptet kan öppnas DIREKT efter sparning.": "legt die Datei für Sie im Rezeptordner auf GitHub ab – kein Download/Upload! (Erstes Mal: ​​eine 2-minütige einmalige Einrichtung mit GitHub-Schlüssel.) Die Datei liegt bereits im Standardformat (mk-std-v4) vor – der Bot wird sie nicht anfassen. ⚡ Das Rezept kann SOFORT nach dem Speichern geöffnet werden.",
+  "maskiner hittades i ett specifikt steg (med rätt program & tid) · ❓ = osäkert program, välj själv i listan.": "Maschinen wurden in einem bestimmten Schritt gefunden (mit dem richtigen Programm und der richtigen Zeit) · ❓ = unsicheres Programm, wählen Sie sich selbst aus der Liste aus.",
+  "✍️ Moment (t.ex. \"Blenda basen\")": "✍️ Momente (z. B. „Blend the bass“)",
+  "✏️ Kontrollera & justera": "✏️ Überprüfen und anpassen",
+  "➕ Koppla fler maskiner": "➕ Weitere Maschinen anschließen",
+  "🎛️ Program": "🎛️ Programme",
+  "👀 Förhandsgranskning & spara": "👀 Vorschau und Speichern",
+  "💡 Funkar med vanlig text (rubrik + Ingredienser + Gör så här) OCH med inklistrad HTML-kod. Kopieringsskräp städas bort automatiskt. Näringstabeller slängs – live-kalkylen räknar om.": "💡 Funktioniert mit einfachem Text (Überschrift + Zutaten + Tun Sie dies) UND mit eingefügtem HTML-Code. Kopiermüll wird automatisch bereinigt. Nährwerttabellen werden weggeworfen – der Live-Rechner rechnet neu.",
+  "📋 Klistra in receptet": "📋 Fügen Sie das Rezept ein",
+  "📤 GitHub-uppladdning (recept/)": "📤 GitHub-Upload (Rezept/)",
+  "🔍 Analysera": "🔍 Analysieren",
+  "🔧 Föreslagna maskiner": "🔧 Empfohlene Maschinen",
+  "🔧 Maskin": "🔧 Maschine"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2391,
+ "_auto_genererade": 2414,
  "_senast_robot": "2026-09-26"
 }

@@ -2296,7 +2296,30 @@
   "Tomater Passerade": "Tomatoes Passed",
   "🫙 Ananaskaka med svartvinbärssylt i riskokare": "🫙 Pineapple cake with blackcurrant jam in a rice cooker",
   "🫙 Ananaskaka med svartvinbärssylt i riskokare – Recept": "🫙 Pineapple cake with blackcurrant jam in a rice cooker - Recipe",
-  "bara 0 av 7 ingredienser finns i databasen – siffrorna ovan är receptets egna.": "only 0 out of 7 ingredients are in the database - the numbers above are the recipe's own."
+  "bara 0 av 7 ingredienser finns i databasen – siffrorna ovan är receptets egna.": "only 0 out of 7 ingredients are in the database - the numbers above are the recipe's own.",
+  "(bläddra bland alla)": "(scroll through all)",
+  "(bocka i de som ska ingå)": "(tick those that should be included)",
+  "(text eller HTML-kod – spelar ingen roll)": "(text or HTML - doesn't matter)",
+  "Allt sker i din webbläsare – inget skickas någonstans förrän du själv sparar eller laddar upp filen.": "Everything happens in your browser - nothing is sent anywhere until you save or upload the file yourself.",
+  "Justera & 💾 spara": "Adjust & 💾 save",
+  "Klistra in": "Paste in",
+  "Klistra in ett recept precis som det är (från en AI-chatt, hemsida eller anteckning) → sidan bygger en färdig receptfil och föreslår vilka av dina maskiner som klarar receptet – steg för steg.": "Paste a recipe exactly as it is (from an AI chat, website or note) → the page builds a ready-made recipe file and suggests which of your machines can handle the recipe - step by step.",
+  "Matchade automatiskt mot din maskindatabas. 👣": "Automatically matched against your machine database. 👣",
+  "Steg-märkta": "Step-marked",
+  "hittar namn · ingredienser · steg · maskiner & program automatiskt": "finds names · ingredients · steps · machines & programs automatically",
+  "lägger filen i recept-mappen på GitHub åt dig – ingen nedladdning/uppladdning! (Första gången: en 2-minuters engångsinställning med GitHub-nyckel.) Filen är redan i standardutformningen (mk-std-v4) – roboten rör den inte. ⚡ Receptet kan öppnas DIREKT efter sparning.": "puts the file in the recipes folder on GitHub for you - no download/upload! (First time: a 2-minute one-time setup with GitHub key.) The file is already in the standard format (mk-std-v4) - the bot won't touch it. ⚡ The recipe can be opened IMMEDIATELY after saving.",
+  "maskiner hittades i ett specifikt steg (med rätt program & tid) · ❓ = osäkert program, välj själv i listan.": "machines were found in a specific step (with the correct program & time) · ❓ = unsafe program, choose yourself from the list.",
+  "✍️ Moment (t.ex. \"Blenda basen\")": "✍️ Moments (eg \"Blend the bass\")",
+  "✏️ Kontrollera & justera": "✏️ Check & adjust",
+  "➕ Koppla fler maskiner": "➕ Connect more machines",
+  "🎛️ Program": "🎛️ Programs",
+  "👀 Förhandsgranskning & spara": "👀 Preview & save",
+  "💡 Funkar med vanlig text (rubrik + Ingredienser + Gör så här) OCH med inklistrad HTML-kod. Kopieringsskräp städas bort automatiskt. Näringstabeller slängs – live-kalkylen räknar om.": "💡 Works with plain text (heading + Ingredients + Do this) AND with pasted HTML code. Copy junk is cleaned up automatically. Nutrition tables are thrown away - the live calculator recalculates.",
+  "📋 Klistra in receptet": "📋 Paste the recipe",
+  "📤 GitHub-uppladdning (recept/)": "📤 GitHub Upload (recipe/)",
+  "🔍 Analysera": "🔍 Analyze",
+  "🔧 Föreslagna maskiner": "🔧 Suggested machines",
+  "🔧 Maskin": "🔧 Machine"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2306,6 +2329,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2295,
+ "_auto_genererade": 2318,
  "_senast_robot": "2026-09-26"
 }
