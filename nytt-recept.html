@@ -6,48 +6,164 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>📝 Nytt recept – Mitt Maskinkök</title>
 <style>
-  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  :root {
+    --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22;
+    --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; --blue:#2980b9; --teal:#00897b;
+  }
   * { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:980px; margin:0 auto; }
-  header { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:18px; }
-  header h1 { font-size:1.5rem; margin-bottom:4px; }
-  header p { opacity:.92; font-size:.92rem; }
-  header a { color:#fff; opacity:.85; text-decoration:none; font-size:.9rem; }
-  .card { background:var(--card); border-radius:14px; padding:20px 24px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
-  .card h2 { font-size:1.05rem; margin-bottom:10px; }
-  textarea { width:100%; min-height:220px; padding:14px; border:2px solid #e8e2d8; border-radius:10px; font-family:Consolas,monospace; font-size:.85rem; resize:vertical; }
-  textarea:focus, input:focus { outline:none; border-color:var(--accent2); }
-  input[type=text] { padding:10px 12px; border:2px solid #e8e2d8; border-radius:10px; font-size:.95rem; font-family:inherit; }
+  body {
+    font-family:'Segoe UI',system-ui,sans-serif;
+    background:
+      radial-gradient(circle at 8% 6%, rgba(39,174,96,.07), transparent 32%),
+      radial-gradient(circle at 92% 12%, rgba(230,126,34,.07), transparent 30%),
+      radial-gradient(circle at 50% 96%, rgba(41,128,185,.05), transparent 40%),
+      var(--bg);
+    color:var(--dark); padding:24px; max-width:980px; margin:0 auto;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    position:relative; overflow:hidden;
+    background:linear-gradient(120deg,#00897b 0%,#27ae60 45%,#e67e22 100%);
+    color:#fff; border-radius:20px; padding:28px 30px 24px; margin-bottom:18px;
+    box-shadow:0 10px 30px rgba(39,174,96,.25);
+  }
+  header::before {
+    content:'📝 🍳 ✨ 🥣 📝 🍳 ✨ 🥣 📝 🍳 ✨ 🥣';
+    position:absolute; inset:auto -20px -16px -20px;
+    font-size:1.9rem; opacity:.14; letter-spacing:14px; white-space:nowrap; pointer-events:none;
+  }
+  header h1 { font-size:1.55rem; margin-bottom:5px; text-shadow:0 2px 6px rgba(0,0,0,.15); }
+  header p { opacity:.95; font-size:.92rem; max-width:640px; }
+  header a { color:#fff; opacity:.9; text-decoration:none; font-size:.9rem; }
+  .stegrad { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .steg {
+    display:flex; align-items:center; gap:7px;
+    background:rgba(255,255,255,.16); border:1.5px solid rgba(255,255,255,.35);
+    border-radius:999px; padding:6px 15px; font-size:.82rem; font-weight:700;
+  }
+  .steg .nr {
+    background:#fff; color:#00897b; width:20px; height:20px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:800;
+  }
+
+  /* ===== KORT (färgkodad toppkant per steg) ===== */
+  .card {
+    background:var(--card); border-radius:16px; padding:20px 24px; margin-bottom:16px;
+    box-shadow:0 3px 12px rgba(0,0,0,.07); border-top:5px solid var(--tc,#e67e22);
+  }
+  .card h2 { font-size:1.08rem; margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .knr {
+    background:var(--tc,#e67e22); color:#fff; width:26px; height:26px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center; font-size:.85rem; flex-shrink:0;
+  }
+
+  textarea {
+    width:100%; min-height:220px; padding:14px; border:2px solid #e8e2d8; border-radius:12px;
+    font-family:Consolas,monospace; font-size:.85rem; resize:vertical; background:#fbfaf8;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  textarea:focus, input:focus { outline:none; border-color:var(--green); box-shadow:0 0 0 4px rgba(39,174,96,.12); }
+  input[type=text] {
+    padding:11px 13px; border:2px solid #e8e2d8; border-radius:12px; font-size:.95rem; font-family:inherit;
+    transition:border-color .15s, box-shadow .15s;
+  }
   .row { display:flex; gap:12px; flex-wrap:wrap; margin-top:10px; }
   .row > div { flex:1; min-width:180px; }
   label { display:block; font-size:.8rem; font-weight:700; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:.04em; }
-  .btn { background:var(--green); color:#fff; border:none; border-radius:10px; padding:12px 22px; font-weight:700; font-size:.95rem; cursor:pointer; font-family:inherit; margin-top:10px; margin-right:8px; }
+
+  .btn {
+    background:var(--green); color:#fff; border:none; border-radius:12px; padding:13px 22px;
+    font-weight:700; font-size:.95rem; cursor:pointer; font-family:inherit; margin-top:10px; margin-right:8px;
+    box-shadow:0 4px 12px rgba(0,0,0,.12); transition:transform .12s, opacity .15s;
+  }
+  .btn:hover { opacity:.92; transform:translateY(-2px); }
+  .btn:active { transform:translateY(0); }
   .btn.sec { background:var(--dark); }
-  .btn.orange { background:var(--accent2); }
-  .hint { background:#fff8ec; border-left:4px solid var(--accent2); border-radius:8px; padding:12px 16px; font-size:.88rem; margin-top:12px; }
-  .stat { display:inline-block; background:#eaf7ef; color:var(--green); border-radius:999px; padding:4px 14px; font-size:.85rem; font-weight:700; margin:4px 6px 0 0; }
+  .btn.orange { background:linear-gradient(135deg,#e67e22,#d35400); }
+
+  /* 🔍 Analysknappen – stjärnan på sidan */
+  .analysbtn {
+    display:block; width:100%;
+    background:linear-gradient(120deg,#00897b,#27ae60 55%,#e67e22);
+    color:#fff; border:none; border-radius:14px; padding:16px 22px;
+    font-size:1.05rem; font-weight:800; cursor:pointer; font-family:inherit; margin-top:12px;
+    box-shadow:0 8px 22px rgba(39,174,96,.35);
+    transition:transform .15s, box-shadow .15s;
+  }
+  .analysbtn:hover { transform:translateY(-2px) scale(1.005); box-shadow:0 12px 28px rgba(39,174,96,.45); }
+  .analysbtn .sub { display:block; font-weight:400; font-size:.8rem; opacity:.9; margin-top:2px; }
+
+  .hint { background:#fff8ec; border-left:4px solid var(--accent2); border-radius:10px; padding:12px 16px; font-size:.88rem; margin-top:12px; }
+  .stat { display:inline-block; background:#eaf7ef; color:var(--green); border-radius:999px; padding:5px 15px; font-size:.85rem; font-weight:700; margin:4px 6px 0 0; }
   .stat.warn { background:#fdf6ee; color:var(--accent2); }
-  .mrow { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid #f0ebe3; }
-  .mrow:last-child { border-bottom:none; }
+
+  /* Maskinrader: kort-stil med hover */
+  .mrow {
+    display:flex; align-items:center; gap:12px; padding:11px 12px; border-radius:12px;
+    border:1.5px solid #f0ebe3; margin-bottom:8px; background:#fff;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .mrow:hover { border-color:#e2d9cb; box-shadow:0 3px 10px rgba(0,0,0,.06); }
   .mrow img { width:46px; height:46px; object-fit:contain; border-radius:8px; background:#faf7f2; flex-shrink:0; }
-  .mrow input[type=checkbox] { width:20px; height:20px; accent-color: var(--green); flex-shrink:0; cursor:pointer; }
+  .mrow input[type=checkbox] { width:22px; height:22px; accent-color:var(--green); flex-shrink:0; cursor:pointer; }
   .mrow .prog { color:var(--green); font-weight:700; }
   .mrow .why { color:var(--muted); font-size:.82rem; }
-  iframe { width:100%; height:520px; border:2px solid #e8e2d8; border-radius:12px; background:#fff; }
+
+  /* ➕ extra-maskinpanelen */
+  .expanel {
+    display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end;
+    background:linear-gradient(135deg,#f4fbf6,#eef7fb); border:1.5px solid #d9ede2;
+    border-radius:14px; padding:14px;
+  }
+  .expanel select, .expanel input {
+    width:100%; padding:10px; border:2px solid #e8e2d8; border-radius:10px; font-family:inherit; font-size:.88rem;
+    background:#fff;
+  }
+  .expanel .exlabel { display:block; font-size:.75rem; font-weight:700; margin-bottom:3px; text-transform:none; letter-spacing:0; }
+  .exbtn {
+    background:linear-gradient(135deg,#27ae60,#1e8449); color:#fff; border:none; border-radius:10px;
+    padding:11px 20px; font-weight:700; cursor:pointer; font-family:inherit;
+    box-shadow:0 3px 10px rgba(39,174,96,.25); transition:transform .12s;
+  }
+  .exbtn:hover { transform:translateY(-1px); }
+
+  iframe { width:100%; height:520px; border:2px solid #e8e2d8; border-radius:14px; background:#fff; }
   #resBox { display:none; }
   footer { text-align:center; color:var(--muted); font-size:.8rem; padding:20px; }
+  @keyframes pop { from { opacity:0; transform:translateY(6px);} to { opacity:1; transform:none;} }
+  #resBox.visad { display:block; animation:pop .3s ease; }
+
+  /* ===== 📱 MOBIL ===== */
+  @media (max-width:640px) {
+    body { padding:14px; }
+    header { padding:20px 18px 18px; border-radius:16px; }
+    header h1 { font-size:1.25rem; }
+    .steg { font-size:.74rem; padding:5px 11px; }
+    .card { padding:16px 16px; }
+    .btn { width:100%; margin-right:0; }
+    .analysbtn { font-size:.95rem; padding:14px 16px; }
+    iframe { height:420px; }
+    .mrow { flex-wrap:wrap; }
+    textarea { min-height:180px; font-size:.8rem; }
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <div style="margin-bottom:8px;"><a href="index.html">← Till startsidan</a></div>
+  <div class="no-print" style="margin-bottom:8px;"><a href="index.html">← Till startsidan</a></div>
   <h1>📝 Nytt recept – klistra in text eller HTML</h1>
-  <p>Klistra in ett recept precis som det är (från en AI-chatt, hemsida eller anteckning) → sidan bygger en färdig receptfil i sajtens standard och föreslår vilka av dina maskiner som klarar receptet.</p>
+  <p>Klistra in ett recept precis som det är (från en AI-chatt, hemsida eller anteckning) → sidan bygger en färdig receptfil och föreslår vilka av dina maskiner som klarar receptet – steg för steg.</p>
+  <div class="stegrad">
+    <span class="steg"><span class="nr">1</span> Klistra in</span>
+    <span class="steg"><span class="nr">2</span> 🔍 Analysera</span>
+    <span class="steg"><span class="nr">3</span> Justera &amp; 💾 spara</span>
+  </div>
 </header>
 
-<div class="card">
-  <h2>1️⃣ Klistra in receptet (text eller HTML-kod – spelar ingen roll)</h2>
+<div class="card" style="--tc:#00897b;">
+  <h2><span class="knr" style="background:#00897b;">1</span>📋 Klistra in receptet <span style="font-weight:400;font-size:.85rem;color:var(--muted);">(text eller HTML-kod – spelar ingen roll)</span></h2>
   <textarea id="src" placeholder="Våfflor
 
 Ingredienser
@@ -62,12 +178,13 @@ Gör så här
 2. Vispa i mjölken och äggen.
 3. Smält smöret och rör ner.
 4. Grädda i våffeljärnet tills gyllene."></textarea>
-  <button class="btn orange" onclick="analyze()">🔍 Analysera receptet</button>
-  <div class="hint">💡 Funkar med vanlig text (rubrik + Ingredienser + Gör så här) OCH med inklistrad HTML-kod. Kopieringsskräp städas bort automatiskt.</div>
+  <button class="analysbtn no-print" onclick="analyze()">🔍 Analysera receptet
+    <span class="sub">hittar namn · ingredienser · steg · maskiner &amp; program automatiskt</span></button>
+  <div class="hint">💡 Funkar med vanlig text (rubrik + Ingredienser + Gör så här) OCH med inklistrad HTML-kod. Kopieringsskräp städas bort automatiskt. Näringstabeller slängs – live-kalkylen räknar om.</div>
 </div>
 
-<div class="card" id="resBox">
-  <h2>2️⃣ Kontrollera &amp; justera</h2>
+<div class="card" id="resBox" style="--tc:#e67e22;">
+  <h2><span class="knr">2</span>✏️ Kontrollera &amp; justera</h2>
   <div id="stats"></div>
   <div class="row">
     <div><label>Receptnamn</label><input type="text" id="fNamn" oninput="rebuild()"></div>
@@ -78,39 +195,39 @@ Gör så här
     <div><label>Beskrivning (visas på receptkortet)</label><input type="text" id="fBeskr" oninput="rebuild()"></div>
   </div>
 
-  <h2 style="margin-top:18px;">🔧 Föreslagna maskiner (bocka i de som ska ingå)</h2>
-  <p style="color:var(--muted);font-size:.85rem;margin-bottom:6px;">Matchade automatiskt mot din maskindatabas – programmens nyckelord vs receptets text.</p>
+  <h2 style="margin-top:20px;">🔧 Föreslagna maskiner <span style="font-weight:400;font-size:.85rem;color:var(--muted);">(bocka i de som ska ingå)</span></h2>
+  <p style="color:var(--muted);font-size:.85rem;margin-bottom:8px;">Matchade automatiskt mot din maskindatabas. 👣 <b>Steg-märkta</b> maskiner hittades i ett specifikt steg (med rätt program &amp; tid) · ❓ = osäkert program, välj själv i listan.</p>
   <div id="mList"><em style="color:var(--muted);">Inga maskiner matchade – receptet fungerar ändå, maskiner kan läggas till senare med ✏️.</em></div>
 
-  <h2 style="margin-top:18px;">➕ Koppla fler maskiner (bläddra bland alla)</h2>
-  <p style="color:var(--muted);font-size:.85rem;margin-bottom:6px;">Recept kan använda FLERA maskiner i kedja – t.ex. blenda glassbasen i Ninja Detect → frys 24 h → spinn i CREAMi. Välj maskin + program + moment och lägg till, hur många som helst.</p>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;background:#faf7f2;border-radius:12px;padding:12px 14px;">
+  <h2 style="margin-top:20px;">➕ Koppla fler maskiner <span style="font-weight:400;font-size:.85rem;color:var(--muted);">(bläddra bland alla)</span></h2>
+  <p style="color:var(--muted);font-size:.85rem;margin-bottom:8px;">Recept kan använda FLERA maskiner i kedja – t.ex. blenda glassbasen i Ninja Detect → frys 24 h → spinn i CREAMi. Välj maskin + program + moment och lägg till, hur många som helst.</p>
+  <div class="expanel">
     <div style="flex:2;min-width:180px;">
-      <label style="display:block;font-size:.75rem;font-weight:700;margin-bottom:2px;">Maskin</label>
-      <select id="exMaskin" onchange="exFyllProgram()" style="width:100%;padding:9px;border:2px solid #e8e2d8;border-radius:9px;font-family:inherit;font-size:.88rem;"></select>
+      <label class="exlabel">🔧 Maskin</label>
+      <select id="exMaskin" onchange="exFyllProgram()"></select>
     </div>
     <div style="flex:2;min-width:180px;">
-      <label style="display:block;font-size:.75rem;font-weight:700;margin-bottom:2px;">Program</label>
-      <select id="exProg" style="width:100%;padding:9px;border:2px solid #e8e2d8;border-radius:9px;font-family:inherit;font-size:.88rem;"></select>
+      <label class="exlabel">🎛️ Program</label>
+      <select id="exProg"></select>
     </div>
     <div style="flex:2;min-width:150px;">
-      <label style="display:block;font-size:.75rem;font-weight:700;margin-bottom:2px;">Moment (t.ex. "Blenda basen")</label>
-      <input type="text" id="exMoment" placeholder="Tillagning" style="width:100%;padding:9px;border:2px solid #e8e2d8;border-radius:9px;font-family:inherit;font-size:.88rem;box-sizing:border-box;">
+      <label class="exlabel">✍️ Moment (t.ex. "Blenda basen")</label>
+      <input type="text" id="exMoment" placeholder="Tillagning">
     </div>
-    <button type="button" onclick="exLaggTill()" style="background:#27ae60;color:#fff;border:none;border-radius:9px;padding:10px 18px;font-weight:700;cursor:pointer;font-family:inherit;">➕ Lägg till</button>
+    <button type="button" class="exbtn" onclick="exLaggTill()">➕ Lägg till</button>
   </div>
   <div id="exList" style="margin-top:8px;"></div>
 
-  <h2 style="margin-top:18px;">3️⃣ Förhandsgranskning</h2>
+  <h2 style="margin-top:20px;"><span class="knr" style="background:#27ae60;">3</span>👀 Förhandsgranskning &amp; spara</h2>
   <iframe id="prev"></iframe>
   <button class="btn orange" onclick="saveDirect()" id="saveBtn">💾 Spara direkt på sajten</button>
   <button class="btn" onclick="download()">⬇️ Ladda ner receptfilen</button>
-  <a class="btn sec" style="display:inline-block;text-decoration:none;" href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">📤 Öppna GitHub-uppladdning (recept/)</a>
-  <div class="hint" id="saveHint">✅ <b>💾 Spara direkt</b> lägger filen i recept-mappen på GitHub åt dig – ingen nedladdning/uppladdning! (Första gången: en 2-minuters engångsinställning med GitHub-nyckel.) Filen är redan i standardutformningen (mk-std-v4) – roboten rör den inte.</div>
+  <a class="btn sec" style="display:inline-block;text-decoration:none;text-align:center;" href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">📤 GitHub-uppladdning (recept/)</a>
+  <div class="hint" id="saveHint">✅ <b>💾 Spara direkt</b> lägger filen i recept-mappen på GitHub åt dig – ingen nedladdning/uppladdning! (Första gången: en 2-minuters engångsinställning med GitHub-nyckel.) Filen är redan i standardutformningen (mk-std-v4) – roboten rör den inte. ⚡ Receptet kan öppnas DIREKT efter sparning.</div>
   <div id="saveResult"></div>
 </div>
 
-<footer>Allt sker i din webbläsare – inget skickas någonstans förrän du själv laddar upp filen på GitHub.</footer>
+<footer>Allt sker i din webbläsare – inget skickas någonstans förrän du själv sparar eller laddar upp filen.</footer>
 
 <script>
 /* ============================================================
@@ -145,6 +262,8 @@ const MATORD = ['kaka','bröd','deg','pizza','glass','slush','soppa','gryta','ky
 
 const ALIAS = {'airfryer':'cosori-twinfry-10l','air fryer':'cosori-twinfry-10l','bakmaskin':'clatronic-bba3774',
   'brödmaskin':'clatronic-bba3774','riskokare':'midea-mb-fs5017','multikokare':'midea-mb-fs5017',
+  'crockpot':'midea-mb-fs5017','crock pot':'midea-mb-fs5017','crock-pot':'midea-mb-fs5017',
+  'slowcooker':'midea-mb-fs5017','slow cooker':'midea-mb-fs5017',
   'glassmaskin':'greenpan-frost','slushmaskin':'greenpan-frost','greenpan':'greenpan-frost','frost':'greenpan-frost',
   'pizzaugn':'klaif-pizzaugn','ismaskin':'silonn-ismaskin','torkautomat':'wmf-snacktogo','dehydrator':'wmf-snacktogo',
   'smörgåsgrill':'krups-fdk452','våffeljärn':'krups-fdk452','kaffekvarn':'linkchef-grinder'};
@@ -300,48 +419,42 @@ function progName(p) {
   /* "8. Dough (Deg)" → "dough" – siffra och parentes bort */
   return String(p.namn || '').split('(')[0].replace(/^\s*\d+[.)]\s*/, '').trim();
 }
-/* 🎯 TITELN VÄGER TYNGST (användarens regel): "Ananaskaka..." ska ge
-   Kaka-programmet – även som SAMMANSATT ord (suffixmatch: ...kaka).
-   Nyckelord som BARA finns bland ingredienserna ("yoghurt" i turkisk
-   yoghurt) väger lätt – annars föreslås Yoghurt-programmet på kakor! */
+/* 🎯 PROGRAMVAL (användarens regel): matcha ALDRIG mot ingredienslistan.
+   Endast TITELN avgör – eller EXPLICIT programnamn i stegen ("GRÄDDNING:
+   Midea – Kaka (Cake)"). Allt annat = osäkert → ANVÄNDAREN FÅR FRÅGAN. */
 function titelHit(titel, k) {
   k = String(k).toLowerCase().trim();
   if (k.length < 3) return false;
   return new RegExp(k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[^a-zåäö])').test(titel);
 }
-function suggestMachines(text, titel, ingText) {
+function suggestMachines(text, titel) {
   titel = (titel || '').toLowerCase();
-  ingText = (ingText || '').toLowerCase();
   const hits = [];
   MACHINES.forEach(m => {
     let best = null, bs = 0;
     const kandidater = [];   /* alla program med poäng → osäkert = fråga */
     (m.program || []).forEach(p => {
       if (/reng|clean|extrude/i.test(p.namn || '')) return;
-      let s = 0, sTitel = 0;   /* sTitel = poäng som kom från TITELN */
+      let s = 0, sTitel = 0, sExplicit = 0;
       (p.nyckelord || []).forEach(k => {
-        if (!wordHit(text, k) && !titelHit(titel, k)) return;
-        /* bara i ingredienslistan (t.ex. "yoghurt" som vara)? → lätt vikt */
-        const iSteg = wordHit(text.replace(ingText, ' '), k);
-        const iTitel = titelHit(titel, k);
-        s += iTitel ? 5 : (iSteg ? 2 : 1);
-        if (iTitel) sTitel += 5;
+        if (titelHit(titel, k)) { s += 5; sTitel += 5; }
+        else if (wordHit(text, k)) s += 1;   /* steg/beskrivning = svag ledtråd */
       });
-      /* Nämns programmets NAMN? I TITELN (även sammansatt: ananasKAKA) = jackpot */
+      /* Programmets NAMN: i TITELN (även sammansatt: ananasKAKA) eller
+         EXPLICIT utskrivet i stegen → säkert */
       const pn = progName(p);
       if (pn.length > 3 && titelHit(titel, pn)) { s += 6; sTitel += 6; }
-      else if (pn.length > 3 && wordHit(text, pn)) s += 3;
-      if (s > 0) kandidater.push({ p, s, sTitel });
+      else if (pn.length > 3 && wordHit(text, pn)) { s += 4; sExplicit += 4; }
+      if (s > 0) kandidater.push({ p, s, sTitel, sExplicit });
       if (s > bs) { bs = s; best = p; }
     });
-    /* ❓ OSÄKERT → användaren får VÄLJA program (användarens regel:
-       "ska se i titeln att det står kaka, eller om osäker fråga"):
-       · TITELN pekar ut vinnaren ("Ananaskaka" → Kaka) → säkert
-       · annars: finns ett andra program med riktig träff (≥2 p,
-         dvs. mer än bara ett ingrediensord) → FRÅGA användaren */
+    /* ❓ Säkert ENDAST om titeln pekar ut programmet ELLER programnamnet
+       står ordagrant i stegen – annars fråga så fort det finns
+       konkurrerande kandidater */
     kandidater.sort((a, b) => b.s - a.s);
-    const titelSaker = kandidater.length && kandidater[0].sTitel >= 5;
-    m.__val = (!titelSaker && kandidater.length > 1 && kandidater[1].s >= 2)
+    const saker = kandidater.length &&
+      (kandidater[0].sTitel >= 5 || kandidater[0].sExplicit >= 4);
+    m.__val = (!saker && kandidater.length > 1)
       ? kandidater.slice(0, 3) : null;
     /* Alias: "bakmaskinen"/"airfryern" (även bestämd form) → stark träff */
     for (const [w, id] of Object.entries(ALIAS)) {
@@ -359,21 +472,158 @@ function suggestMachines(text, titel, ingText) {
   return hits.slice(0, 5);
 }
 
+/* ============================================================
+   👣 STEG-FÖR-STEG-MASKINVAL (användarens regel)
+   Ett recept kan använda FLERA maskiner i olika steg:
+   "koka kyckling i crockpot 11 h på låg" → Midea · Långkok · 11 h
+   "koka potatis och morötter i riskokare" → riskokare · ca 15 min
+   Varje steg som NÄMNER en maskin (modellnamn eller vardagsord som
+   "crockpotten"/"riskokaren") får sin EGEN maskin + program + tid.
+   Fel som förhindras: riskokaren får ALDRIG 11-timmarssteget –
+   maskinen kopplas bara till steget där den faktiskt nämns.
+   ============================================================ */
+/* Vardagsord som i sig AVGÖR programmet (en crockpot ÄR ett långkok) */
+const ALIAS_PROG = {'crockpot':'långkok','crock pot':'långkok','crock-pot':'långkok',
+  'slowcooker':'långkok','slow cooker':'långkok'};
+
+/* ⏱ Tid ur ett steg: "totalt 11 h"/"totaltiden blir 11 h" vinner,
+   annars första tidsangivelsen. {tid, total} */
+function stegTidUt(s) {
+  const l = s.toLowerCase();
+  let m = l.match(/total\w*[^.\d]{0,14}(\d+[\d.,]*)\s*(h|tim)/);
+  if (m) return { tid: m[1] + ' h', total: true };
+  m = l.match(/(\d+[\d.,]*)\s*(?:h|tim(?:me|mar|mars)?)\b/);
+  if (m) return { tid: m[1] + ' h', total: false };
+  m = l.match(/(?:ca\s*)?(\d+)\s*min\b/);
+  if (m) return { tid: m[1] + ' min', total: false };
+  return { tid: '', total: false };
+}
+function stegTimmar(tid) {
+  const m = String(tid).match(/([\d.,]+)\s*h/);
+  return m ? parseFloat(m[1].replace(',', '.')) : 0;
+}
+/* Programnamnets delar: "Långkok (Slow cook)" → ["långkok","slow cook"] */
+function progDelar(p) {
+  return String(p.namn || '').toLowerCase()
+    .split(/[()\/·]/).map(t => t.replace(/^\s*\d+[.)]\s*/, '').replace(/[^\wåäö% -]/g, '').trim())
+    .filter(t => t.length > 3);
+}
+function stegMaskiner(steps) {
+  /* 1) Hitta ANKARE: steg där en maskin nämns (modellnamn eller
+     vardagsord). Ankarets SEGMENT = det steget + alla följande steg
+     tills nästa maskin nämns ("lägg i multikokaren" → "starta Långkok
+     ... totalt 11 h" hör till samma maskin). */
+  const ankare = [], upptagna = [];
+  steps.forEach((steg, idx) => {
+    const low = ' ' + String(steg).toLowerCase() + ' ';
+    let m = null, viaAlias = '';
+    /* Modellnamn/varumärke utskrivet i steget = starkast */
+    for (const mm of MACHINES) {
+      const vm = (mm.varumarke || '').toLowerCase(), mn = String(mm.modellnamn || '').toLowerCase();
+      if ((vm.length > 2 && low.includes(vm)) || (mn.length > 2 && low.includes(mn))) { m = mm; break; }
+    }
+    /* Vardagsord: "crockpotten", "riskokaren", "airfryern"...
+       (suffix täcker bestämd form: -en/-n/-ten/-ern/-erna/-arna) */
+    if (!m) for (const [w, id] of Object.entries(ALIAS)) {
+      const re = new RegExp('(^|[^a-zåäö])' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(s|n|en|t|ten|er|ern|erna|arna)?($|[^a-zåäö])');
+      if (re.test(low)) { m = MACHINES.find(x => x.id === id) || null; viaAlias = w; if (m) break; }
+    }
+    if (!m) return;
+    /* 🔁 Två maskiner av samma typ (Midea + Yum Asia är båda riskokare):
+       är den redan upptagen av ett tidigare steg → ta nästa lediga syskon */
+    if (viaAlias && upptagna.includes(m.id)) {
+      const typLow = (m.typ || '').toLowerCase();
+      const syskon = MACHINES.find(x => x.id !== m.id && !upptagna.includes(x.id) &&
+        (x.typ || '').toLowerCase().split(/[^a-zåäö]+/).some(w => w.length > 4 && typLow.includes(w)));
+      if (syskon) m = syskon;
+    }
+    upptagna.push(m.id);
+    ankare.push({ idx, m, viaAlias });
+  });
+
+  /* 2) Program + tid per SEGMENT */
+  return ankare.map((a, ai) => {
+    const slut = (ai + 1 < ankare.length) ? ankare[ai + 1].idx : steps.length;
+    const segSteg = steps.slice(a.idx, slut);
+    const segLow = ' ' + segSteg.join(' ').toLowerCase() + ' ';
+    /* ⏱ Tid: "totalt 11 h" NÅGONSTANS i segmentet vinner – annars
+       ankarstegets egen tid (så "5 min prep" i steg 1 inte gäller
+       om steg 2 säger totaltiden) */
+    let tid = '';
+    for (const s of segSteg) { const t = stegTidUt(s); if (t.total) { tid = t.tid; break; } }
+    if (!tid) tid = stegTidUt(steps[a.idx]).tid;
+    const timmar = stegTimmar(tid);
+    /* Program: EXPLICIT programnamn i segmentet = säkert. Vardagsord
+       som avgör (crockpot ÄR långkok) = säkert. Annars ❓ – ANVÄNDAREN
+       väljer. ⏱-rimlighet: 3+ h får ALDRIG hamna på snabbprogram. */
+    const kand = [];
+    (a.m.program || []).forEach(pr => {
+      if (/reng|clean|extrude/i.test(pr.namn || '')) return;
+      let s = 0, expl = false;
+      if (progDelar(pr).some(d => segLow.includes(d))) { s += 6; expl = true; }
+      if (a.viaAlias && ALIAS_PROG[a.viaAlias] &&
+          String(pr.namn || '').toLowerCase().includes(ALIAS_PROG[a.viaAlias])) { s += 6; expl = true; }
+      (pr.nyckelord || []).forEach(k => { if (wordHit(segLow, k)) s += 1; });
+      if (timmar >= 3) {
+        if (/långkok|slow/i.test(pr.namn || '')) s += 3;
+        else { s -= 2; if (expl) { expl = false; } }   /* 11 h ris = orimligt → fråga */
+      }
+      if (s > 0) kand.push({ p: pr, s, expl });
+    });
+    kand.sort((b, c) => c.s - b.s);
+    let p, val = null, saker = false;
+    if (kand.length && kand[0].expl) { p = kand[0].p; saker = true; }
+    else {
+      p = kand.length ? kand[0].p : (a.m.program || [{ namn: 'Manuellt läge' }])[0];
+      val = (kand.length > 1 ? kand : (a.m.program || []).map(x => ({ p: x, s: 0 })))
+        .slice(0, 6).map(k => ({ p: k.p }));
+    }
+    return { i: a.idx, m: a.m, p, saker, val, tid, score: 99, moment: 'Steg ' + (a.idx + 1) };
+  });
+}
+
 /* ---------- Analys ---------- */
+/* ⚠️ Inline-felruta under textarean (aldrig alert – blockeras i vissa
+   webbläsare och ser trist ut). Försvinner vid nästa lyckade analys. */
+function visaFel(msg) {
+  var el = document.getElementById('srcFel');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'srcFel';
+    el.className = 'hint no-print';
+    el.style.cssText = 'border-left-color:#c0392b;background:#fdecea;animation:pop .25s ease;';
+    document.getElementById('src').parentNode.appendChild(el);
+  }
+  el.innerHTML = '⚠️ ' + msg;
+  el.style.display = 'block';
+}
+function doljFel() {
+  var el = document.getElementById('srcFel');
+  if (el) el.style.display = 'none';
+}
+
 async function analyze() {
   const raw = document.getElementById('src').value.trim();
-  if (!raw) { alert('Klistra in ett recept först!'); return; }
+  if (!raw) { visaFel('<b>Klistra in ett recept först!</b> Rutan ovanför är tom.'); return; }
   PARSED = /<\s*(html|body|table|ol|ul|h1|p|div)[\s>]/i.test(raw) ? parseHtml(raw) : parseText(raw);
   if (!PARSED || (!PARSED.ings.length && !PARSED.steps.length)) {
-    alert('Hittade varken ingredienser eller steg 🤔 Kontrollera att receptet har rader som "3 dl mjölk" och numrerade steg.');
+    visaFel('<b>Hittade varken ingredienser eller steg</b> 🤔 Kontrollera att receptet har rader som "3 dl mjölk" och numrerade steg.');
     return;
   }
+  doljFel();
   await loadMachines();
-  const ingText = PARSED.ings.map(i => i[0]).join(' ').toLowerCase();
-  const allText = (PARSED.namn + ' ' + PARSED.others.join(' ') + ' ' + PARSED.steps.join(' ') + ' ' + ingText).toLowerCase();
-  /* 🎯 titeln väger tyngst; ingrediensnamn väger lätt (yoghurt som VARA
-     ska inte ge Yoghurt-PROGRAMMET på en kaka) */
-  SUGGESTED = suggestMachines(allText, PARSED.namn, ingText);
+  /* 🎯 ANVÄNDARENS REGEL: ingredienslistan är ALDRIG med i matchningen
+     ("Turkisk yoghurt" som vara får inte ge Yoghurt-programmet).
+     Matchningstext = titel + beskrivning + steg – INTE ings. */
+  const allText = (PARSED.namn + ' ' + PARSED.others.join(' ') + ' ' + PARSED.steps.join(' ')).toLowerCase();
+  /* 👣 1) STEG-FÖR-STEG: maskiner som nämns i ENSKILDA steg får varsin
+     rad med rätt program + tid ("Steg 1: crockpotten 11 h" ≠ "Steg 3:
+     riskokaren 15 min"). 2) Helhetsmatchning fyller på med maskiner
+     som inte redan tagits av ett steg. */
+  const stegHits = stegMaskiner(PARSED.steps);
+  const ovriga = suggestMachines(allText, PARSED.namn)
+    .filter(h => !stegHits.some(sh => sh.m.id === h.m.id));
+  SUGGESTED = stegHits.concat(ovriga);
 
   /* Fyll i fälten – finns recept:-metadata i inklistrad HTML återanvänds den */
   const srcRaw = document.getElementById('src').value;
@@ -404,11 +654,17 @@ async function analyze() {
         h.val.map(v => '<option>' + esc(v.p.namn || '') + (v.p.standardtid ? ' · ' + esc(v.p.standardtid) : '') + '</option>').join('') +
         '</select></div>'
       : '';
-    return '<div class="mrow">' +
-      '<input type="checkbox" id="mk' + i + '" ' + (i === 0 ? 'checked' : '') + ' onchange="rebuild()">' +
+    /* 👣 Steg-koppling: grön etikett + receptets EGEN tid ("11 h") vinner
+       över programmets standardtid. Steg-hittade maskiner förbockas alltid. */
+    const stegHtml = h.moment && /^Steg \d+/.test(h.moment)
+      ? '<span style="background:#eaf7ef;color:#27ae60;border-radius:6px;padding:1px 8px;font-size:.75rem;font-weight:700;margin-right:6px;">👣 ' + esc(h.moment) + '</span>'
+      : '';
+    const tidVisad = h.tid || h.p.standardtid || '';
+    return '<div class="mrow"' + (stegHtml ? ' style="border-left:4px solid #27ae60;padding-left:8px;"' : '') + '>' +
+      '<input type="checkbox" id="mk' + i + '" ' + ((i === 0 || stegHtml) ? 'checked' : '') + ' onchange="rebuild()">' +
       (h.m.bild ? '<img src="' + h.m.bild + '" onerror="this.remove()">' : '') +
-      '<div><b>' + esc(name) + '</b> · <span class="prog">' + esc(h.p.namn || '') +
-      (h.p.standardtid ? ' · ' + esc(h.p.standardtid) : '') + '</span>' +
+      '<div>' + stegHtml + '<b>' + esc(name) + '</b> · <span class="prog">' + esc(h.p.namn || '') +
+      (tidVisad ? ' · ' + esc(tidVisad) : '') + '</span>' +
       (h.p.beskrivning ? '<div class="why">' + esc(h.p.beskrivning) + '</div>' : '') +
       valHtml +
       '</div></div>';
@@ -422,10 +678,12 @@ async function analyze() {
     });
   });
 
-  document.getElementById('resBox').style.display = 'block';
+  var rb = document.getElementById('resBox');
+  rb.style.display = 'block';
+  rb.classList.remove('visad'); void rb.offsetWidth; rb.classList.add('visad');  /* pop-animation vid varje analys */
   exFyllValjare();   /* ➕ bläddra bland ALLA maskiner */
   rebuild();
-  try { document.getElementById('resBox').scrollIntoView({ behavior: 'smooth' }); } catch (e) {}
+  try { rb.scrollIntoView({ behavior: 'smooth' }); } catch (e) {}
 }
 
 /* ---------- ➕ Extra maskiner: bläddra bland ALLA + koppla i kedja ---------- */
@@ -501,7 +759,9 @@ function buildHtml() {
     const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
     /* Eget moment ("Blenda basen") vinner – annars Tillagning/Alternativ */
     const moment = h.moment || (i === 0 ? 'Tillagning' : 'Alternativ');
-    return moment + ': ' + name + ' · ' + (h.p.namn || '') + (h.p.standardtid ? ' ' + h.p.standardtid : '');
+    /* 👣 Receptets egen tid ("11 h" ur steget) vinner över standardtiden */
+    const tid = h.tid || h.p.standardtid || '';
+    return moment + ': ' + name + ' · ' + (h.p.namn || '') + (tid ? ' ' + tid : '');
   }).join(' | ');
   const chips = machines.map(h => {
     const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
@@ -513,8 +773,10 @@ function buildHtml() {
     const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
     /* Momentet visas i rutan ("Blenda basen: Ninja Detect · BlendSense") */
     const momPrefix = h.moment ? esc(h.moment) + ': ' : '';
+    /* 👣 Receptets egen tid vinner över programmets standardtid */
+    const tid = h.tid || h.p.standardtid || '';
     return '  <div class="machine-step">\n    <h3>⚙️ ' + momPrefix + esc(name) + ' · <span class="prog">' + esc(h.p.namn || '') +
-      (h.p.standardtid ? ' · ' + esc(h.p.standardtid) : '') + '</span></h3>\n' +
+      (tid ? ' · ' + esc(tid) : '') + '</span></h3>\n' +
       (h.p.beskrivning ? '    <div class="why">' + esc(h.p.beskrivning) + '</div>\n' : '') + '  </div>';
   }).join('\n');
   const stepItems = PARSED.steps.map(s => '    <li>' + esc(s) + '</li>').join('\n');
@@ -612,7 +874,11 @@ async function cachaDirekt(fil, html) {
 
 async function saveDirect() {
   if (!PARSED) return;
-  if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas – prova ⬇️ Ladda ner istället.'); return; }
+  if (!window.__MK_SPARA) {
+    document.getElementById('saveResult').innerHTML =
+      '<div class="hint" style="border-left-color:#c0392b;background:#fdecea;">⚠️ Spara-modulen kunde inte laddas – ladda om sidan eller använd ⬇️ Ladda ner istället.</div>';
+    return;
+  }
   const fil = (document.getElementById('fFil').value.trim() || 'nytt-recept.html').replace(/[^a-zA-Z0-9åäöÅÄÖ._ -]/g, '');
   const btn = document.getElementById('saveBtn');
   const out = document.getElementById('saveResult');
@@ -640,5 +906,5 @@ async function saveDirect() {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3a03ef9c9c8c725',t:'MTc4OTIzMDA5NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3e26b8d5d22e0de',t:'MTc4OTkyMzk4MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
