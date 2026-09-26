@@ -2415,13 +2415,26 @@
   "📤 GitHub-uppladdning (recept/)": "📤 GitHub-Upload (Rezept/)",
   "🔍 Analysera": "🔍 Analysieren",
   "🔧 Föreslagna maskiner": "🔧 Empfohlene Maschinen",
-  "🔧 Maskin": "🔧 Maschine"
+  "🔧 Maskin": "🔧 Maschine",
+  "(valfritt – ger 🖼️ bild + 📖 manual + bättre namn!)": "(optional – ergibt 🖼️ Bild + 📖 Handbuch + besseren Namen!)",
+  "Klart på ~2 min": "Fertig in ca. 2 Minuten",
+  "Klistra in länk": "Link einfügen",
+  "Klistra in produktlänken (Amazon, Elgiganten, tillverkare...) → 🤖 roboten bygger en komplett maskinfil åt dig.": "Fügen Sie den Produktlink ein (Amazon, Elgiganten, Hersteller...) → 🤖 Der Roboter erstellt eine komplette Maschinendatei für Sie.",
+  "namn · typ · effekt · ASIN · manual · program – klart inom ~2 min": "Name · Typ · Leistung · ASIN · Handbuch · Programm – fertig in ca. 2 Min",
+  "⚡ Effekt (W, för energiberäkning)": "⚡ Leistung (W, zur Energieberechnung)",
+  "✅ Så blir maskinen komplett": "✅ Dann ist die Maschine fertig",
+  "✍️ Eller fyll i manuellt (utan robot) – klicka här": "✍️ Oder manuell ausfüllen (ohne Roboter) – klicken Sie hier",
+  "🏭 Tillverkarens produktsida": "🏭 Produktseite des Herstellers",
+  "📄 Färdig maskinfil": "📄 Fertige Maschinendatei",
+  "📤 GitHub-uppladdning (json/maskiner/)": "📤 GitHub-Upload (json/machines/)",
+  "🛒 Produktlänk": "🛒 Produktlink",
+  "🤖 Roboten fixar": "🤖 Der Roboter repariert"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2414,
+ "_auto_genererade": 2427,
  "_senast_robot": "2026-09-26"
 }
