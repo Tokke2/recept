@@ -22,7 +22,7 @@
    ============================================================ */
 'use strict';
 
-const VERSION = 'maskinkok-v143';
+const VERSION = 'maskinkok-v144';
 const CACHE_CORE = VERSION + '-core';     // assets + startsida (förcachas)
 const CACHE_PAGES = VERSION + '-pages';   // recept & övriga sidor
 const CACHE_IMG = VERSION + '-img';       // bilder
@@ -63,6 +63,7 @@ const CORE = [
   'assets/kommentarer.js',
   'assets/verifierad.js',
   'assets/portion.js',
+  'assets/hydrering.js',
   'assets/ratt.js',
   'assets/logg.js',
   'assets/felrapport.js',
