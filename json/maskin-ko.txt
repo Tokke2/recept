@@ -1,2 +1,2 @@
 # PLATS: /json/maskin-ko.txt (kö för maskinimport-roboten – en produktlänk per rad)
-https://www.amazon.se/dp/B0F9YRV6VN
+# KLAR 2026-09-26 https://www.amazon.se/dp/B0F9YRV6VN → yashe-food-dehydrator (skapad)

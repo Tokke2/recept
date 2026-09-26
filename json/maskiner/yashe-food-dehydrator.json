@@ -1,0 +1,18 @@
+{
+ "_plats": "/json/maskiner/yashe-food-dehydrator.json  (en maskinfil per maskin – läses in automatiskt)",
+ "id": "yashe-food-dehydrator",
+ "namn": "Yashe Food Dehydrator, – Torkautomat",
+ "typ": "Torkautomat / Dehydrator",
+ "varumarke": "Yashe",
+ "modellnamn": "Food Dehydrator,",
+ "effekt_w": 1000,
+ "effekt_kalla": "UPPSKATTAD av roboten – kontrollera!",
+ "egenskaper": [
+  "🤖 Importerad automatiskt – kontrollera uppgifterna"
+ ],
+ "lankar": {
+  "kop": "https://www.amazon.se/dp/B0F9YRV6VN/"
+ },
+ "bild": "images/yashe-food-dehydrator.jpg",
+ "asin": "B0F9YRV6VN"
+}
