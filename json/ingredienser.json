@@ -136,7 +136,10 @@
       "fett": 1.7,
       "fiber": 8.1,
       "varumarke": "Kronjäst",
-      "kalla": "import ingredienser.json v5.1.1"
+      "kalla": "import ingredienser.json v5.1.1",
+      "alias": [
+        "Torrjäst (Kronjäst)2 g"
+      ]
     },
     {
       "id": "ananas-fryst",
