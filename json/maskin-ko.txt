@@ -1,8 +1,2 @@
-# PLATS: /json/maskin-ko.txt (kö för maskinimport-roboten – EN MASKIN PER RAD)
-# Skrivs av maskin-import.html (🤖 Importera automatiskt). Roboten (maskin-import.yml)
-# bygger maskinfilen och gör raden till en #KLAR-kommentar.
-# En rad får innehålla FLERA länkar (mellanslag mellan) för SAMMA maskin:
-#   AMAZON-LÄNK TILLVERKAR-LÄNK
-# Amazon ger ASIN/köpknapp · tillverkarsidan ger namn, 🖼️ produktbild och 📖 manual
-# (hittas manual-PDF läses programnamnen ur den). Bilder hämtas ALDRIG från Amazon.
-# KLAR 2026-09-15 https://www.amazon.se/Crock-Pot-CSC063X-Kokare-7-5-Silver/dp/B082BG5229/ref=sr_1_7?sr=8-7 → crock-csc063x (skapad)
+# PLATS: /json/maskin-ko.txt (kö för maskinimport-roboten – en produktlänk per rad)
+https://www.amazon.se/dp/B0F9YRV6VN
