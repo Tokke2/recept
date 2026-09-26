@@ -2428,13 +2428,17 @@
   "📄 Färdig maskinfil": "📄 Fertige Maschinendatei",
   "📤 GitHub-uppladdning (json/maskiner/)": "📤 GitHub-Upload (json/machines/)",
   "🛒 Produktlänk": "🛒 Produktlink",
-  "🤖 Roboten fixar": "🤖 Der Roboter repariert"
+  "🤖 Roboten fixar": "🤖 Der Roboter repariert",
+  "Yashe Food Dehydrator, – Torkautomat": "Yashe Food Dehydrator, – Dörrgerät",
+  "🍳 Laga mat": "🍳 Kochen",
+  "🛠️ Verktyg & data": "🛠️ Tools & Daten",
+  "🤖 För utvecklare & AI": "🤖 Für Entwickler & KI"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2427,
+ "_auto_genererade": 2431,
  "_senast_robot": "2026-09-26"
 }
