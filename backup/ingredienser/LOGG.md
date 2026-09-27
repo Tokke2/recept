@@ -13,3 +13,5 @@
 | 2026-09-13 | json/ingrediens-lankar.txt | ⏭️ Oförändrad sedan ingrediens-lankar-2026-08-23.txt – ingen ny kopia behövdes |
 | 2026-09-20 | json/ingredienser.json | ✅ Arkiverad som ingredienser-2026-09-20.json |
 | 2026-09-20 | json/ingrediens-lankar.txt | ⏭️ Oförändrad sedan ingrediens-lankar-2026-08-23.txt – ingen ny kopia behövdes |
+| 2026-09-27 | json/ingredienser.json | ✅ Arkiverad som ingredienser-2026-09-27.json |
+| 2026-09-27 | json/ingrediens-lankar.txt | ⏭️ Oförändrad sedan ingrediens-lankar-2026-08-23.txt – ingen ny kopia behövdes |
