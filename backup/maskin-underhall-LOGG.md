@@ -29,3 +29,9 @@
 
 | vevor-sus420.json | 📖 manual hittad: https://m.media-amazon.com/images/I/91IPw3HXjOL.pdf |
 | 2026-09-21 | ✅ allt friskt – inga åtgärder |
+
+**2026-09-28**
+
+| clatronic-bba3774.json | 🔗 död manuallänk borttagen |
+| clatronic-bba3774.json | 📖 manual hittad: https://www.manualslib.com/manual/2423327/Clatronic-Bba-3774 |
+| yashe-food-dehydrator.json | 📖 manual hittad: https://ae01.alicdn.com/kf/Sa93117d44284459091cfd12aa5f29153 |
