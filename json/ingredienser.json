@@ -51,7 +51,10 @@
       "kolhydrat": 100,
       "fett": 0,
       "fiber": 0,
-      "kalla": "import ingredienser.json v5.1.1"
+      "kalla": "import ingredienser.json v5.1.1",
+      "alias": [
+        "Honung/socker"
+      ]
     },
     {
       "id": "honung",
