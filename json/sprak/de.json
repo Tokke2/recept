@@ -2612,13 +2612,16 @@
   "🧪 BPA-fri": "🧪 BPA-frei",
   "🧪 Receptgeneratorn har flyttat – Mitt Maskinkök": "🧪 Der Rezeptgenerator ist umgezogen – My Machine Kitchen",
   "🧼 Gryta & lock tål diskmaskin": "🧼Topf und Deckel sind spülmaschinenfest",
-  "🪨 Inbyggd slipsten": "🪨 Eingebauter Schleifstein"
+  "🪨 Inbyggd slipsten": "🪨 Eingebauter Schleifstein",
+  "Receptet har flyttat": "Das Rezept ist umgezogen",
+  "– du skickas dit direkt…": "- Sie werden direkt dorthin weitergeleitet...",
+  "📁 Receptet har flyttat till": "📁 Das Rezept ist umgezogen"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2611,
+ "_auto_genererade": 2614,
  "_senast_robot": "2026-10-03"
 }
