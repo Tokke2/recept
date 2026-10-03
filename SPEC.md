@@ -103,6 +103,22 @@ En statisk sajt på GitHub Pages (gratis) med matlagningsmaskiner och recept.
 │     sidor (padding/h1/tabeller/hero/machine-step skalas) – recept-
 │     filerna ändras aldrig (Centralt-principen).
 ├── maskindatabas.html      Maskindatabas med programförslag ("vad ska du laga?")
+│                              🛒 MULTIBUTIK (användarens regel "bara dom som
+│                              betalar"): butiksknappar genereras ur affiliate.
+│                              json→partners – ENDAST aktiv:true visas. Exakt
+│                              produktlänk ur maskinens "butiker"-objekt
+│                              ({"netonnet":"https://..."}) vinner → "Köp hos X";
+│                              annars ÄRLIG sökknapp "Sök hos X" via sok_mall
+│                              ({q}=varumärke+modell, URL-kodad). Länkar HITTAS
+│                              ALDRIG PÅ. deeplink_mall ({url}) = nätverkets
+│                              spårningsomslag (Adtraction/Awin) – läggs på
+│                              centralt när kontot är godkänt, aldrig i maskin-
+│                              filerna. ✏️-dialogen har 🏬-textarea ("butik:
+│                              https://..."-rader, endast https accepteras) som
+│                              sparar m.butiker. Amazon går ASIN-vägen som förut.
+│                              Partners i registret: amazon(aktiv), netonnet/
+│                              komplett/philips/ninja (inaktiva tills nätverks-
+│                              konton godkänts – se /business/-rapporten).
 │                              🎨 DESIGN v2 (färgglad + mobilanpassad):
 │                              header med flerfärgsgradient, emoji-mönster och
 │                              📊 live-statistik (antal maskiner/program/total-kW).

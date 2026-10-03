@@ -323,7 +323,12 @@ function temaFor(typ) {
 
 init();
 
+let PARTNERS = {};   /* 🛒 butikspartners ur affiliate.json – ENDAST aktiva visas */
 async function init() {
+  try {
+    const aff = await (await fetch('json/affiliate.json', { cache: 'no-store' })).json();
+    PARTNERS = aff.partners || {};
+  } catch (e) {}
   const files = await listMachineFiles();
   const machines = [];
   for (const f of files) {
@@ -349,6 +354,22 @@ async function init() {
         affiliate: true, key: 'kop'
       });
     }
+    /* 🛒 FLER BUTIKER (användarens regel: BARA de som betalar = aktiv:true).
+       Exakt produktlänk ur maskinens "butiker"-post vinner – annars ÄRLIG
+       sökknapp ("Sök hos NetOnNet"). Länkar hittas ALDRIG på. deeplink_mall
+       (Adtraction m.fl.) läggs på centralt när nätverkskontot är godkänt. */
+    const q = encodeURIComponent(((m.varumarke || '') + ' ' + (m.modellnamn || '')).trim());
+    Object.entries(PARTNERS).forEach(([pid, p]) => {
+      if (!p || !p.aktiv || pid === 'amazon') return;   /* amazon = ASIN-vägen ovan */
+      const exakt = (m.butiker || {})[pid];
+      let url = exakt || (p.sok_mall ? p.sok_mall.replace('{q}', q) : '');
+      if (!url) return;
+      if (p.deeplink_mall) url = p.deeplink_mall.replace('{url}', encodeURIComponent(url));
+      links.push({
+        label: (p.emoji || '🛒') + ' ' + (exakt ? 'Köp hos ' : 'Sök hos ') + (p.namn || pid),
+        url: url, affiliate: !!p.deeplink_mall, key: 'butik-' + pid
+      });
+    });
     return links;
   }
 
@@ -367,6 +388,7 @@ async function init() {
       ...(m.egenskaper || [])
     ].filter((v, i, a) => a.indexOf(v) === i),
     links: byggLankar(m),
+    butiker: m.butiker || {},
     alias: m.alias || [],
     fritext: m.fritext || '',
     image: m.bild || '',
@@ -557,7 +579,10 @@ document.addEventListener('click', async (e) => {
     <label style="display:block;font-size:.8rem;font-weight:700;margin:10px 0 3px;">📝 Fritext (valfri – visas som blå ruta på kortet)</label>
     <textarea id="me-fritext" placeholder="t.ex. Köpt aug 2026 på Amazon. Står i köksskåpet till vänster. Bäst för stora satser."
       style="width:100%;min-height:70px;padding:9px 12px;border:2px solid #e8e2d8;border-radius:9px;font-size:.9rem;font-family:inherit;box-sizing:border-box;resize:vertical;">${(m.fritext || '')}</textarea>
-    ${f('🛒 Köplänk', 'me-kop', (m.lankar || {}).kop)}
+    ${f('🛒 Köplänk (Amazon/huvudbutik)', 'me-kop', (m.lankar || {}).kop)}
+    <label style="display:block;font-size:.8rem;font-weight:700;margin:10px 0 3px;">🏬 Exakta butikslänkar <span style="font-weight:400;color:#7f8c8d;">(en per rad: butik: https://... – visas ENDAST för aktiva partners)</span></label>
+    <textarea id="me-butiker" placeholder="netonnet: https://www.netonnet.se/art/...\nkomplett: https://www.komplett.se/product/..."
+      style="width:100%;min-height:54px;padding:9px 12px;border:2px solid #e8e2d8;border-radius:9px;font-size:.82rem;font-family:ui-monospace,monospace;box-sizing:border-box;resize:vertical;">${Object.entries(m.butiker || {}).map(([k, v]) => k + ': ' + v).join('\n')}</textarea>
     ${f('📖 Bruksanvisning', 'me-manual', (m.lankar || {}).bruksanvisning)}
     ${f('🏭 Tillverkare', 'me-tillv', (m.lankar || {}).tillverkare)}
     <div style="display:flex;gap:10px;margin-top:16px;">
@@ -578,6 +603,13 @@ document.addEventListener('click', async (e) => {
     if (g('me-kap')) m.kapacitet = g('me-kap');
     const ft = bg.querySelector('#me-fritext').value.trim();
     if (ft) m.fritext = ft; else delete m.fritext;
+    /* 🏬 exakta butikslänkar: "butik: url"-rader → m.butiker (endast https) */
+    const bt = {};
+    bg.querySelector('#me-butiker').value.split('\n').forEach(rad => {
+      const mm = rad.match(/^\s*([a-z0-9_-]+)\s*:\s*(https:\/\/\S+)\s*$/i);
+      if (mm) bt[mm[1].toLowerCase()] = mm[2];
+    });
+    if (Object.keys(bt).length) m.butiker = bt; else delete m.butiker;
     m.lankar = m.lankar || {};
     ['kop|me-kop', 'bruksanvisning|me-manual', 'tillverkare|me-tillv'].forEach(par => {
       const [nyckel, falt] = par.split('|');

@@ -3,5 +3,46 @@
  "kommentar": "Fyll i 'amazon_tag' med ditt Associates Store ID från affiliate-program.amazon.se (t.ex. 'mittmaskinkok-21'). Då görs ALLA amazon.se-länkar på sajten automatiskt om till affiliatelänkar (?tag=...), märks '(betald länk)' och den obligatoriska Amazon-texten visas högst upp på sidan. Tomt = av, vanliga länkar visas. Taggen sparas ALDRIG i maskinfilerna – maskinerna har bara 'asin', länken byggs och taggas centralt.",
  "amazon_tag": "tokke2-21",
  "marketplace": "amazon.se",
- "visa_disclosure": true
+ "visa_disclosure": true,
+ "kommentar_butiker": "BUTIKSPARTNERS: endast butiker med aktiv=true visas på maskinkorten ('bara dom som betalar'). sok_mall = sökadress ({q} = varumärke+modell) som används när maskinen saknar exakt länk i sin 'butiker'-post. deeplink_mall = affiliatenätverkets spårningsomslag ({url} = målsidan, URL-kodad) – fylls i när Adtraction/Awin-kontot är godkänt. Roboten/sajten HITTAR ALDRIG PÅ produktlänkar – exakta länkar klistras in via ✏️-dialogen, annars visas en ärlig 'Sök hos X'-knapp.",
+ "partners": {
+  "amazon": {
+   "namn": "Amazon",
+   "aktiv": true,
+   "emoji": "🛒",
+   "kommentar": "styrs av amazon_tag ovan (ASIN-länken) – ingen sok_mall behövs"
+  },
+  "netonnet": {
+   "namn": "NetOnNet",
+   "aktiv": false,
+   "emoji": "🏬",
+   "sok_mall": "https://www.netonnet.se/art/search?query={q}",
+   "deeplink_mall": "",
+   "natverk": "Adtraction"
+  },
+  "komplett": {
+   "namn": "Komplett",
+   "aktiv": false,
+   "emoji": "🏬",
+   "sok_mall": "https://www.komplett.se/search?q={q}",
+   "deeplink_mall": "",
+   "natverk": ""
+  },
+  "philips": {
+   "namn": "Philips",
+   "aktiv": false,
+   "emoji": "🏭",
+   "sok_mall": "https://www.philips.se/c-w/search.html#q={q}",
+   "deeplink_mall": "",
+   "natverk": "Awin (att verifiera)"
+  },
+  "ninja": {
+   "namn": "Ninja Kitchen",
+   "aktiv": false,
+   "emoji": "🏭",
+   "sok_mall": "https://ninjakitchen.se/search?q={q}",
+   "deeplink_mall": "",
+   "natverk": "att verifiera"
+  }
+ }
 }
