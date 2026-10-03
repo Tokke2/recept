@@ -59,3 +59,8 @@
 **2026-10-03**
 
 | pulled-kycklinggryta-rotfrukter-vita-bonor.html | ⚡ energidata skapad: midea-mb-fs5017 660 min, yumasia-sakura 15 min |
+
+**2026-10-03**
+
+| sitemap.xml | 🗺️ omgenererad (35 adresser) |
+| json/recept-index.json | 📁 omgenererad (25 recept) |
