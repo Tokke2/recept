@@ -2047,6 +2047,40 @@ data i json/, ALDRIG per receptfil.
     "📷 lagad av besökare"-märkning. Aldrig automatisk publicering
     av främmande bilder (modereringsregel).
 
+74. 🧑‍🍳 VIRTUELL SOUS-CHEF (förslag 522): kocklägets uppläsning kan
+    pausa med "säg 'fortsätt' när du är klar" – röstlyssning tar
+    vid (samma Web Speech som röststyrningen; knappen/läget döljs
+    helt i webbläsare utan stöd, Brave/Firefox-regeln).
+
+75. 📻 KÖKSRADIO I KOCKLÄGET (förslag 524): valbar bakgrundsmusik
+    (lofi/50-tal) på låg volym under lagningen. Spelas via inbäddad
+    spelare – startar ALDRIG automatiskt (autoplay-regler + artighet).
+
+76. 📺 SPEGLA TILL TV:N (förslag 528): knapp i kockläget visar en
+    JÄTTE-QR → öppna samma recept/kockläge i smart-TV:ns webbläsare.
+    Ev. synk av aktuellt steg via localStorage-koden i URL-hash.
+
+77. 🧮 CUPS-ÖVERSÄTTAREN (förslag 551): nytt-recepts analys känner
+    igen amerikanska mått ("2 cups flour", "1 stick butter", oz/lb/
+    tbsp/tsp) → konverteras till gram automatiskt (enhetstabellen i
+    enheter.js återanvänds + täthetstabell per ingredienstyp).
+
+78. ⚠️ ALLERGEN-RADARN (förslag 557): ingrediensdatabasen får
+    allergen-fält (gluten/laktos/nötter/ägg/soja...) → recepten
+    visar varningsrad ("innehåller: gluten, laktos") beräknad live
+    ur ingredienserna + allergenfilter i receptsamlingen. Märkning
+    baseras ENDAST på databasens fält – aldrig gissning.
+
+79. 🛒 INKÖPSLISTA PER RECEPT (användarens beställning): knapp på
+    receptsidan "🛒 Skapa inköpslista" → listan byggs ur ingrediens-
+    tabellen (med portionsskalningen inräknad) och kan:
+    a) 📧 MAILAS till valfri adress – utan server: mailto:-länk med
+       förifylld lista ELLER Web3Forms-utskick (när nyckeln finns)
+    b) 📸 VISAS SOM BILD – ren skärmdumps-vy (stor text, bockrutor,
+       receptnamn + QR) + "ladda ner som PNG" (canvas-ritad).
+    Framtida koppling: butiksval/priser (roadmap-idéerna 479/506/
+    552/559 kan bygga vidare på samma lista).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
