@@ -512,7 +512,7 @@ def parse_text_recipe(raw, base):
 
 def convert_text_files():
     made = []
-    for txt in sorted(glob.glob('recept/*.txt')):
+    for txt in sorted(glob.glob('recept/*.txt') + glob.glob('recept/*/*.txt')):
         if 'MALL' in txt.upper():
             continue
         base = os.path.basename(txt)[:-4]
@@ -543,11 +543,18 @@ def main():
     changed = []
 
     def ej_recept(f):
-        """Sökmotor-verifieringsfiler ska ALDRIG konverteras till recept."""
+        """Sökmotor-verifieringsfiler och flytt-STUBBAR ska ALDRIG
+        konverteras till recept."""
         import os as _os
-        return _os.path.basename(f).lower().startswith(('google', 'bingsiteauth', 'yandex_'))
+        if _os.path.basename(f).lower().startswith(('google', 'bingsiteauth', 'yandex_')):
+            return True
+        try:
+            with open(f, encoding='utf-8') as fp:
+                return 'STUB - receptet har flyttat' in fp.read(400)
+        except OSError:
+            return False
 
-    for f in sorted(glob.glob('recept/*.html')):
+    for f in sorted(glob.glob('recept/*.html') + glob.glob('recept/*/*.html')):
         if ej_recept(f):
             continue
         res = convert_file(f, energi)
@@ -559,32 +566,11 @@ def main():
     idx = sorted(os.path.basename(x) for x in glob.glob('json/maskiner/*.json'))
     json.dump(idx, open('json/maskiner-index.json', 'w'), ensure_ascii=False, indent=1)
 
-    # ---- SITEMAP: byggs om automatiskt (SEO) ----
-    try:
-        bas = 'https://tokke2.github.io/recept/'
-        sidor = ['', 'recept.html', 'maskindatabas.html', 'ingredienser.html',
-                 'generator.html', 'forslag.html', 'nytt-recept.html',
-                 'maskin-import.html', 'status.html']
-        urls = [bas + s for s in sidor]
-        for f in sorted(glob.glob('recept/*.html')):
-            if ej_recept(f):
-                continue
-            namn = os.path.basename(f)
-            if 'MALL' in namn.upper():
-                continue
-            urls.append(bas + 'recept/' + namn.replace(' ', '%20'))
-        from datetime import date as _d
-        idag = _d.today().isoformat()
-        xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        for u in urls:
-            xml += '  <url><loc>%s</loc><lastmod>%s</lastmod></url>\n' % (
-                u.replace('&', '&amp;'), idag)
-        xml += '</urlset>\n'
-        open('sitemap.xml', 'w', encoding='utf-8').write(xml)
-        print('SITEMAP:', len(urls), 'adresser')
-    except Exception as e:
-        print('sitemap-fel:', e)
+    # ---- SITEMAP: ÄGS NUMERA av sjalvlakning.py steg6_sitemap ----
+    # (en enda ägare – annars ping-pong-commits mellan robotarna).
+    # steg6 är bättre: tar med ratter/, hoppar pensionerade sidor
+    # (generator.html), URL-kodar korrekt, lastmod ur git-historiken
+    # och skriver ENDAST vid faktisk ändring.
 
     print('=== KONVERTERINGSRAPPORT v4.1 ===')
     for tm_ in txt_made:

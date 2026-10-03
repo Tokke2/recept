@@ -94,7 +94,8 @@ def skorda():
     filer = [f for f in os.listdir('.') if f.endswith('.html')]
     for mapp in ('recept', 'ratter'):
         if os.path.isdir(mapp):
-            filer += [mapp + '/' + f for f in os.listdir(mapp) if f.endswith('.html')]
+            for rot, _dirs, fs in os.walk(mapp):   # 📁 även kategorimappar (recept/deg/...)
+                filer += [os.path.join(rot, f) for f in fs if f.endswith('.html')]
     for fil in filer:
         try:
             p = TextSkordare()

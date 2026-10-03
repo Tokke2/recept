@@ -131,7 +131,7 @@ def steg2_energi(maskiner):
     rec = energi.setdefault('recept', {})
     andrad = False
 
-    for f in glob.glob('recept/*.html'):
+    for f in glob.glob('recept/*.html') + glob.glob('recept/*/*.html'):
         namn = os.path.basename(f)
         if 'MALL' in namn.upper() or re.match(r'^(google|bingsiteauth|yandex_)', namn, re.I):
             continue
@@ -194,7 +194,7 @@ def steg3_bildvagar(maskiner):
 
 
 def steg4_verifieringsfiler():
-    for f in glob.glob('recept/*'):
+    for f in glob.glob('recept/*') + glob.glob('recept/*/*'):
         if re.match(r'^(google|bingsiteauth|yandex_)', os.path.basename(f), re.I):
             os.remove(f)
             rader.append('| %s | 🗑️ verifieringsfil borttagen ur recept/ (hör hemma i roten) |' % os.path.basename(f))
@@ -286,6 +286,101 @@ def steg5_matrattssidor():
             rader.append('| ratter/%s.html | 🗑️ borttagen (rätten finns ej i matratter.json) |' % base)
 
 
+def steg6_sitemap():
+    """🗺️ SITEMAP AUTOUPPDATERAS (användarens fråga "autoupdateras?"
+    → nu JA): sitemap.xml byggs om ur filerna som faktiskt finns –
+    rotsidor + recept/*.html + ratter/*.html. lastmod = filens senaste
+    git-datum (reserv: dagens datum). Skrivs ENDAST om innehållet
+    ändrats (ingen onödig commit). Pensionerade sidor (generator.html)
+    och mallar tas aldrig med."""
+    bas = 'https://tokke2.github.io/recept/'
+    rotsidor = ['', 'recept.html', 'matratter.html', 'maskindatabas.html',
+                'ingredienser.html', 'nytt-recept.html', 'maskin-import.html',
+                'forslag.html', 'status.html']
+
+    def gitdatum(path):
+        try:
+            import subprocess
+            d = subprocess.run(['git', 'log', '-1', '--format=%cs', '--', path],
+                               capture_output=True, text=True, timeout=10).stdout.strip()
+            return d or str(date.today())
+        except Exception:
+            return str(date.today())
+
+    poster = []
+    for p in rotsidor:
+        fil = p or 'index.html'
+        if os.path.exists(fil):
+            poster.append((bas + p, gitdatum(fil)))
+    for mapp in ('recept', 'ratter'):
+        for f in sorted(glob.glob('%s/*.html' % mapp) + glob.glob('%s/*/*.html' % mapp)):
+            namn = os.path.basename(f)
+            if namn.upper().startswith('MALL'):
+                continue
+            try:  # 📁 stubbar (flytt-vidarebefordringar) ska inte indexeras
+                with open(f, encoding='utf-8') as fp2:
+                    if 'STUB - receptet har flyttat' in fp2.read(400):
+                        continue
+            except OSError:
+                pass
+            from urllib.parse import quote
+            rel = f.split('/', 1)[1]
+            poster.append((bas + mapp + '/' + '/'.join(quote(x) for x in rel.split('/')), gitdatum(f)))
+
+    xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+           '<!-- PLATS: /sitemap.xml (AUTOGENERERAD av sjalvlakning.py steg6 - redigera inte for hand) -->\n'
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+           ''.join('  <url><loc>%s</loc><lastmod>%s</lastmod></url>\n' % (u, d)
+                   for u, d in poster) +
+           '</urlset>\n')
+    gammal = ''
+    if os.path.exists('sitemap.xml'):
+        with open('sitemap.xml', encoding='utf-8') as fp:
+            gammal = fp.read()
+    if xml != gammal:
+        with open('sitemap.xml', 'w', encoding='utf-8') as fp:
+            fp.write(xml)
+        rader.append('| sitemap.xml | 🗺️ omgenererad (%d adresser) |' % len(poster))
+
+
+def steg7_receptindex():
+    """📁 json/recept-index.json AUTOUNDERHÅLLS: central fillista med
+    kategorisökvägar ("deg/pizzadeg...html") som ALLA moduler läser
+    (GitHub-API:t är bara reserv). Stubbar/MALL hoppas. Skrivs endast
+    vid ändring."""
+    poster = []
+    for f in sorted(glob.glob('recept/*.html') + glob.glob('recept/*/*.html')):
+        namn = os.path.basename(f)
+        if namn.upper().startswith('MALL'):
+            continue
+        try:
+            with open(f, encoding='utf-8') as fp:
+                if 'STUB - receptet har flyttat' in fp.read(400):
+                    continue
+        except OSError:
+            continue
+        rel = f.split('/', 1)[1]
+        kat = rel.split('/')[0] if '/' in rel else ''
+        poster.append({'fil': rel, 'kategori': kat})
+    for f in sorted(glob.glob('recept/*.pdf') + glob.glob('recept/*/*.pdf')):
+        rel = f.split('/', 1)[1]
+        kat = rel.split('/')[0] if '/' in rel else ''
+        poster.append({'fil': rel, 'kategori': kat})
+    ny = {'_plats': '/json/recept-index.json (AUTOGENERERAD av sjalvlakning.py steg7)',
+          'recept': poster}
+    gammal = None
+    if os.path.exists('json/recept-index.json'):
+        try:
+            with open('json/recept-index.json', encoding='utf-8') as fp:
+                gammal = json.load(fp)
+        except (json.JSONDecodeError, OSError):
+            pass
+    if gammal != ny:
+        with open('json/recept-index.json', 'w', encoding='utf-8') as fp:
+            json.dump(ny, fp, ensure_ascii=False, indent=1)
+        rader.append('| json/recept-index.json | 📁 omgenererad (%d recept) |' % len(poster))
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -293,6 +388,8 @@ def main():
     steg3_bildvagar(maskiner)
     steg4_verifieringsfiler()
     steg5_matrattssidor()
+    steg6_sitemap()
+    steg7_receptindex()
 
     os.makedirs('backup', exist_ok=True)
     if not os.path.exists(LOGG):
