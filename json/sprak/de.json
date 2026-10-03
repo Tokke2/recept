@@ -2615,13 +2615,31 @@
   "🪨 Inbyggd slipsten": "🪨 Eingebauter Schleifstein",
   "Receptet har flyttat": "Das Rezept ist umgezogen",
   "– du skickas dit direkt…": "- Sie werden direkt dorthin weitergeleitet...",
-  "📁 Receptet har flyttat till": "📁 Das Rezept ist umgezogen"
+  "📁 Receptet har flyttat till": "📁 Das Rezept ist umgezogen",
+  "Efter halva tiden (ca 4–5 h): vänd alla remsor med en tång för jämn torkning på båda sidor.": "Nach der Hälfte der Zeit (ca. 4–5 h): Alle Streifen mit einer Zange wenden, damit sie auf beiden Seiten gleichmäßig trocknen.",
+  "Efter totalt 8 h: ta ut en chip och låt den svalna ⏱ 2 min. Är den krispig? Är den mjuk eller seg i mitten, torka ytterligare 1–2 h.": "Nach insgesamt 8 Stunden: Einen Chip herausnehmen und ⏱ 2 Minuten abkühlen lassen. Ist es knusprig? Wenn es in der Mitte weich oder zäh ist, trocknen Sie es weitere 1–2 Stunden.",
+  "Fördela remsorna på torkautomatens galler i ett enda lager – de får inte överlappa varandra. Torka av överflödig olja från gallren om det droppar.": "Verteilen Sie die Streifen in einer Schicht auf dem Wäscheständer – sie dürfen sich nicht überlappen. Wischen Sie überschüssiges Öl von den Rosten ab, wenn es tropft.",
+  "Grönsaker (50–55°C) · 6–10 h": "Gemüse (50–55°C) · 6–10 Std",
+  "Krispiga squash-chips skivade på längden, 4 mm tjocka, med salt och lite olja – torkade i mattorken. 2 portioner.": "Knusprige Kürbischips, längs geschnitten, 4 mm dick, mit Salz und etwas Öl – im Dörrgerät getrocknet. 2 Portionen.",
+  "Lägg remsorna i en bunke. Ringla över rapsolja och strö saltet över. Vänd runt med händerna tills alla remsor har ett tunt jämnt lager olja och salt. ⏱ 2 min": "Die Streifen in eine Schüssel geben. Rapsöl darüberträufeln und mit Salz bestreuen. Mit den Händen wenden, bis alle Streifen eine dünne, gleichmäßige Schicht Öl und Salz haben. ⏱ 2 Min",
+  "När chipsen är helt krispiga, stäng av maskinen och låt dem svalna helt på gallret ⏱ 15 min innan du lägger dem i en lufttät burk.": "Wenn die Chips vollständig knusprig sind, schalten Sie die Maschine aus und lassen Sie sie ⏱ 15 Minuten lang auf dem Rost vollständig abkühlen, bevor Sie sie in ein luftdichtes Glas geben.",
+  "Skivning (justerbar 0–15 mm) · 8 h": "Schneiden (einstellbar 0–15 mm) · 8 Std",
+  "Squash (egen, i 4 mm remsor på längden)": "Kürbis (eigener, in 4-mm-Streifen der Länge nach)",
+  "Squash-chips i torkautomat": "Kürbischips im Trockner trocknen",
+  "Steg 1: VEVOR SUS420 · Skivning (justerbar 0–15 mm) 8 h | Alternativ: WMF 0415250011 · Grönsaker (50–55°C) 6–10 h": "Schritt 1: KURBEL SUS420 · Schneiden (einstellbar 0-15 mm) 8 h | Alternativ: WMF 0415250011 · Gemüse (50–55°C) 6–10 Std",
+  "Sätt ihop maskinen och starta programmet Grönsaker (50–55°C). ⏱ 4–5 h": "Bauen Sie die Maschine zusammen und starten Sie das Gemüseprogramm (50–55 °C). ⏱ 4–5 Std",
+  "Tvätta squashen noga. Skiva den på längden till ca 4 mm tjocka, 15 cm långa remsor med mandolin eller köttslicer. ⏱ 10 min": "Den Kürbis gründlich waschen. Schneiden Sie es der Länge nach in ca. 4 mm dicke, 15 cm lange Streifen mit einer Mandoline oder einem Fleischhobel schneiden. ⏱ 10 Min",
+  "VEVOR SUS420 · Skivning (justerbar 0–15 mm)": "VEVOR SUS420 · Schneiden (einstellbar 0-15 mm)",
+  "WMF 0415250011 · Grönsaker (50–55°C)": "WMF 0415250011 · Gemüse (50–55°C)",
+  "⚙️ Steg 1: VEVOR SUS420 ·": "⚙️ Schritt 1: VEVOR SUS420 ·",
+  "🥒 Squash-chips i torkautomat": "🥒 Kürbischips im Trockner trocknen",
+  "🥒 Squash-chips i torkautomat – Recept": "🥒 Kürbischips im Dörrautomaten – Rezept"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2614,
+ "_auto_genererade": 2632,
  "_senast_robot": "2026-10-03"
 }

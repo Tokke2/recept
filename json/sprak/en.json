@@ -2516,7 +2516,25 @@
   "🪨 Inbyggd slipsten": "🪨 Built-in whetstone",
   "Receptet har flyttat": "The recipe has moved",
   "– du skickas dit direkt…": "- you will be sent there directly...",
-  "📁 Receptet har flyttat till": "📁 The recipe has moved to"
+  "📁 Receptet har flyttat till": "📁 The recipe has moved to",
+  "Efter halva tiden (ca 4–5 h): vänd alla remsor med en tång för jämn torkning på båda sidor.": "After half the time (approx. 4–5 h): turn all strips with tongs for even drying on both sides.",
+  "Efter totalt 8 h: ta ut en chip och låt den svalna ⏱ 2 min. Är den krispig? Är den mjuk eller seg i mitten, torka ytterligare 1–2 h.": "After a total of 8 h: take out a chip and let it cool ⏱ 2 min. Is it crispy? If it is soft or tough in the middle, dry for another 1–2 hours.",
+  "Fördela remsorna på torkautomatens galler i ett enda lager – de får inte överlappa varandra. Torka av överflödig olja från gallren om det droppar.": "Spread the strips on the drying rack in a single layer - they must not overlap. Wipe off excess oil from the grates if it drips.",
+  "Grönsaker (50–55°C) · 6–10 h": "Vegetables (50–55°C) · 6–10 h",
+  "Krispiga squash-chips skivade på längden, 4 mm tjocka, med salt och lite olja – torkade i mattorken. 2 portioner.": "Crispy squash chips sliced ​​lengthwise, 4 mm thick, with salt and a little oil - dried in the food dryer. 2 servings.",
+  "Lägg remsorna i en bunke. Ringla över rapsolja och strö saltet över. Vänd runt med händerna tills alla remsor har ett tunt jämnt lager olja och salt. ⏱ 2 min": "Place the strips in a bowl. Drizzle over rapeseed oil and sprinkle with salt. Turn around with your hands until all the strips have a thin, even layer of oil and salt. ⏱ 2 min",
+  "När chipsen är helt krispiga, stäng av maskinen och låt dem svalna helt på gallret ⏱ 15 min innan du lägger dem i en lufttät burk.": "When the chips are completely crispy, turn off the machine and let them cool completely on the wire rack ⏱ 15 min before putting them in an airtight jar.",
+  "Skivning (justerbar 0–15 mm) · 8 h": "Slicing (adjustable 0–15 mm) · 8 h",
+  "Squash (egen, i 4 mm remsor på längden)": "Squash (own, in 4 mm strips lengthwise)",
+  "Squash-chips i torkautomat": "Squash chips in drying machine",
+  "Steg 1: VEVOR SUS420 · Skivning (justerbar 0–15 mm) 8 h | Alternativ: WMF 0415250011 · Grönsaker (50–55°C) 6–10 h": "Step 1: CRANKS SUS420 · Slicing (adjustable 0-15 mm) 8 h | Alternative: WMF 0415250011 · Vegetables (50–55°C) 6–10 h",
+  "Sätt ihop maskinen och starta programmet Grönsaker (50–55°C). ⏱ 4–5 h": "Assemble the machine and start the Vegetables program (50–55°C). ⏱ 4–5 h",
+  "Tvätta squashen noga. Skiva den på längden till ca 4 mm tjocka, 15 cm långa remsor med mandolin eller köttslicer. ⏱ 10 min": "Wash the squash thoroughly. Slice it lengthwise into approx. 4 mm thick, 15 cm long strips with a mandolin or meat slicer. ⏱ 10 min",
+  "VEVOR SUS420 · Skivning (justerbar 0–15 mm)": "VEVOR SUS420 · Slicing (adjustable 0-15 mm)",
+  "WMF 0415250011 · Grönsaker (50–55°C)": "WMF 0415250011 · Vegetables (50–55°C)",
+  "⚙️ Steg 1: VEVOR SUS420 ·": "⚙️ Step 1: VEVOR SUS420 ·",
+  "🥒 Squash-chips i torkautomat": "🥒 Squash chips in drying machine",
+  "🥒 Squash-chips i torkautomat – Recept": "🥒 Squash chips in drying machine - Recipe"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2526,6 +2544,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2515,
+ "_auto_genererade": 2533,
  "_senast_robot": "2026-10-03"
 }
