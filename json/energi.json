@@ -211,6 +211,18 @@
     "min": 15,
     "moment": "Steg 4 – Koka rotfrukter (🤖 auto ur receptets meta)"
    }
+  ],
+  "squash-chips-i-torkautomat.html": [
+   {
+    "maskin": "vevor-sus420",
+    "min": 480,
+    "moment": "Steg 1 (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "wmf-snacktogo",
+    "min": 480,
+    "moment": "Alternativ (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }

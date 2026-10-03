@@ -64,3 +64,9 @@
 
 | sitemap.xml | 🗺️ omgenererad (35 adresser) |
 | json/recept-index.json | 📁 omgenererad (25 recept) |
+
+**2026-10-03**
+
+| squash-chips-i-torkautomat.html | ⚡ energidata skapad: vevor-sus420 480 min, wmf-snacktogo 480 min |
+| sitemap.xml | 🗺️ omgenererad (36 adresser) |
+| json/recept-index.json | 📁 omgenererad (26 recept) |
