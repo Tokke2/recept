@@ -234,7 +234,7 @@
   <a class="link" href="matratter.html">🍽️ <span>Rätter</span></a>
   <a class="link" href="maskindatabas.html">🔧 <span>Maskiner</span></a>
   <a class="link" href="ingredienser.html">🥫 <span>Varor</span></a>
-  <a class="link" href="generator.html">🧪 <span>Skapa</span></a>
+  <a class="link" href="nytt-recept.html">📝 <span>Skapa</span></a>
 </nav>
 
 <!-- ================= HERO ================= -->
@@ -278,10 +278,10 @@
       <p>Kompletta programlistor med tider verifierade mot bruksanvisningarna, köplänkar och manualer. Fråga "vad ska du laga?" och få programförslag.</p>
       <span class="go">Till maskinerna →</span>
     </a>
-    <a class="mcard" href="generator.html" style="--mc:#8e44ad;">
-      <span class="icon">🧪</span>
-      <h2>Receptgeneratorn</h2>
-      <p>Bygg ett nytt recept av ingredienserna i databasen – kostnad och näringsvärden räknas ut automatiskt medan du väljer.</p>
+    <a class="mcard" href="nytt-recept.html" style="--mc:#8e44ad;">
+      <span class="icon">📝</span>
+      <h2>Nytt recept</h2>
+      <p>Klistra in ett recept som text eller HTML – ingredienser, steg, maskiner och program hittas automatiskt, steg för steg.</p>
       <span class="go">Skapa recept →</span>
     </a>
     <a class="mcard" href="ingredienser.html" style="--mc:#e67e22;">
@@ -350,7 +350,7 @@
       <div class="step"><div><h3>Betygsätt &amp; anteckna</h3>
         <p>Sätt stjärnor och skriv egna anteckningar ("+10 min i Midean") – de sparas och visas i receptets provenienshuvud nästa gång.</p></div></div>
       <div class="step"><div><h3>Lägg till egna recept</h3>
-        <p>Använd <a href="generator.html">generatorn</a>, eller importera en färdig fil via 📥-knappen i receptsamlingen – filen kontrolleras och lagas automatiskt. Även PDF:er fungerar.</p></div></div>
+        <p>Använd <a href="nytt-recept.html">Nytt recept</a> (klistra in text/HTML), eller importera en färdig fil via 📥-knappen i receptsamlingen – filen kontrolleras och lagas automatiskt. Även PDF:er fungerar.</p></div></div>
     </div>
   </section>
 
@@ -364,7 +364,6 @@
         <a href="recept.html">📖 Receptsamlingen <small>flikar per maskin, sök &amp; import</small></a>
         <a href="nytt-recept.html">📝 Nytt recept <small>klistra in text/HTML → färdig standardfil</small></a>
         <a href="maskindatabas.html">🔧 Maskindatabasen <small>program, tider, manualer</small></a>
-        <a href="generator.html">🧪 Receptgeneratorn <small>bygg recept av ingredienser</small></a>
         <a href="maskin-import.html">🔗 Lägg till maskin <small>via produktlänk</small></a>
       </div>
       <div class="sm-group" style="--sc:#27ae60;">
@@ -391,7 +390,7 @@
   Alla program och tider verifierade mot maskinernas bruksanvisningar ·
   Kostnadsberäkningar © Rickard Längkvist<br><br>
   <a href="recept.html">Recept</a> · <a href="maskindatabas.html">Maskiner</a> ·
-  <a href="generator.html">Generator</a> · <a href="status.html">Status</a> ·
+  <a href="nytt-recept.html">Nytt recept</a> · <a href="status.html">Status</a> ·
   <a href="forslag.html">Förslag</a> · <a href="SPEC.md" download>Spec</a>
 </footer>
 
@@ -400,6 +399,8 @@
 (async function () {
   /* 🎨 Färg + emoji per maskinTYP (samma tema som maskindatabas.html) */
   const TYPTEMA = [
+    { re: /slow ?cook|crock/i,      farg: '#5d4037', emoji: '🍲' },
+    { re: /slicer|skärmaskin|köttslicer/i, farg: '#546e7a', emoji: '🔪' },
     { re: /riskokare|multikokare/i, farg: '#00897b', emoji: '🍚' },
     { re: /airfryer|varmlufts/i,    farg: '#e67e22', emoji: '🍟' },
     { re: /bakmaskin|bröd/i,        farg: '#a1662f', emoji: '🍞' },
@@ -466,5 +467,5 @@
 })();
 </script>
 <script src="assets/site.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a44a8aa6ff8dc8c4',t:'MTc5MTAxNTc3Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
