@@ -262,10 +262,12 @@ const MATORD = ['kaka','bröd','deg','pizza','glass','slush','soppa','gryta','ky
 
 const ALIAS = {'airfryer':'cosori-twinfry-10l','air fryer':'cosori-twinfry-10l','bakmaskin':'clatronic-bba3774',
   'brödmaskin':'clatronic-bba3774','riskokare':'midea-mb-fs5017','multikokare':'midea-mb-fs5017',
-  'crockpot':'midea-mb-fs5017','crock pot':'midea-mb-fs5017','crock-pot':'midea-mb-fs5017',
-  'slowcooker':'midea-mb-fs5017','slow cooker':'midea-mb-fs5017',
+  'crockpot':'crock-csc063x','crock pot':'crock-csc063x','crock-pot':'crock-csc063x',
+  'slowcooker':'crock-csc063x','slow cooker':'crock-csc063x',
+  'köttslicer':'vevor-sus420','skärmaskin':'vevor-sus420','slicer':'vevor-sus420',
+  'torkautomat':'wmf-snacktogo','dehydrator':'wmf-snacktogo',
   'glassmaskin':'greenpan-frost','slushmaskin':'greenpan-frost','greenpan':'greenpan-frost','frost':'greenpan-frost',
-  'pizzaugn':'klaif-pizzaugn','ismaskin':'silonn-ismaskin','torkautomat':'wmf-snacktogo','dehydrator':'wmf-snacktogo',
+  'pizzaugn':'klaif-pizzaugn','ismaskin':'silonn-ismaskin',
   'smörgåsgrill':'krups-fdk452','våffeljärn':'krups-fdk452','kaffekvarn':'linkchef-grinder'};
 
 const GENERIC = ['efterrätt','dessert','fika','fest','snack','mat'];
@@ -354,6 +356,16 @@ function parseText(raw) {
     const low = l.toLowerCase().replace(/[:#]+/g, '').trim();
     if (/ingredien/.test(low) && low.length < 40) { section = 'ing'; continue; }
     if (/^(gör så här|gor sa har|steg|instruktion|tillagning|gör)$/.test(low) && low.length < 40) { section = 'steg'; continue; }
+    /* 🔧 MASKIN-RUBRIK var som helst i texten ("Bakmaskin – 1,5 h",
+       "🔥 Air Fryer", "Crockpot 11 h på låg") → allt som följer är STEG
+       för den maskinen, ALDRIG ingredienser. Rubrikraden blir ett eget
+       steg så maskinmatchningen (stegMaskiner) hittar maskin+tid. */
+    if (low.length < 45 && !/[.!?]$/.test(l) &&
+        /(bakmaskin|brödmaskin|air ?fryer|airfryer|riskokare|multikokare|crock ?-?pot|slow ?cooker|pizzaugn|glassmaskin|slushmaskin|ismaskin|torkautomat|dehydrator|smörgåsgrill|våffeljärn|kaffekvarn|köttslicer|skärmaskin|blender|mixer|ugn(en)?)\b/i.test(low)) {
+      section = 'steg';
+      steps.push(l.replace(/^[-•*·🔥⚙️🥣♨️\s]+/, ''));
+      continue;
+    }
     /* 🧮 Näringssektion → HELA sektionen slängs (live-kalkylen räknar om
        mot ingrediensdatabasen). "Näringsvärde", "Näring per portion"... */
     if (/^(näringsvärde|naringsvarde|näring|naring|nutrition)/.test(low) && low.length < 45) { section = 'naring'; continue; }
@@ -384,15 +396,33 @@ function parseText(raw) {
        och rör om." är ett steg/beskrivning, inte en ingrediensrad) */
     const serUtSomMening = /[.!?]$/.test(l) || l.split(' ').length > 7 ||
       /\b(häll|blanda|rör|vispa|tillsätt|låt|servera|koka|stek|grädda|mixa|är|blir|ger|passar|serveras)\b/i.test(l);
+    /* 🧮 UTBYTES-/SUMMARAD ≠ ingrediens: "Deg – ca 700 g", "Sats: 1000 g" */
+    const arSummaRad = /^(deg(en)?|sats(en)?|totalt?|summa|ger)\b.*\d+\s*g?$/i.test(low) || /–\s*ca\b|-\s*ca\b/i.test(l);
     if (section === 'ing') {
       if (serUtSomMening) { others.push(l); continue; }   /* 📝 mening i ing-sektionen → beskrivning */
+      if (arSummaRad) { others.push(l); continue; }        /* 🧮 "Deg – ca 700 g" → aldrig tabellen */
       if (mi) ings.push([mi[2].trim(), mi[1].trim()]);
       else if (mr) ings.push([mr[1].trim(), mr[2] + ' ' + mr[3]]);
       else ings.push([l.replace(/^[-•*·]\s*/, ''), '']);
     } else if (section === 'steg') {
+      /* 🔁 DUBBLETT-SKYDD: ingrediensrader som UPPREPAS i stegen
+         ("Lägg i: vatten 245 g...") buntas till ETT steg istället
+         för skräprader – och hamnar ALDRIG i ingredienstabellen. */
+      const ingLik = (mi && [mi[2].trim(), mi[1].trim()]) || (mr && [mr[1].trim(), mr[2] + ' ' + mr[3]]);
+      if (ingLik && !serUtSomMening) {
+        const norm = s => s.toLowerCase().replace(/[^a-zåäö]/g, '');
+        const dubblett = ings.some(i => norm(i[0]).includes(norm(ingLik[0])) || norm(ingLik[0]).includes(norm(i[0])));
+        if (dubblett) {
+          /* bunta ihop: föregående steg är "Lägg i..."-aktigt → append */
+          if (steps.length && /lägg i|i ordning|tillsätt i|^lägg/i.test(steps[steps.length - 1])) {
+            steps[steps.length - 1] += (steps[steps.length - 1].endsWith(':') ? ' ' : ', ') + ingLik[0].toLowerCase();
+          }
+          continue;
+        }
+      }
       steps.push(ms ? ms[1].trim() : l.replace(/^[-•*·]\s*/, ''));
-    } else if (mi && l.length < 65 && !serUtSomMening) ings.push([mi[2].trim(), mi[1].trim()]);
-    else if (mr && !serUtSomMening) ings.push([mr[1].trim(), mr[2] + ' ' + mr[3]]);
+    } else if (mi && l.length < 65 && !serUtSomMening && !arSummaRad) ings.push([mi[2].trim(), mi[1].trim()]);
+    else if (mr && !serUtSomMening && !arSummaRad) ings.push([mr[1].trim(), mr[2] + ' ' + mr[3]]);
     else if (ms) steps.push(ms[1].trim());
     else others.push(l);
   }
@@ -525,7 +555,7 @@ function stegMaskiner(steps) {
     /* Vardagsord: "crockpotten", "riskokaren", "airfryern"...
        (suffix täcker bestämd form: -en/-n/-ten/-ern/-erna/-arna) */
     if (!m) for (const [w, id] of Object.entries(ALIAS)) {
-      const re = new RegExp('(^|[^a-zåäö])' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(s|n|en|t|ten|er|ern|erna|arna)?($|[^a-zåäö])');
+      const re = new RegExp('(^|[^a-zåäö])' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(s|n|en|et|t|ten|er|ern|erna|arna)?($|[^a-zåäö])');
       if (re.test(low)) { m = MACHINES.find(x => x.id === id) || null; viaAlias = w; if (m) break; }
     }
     if (!m) return;
@@ -548,10 +578,12 @@ function stegMaskiner(steps) {
     const segLow = ' ' + segSteg.join(' ').toLowerCase() + ' ';
     /* ⏱ Tid: "totalt 11 h" NÅGONSTANS i segmentet vinner – annars
        ankarstegets egen tid (så "5 min prep" i steg 1 inte gäller
-       om steg 2 säger totaltiden) */
+       om steg 2 säger totaltiden) – annars FÖRSTA tiden i segmentet
+       ("Lägg i crockpotten." + "Kör 11 h på låg." = 11 h) */
     let tid = '';
     for (const s of segSteg) { const t = stegTidUt(s); if (t.total) { tid = t.tid; break; } }
     if (!tid) tid = stegTidUt(steps[a.idx]).tid;
+    if (!tid) for (const s of segSteg) { const t = stegTidUt(s); if (t.tid) { tid = t.tid; break; } }
     const timmar = stegTimmar(tid);
     /* Program: EXPLICIT programnamn i segmentet = säkert. Vardagsord
        som avgör (crockpot ÄR långkok) = säkert. Annars ❓ – ANVÄNDAREN
@@ -629,8 +661,12 @@ async function analyze() {
   const srcRaw = document.getElementById('src').value;
   const metaOf = n => { const m = srcRaw.match(new RegExp('name="recept:' + n + '" content="([^"]*)"')); return m ? m[1].replace(/&amp;/g, '&') : ''; };
   document.getElementById('fNamn').value = metaOf('namn') || PARSED.namn;
-  /* Emoji: ordSTART-matchning ("kaka" får inte träffa "skaka") */
-  const emojiHit = EMOJI_MAP.find(e => new RegExp('(^|[^a-zåäö])' + e[0]).test(allText));
+  /* Emoji: 1) TITELN vinner, även sammansatta ord ("lantBRÖD" → 🍞,
+     "ananasKAKA" → 🍰) via suffixmatch per ord. 2) annars ordSTART-
+     matchning i hela texten ("kaka" får inte träffa "skaka"). */
+  const titelOrd = PARSED.namn.toLowerCase().split(/[^a-zåäö]+/).filter(Boolean);
+  const titelHitE = EMOJI_MAP.find(e => titelOrd.some(o => o === e[0] || (o.length > e[0].length && o.slice(-e[0].length) === e[0])));
+  const emojiHit = titelHitE || EMOJI_MAP.find(e => new RegExp('(^|[^a-zåäö])' + e[0]).test(allText));
   document.getElementById('fEmoji').value = metaOf('emoji') || (emojiHit ? emojiHit[1] : '🍽️');
   document.getElementById('fFil').value = slug(PARSED.namn) + '.html';
   document.getElementById('fBeskr').value = metaOf('beskrivning') ||
@@ -769,7 +805,7 @@ function buildHtml() {
   }).join(' ');
 
   const ingRows = PARSED.ings.map(i => '    <tr><td>' + esc(i[0]) + '</td><td>' + esc(i[1]) + '</td></tr>').join('\n');
-  const machineBoxes = machines.map(h => {
+  const boxFor = h => {
     const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
     /* Momentet visas i rutan ("Blenda basen: Ninja Detect · BlendSense") */
     const momPrefix = h.moment ? esc(h.moment) + ': ' : '';
@@ -778,8 +814,31 @@ function buildHtml() {
     return '  <div class="machine-step">\n    <h3>⚙️ ' + momPrefix + esc(name) + ' · <span class="prog">' + esc(h.p.namn || '') +
       (tid ? ' · ' + esc(tid) : '') + '</span></h3>\n' +
       (h.p.beskrivning ? '    <div class="why">' + esc(h.p.beskrivning) + '</div>\n' : '') + '  </div>';
-  }).join('\n');
-  const stepItems = PARSED.steps.map(s => '    <li>' + esc(s) + '</li>').join('\n');
+  };
+  /* 👣 TYDLIGARE LAYOUT (användarens regel): steg-kopplade maskiner får
+     sin ruta VID SITT STEG – <ol> delas (start=N+1 så numreringen
+     fortsätter, samma mönster som 📍-placeringen i redigera.js).
+     Maskiner utan steg-koppling hamnar överst som förut. */
+  const stegvisa = machines.filter(h => typeof h.i === 'number');
+  const ovrigaBox = machines.filter(h => typeof h.i !== 'number').map(boxFor).join('\n');
+  let stepItems = '';
+  if (stegvisa.length && PARSED.steps.length) {
+    let html = '', open = false;
+    PARSED.steps.forEach((s, idx) => {
+      const här = stegvisa.filter(h => h.i === idx);
+      if (här.length) {
+        if (open) { html += '\n  </ol>\n'; open = false; }
+        html += här.map(boxFor).join('\n') + '\n';
+      }
+      if (!open) { html += '  <ol' + (idx > 0 ? ' start="' + (idx + 1) + '"' : '') + '>\n'; open = true; }
+      html += '    <li>' + esc(s) + '</li>\n';
+    });
+    if (open) html += '  </ol>';
+    stepItems = html;
+  } else {
+    stepItems = '  <ol>\n' + PARSED.steps.map(s => '    <li>' + esc(s) + '</li>').join('\n') + '\n  </ol>';
+  }
+  const machineBoxes = ovrigaBox;
 
   return '<!DOCTYPE html>\n' +
 '<!-- PLATS: /recept/' + fil + '  (recept-mappen - läses in automatiskt) -->\n' +
@@ -803,7 +862,7 @@ function buildHtml() {
 ingRows + '\n  </table>\n</div>\n\n' +
 '<div class="card">\n  <h2>🥣 Gör så här</h2>\n' +
 (machineBoxes ? machineBoxes + '\n' : '') +
-'  <ol>\n' + stepItems + '\n  </ol>\n</div>\n\n' +
+stepItems + '\n</div>\n\n' +
 '<footer>Recept kopplat till Maskindatabas · skapat via nytt-recept.html</footer>\n\n' +
 '<script src="../assets/site.js"><\/script>\n</body>\n</html>\n';
 }
@@ -906,5 +965,5 @@ async function saveDirect() {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3e26b8d5d22e0de',t:'MTc4OTkyMzk4MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a44a7e23290a081d',t:'MTc5MTAxNTI2MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
