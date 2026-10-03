@@ -381,6 +381,69 @@ def steg7_receptindex():
         rader.append('| json/recept-index.json | 📁 omgenererad (%d recept) |' % len(poster))
 
 
+KAT_ORD = [
+    ('hund', 'husdjur'), ('husdjur', 'husdjur'),
+    ('sylt', 'sylt'), ('marmelad', 'sylt'),
+    ('smulpaj', 'bakning'), ('paj', 'bakning'),
+    ('glass', 'glass'), ('sorbet', 'glass'),
+    ('shake', 'saft'), ('smoothie', 'saft'), ('slush', 'saft'), ('drink', 'saft'),
+    ('saft', 'saft'), ('juice', 'saft'), ('dryck', 'saft'),
+    ('snacks', 'snacks'), ('chips', 'snacks'), ('jerky', 'snacks'),
+    ('pizzadeg', 'deg'), ('smuldeg', 'deg'),
+    ('bröd', 'brod'), ('brod', 'brod'), ('limpa', 'brod'), ('pita', 'brod'), ('toast', 'brod'),
+    ('deg', 'deg'),
+    ('kaka', 'bakning'), ('muffin', 'bakning'), ('bulle', 'bakning'), ('bakning', 'bakning'),
+    ('efterrätt', 'efterratt'), ('dessert', 'efterratt'),
+    ('gryta', 'varmratt'), ('soppa', 'varmratt'), ('sås', 'varmratt'), ('sas', 'varmratt'),
+    ('kyckling', 'varmratt'), ('kött', 'varmratt'), ('fisk', 'varmratt'), ('ris', 'varmratt'),
+]
+
+
+def steg8_mappvakt():
+    """📁 MAPPVAKTEN (användarens regel: INGA lösa html-filer i recept/-
+    roten): lösa recept flyttas till sin kategorimapp – kategori ur
+    recept:kategori-metan, annars gissning på filnamn+titel+taggar,
+    annars ovrigt/. Relativa sökvägar skrivs om (../ → ../../).
+    Gamla flytt-stubbar RADERAS (användaren valde ren mapp före
+    redirects). MALL-filer rörs aldrig."""
+    import re as _re
+    for f in sorted(glob.glob('recept/*.html')):
+        namn = os.path.basename(f)
+        if namn.upper().startswith('MALL') or namn.lower().startswith(('google', 'bingsiteauth', 'yandex_')):
+            continue
+        try:
+            with open(f, encoding='utf-8') as fp:
+                html = fp.read()
+        except OSError:
+            continue
+        if 'STUB - receptet har flyttat' in html[:500]:
+            os.remove(f)
+            rader.append('| recept/%s | 🗑️ stub raderad (ren rotmapp) |' % namn)
+            continue
+        m = _re.search(r'name="recept:kategori" content="([a-z]+)"', html)
+        kat = m.group(1) if m else ''
+        if not kat:
+            m2 = _re.search(r'name="recept:(?:namn|taggar)" content="([^"]*)"', html)
+            text = (namn + ' ' + (m2.group(1) if m2 else '')).lower()
+            text = _re.sub(r'saftig\w*', '', text)   # "saftig" får ALDRIG trigga saft/
+            orden = _re.split(r'[^a-zåäö]+', text)
+            for ord_, k in KAT_ORD:
+                traff = any(o == ord_ or (len(o) > len(ord_) and o.endswith(ord_))
+                            for o in orden if o)
+                if traff:
+                    kat = k
+                    break
+        kat = kat or 'ovrigt'
+        ny = _re.sub(r'((?:href|src|content)=["\'])\.\./', r'\1../../', html)
+        ny = ny.replace("url('../", "url('../../").replace('url("../', 'url("../../')
+        ny = ny.replace('PLATS: /recept/' + namn, 'PLATS: /recept/%s/%s' % (kat, namn))
+        os.makedirs('recept/' + kat, exist_ok=True)
+        with open('recept/%s/%s' % (kat, namn), 'w', encoding='utf-8') as fp:
+            fp.write(ny)
+        os.remove(f)
+        rader.append('| recept/%s | 📁 flyttad till %s/ (mappvakten) |' % (namn, kat))
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -388,6 +451,7 @@ def main():
     steg3_bildvagar(maskiner)
     steg4_verifieringsfiler()
     steg5_matrattssidor()
+    steg8_mappvakt()
     steg6_sitemap()
     steg7_receptindex()
 

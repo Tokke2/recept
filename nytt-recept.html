@@ -193,6 +193,8 @@ Gör så här
   </div>
   <div class="row">
     <div><label>Beskrivning (visas på receptkortet)</label><input type="text" id="fBeskr" oninput="rebuild()"></div>
+    <div style="max-width:220px;"><label>📁 Kategori (mapp)</label>
+      <select id="fKat" onchange="rebuild()" style="width:100%;padding:11px 13px;border:2px solid #e8e2d8;border-radius:12px;font-size:.95rem;font-family:inherit;background:#fff;"></select></div>
   </div>
 
   <h2 style="margin-top:20px;">🔧 Föreslagna maskiner <span style="font-weight:400;font-size:.85rem;color:var(--muted);">(bocka i de som ska ingå)</span></h2>
@@ -271,6 +273,35 @@ const ALIAS = {'airfryer':'cosori-twinfry-10l','air fryer':'cosori-twinfry-10l',
   'smörgåsgrill':'krups-fdk452','våffeljärn':'krups-fdk452','kaffekvarn':'linkchef-grinder'};
 
 const GENERIC = ['efterrätt','dessert','fika','fest','snack','mat'];
+
+/* 📁 KATEGORIER = mappar i recept/ (samma id:n som recept.html).
+   Gissas av titel+taggar (prioriterad ordlista) – användaren kan ändra. */
+const KATTER = [
+  ['husdjur','🐶 Husdjur'],['sylt','🫙 Sylt & marmelad'],['saft','🧃 Saft & dryck'],
+  ['glass','🍦 Glass & fryst'],['snacks','🥨 Snacks'],['brod','🍞 Bröd'],['deg','🥖 Deg'],
+  ['bakning','🍰 Bakning & fika'],['efterratt','🍮 Efterrätt'],['varmratt','🍲 Varmrätter'],['ovrigt','🍽️ Övrigt']];
+const KAT_ORD = [
+  ['hund','husdjur'],['husdjur','husdjur'],['katt','husdjur'],
+  ['sylt','sylt'],['marmelad','sylt'],['chutney','sylt'],
+  ['smulpaj','bakning'],['paj','bakning'],
+  ['glass','glass'],['sorbet','glass'],['frozen','glass'],
+  ['shake','saft'],['smoothie','saft'],['slush','saft'],['drink','saft'],['saft','saft'],['juice','saft'],['dryck','saft'],
+  ['snacks','snacks'],['chips','snacks'],['popcorn','snacks'],['jerky','snacks'],
+  ['pizzadeg','deg'],['smuldeg','deg'],['jäsning','deg'],
+  ['bröd','brod'],['limpa','brod'],['pita','brod'],['tortilla','brod'],['baguette','brod'],['toast','brod'],
+  ['deg','deg'],
+  ['kaka','bakning'],['tårta','bakning'],['muffin','bakning'],['bulle','bakning'],['kex','bakning'],['bakning','bakning'],['fika','bakning'],['våffl','bakning'],['pannkak','bakning'],
+  ['efterrätt','efterratt'],['dessert','efterratt'],['pudding','efterratt'],
+  ['gryta','varmratt'],['soppa','varmratt'],['sås','varmratt'],['curry','varmratt'],['kött','varmratt'],['kyckling','varmratt'],['fisk','varmratt'],['pasta','varmratt'],['ris','varmratt'],['pizza','varmratt']];
+function gissaKat(text) {
+  text = String(text).toLowerCase();
+  for (const [ord, kat] of KAT_ORD) {
+    if (new RegExp('(^|[^a-zåäö])' + ord).test(text) ||
+        text.split(/[^a-zåäö]+/).some(o => o.length > ord.length && o.slice(-ord.length) === ord)) return kat;
+  }
+  return 'ovrigt';
+}
+function valdKat() { return (document.getElementById('fKat') || {}).value || 'ovrigt'; }
 
 const ING_RE = /^\s*[-•*·]?\s*((?:\d+[\d.,\/½¼¾]*|en|ett|några)\s*(?:g|kg|dl|cl|ml|l|msk|tsk|krm|st|påse|burk|kruka|skivor?|klyftor?)?)\s+([a-zåäöA-ZÅÄÖ].{1,60})$/;
 const ING_REV_RE = /^\s*[-•*·]?\s*([a-zåäöA-ZÅÄÖ].{1,45}?)[\s:]+(\d+[\d.,\/]*)\s*(g|kg|dl|cl|ml|l|msk|tsk|krm|st)\.?\s*$/i;
@@ -669,6 +700,10 @@ async function analyze() {
   const emojiHit = titelHitE || EMOJI_MAP.find(e => new RegExp('(^|[^a-zåäö])' + e[0]).test(allText));
   document.getElementById('fEmoji').value = metaOf('emoji') || (emojiHit ? emojiHit[1] : '🍽️');
   document.getElementById('fFil').value = slug(PARSED.namn) + '.html';
+  /* 📁 kategori-gissning (titel+taggar) – dropdownen byggs med gissningen vald */
+  const gKat = metaOf('kategori') || gissaKat(PARSED.namn + ' ' + allText);
+  document.getElementById('fKat').innerHTML = KATTER.map(k =>
+    '<option value="' + k[0] + '"' + (k[0] === gKat ? ' selected' : '') + '>' + k[1] + '</option>').join('');
   document.getElementById('fBeskr').value = metaOf('beskrivning') ||
     PARSED.others.find(o => o.length > 20 && o.length < 160) ||
     (PARSED.ings.length + ' ingredienser · ' + PARSED.steps.length + ' steg');
@@ -841,7 +876,7 @@ function buildHtml() {
   const machineBoxes = ovrigaBox;
 
   return '<!DOCTYPE html>\n' +
-'<!-- PLATS: /recept/' + fil + '  (recept-mappen - läses in automatiskt) -->\n' +
+'<!-- PLATS: /recept/' + valdKat() + '/' + fil + '  (kategorimapp - läses in automatiskt) -->\n' +
 '<!-- mk-std-v4 : skapad via nytt-recept.html i standardutformningen -->\n' +
 '<html lang="sv">\n<head>\n<meta charset="UTF-8">\n' +
 '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
@@ -851,20 +886,21 @@ function buildHtml() {
 '<meta name="recept:emoji" content="' + emoji + '">\n' +
 '<meta name="recept:beskrivning" content="' + esc(beskr) + '">\n' +
 '<meta name="recept:taggar" content="' + esc(taggar.join(', ')) + '">\n' +
+'<meta name="recept:kategori" content="' + valdKat() + '">\n' +
 '<meta name="recept:maskiner" content="' + esc(metaMask) + '">\n' +
 '<!-- =========================== -->\n\n' +
-'<link rel="stylesheet" href="../assets/print.css">\n<style>\n' + STD_STYLE + '\n</style>\n</head>\n<body>\n\n' +
+'<link rel="stylesheet" href="../../assets/print.css">\n<style>\n' + STD_STYLE + '\n</style>\n</head>\n<body>\n\n' +
 '<header>\n  <h1>' + emoji + ' ' + esc(namn) + '</h1>\n  <p>' + esc(beskr) + '</p>\n' +
 (chips ? '  <p style="margin-top:6px;">' + chips + '</p>\n' : '') +
 '</header>\n\n' +
-'<img class="hero-img" src="../images/recept/' + base + '.jpg" alt="' + esc(namn) + '" onerror="this.style.display=\'none\'">\n\n' +
+'<img class="hero-img" src="../../images/recept/' + base + '.jpg" alt="' + esc(namn) + '" onerror="this.style.display=\'none\'">\n\n' +
 '<div class="card">\n  <h2>🧾 Ingredienser</h2>\n  <table>\n    <tr><th>Ingrediens</th><th>Mängd</th></tr>\n' +
 ingRows + '\n  </table>\n</div>\n\n' +
 '<div class="card">\n  <h2>🥣 Gör så här</h2>\n' +
 (machineBoxes ? machineBoxes + '\n' : '') +
 stepItems + '\n</div>\n\n' +
 '<footer>Recept kopplat till Maskindatabas · skapat via nytt-recept.html</footer>\n\n' +
-'<script src="../assets/site.js"><\/script>\n</body>\n</html>\n';
+'<script src="../../assets/site.js"><\/script>\n</body>\n</html>\n';
 }
 
 const STD_STYLE = `  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
@@ -893,9 +929,9 @@ function rebuild() {
   if (!PARSED) return;
   const html = buildHtml();
   /* Förhandsgranskning: site.js-raden tas bort (relativa sökvägar funkar ej i iframe) */
-  document.getElementById('prev').srcdoc = html.replace(/<script src="\.\.\/assets\/site\.js"><\/script>/, '')
-                                               .replace('../assets/print.css', 'assets/print.css')
-                                               .replace(/\.\.\/images\//g, 'images/');
+  document.getElementById('prev').srcdoc = html.replace(/<script src="\.\.\/\.\.\/assets\/site\.js"><\/script>/, '')
+                                               .replace('../../assets/print.css', 'assets/print.css')
+                                               .replace(/\.\.\/\.\.\/images\//g, 'images/');
 }
 
 function download() {
@@ -923,7 +959,7 @@ async function cachaDirekt(fil, html) {
     const namn = keys.find(k => /-pages$/.test(k));
     if (!namn) return false;
     const c = await caches.open(namn);
-    const url = new URL('recept/' + encodeURIComponent(fil), location.href).href;
+    const url = new URL('recept/' + valdKat() + '/' + encodeURIComponent(fil), location.href).href;
     await c.put(new Request(url), new Response(html, {
       status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' }
     }));
@@ -943,7 +979,7 @@ async function saveDirect() {
   const out = document.getElementById('saveResult');
   btn.disabled = true; btn.textContent = '⏳ Sparar...';
   const html = buildHtml();
-  const res = await __MK_SPARA.save('recept/' + fil, html,
+  const res = await __MK_SPARA.save('recept/' + valdKat() + '/' + fil, html,
     'Nytt recept via sajten: ' + (document.getElementById('fNamn').value || fil));
   btn.disabled = false; btn.textContent = '💾 Spara direkt på sajten';
   if (res.ok) {
@@ -952,11 +988,11 @@ async function saveDirect() {
       (direkt
         ? '⚡ Receptet kan öppnas <b>DIREKT</b> (lokalt cachad kopia – nätet tar över inom ~1 min när Pages byggt om).'
         : 'Receptet dyker upp i <a href="recept.html">receptsamlingen</a> inom ~1 minut (GitHub Pages bygger om).') +
-      '<br>📄 <a href="recept/' + encodeURIComponent(fil) + '" target="_blank" rel="noopener"><b>Öppna receptet nu</b></a>' +
+      '<br>📄 <a href="recept/' + valdKat() + '/' + encodeURIComponent(fil) + '" target="_blank" rel="noopener"><b>Öppna receptet nu</b></a>' +
       (res.url ? ' · <a href="' + res.url + '" target="_blank" rel="noopener">Visa på GitHub</a>' : '') + '</div>';
     if (direkt) {
       /* öppna receptet automatiskt i ny flik */
-      try { window.open('recept/' + encodeURIComponent(fil), '_blank'); } catch (e) {}
+      try { window.open('recept/' + valdKat() + '/' + encodeURIComponent(fil), '_blank'); } catch (e) {}
     }
   } else {
     out.innerHTML = '<div class="hint" style="border-left-color:#c0392b;background:#fdecea;">⚠️ <b>Kunde inte spara:</b> ' +

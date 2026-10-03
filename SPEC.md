@@ -1966,6 +1966,22 @@ data i json/, ALDRIG per receptfil.
     (konvertera/sjalvlakning steg6/sprak) görs rekursiva;
     (2) själva flytten + stubbar + index; (3) live-verifiering +
     nytt-recept sparar nya recept direkt i rätt kategorimapp.
+    ✔️ STEG 3 KLART (2026-10-03): 📁 REN ROTMAPP (användarens regel
+    "inga lösa html-filer i recept/"): stubbarna RADERADE (användaren
+    valde ren mapp före redirect-skydd – gamla flata URL:er ger 404).
+    🗂️ KATEGORIBYTE = FLYTT i redigeraren: väljs annan kategori i
+    editbarens 🗂️-dropdown sparas filen på recept/<ny-kat>/<fil>,
+    gamla tas bort (efter lyckad sparning), relativa sökvägar
+    justeras vid djupbyte, PLATS-raden säkras (buildCleanHtml tappar
+    kommentarer före <html> – saveToSite återinjicerar), besökaren
+    skickas till nya adressen. Auto = ligg kvar. 📁 nytt-recept.html:
+    kategori-dropdown (gissas ur titel+taggar via KAT_ORD, suffixsäker,
+    "saftig" triggar aldrig saft) → sparar till recept/<kat>/<fil>,
+    bygger med ../../-sökvägar + recept:kategori-meta. 🤖 MAPPVAKTEN
+    (sjalvlakning steg8, körs FÖRE steg6/7): lösa rotrecept flyttas
+    automatiskt till sin mapp (meta vinner → ordlista-gissning →
+    ovrigt/) med sökvägsomskrivning; kvarglömda stubbar raderas;
+    MALL/sökmotorfiler rörs aldrig.
 
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 

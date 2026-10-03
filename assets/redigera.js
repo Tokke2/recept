@@ -1560,8 +1560,41 @@
     var btn = document.getElementById('eb-save');
     btn.disabled = true; btn.textContent = '⏳ Sparar...';
     var fname = decodeURIComponent(location.pathname.split('/').pop());
-    var res = await window.__MK_SPARA.save('recept/' + receptSokvag(), buildCleanHtml(),
-      'Recept redigerat via sajten: ' + fname);
+
+    /* 📁 KATEGORIBYTE = FLYTT (användarens regel): vald kategori i 🗂️-
+       väljaren avgör MAPPEN. Skiljer den sig från nuvarande → spara på
+       nya sökvägen + ta bort gamla filen + hoppa till nya adressen.
+       Auto ('') = ligg kvar där filen är. Betyg/kockläge överlever
+       (nycklarna är per FILNAMN). */
+    var nuv = receptSokvag();                              /* "deg/x.html" eller "x.html" */
+    var nuvKat = nuv.indexOf('/') !== -1 ? nuv.split('/')[0] : '';
+    var valKat = (document.getElementById('eb-kat') || {}).value || '';
+    var malKat = valKat || nuvKat;                          /* Auto → behåll mappen */
+    var mal = malKat ? malKat + '/' + fname : fname;
+    var html = buildCleanHtml();
+    if (malKat !== nuvKat) {
+      /* djupbyte rot↔mapp → relativa sökvägar justeras i SPARADE filen */
+      if (!nuvKat && malKat) {
+        html = html.replace(/((?:href|src|content)=["'])\.\.\//g, '$1../../')
+                   .replace(/url\((['"]?)\.\.\//g, 'url($1../../');
+      } else if (nuvKat && !malKat) {
+        html = html.replace(/((?:href|src|content)=["'])\.\.\/\.\.\//g, '$1../')
+                   .replace(/url\((['"]?)\.\.\/\.\.\//g, 'url($1../');
+      }
+      html = html.replace('PLATS: /recept/' + nuv, 'PLATS: /recept/' + mal);
+    }
+    /* 🏷️ PLATS-märkning säkras (buildCleanHtml tappar kommentarer före
+       <html> – platsmärkningsregeln rad 1–5 gäller ALLA sparade filer) */
+    if (html.indexOf('PLATS: /recept/') === -1) {
+      html = html.replace('<!DOCTYPE html>',
+        '<!DOCTYPE html>\n<!-- PLATS: /recept/' + mal + '  (kategorimapp - läses in automatiskt) -->');
+    }
+    var res = await window.__MK_SPARA.save('recept/' + mal, html,
+      (malKat !== nuvKat ? '📁 Recept flyttat till ' + (malKat || 'roten') + ': ' : 'Recept redigerat via sajten: ') + fname);
+    /* flytt → städa bort gamla filen (efter lyckad sparning!) */
+    if (res.ok && malKat !== nuvKat) {
+      try { await window.__MK_SPARA.remove('recept/' + nuv, '📁 Flyttstädning: gamla platsen för ' + fname); } catch (e) {}
+    }
     btn.disabled = false; btn.textContent = '💾 Spara på sajten';
     if (res.ok) {
       dirty = false;
@@ -1578,6 +1611,14 @@
         }
       } else if (window.__MK_TOAST) window.__MK_TOAST('🎉 Sparat på GitHub! Live om ~1 minut (grön bock i Actions)');
       stopEdit();
+      /* 📁 flyttad? → gå till nya adressen (Pages bygger ~1 min; SW kan
+         servera cachad gammal under tiden – banner informerar) */
+      if (malKat !== nuvKat) {
+        var rot = (window.__MK_ROT || '../');
+        setTimeout(function () {
+          location.href = rot + 'recept/' + mal.split('/').map(encodeURIComponent).join('/');
+        }, 1200);
+      }
     } else {
       if (window.__MK_TOAST) window.__MK_TOAST('⚠️ Kunde inte spara: ' + res.error + ' – prova ⬇️ som reserv');
     }
