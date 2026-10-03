@@ -2633,13 +2633,17 @@
   "WMF 0415250011 · Grönsaker (50–55°C)": "WMF 0415250011 · Gemüse (50–55°C)",
   "⚙️ Steg 1: VEVOR SUS420 ·": "⚙️ Schritt 1: VEVOR SUS420 ·",
   "🥒 Squash-chips i torkautomat": "🥒 Kürbischips im Trockner trocknen",
-  "🥒 Squash-chips i torkautomat – Recept": "🥒 Kürbischips im Dörrautomaten – Rezept"
+  "🥒 Squash-chips i torkautomat – Recept": "🥒 Kürbischips im Dörrautomaten – Rezept",
+  "📁 Flyttstädning: gamla platsen för": "📁 Umzugsreinigung: alter Ort von",
+  "📁 Kategori (mapp)": "📁 Kategorie (Ordner)",
+  "🥨 Squash-chips i torkautomat": "🥨 Kürbischips im Trockner trocknen",
+  "🥨 Squash-chips i torkautomat – Recept": "🥨 Kürbischips im Trockner – Rezept"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2632,
+ "_auto_genererade": 2636,
  "_senast_robot": "2026-10-03"
 }

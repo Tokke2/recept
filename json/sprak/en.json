@@ -2534,7 +2534,11 @@
   "WMF 0415250011 · Grönsaker (50–55°C)": "WMF 0415250011 · Vegetables (50–55°C)",
   "⚙️ Steg 1: VEVOR SUS420 ·": "⚙️ Step 1: VEVOR SUS420 ·",
   "🥒 Squash-chips i torkautomat": "🥒 Squash chips in drying machine",
-  "🥒 Squash-chips i torkautomat – Recept": "🥒 Squash chips in drying machine - Recipe"
+  "🥒 Squash-chips i torkautomat – Recept": "🥒 Squash chips in drying machine - Recipe",
+  "📁 Flyttstädning: gamla platsen för": "📁 Moving cleaning: old place of",
+  "📁 Kategori (mapp)": "📁 Category (folder)",
+  "🥨 Squash-chips i torkautomat": "🥨 Squash chips in drying machine",
+  "🥨 Squash-chips i torkautomat – Recept": "🥨 Squash chips in dryer - Recipe"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2544,6 +2548,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2533,
+ "_auto_genererade": 2537,
  "_senast_robot": "2026-10-03"
 }
