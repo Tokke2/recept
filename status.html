@@ -147,7 +147,7 @@ async function run() {
       continue;
     }
     try {
-      const html = await (await fetch('recept/' + encodeURIComponent(f))).text();
+      const html = await (await fetch('recept/' + f.split('/').map(encodeURIComponent).join('/'))).text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const get = n => { const el = doc.querySelector(`meta[name="recept:${n}"]`); return el ? el.content : ''; };
       const probs = [], warns = [];
@@ -155,7 +155,7 @@ async function run() {
       if (html.indexOf('assets/site.js') === -1) probs.push('site.js-raden saknas (lagas av sw/Action, men fixa filen)');
       if (!/<ol[\s>]/i.test(html)) warns.push('inga <ol>-steg (kockläget blir tomt)');
       if (!energiDb[f]) warns.push('ingen energidata i json/energi.json');
-      const imgName = 'images/recept/' + f.replace(/\.html?$/i, '') + '.jpg';
+      const imgName = 'images/recept/' + f.split('/').pop().replace(/\.html?$/i, '') + '.jpg';
       if (!(await exists(imgName))) warns.push('ingen bild (' + imgName + ') – emoji-fallback visas');
       add(s3, probs.length ? 'err' : warns.length ? 'warn' : 'ok',
         (get('emoji') || '🍽️') + ' ' + (get('namn') || f),
@@ -203,5 +203,5 @@ async function run() {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f93fb68c78f9e2',t:'MTc4NzQ3OTAwMg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>

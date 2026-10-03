@@ -74,6 +74,11 @@
   async function lasRecept() {
     var filer = [];
     try {
+      var d = await (await fetch((window.__MK_ROT || '') + 'json/recept-index.json', { cache: 'no-store' })).json();
+      if (d && d.recept && d.recept.length) filer = d.recept.map(function (r) { return r.fil; })
+        .filter(function (f) { return /\.html?$/i.test(f); });
+    } catch (e) {}
+    if (!filer.length) try {
       var res = await fetch('https://api.github.com/repos/Tokke2/recept/contents/recept?ref=main');
       if (res.ok) filer = (await res.json())
         .filter(function (i) { return i.type === 'file' && /\.html?$/i.test(i.name); })
@@ -82,7 +87,7 @@
     var ut = [];
     await Promise.all(filer.map(async function (f) {
       try {
-        var html = await (await fetch(root + 'recept/' + encodeURIComponent(f))).text();
+        var html = await (await fetch(root + 'recept/' + f.split('/').map(encodeURIComponent).join('/'))).text();
         var doc = new DOMParser().parseFromString(html, 'text/html');
         var g = function (n) { var m = doc.querySelector('meta[name="recept:' + n + '"]'); return m ? m.content : ''; };
         if (!g('namn')) return;

@@ -222,7 +222,7 @@
 <div class="card" style="--tc:#27ae60;">
   <h2><span class="knr" style="background:#27ae60;">3</span>✅ Så blir maskinen komplett</h2>
   <ol>
-    <li>Ladda upp <b>json-filen</b> till <b>json/maskiner/</b> → maskinen syns automatiskt i databasen, receptflikarna och generatorn</li>
+    <li>Ladda upp <b>json-filen</b> till <b>json/maskiner/</b> → maskinen syns automatiskt i databasen, receptflikarna och maskinförslagen</li>
     <li>Ladda upp en <b>produktbild</b> som <b>images/MASKIN-ID.jpg</b> (max 480 px)</li>
     <li><b>Programlistan:</b> be en AI-chatt (med SPEC.md) söka upp bruksanvisningen och fylla i programmen med verifierade tider – eller redigera filen direkt på GitHub (✏️)</li>
     <li>Kör <a href="status.html">🩺 hälsokontrollen</a> – den varnar om något saknas (effekt, bild, program)</li>
@@ -463,7 +463,7 @@ function download() {
    💾 SPARA DIREKT PÅ SAJTEN (assets/spara.js → GitHub API)
    Sparar maskinfilen i json/maskiner/ OCH uppdaterar
    json/maskiner-index.json automatiskt → maskinen syns direkt
-   i maskindatabasen, receptflikarna, generatorn och alla recept
+   i maskindatabasen, receptflikarna och alla recept
    (maskinmatch). Lösenordsskyddat, samma lösenord som las.json.
    ============================================================ */
 async function saveDirect() {

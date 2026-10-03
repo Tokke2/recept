@@ -187,7 +187,7 @@
     var sections = [];
     for (var i = 0; i < files.length; i++) {
       try {
-        var html = await (await fetch('recept/' + encodeURIComponent(files[i]))).text();
+        var html = await (await fetch('recept/' + files[i].split('/').map(encodeURIComponent).join('/'))).text();
         var doc = new DOMParser().parseFromString(html, 'text/html');
         if (!baseStyle) {
           var st = doc.querySelector('style');

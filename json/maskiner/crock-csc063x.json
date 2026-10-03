@@ -1,20 +1,54 @@
 {
  "_plats": "/json/maskiner/crock-csc063x.json  (en maskinfil per maskin – läses in automatiskt)",
  "id": "crock-csc063x",
- "namn": "Crock CSC063X – Slow cooker",
- "typ": "Slow cooker",
- "varumarke": "Crock",
+ "namn": "Crock-Pot CSC063X – Slow cooker 7,5 L",
+ "typ": "Slow cooker / Crockpot",
+ "varumarke": "Crock-Pot",
  "modellnamn": "CSC063X",
- "effekt_w": 1000,
- "effekt_kalla": "UPPSKATTAD av roboten – kontrollera!",
+ "kapacitet": "7,5 L (10+ portioner)",
+ "effekt_w": 320,
+ "effekt_kalla": "produktspecifikation Amazon/Currys (320 W)",
  "egenskaper": [
-  "🥛 7.5 L"
+  "🥛 7,5 L",
+  "⏲️ Digital timer 30 min–20 h",
+  "♨️ Auto-varmhållning när tiden gått ut",
+  "🍲 Ugnssäker stengodsgryta",
+  "🧼 Gryta & lock tål diskmaskin"
+ ],
+ "viktigt": [
+  "Fyll grytan minst till hälften för jämnast resultat – 7,5 L är byggd för STORA satser (2 kg kyckling går fint)."
  ],
  "lankar": {
   "kop": "https://www.amazon.se/dp/B082BG5229/",
   "bruksanvisning": "https://www.manualslib.com/manual/2370860/Crock-Pot-Csc063x.html",
   "tillverkare": "https://crockpot.co.uk/products/CSC063X/"
  },
+ "program": [
+  {
+   "namn": "Långkok LÅG (Low)",
+   "typ": "Temperaturläge",
+   "standardtid": "8 h (timer 30 min–20 h)",
+   "beskrivning": "Låg temperatur under lång tid – klassiskt crockpot-läge. Perfekt för pulled chicken/pork som ska dras isär.",
+   "bast_for": "pulled kyckling, pulled pork, högrev, grytor över 6 h",
+   "nyckelord": ["låg", "low", "långkok", "slow cook", "pulled", "över natten"]
+  },
+  {
+   "namn": "Långkok HÖG (High)",
+   "typ": "Temperaturläge",
+   "standardtid": "4 h (timer 30 min–20 h)",
+   "beskrivning": "Högre temperatur – halverar ungefär tiden mot LÅG. Bra när middagen ska bli klar samma eftermiddag.",
+   "bast_for": "grytor, soppor, kalops på 3–5 h",
+   "nyckelord": ["hög", "high", "snabbare långkok"]
+  },
+  {
+   "namn": "Varmhållning (Keep warm)",
+   "typ": "Automatik",
+   "standardtid": "Auto efter timern",
+   "beskrivning": "Slår på automatiskt när tillagningstiden är slut – maten är varm när du är redo.",
+   "bast_for": "servering, buffé",
+   "nyckelord": ["varmhållning", "hålla varm", "keep warm"]
+  }
+ ],
  "bild": "images/crock-csc063x.jpg",
  "asin": "B082BG5229"
 }

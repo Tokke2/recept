@@ -1,19 +1,35 @@
 {
  "_plats": "/json/maskiner/yashe-food-dehydrator.json  (en maskinfil per maskin – läses in automatiskt)",
  "id": "yashe-food-dehydrator",
- "namn": "Yashe Food Dehydrator, – Torkautomat",
+ "namn": "YASHE Food Dehydrator – Torkautomat 400 W",
  "typ": "Torkautomat / Dehydrator",
- "varumarke": "Yashe",
- "modellnamn": "Food Dehydrator,",
- "effekt_w": 1000,
- "effekt_kalla": "UPPSKATTAD av roboten – kontrollera!",
+ "varumarke": "YASHE",
+ "modellnamn": "",
+ "kapacitet": "5 brickor (rostfritt stål)",
+ "effekt_w": 400,
+ "effekt_kalla": "produkttiteln på Amazon (400 W)",
  "egenskaper": [
-  "🤖 Importerad automatiskt – kontrollera uppgifterna"
+  "🗄️ 5 brickor i rostfritt stål",
+  "⏲️ Justerbar timer & temperatur",
+  "🌀 360° luftflöde – jämn torkning",
+  "🧪 BPA-fri"
+ ],
+ "viktigt": [
+  "Temperaturer/tider för olika livsmedel: verifiera mot bruksanvisningen – programlistan fylls på när manualen är genomläst."
  ],
  "lankar": {
-  "kop": "https://www.amazon.se/dp/B0F9YRV6VN/",
-  "bruksanvisning": "https://ae01.alicdn.com/kf/Sa93117d44284459091cfd12aa5f29153h.pdf"
+  "kop": "https://www.amazon.se/dp/B0F9YRV6VN/"
  },
+ "program": [
+  {
+   "namn": "Manuell torkning (justerbar temp & timer)",
+   "typ": "Manuellt läge",
+   "standardtid": "Ställs per livsmedel",
+   "beskrivning": "Temperatur och tid ställs fritt. Följ bruksanvisningens tabell per livsmedel – jämför gärna med WMF-torkens program (örter/grönsaker/frukt/jerky).",
+   "bast_for": "jerky, frukt, örter, hundgodis",
+   "nyckelord": ["torka", "torkning", "jerky", "torkad frukt", "örter", "hundgodis", "dehydrator"]
+  }
+ ],
  "bild": "images/yashe-food-dehydrator.jpg",
  "asin": "B0F9YRV6VN"
 }

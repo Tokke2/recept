@@ -36,7 +36,7 @@
       "name": "Skapa nytt recept",
       "short_name": "Generator",
       "description": "Bygg recept av ingredienser",
-      "url": "./generator.html?source=shortcut",
+      "url": "./nytt-recept.html?source=shortcut",
       "icons": [{ "src": "images/icon-192.png", "sizes": "192x192" }]
     }
   ]

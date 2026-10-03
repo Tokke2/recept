@@ -30,7 +30,8 @@
   /* ---------- Basväg utifrån var site.js laddades ---------- */
   var self = document.currentScript || document.querySelector('script[src*="site.js"]');
   var base = self ? self.getAttribute('src').replace(/site\.js.*$/, '') : 'assets/';
-  var root = base.replace('assets/', ''); // './' eller '../'
+  var root = base.replace('assets/', ''); // '', '../' eller '../../' (kategorimappar)
+  window.__MK_ROT = root;   /* 📁 central rot för ALLA moduler (kategorimapps-säker) */
 
   /* RECEPTSIDA = sidan HAR recept-metadata. (Sökvägskoll funkar INTE
      live: repot heter "recept" så ALLA adresser innehåller /recept/!) */
@@ -154,7 +155,7 @@
       { file: 'matratter.html', ikon: '🍽️', namn: 'Maträtter', kort: 'Rätter' },
       { file: 'maskindatabas.html', ikon: '🔧', namn: 'Maskiner', kort: 'Maskiner' },
       { file: 'ingredienser.html', ikon: '🥫', namn: 'Ingredienser', kort: 'Varor' },
-      { file: 'generator.html', ikon: '🧪', namn: 'Generator', kort: 'Skapa' },
+      { file: 'nytt-recept.html', ikon: '📝', namn: 'Nytt recept', kort: 'Skapa' },
       { file: 'status.html', ikon: '🩺', namn: 'Status', kort: 'Status' }
     ];
     /* 📲 App-läge (installerad PWA) → bottenflikar som riktig app.

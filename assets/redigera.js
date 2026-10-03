@@ -163,7 +163,7 @@
 
   async function getLock() {
     try {
-      var d = await (await fetch('../json/las.json', { cache: 'no-store' })).json();
+      var d = await (await fetch((window.__MK_ROT || '../') + 'json/las.json', { cache: 'no-store' })).json();
       return {
         pw: String(d.losenord || ''),                 // klartext (reserv)
         hash: String(d.losenord_hash || '').toLowerCase().trim(), // SHA-256 (säkrare – syns ej i klartext)
@@ -902,7 +902,7 @@
   var ingDb = null;
   function loadIngDb() {
     if (ingDb) return Promise.resolve(ingDb);
-    return fetch('../json/ingredienser.json', { cache: 'no-store' })
+    return fetch((window.__MK_ROT || '../') + 'json/ingredienser.json', { cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (d) { ingDb = d.ingredienser || []; return ingDb; })
       .catch(function () { ingDb = []; return ingDb; });
@@ -1518,7 +1518,7 @@
       okBtn.disabled = true; okBtn.textContent = '\u23F3 Tar bort...';
       var msg = bg.querySelector('#mk-del-msg');
 
-      var res = await window.__MK_SPARA.remove('recept/' + fname, 'Recept borttaget via sajten: ' + rNamn);
+      var res = await window.__MK_SPARA.remove('recept/' + receptSokvag(), 'Recept borttaget via sajten: ' + rNamn);
       if (res.ok) {
         /* Stada energidata ocksa (fel har stoppar inte flodet) */
         try {
@@ -1560,7 +1560,7 @@
     var btn = document.getElementById('eb-save');
     btn.disabled = true; btn.textContent = '⏳ Sparar...';
     var fname = decodeURIComponent(location.pathname.split('/').pop());
-    var res = await window.__MK_SPARA.save('recept/' + fname, buildCleanHtml(),
+    var res = await window.__MK_SPARA.save('recept/' + receptSokvag(), buildCleanHtml(),
       'Recept redigerat via sajten: ' + fname);
     btn.disabled = false; btn.textContent = '💾 Spara på sajten';
     if (res.ok) {
@@ -1586,6 +1586,15 @@
   /* ============================================================
      SPARA: bygg uppdaterad HTML-fil och ladda ner (RESERV)
      ============================================================ */
+
+  /* 📁 Receptets sökväg RELATIVT repo-roten ("deg/x.html" eller "x.html")
+     – härleds ur rot-djupet så spara/radera träffar rätt fil i
+     kategorimappar. */
+  function receptSokvag() {
+    var djup = ((window.__MK_ROT || '../').match(/\.\.\//g) || ['../']).length;
+    var segs = location.pathname.split('/').filter(Boolean);
+    return segs.slice(-djup).map(decodeURIComponent).join('/');
+  }
   function buildCleanHtml() {
     // Klona dokumentet och städa bort redigerings-artefakter
     var clone = document.documentElement.cloneNode(true);

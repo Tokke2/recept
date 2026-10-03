@@ -313,7 +313,7 @@
     var db = dbCache;
     if (!db) {
       try {
-        var d = await (await fetch('../json/ingredienser.json', { cache: 'no-store' })).json();
+        var d = await (await fetch((window.__MK_ROT || '../') + 'json/ingredienser.json', { cache: 'no-store' })).json();
         db = dbCache = d.ingredienser || [];
       } catch (e) { return; }
     }

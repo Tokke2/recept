@@ -294,19 +294,13 @@
   }
 
   function decideScale(mode, fitPref) {
-    if (fitPref === 'never') return 1;
+    /* v5: INGEN auto-krympning (50%-regeln borttagen på användarens
+       begäran). Naturlig storlek är standard – bredden fylls alltid
+       via print.css. Endast valet "1 sida" skalar ner innehållet. */
+    if (fitPref !== 'onepage') return 1;
     var pages = measurePrintHeight(mode) / PAGE_H;
     if (pages <= 1.02) return 1;
-    var overflow = pages - Math.floor(pages);
-    /* v4 AUTO: skala till närmaste HELA sidantal när sista sidan är
-       mindre än halvfull – 1,4 sidor→1, 2,3 sidor→2 osv. (50%-regeln
-       gällde tidigare bara 1–2 sidor, nu alla). */
-    var target = null;
-    if (fitPref === 'always') target = 1;
-    else if (overflow > 0.02 && overflow < 0.5) target = Math.floor(pages);
-    if (!target) return 1;
-    var scale = Math.max(MIN_SCALE, Math.min(1, target / pages) - 0.005);
-    return (target / pages) < MIN_SCALE && fitPref !== 'always' ? 1 : scale;
+    return Math.max(MIN_SCALE, Math.min(1, 1 / pages) - 0.005);
   }
 
   function pagesFor(mode, fitPref) {
@@ -325,7 +319,7 @@
     if (mode === 'cook') document.body.classList.add('mk-print-cook');
     if (isRecipePage) document.body.classList.add('mk-print-clean'); // v4: endast receptet (vitlista)
     document.body.classList.add('mk-print-ordered'); // ingredienser alltid överst
-    var scale = decideScale(mode, fitPref || localStorage.getItem('mk-fit') || 'auto');
+    var scale = decideScale(mode, fitPref || localStorage.getItem('mk-fit') || 'normal');
     if (scale < 1) {
       document.documentElement.style.setProperty('--mk-print-scale', scale.toFixed(3));
       document.body.classList.add('mk-print-scaled');
@@ -411,7 +405,8 @@
     markCards();
     var hasIng = !!document.querySelector('.mk-ing-card');
     var hasSteps = !!document.querySelector('.mk-step-card');
-    var fitPref = localStorage.getItem('mk-fit') || 'auto';
+    var fitPref = localStorage.getItem('mk-fit') || 'normal';
+    if (fitPref === 'auto' || fitPref === 'never' || fitPref === 'always') fitPref = fitPref === 'always' ? 'onepage' : 'normal';  /* migrera gamla val */
     /* Minns senaste läget – men bara om det finns på denna sida */
     var selMode = localStorage.getItem('mk-print-mode') || 'full';
     if ((selMode === 'cook' && !(hasIng && hasSteps)) || (selMode === 'ing' && !hasIng)) selMode = 'full';
@@ -432,10 +427,9 @@
         '<div class="sub">A4 i kokboksstil · ✨ endast receptet skrivs ut (betyg, förslag m.m. rensas automatiskt) · ingredienser överst</div></div>' +
         '<div class="pd-cols">' +
         '<div class="pd-body">' +
-          '<div class="fitrow"><span class="fl">Sidanpassning</span><div class="seg">' +
-            '<button data-fit="auto"' + (fitPref === 'auto' ? ' class="on"' : '') + ' title="Skalar till 1 sida om sida 2 blir mindre än halvfull">Auto</button>' +
-            '<button data-fit="always"' + (fitPref === 'always' ? ' class="on"' : '') + ' title="Skala alltid till 1 sida">1 sida</button>' +
-            '<button data-fit="never"' + (fitPref === 'never' ? ' class="on"' : '') + ' title="Aldrig skala">Av</button>' +
+          '<div class="fitrow"><span class="fl">Storlek</span><div class="seg">' +
+            '<button data-fit="normal"' + (fitPref !== 'onepage' ? ' class="on"' : '') + ' title="Naturlig storlek – full bredd, så många sidor som behövs">Normal</button>' +
+            '<button data-fit="onepage"' + (fitPref === 'onepage' ? ' class="on"' : '') + ' title="Krymp allt så det ryms på 1 sida">Tvinga 1 sida</button>' +
           '</div></div>' +
           '<button class="opt" data-mode="full"><span class="ic">📖</span><span><b>Hela receptet</b>' +
             '<small>Med bild – ren kokbokssida</small></span>' + badge('full') + '</button>' +

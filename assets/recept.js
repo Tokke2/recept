@@ -600,6 +600,11 @@
     if (!all) {
       var files = [];
       try {
+        var dIx = await (await fetch((window.__MK_ROT || '../') + 'json/recept-index.json', { cache: 'no-store' })).json();
+        if (dIx && dIx.recept && dIx.recept.length) files = dIx.recept.map(function (r) { return r.fil; })
+          .filter(function (f) { return /\.html?$/i.test(f); });
+      } catch (e) {}
+      if (!files.length) try {
         var parts = location.pathname.split('/').filter(Boolean);
         var user = location.hostname.split('.')[0];
         var repo = parts.length > 1 ? parts[0] : user + '.github.io';
@@ -611,7 +616,7 @@
       all = [];
       for (var i = 0; i < files.length; i++) {
         try {
-          var html = await (await fetch('../recept/' + encodeURIComponent(files[i]))).text();
+          var html = await (await fetch((window.__MK_ROT || '../') + 'recept/' + files[i].split('/').map(encodeURIComponent).join('/'))).text();
           var doc = new DOMParser().parseFromString(html, 'text/html');
           var g = function (n) { var el = doc.querySelector('meta[name="recept:' + n + '"]'); return el ? el.content : ''; };
           all.push({

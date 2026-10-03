@@ -39,7 +39,7 @@
   }
 
   async function getLock() {
-    var paths = ['json/las.json', '../json/las.json'];
+    var paths = [(window.__MK_ROT || '') + 'json/las.json', 'json/las.json', '../json/las.json', '../../json/las.json'];
     for (var i = 0; i < paths.length; i++) {
       try {
         var d = await (await fetch(paths[i], { cache: 'no-store' })).json();

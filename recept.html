@@ -151,8 +151,8 @@
   <button class="nav-card" onclick="openImport()">
     <span class="icon">📥</span><h2>Importera recept</h2><p>Kontrollera &amp; lägg till en receptfil</p>
   </button>
-  <a class="nav-card" href="generator.html">
-    <span class="icon">🧪</span><h2>Receptgeneratorn</h2><p>Bygg nytt recept av ingredienser</p>
+  <a class="nav-card" href="nytt-recept.html">
+    <span class="icon">📝</span><h2>Nytt recept</h2><p>Klistra in text/HTML → färdig fil</p>
   </a>
 </div>
 
@@ -282,7 +282,13 @@ async function init() {
   } catch (e) {}
 
   let files = [];
+  /* 📁 recept-index.json FÖRST (kategorimapps-säker: "deg/pizzadeg...html"),
+     GitHub-API:t som reserv (platt listning) */
   try {
+    const d = await (await fetch('json/recept-index.json', { cache: 'no-store' })).json();
+    if (d && d.recept && d.recept.length) files = d.recept.map(r => r.fil);
+  } catch (e) {}
+  if (!files.length) try {
     const parts = location.pathname.split('/').filter(Boolean);
     const user = location.hostname.split('.')[0];
     const repo = parts.length ? parts[0] : user + '.github.io';
@@ -298,7 +304,7 @@ async function init() {
     if (/\.pdf$/i.test(f)) {
       const base = f.replace(/\.pdf$/i, '');
       RECIPES.push({
-        file: 'recept/' + encodeURIComponent(f),
+        file: 'recept/' + f.split('/').map(encodeURIComponent).join('/'),
         namn: base.replace(/[-_]+/g, ' '),
         emoji: '📄',
         beskrivning: 'PDF-recept – öppnas direkt.',
@@ -312,7 +318,7 @@ async function init() {
       return;
     }
     try {
-      const html = await (await fetch('recept/' + encodeURIComponent(f))).text();
+      const html = await (await fetch('recept/' + f.split('/').map(encodeURIComponent).join('/'))).text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const get = n => { const el = doc.querySelector(`meta[name="recept:${n}"]`); return el ? el.content : ''; };
       const maskiner = get('maskiner') ? get('maskiner').split('|').map(s => s.trim()) : [];
@@ -331,7 +337,7 @@ async function init() {
           maskiner.join(' ').toLowerCase().includes(m.varumarke.toLowerCase()) ||
           html.toLowerCase().includes((m.modellnamn || '§').toLowerCase())
         ).map(m => m.id),
-        bild: 'images/recept/' + f.replace(/\.html?$/i, '') + '.jpg',
+        bild: 'images/recept/' + f.split('/').pop().replace(/\.html?$/i, '') + '.jpg',
         rating: (JSON.parse(localStorage.getItem('recept-' + f) || '{}').rating) || 0
       });
     } catch (e) {}
@@ -561,5 +567,5 @@ function handleFile(file) {
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a37835d188b799fc',t:'MTc4ODgxMDI4OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>

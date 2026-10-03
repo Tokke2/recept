@@ -1,20 +1,38 @@
 {
  "_plats": "/json/maskiner/vevor-sus420.json  (en maskinfil per maskin – läses in automatiskt)",
  "id": "vevor-sus420",
- "namn": "Vevor SUS420",
- "typ": "Annan köksmaskin",
- "varumarke": "Vevor",
+ "namn": "VEVOR SUS420 – Köttslicer 340 W",
+ "typ": "Skärmaskin / Köttslicer",
+ "varumarke": "VEVOR",
  "modellnamn": "SUS420",
- "effekt_w": 1000,
- "effekt_kalla": "UPPSKATTAD av roboten – kontrollera!",
+ "kapacitet": "Klinga 25 cm (10\")",
+ "effekt_w": 340,
+ "effekt_kalla": "tillverkarens produktsida (340 W)",
  "egenskaper": [
-  "🤖 Importerad automatiskt – kontrollera uppgifterna"
+  "🔪 25 cm klinga i rostfritt SUS420-stål",
+  "📏 Justerbar skivtjocklek 0–15 mm",
+  "🪨 Inbyggd slipsten",
+  "🏠 För hemmabruk & kommersiellt"
+ ],
+ "viktigt": [
+  "Perfekt till receptens skivmoment: \"skiva rotfrukterna till 15 mm\" = maxtjockleken på ett varv.",
+  "Halvfrys köttet 30–60 min före skivning för tunnast möjliga skivor."
  ],
  "lankar": {
   "kop": "https://www.amazon.se/dp/B0GV4VNL7Q/",
   "tillverkare": "https://www.vevor.com/cutters-slicers-c_10662/vevor-meat-slicer-340w-electric-deli-food-slicer-with-10-sus420-stainless-steel-blade-and-built-in-sharpening-stone-0-0-6-inch-adjustable-thickness-for-commercial-and-home-use-cut-meat-and-cheese-p_010875629016",
   "bruksanvisning": "https://m.media-amazon.com/images/I/91IPw3HXjOL.pdf"
  },
+ "program": [
+  {
+   "namn": "Skivning (justerbar 0–15 mm)",
+   "typ": "Manuellt läge",
+   "standardtid": "–",
+   "beskrivning": "Ställ tjockleken med vredet (0–15 mm) och mata jämnt. Slipa klingan med den inbyggda slipstenen vid behov.",
+   "bast_for": "kött, ost, bröd, rotfrukter i jämna skivor",
+   "nyckelord": ["skiva", "skivor", "skivning", "slicer", "skärmaskin", "köttslicer", "pålägg"]
+  }
+ ],
  "bild": "images/vevor-sus420.jpg",
  "asin": "B0GV4VNL7Q"
 }

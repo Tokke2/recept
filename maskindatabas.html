@@ -14,164 +14,281 @@
     --dark: #2c3e50;
     --muted: #7f8c8d;
     --green: #27ae60;
+    --blue: #2980b9;
+    --purple: #8e44ad;
+    --pink: #d81b60;
+    --teal: #00897b;
+    --gold: #f39c12;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--bg);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(230,126,34,.07), transparent 34%),
+      radial-gradient(circle at 88% 16%, rgba(192,57,43,.06), transparent 30%),
+      radial-gradient(circle at 50% 95%, rgba(39,174,96,.05), transparent 40%),
+      var(--bg);
     color: var(--dark);
     padding: 24px;
     max-width: 1100px;
     margin: 0 auto;
   }
+
+  /* ===== HEADER: flerfärgs-gradient + kugghjulsmönster ===== */
   header {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(120deg, #c0392b 0%, #e67e22 45%, #f39c12 100%);
     color: #fff;
-    border-radius: 16px;
-    padding: 28px 32px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 14px rgba(0,0,0,.12);
+    border-radius: 20px;
+    padding: 30px 32px 26px;
+    margin-bottom: 22px;
+    box-shadow: 0 10px 30px rgba(192,57,43,.25);
   }
-  header h1 { font-size: 1.7rem; margin-bottom: 6px; }
-  header p { opacity: .92; font-size: .95rem; }
-
-  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-  .tab-btn {
-    border: 2px solid transparent;
-    background: var(--card);
-    padding: 10px 18px;
-    border-radius: 999px;
-    cursor: pointer;
-    font-size: .95rem;
-    font-weight: 600;
-    color: var(--dark);
-    box-shadow: 0 2px 6px rgba(0,0,0,.07);
-    transition: all .15s;
+  header::before {
+    content: '⚙️ 🍳 ⚙️ 🍚 ⚙️ 🍦 ⚙️ 🍕 ⚙️ 🍞 ⚙️ 🍟 ⚙️ 🥤 ⚙️ 🧊 ⚙️';
+    position: absolute; inset: auto -20px -18px -20px;
+    font-size: 2rem; opacity: .14; letter-spacing: 12px; white-space: nowrap;
+    pointer-events: none;
   }
-  .tab-btn:hover { transform: translateY(-2px); }
-  .tab-btn.active { background: var(--dark); color: #fff; }
+  header h1 { font-size: 1.75rem; margin-bottom: 6px; text-shadow: 0 2px 6px rgba(0,0,0,.15); }
+  header p { opacity: .95; font-size: .95rem; max-width: 640px; }
+  .hstats { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .hstat {
+    background: rgba(255,255,255,.18);
+    border: 1.5px solid rgba(255,255,255,.35);
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+    border-radius: 999px; padding: 6px 16px;
+    font-size: .85rem; font-weight: 700;
+  }
+  .hbtn {
+    display: inline-block; background: #fff; color: #c0392b;
+    text-decoration: none; border-radius: 999px; padding: 9px 20px;
+    font-size: .9rem; font-weight: 800; margin-top: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.18); transition: transform .15s;
+  }
+  .hbtn:hover { transform: translateY(-2px) scale(1.02); }
 
+  /* ===== KORT ===== */
   .card {
     background: var(--card);
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 22px 24px;
     margin-bottom: 18px;
-    position: relative;   /* ✏️-knappen förankras i kortets hörn */
-    box-shadow: 0 2px 8px rgba(0,0,0,.07);
-  }
-  .machine-title { font-size: 1.25rem; margin-bottom: 2px; }
-  .machine-sub { color: var(--muted); font-size: .88rem; margin-bottom: 8px; }
-  .specs {
-    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
-  }
-  .spec {
-    background: #f0ebe3; border-radius: 8px;
-    padding: 4px 10px; font-size: .78rem; color: var(--dark);
-  }
-  .links { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-  .link-btn {
-    display: inline-block; background: var(--dark); color: #fff;
-    text-decoration: none; padding: 7px 14px; border-radius: 8px;
-    font-size: .84rem; font-weight: 600; transition: opacity .15s;
-  }
-  .link-btn:hover { opacity: .85; }
-  .notes {
-    background: #fdf6ee; border-left: 4px solid var(--accent2);
-    border-radius: 8px; padding: 10px 14px; font-size: .85rem;
-    margin-bottom: 14px; color: var(--dark);
+    position: relative;
+    box-shadow: 0 3px 12px rgba(0,0,0,.07);
   }
 
-  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
-  th {
-    text-align: left; padding: 9px 10px; background: #f0ebe3;
-    font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted);
-  }
-  td { padding: 9px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
-  tr:last-child td { border-bottom: none; }
-  .prog-name { font-weight: 600; white-space: nowrap; }
-  .prog-type { display:block; font-weight:400; font-size:.75rem; color:var(--muted); }
-  .badge {
-    display: inline-block; background: #eaf7ef; color: var(--green);
-    border-radius: 6px; padding: 2px 8px; font-size: .78rem; font-weight: 600;
-  }
-  .time { white-space: nowrap; font-size: .85rem; color: var(--muted); }
-
-  .reco-box { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  /* ===== 🎯 REKOMMENDATION ===== */
+  .reco-card { border-top: 5px solid var(--green); }
+  .reco-box { display: flex; gap: 10px; flex-wrap: wrap; }
   input[type=text] {
-    flex: 1; min-width: 240px; padding: 12px 14px;
-    border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; outline: none;
+    flex: 1; min-width: 220px; padding: 13px 16px;
+    border: 2px solid #e8e2d8; border-radius: 12px; font-size: 1rem; outline: none;
+    font-family: inherit; transition: border-color .15s, box-shadow .15s;
   }
-  input[type=text]:focus { border-color: var(--accent2); }
+  input[type=text]:focus { border-color: var(--green); box-shadow: 0 0 0 4px rgba(39,174,96,.12); }
   .go-btn {
-    background: var(--accent); color: #fff; border: none;
-    padding: 12px 22px; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer;
+    background: linear-gradient(135deg, var(--green), #1e8449); color: #fff; border: none;
+    padding: 13px 26px; border-radius: 12px; font-size: 1rem; font-weight: 800; cursor: pointer;
+    font-family: inherit; box-shadow: 0 4px 12px rgba(39,174,96,.3); transition: transform .12s;
   }
-  .go-btn:hover { background: #a93226; }
-  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .go-btn:hover { transform: translateY(-2px); }
+  .go-btn:active { transform: translateY(0); }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
   .chip {
-    background: #f0ebe3; border: none; padding: 6px 14px;
-    border-radius: 999px; font-size: .85rem; cursor: pointer;
+    background: #fff; border: 1.5px solid #e2d9cb; padding: 7px 15px;
+    border-radius: 999px; font-size: .85rem; cursor: pointer; font-family: inherit;
+    font-weight: 600; color: var(--dark); transition: all .15s;
   }
-  .chip:hover { background: #e2d9cb; }
+  .chip:hover { border-color: var(--green); color: var(--green); background: #f4fbf6; }
   .result {
     border-left: 5px solid var(--green); background: #f4fbf6;
-    border-radius: 10px; padding: 16px 18px; margin-top: 10px;
+    border-radius: 12px; padding: 16px 18px; margin-top: 12px;
+    animation: pop .25s ease;
   }
+  @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .result h3 { font-size: 1.05rem; margin-bottom: 4px; }
   .result .why { color: var(--muted); font-size: .9rem; }
   .result .alt { margin-top: 8px; font-size: .88rem; }
   .no-result { border-left-color: var(--accent2); background: #fdf6ee; }
+
+  /* ===== 🖼️ MASKINGALLERI ===== */
+  .verk { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 22px 0 14px; }
+  .verk h2 { font-size: 1.25rem; margin-right: auto; }
+  .sok-wrap { position: relative; flex: 1; min-width: 180px; max-width: 300px; }
+  .sok-wrap input { width: 100%; padding: 10px 14px 10px 38px; font-size: .9rem; border-radius: 999px; }
+  .sok-wrap::before { content: '🔍'; position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: .9rem; pointer-events: none; }
+  .typfilter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .tf {
+    border: 2px solid transparent; background: #fff; padding: 6px 14px;
+    border-radius: 999px; cursor: pointer; font-size: .82rem; font-weight: 700;
+    font-family: inherit; color: var(--dark); box-shadow: 0 2px 6px rgba(0,0,0,.06);
+    transition: all .15s;
+  }
+  .tf:hover { transform: translateY(-1px); }
+  .tf.on { color: #fff; }
+
+  .galleri {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+    margin-bottom: 20px;
+  }
+  .gkort {
+    background: #fff; border-radius: 16px; padding: 14px 12px 12px;
+    text-align: center; cursor: pointer; border: 2.5px solid transparent;
+    box-shadow: 0 3px 10px rgba(0,0,0,.07);
+    transition: transform .15s, box-shadow .15s, border-color .15s;
+    position: relative; overflow: hidden;
+  }
+  .gkort::before {
+    content: ''; position: absolute; inset: 0 0 auto 0; height: 5px;
+    background: var(--tc, var(--accent2));
+  }
+  .gkort:hover { transform: translateY(-4px); box-shadow: 0 10px 22px rgba(0,0,0,.13); }
+  .gkort.vald { border-color: var(--tc, var(--accent2)); box-shadow: 0 8px 20px rgba(0,0,0,.14); }
+  .gkort img { width: 74px; height: 74px; object-fit: contain; margin-bottom: 6px; }
+  .gkort .gemoji { font-size: 2.6rem; line-height: 74px; height: 74px; display: block; margin-bottom: 6px; }
+  .gkort .gnamn { font-weight: 800; font-size: .85rem; line-height: 1.25; margin-bottom: 5px; min-height: 2.1em; }
+  .gkort .gtyp {
+    display: inline-block; color: #fff; background: var(--tc, var(--accent2));
+    border-radius: 999px; padding: 2px 10px; font-size: .68rem; font-weight: 700;
+    margin-bottom: 4px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .gkort .gprog { font-size: .72rem; color: var(--muted); font-weight: 600; }
+  .gkort-add {
+    border: 2.5px dashed var(--green); background: #fbfef9; color: var(--green);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-decoration: none; font-weight: 800; font-size: .85rem; gap: 6px; min-height: 160px;
+    border-radius: 16px; transition: all .15s;
+  }
+  .gkort-add:hover { background: #eaf7ef; transform: translateY(-4px); }
+  .gkort-add .plus { font-size: 2rem; line-height: 1; }
+
+  /* ===== DETALJKORT ===== */
+  .machine-title { font-size: 1.35rem; margin-bottom: 2px; padding-right: 108px; }
+  .machine-sub { color: var(--muted); font-size: .88rem; margin-bottom: 10px; }
+  .specs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .spec {
+    background: linear-gradient(135deg, #f7f2ea, #efe7da); border-radius: 999px;
+    padding: 5px 13px; font-size: .78rem; color: var(--dark); font-weight: 600;
+    border: 1px solid #e8dfd0;
+  }
+  .links { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .link-btn {
+    display: inline-block; background: var(--dark); color: #fff;
+    text-decoration: none; padding: 8px 15px; border-radius: 10px;
+    font-size: .84rem; font-weight: 700; transition: transform .12s, opacity .15s;
+  }
+  .link-btn:hover { opacity: .9; transform: translateY(-1px); }
+  .notes {
+    background: #fdf6ee; border-left: 4px solid var(--accent2);
+    border-radius: 10px; padding: 10px 14px; font-size: .85rem;
+    margin-bottom: 14px; color: var(--dark);
+  }
+  .mcard { border-top: 6px solid var(--tc, var(--accent2)); animation: pop .25s ease; }
+  .mcard .mimg {
+    float: right; max-width: 150px; max-height: 120px; object-fit: contain;
+    margin: 0 0 10px 14px; border-radius: 12px; background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08); padding: 4px;
+  }
+  .prog-sok { margin: 4px 0 10px; }
+  .prog-sok input { width: 100%; max-width: 340px; padding: 9px 14px; font-size: .88rem; border-radius: 999px; }
+
+  /* ===== PROGRAMTABELL (desktop) → PROGRAMKORT (mobil) ===== */
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  th {
+    text-align: left; padding: 10px; background: linear-gradient(135deg, #f0ebe3, #e9e1d3);
+    font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted);
+  }
+  th:first-child { border-radius: 10px 0 0 10px; }
+  th:last-child { border-radius: 0 10px 10px 0; }
+  td { padding: 10px; border-bottom: 1px solid #f0ebe3; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tbody tr { transition: background .12s; }
+  tbody tr:hover { background: #faf7f2; }
+  .prog-name { font-weight: 700; white-space: nowrap; }
+  .prog-type { display: block; font-weight: 400; font-size: .75rem; color: var(--muted); }
+  .badge {
+    display: inline-block; background: #eaf7ef; color: var(--green);
+    border-radius: 999px; padding: 3px 10px; font-size: .78rem; font-weight: 700;
+  }
+  .time { white-space: nowrap; font-size: .85rem; color: var(--muted); font-weight: 600; }
+
   .hidden { display: none; }
   footer { text-align: center; color: var(--muted); font-size: .82rem; margin-top: 26px; }
-  
+
+  /* ===== 📱 MOBIL ===== */
+  @media (max-width: 640px) {
+    body { padding: 14px; }
+    header { padding: 22px 20px 20px; border-radius: 16px; }
+    header h1 { font-size: 1.4rem; }
+    .hstat { font-size: .78rem; padding: 5px 12px; }
+    .card { padding: 16px 16px; }
+    .galleri { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .machine-title { font-size: 1.15rem; padding-right: 0; margin-top: 34px; }
+    .mcard .mimg { float: none; display: block; margin: 0 auto 10px; max-width: 130px; }
+    .verk h2 { width: 100%; }
+    .sok-wrap { max-width: none; }
+    /* Tabell → staplade programkort */
+    table, tbody, tr, td { display: block; width: 100%; }
+    thead { display: none; }
+    tbody tr {
+      background: #faf7f2; border-radius: 12px; margin-bottom: 10px;
+      padding: 12px 14px; border-left: 4px solid var(--tc, var(--accent2));
+    }
+    td { padding: 2px 0; border: none; }
+    td.time::before { content: '⏱ '; }
+    .prog-name { font-size: .98rem; white-space: normal; }
+    .go-btn { width: 100%; }
+  }
 </style>
 <link rel="stylesheet" href="assets/print.css">
 </head>
 <body>
 
 <header>
-  <div style="margin-bottom:8px;"><a href="index.html" style="color:#fff; opacity:.85; text-decoration:none; font-size:.9rem;">← Till startsidan</a></div>
+  <div style="margin-bottom:8px;"><a href="index.html" style="color:#fff; opacity:.9; text-decoration:none; font-size:.9rem;">← Till startsidan</a></div>
   <h1>🍳 Maskindatabas</h1>
-  <p>Mina matlagningsmaskiner – alla program och bästa programförslag vid receptlagning. Data lagras även i <b>Maskindatabas.json</b>.</p>
-  <p style="margin-top:10px;" class="no-print">
-    <a href="maskin-import.html" style="display:inline-block;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:7px 18px;font-size:.9rem;font-weight:700;">➕ Lägg till ny maskin <span style="font-weight:400;opacity:.85;">– klistra in produktlänk, sparas direkt</span></a>
-  </p>
+  <p>Mina matlagningsmaskiner – alla program, exakta tider och bästa programförslag vid receptlagning.</p>
+  <div class="hstats" id="hstats"></div>
+  <a class="hbtn no-print" href="maskin-import.html">➕ Lägg till ny maskin</a>
 </header>
 
 <!-- ===================== REKOMMENDATION ===================== -->
-<div class="card">
+<div class="card reco-card">
   <h2 style="margin-bottom:12px;">🎯 Vad ska du laga?</h2>
   <div class="reco-box">
-    <input type="text" id="dishInput" placeholder="Skriv en maträtt, t.ex. 'risgrynsgröt', 'köttgryta', 'yoghurt', 'ångkokta grönsaker'..." onkeydown="if(event.key==='Enter')recommend()">
-    <button class="go-btn" onclick="recommend()">Föreslå program</button>
+    <input type="text" id="dishInput" placeholder="Skriv en maträtt, t.ex. 'risgrynsgröt', 'köttgryta', 'yoghurt'..." onkeydown="if(event.key==='Enter')recommend()">
+    <button class="go-btn" onclick="recommend()">✨ Föreslå program</button>
   </div>
   <div class="chips" id="chips"></div>
   <div id="recoResults"></div>
 </div>
 
-<!-- ===================== MASKINER ===================== -->
-<h2 style="margin:24px 0 12px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">🔧 Mina maskiner
-  <a href="maskin-import.html" class="no-print" style="font-size:.8rem; font-weight:700; background:#eaf7ef; color:#27ae60; border:1.5px solid #27ae60; border-radius:999px; padding:4px 14px; text-decoration:none;">➕ Lägg till maskin</a>
-</h2>
-<div class="tabs" id="tabs"></div>
-<div id="machineCards"></div>
+<!-- ===================== GALLERI + FILTER ===================== -->
+<div class="verk">
+  <h2>🔧 Mina maskiner</h2>
+  <div class="sok-wrap no-print"><input type="text" id="mSok" placeholder="Sök maskin..."></div>
+</div>
+<div class="typfilter no-print" id="typfilter"></div>
+<div class="galleri" id="galleri"></div>
 
-<!-- Lägg till-kort sist bland maskinerna -->
-<a href="maskin-import.html" class="no-print" style="display:block; border:2px dashed #27ae60; border-radius:14px; padding:22px; text-align:center; text-decoration:none; color:#27ae60; font-weight:700; margin-bottom:16px; background:#fbfef9;">
-  ➕ Lägg till ny maskin<br>
-  <span style="font-weight:400; font-size:.85rem; color:#7f8c8d;">Klistra in produktlänk (Amazon m.fl.) → 💾 sparas direkt på sajten → syns här automatiskt</span>
-</a>
+<!-- Detaljkortet för vald maskin -->
+<div id="machineCards"></div>
 
 <footer>Maskindatabas · Maskiner läses automatiskt från json/maskiner/ · Programdata från officiella bruksanvisningar</footer>
 
 <script>
 /* =========================================================
    DYNAMISK MASKININLÄSNING
-   Läser alla .json-filer i json/maskiner/ automatiskt:
-   1) via GitHub API (på GitHub Pages) – nya filer hittas direkt
-   2) annars via json/maskiner-index.json (reservlista)
+   Läser alla .json-filer i json/maskiner/ automatiskt via
+   json/maskiner-index.json (byggs av GitHub Action).
    ========================================================= */
 let MACHINES = [];
+let AKTIV_TYP = '';   /* typfilter ('' = alla) */
+let SOKTEXT = '';     /* gallerisök */
+
 const linkLabels = {
   kop: "🛒 Köp / produktsida", bruksanvisning: "📖 Bruksanvisning", tillverkare: "🏭 Tillverkare",
   video: "🎬 Video", recension: "⭐ Recension", tillbehor: "🧩 Tillbehör",
@@ -182,6 +299,26 @@ function linkLabel(key) {
   if (linkLabels[key]) return linkLabels[key];
   const n = key.replace(/[-_]+/g, ' ').trim();
   return '🔗 ' + n.charAt(0).toUpperCase() + n.slice(1);
+}
+
+/* 🎨 Färg + emoji per maskinTYP – gör galleriet färgglatt och
+   igenkännbart. Första ordträffen i typ-strängen vinner. */
+const TYPTEMA = [
+  { re: /slow ?cook|crock/i,      farg: '#5d4037', emoji: '🍲', kort: 'Slow cooker' },
+  { re: /slicer|skärmaskin|köttslicer/i, farg: '#546e7a', emoji: '🔪', kort: 'Skärmaskin' },
+  { re: /riskokare|multikokare/i, farg: '#00897b', emoji: '🍚', kort: 'Riskokare' },
+  { re: /airfryer|varmlufts/i,    farg: '#e67e22', emoji: '🍟', kort: 'Airfryer' },
+  { re: /bakmaskin|bröd/i,        farg: '#a1662f', emoji: '🍞', kort: 'Bakmaskin' },
+  { re: /glass|frozen|slush/i,    farg: '#d81b60', emoji: '🍦', kort: 'Glassmaskin' },
+  { re: /pizzaugn/i,              farg: '#c0392b', emoji: '🍕', kort: 'Pizzaugn' },
+  { re: /smörgås|sandwich|våffel/i, farg: '#f39c12', emoji: '🥪', kort: 'Smörgåsgrill' },
+  { re: /kvarn/i,                 farg: '#6d4c41', emoji: '☕', kort: 'Kvarn' },
+  { re: /ismaskin|ice/i,          farg: '#2980b9', emoji: '🧊', kort: 'Ismaskin' },
+  { re: /tork|dehydrator/i,       farg: '#8e44ad', emoji: '🍇', kort: 'Torkautomat' },
+  { re: /blender|mixer/i,         farg: '#27ae60', emoji: '🥤', kort: 'Blender' }
+];
+function temaFor(typ) {
+  return TYPTEMA.find(t => t.re.test(typ || '')) || { farg: '#7f8c8d', emoji: '🔧', kort: (typ || 'Övrigt').split('/')[0].trim() };
 }
 
 init();
@@ -219,8 +356,11 @@ async function init() {
     id: m.id,
     name: m.namn,
     shortName: (m.varumarke + ' ' + (m.modellnamn || '')).trim(),
+    typ: m.typ || '',
+    tema: temaFor(m.typ),
     sub: [m.typ, m.modellnamn ? 'Modell ' + m.modellnamn : '', m.kapacitet || ''].filter(Boolean).join(' · '),
     /* ⚡ Effekt + kapacitet visas ALLTID först bland egenskaperna */
+    effektW: m.effekt_w || 0,
     specs: [
       ...(m.effekt_w ? ['⚡ ' + (m.effekt_w >= 1000 ? (m.effekt_w / 1000).toLocaleString('sv-SE') + ' kW' : m.effekt_w + ' W')] : []),
       ...((m.kapacitet && !/FYLL I/i.test(m.kapacitet)) ? ['🥛 ' + m.kapacitet] : []),
@@ -250,30 +390,98 @@ async function listMachineFiles() {
   return [];
 }
 
-/* ============ Rendera flikar + kort ============ */
+/* ============ 📊 Statistik i headern ============ */
+function renderStats() {
+  const progTot = MACHINES.reduce((s, m) => s + m.programs.length, 0);
+  const wattTot = MACHINES.reduce((s, m) => s + (m.effektW || 0), 0);
+  document.getElementById('hstats').innerHTML =
+    '<span class="hstat">🔧 ' + MACHINES.length + ' maskiner</span>' +
+    '<span class="hstat">🎛️ ' + progTot + ' program</span>' +
+    (wattTot ? '<span class="hstat">⚡ ' + (wattTot / 1000).toLocaleString('sv-SE', { maximumFractionDigits: 1 }) + ' kW totalt</span>' : '');
+}
+
+/* ============ 🎨 Typfilter-knappar ============ */
+function renderFilter() {
+  const typer = [];
+  MACHINES.forEach(m => {
+    if (!typer.some(t => t.kort === m.tema.kort)) typer.push(m.tema);
+  });
+  const el = document.getElementById('typfilter');
+  el.innerHTML =
+    '<button class="tf' + (AKTIV_TYP === '' ? ' on' : '') + '" data-typ="" style="' + (AKTIV_TYP === '' ? 'background:#2c3e50;border-color:#2c3e50;' : '') + '">Alla</button>' +
+    typer.map(t =>
+      '<button class="tf' + (AKTIV_TYP === t.kort ? ' on' : '') + '" data-typ="' + t.kort + '" style="' +
+      (AKTIV_TYP === t.kort ? 'background:' + t.farg + ';border-color:' + t.farg + ';' : 'border-color:' + t.farg + '40;') +
+      '">' + t.emoji + ' ' + t.kort + '</button>').join('');
+  el.querySelectorAll('.tf').forEach(b => {
+    b.onclick = () => { AKTIV_TYP = b.dataset.typ; renderFilter(); renderGalleri(); };
+  });
+}
+
+/* ============ 🖼️ Maskingalleriet ============ */
+function synligaMaskiner() {
+  return MACHINES.filter(m => {
+    if (AKTIV_TYP && m.tema.kort !== AKTIV_TYP) return false;
+    if (SOKTEXT) {
+      const hay = (m.name + ' ' + m.shortName + ' ' + m.typ + ' ' + (m.alias || []).join(' ')).toLowerCase();
+      if (!hay.includes(SOKTEXT)) return false;
+    }
+    return true;
+  });
+}
+function renderGalleri() {
+  const el = document.getElementById('galleri');
+  const synliga = synligaMaskiner();
+  el.innerHTML = synliga.map(m =>
+    '<div class="gkort" id="g-' + m.id + '" data-id="' + m.id + '" style="--tc:' + m.tema.farg + ';" role="button" tabindex="0" aria-label="' + m.name + '">' +
+      (m.image
+        ? '<img src="' + m.image + '" alt="" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;gemoji&quot;>' + m.tema.emoji + '</span>\'">'
+        : '<span class="gemoji">' + m.tema.emoji + '</span>') +
+      '<div class="gnamn">' + (m.shortName || m.name) + '</div>' +
+      '<span class="gtyp">' + m.tema.emoji + ' ' + m.tema.kort + '</span>' +
+      '<div class="gprog">🎛️ ' + m.programs.length + ' program</div>' +
+    '</div>').join('') +
+    '<a class="gkort-add no-print" href="maskin-import.html"><span class="plus">➕</span>Lägg till maskin<span style="font-weight:400;font-size:.72rem;color:#7f8c8d;">Klistra in produktlänk</span></a>';
+  if (!synliga.length) {
+    el.insertAdjacentHTML('afterbegin',
+      '<div style="grid-column:1/-1;text-align:center;color:#7f8c8d;padding:18px;">Ingen maskin matchar 🤔 – prova ett annat sökord eller filter.</div>');
+  }
+  el.querySelectorAll('.gkort').forEach(g => {
+    g.onclick = () => visaMaskin(g.dataset.id);
+    g.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); visaMaskin(g.dataset.id); } };
+  });
+  /* markera ev. redan vald */
+  const valt = document.querySelector('#machineCards .mcard:not(.hidden)');
+  if (valt) {
+    const g = document.getElementById('g-' + valt.id.replace('card-', ''));
+    if (g) g.classList.add('vald');
+  }
+}
+document.getElementById('mSok').addEventListener('input', function () {
+  SOKTEXT = this.value.trim().toLowerCase();
+  renderGalleri();
+});
+
+/* ============ Rendera detaljkorten ============ */
 function renderAll() {
-  const tabsEl = document.getElementById("tabs");
+  renderStats();
+  renderFilter();
+  renderGalleri();
   const cardsEl = document.getElementById("machineCards");
-  tabsEl.innerHTML = ""; cardsEl.innerHTML = "";
-
+  cardsEl.innerHTML = "";
   MACHINES.forEach((m, i) => {
-    const btn = document.createElement("button");
-    btn.className = "tab-btn" + (i === 0 ? " active" : "");
-    btn.textContent = m.shortName || m.name;
-    btn.onclick = () => showMachine(m.id, btn);
-    tabsEl.appendChild(btn);
-
     const card = document.createElement("div");
-    card.className = "card" + (i === 0 ? "" : " hidden");
+    card.className = "card mcard" + (i === 0 ? "" : " hidden");
     card.id = "card-" + m.id;
+    card.style.setProperty('--tc', m.tema.farg);
     card.innerHTML = `
-      ${m.image ? `<img src="${m.image}" alt="${m.name}" style="float:right; max-width:150px; max-height:120px; object-fit:contain; margin:0 0 10px 14px; border-radius:10px; background:#fff;">` : ''}
-      <div class="machine-title">${m.name}</div>
+      ${m.image ? `<img class="mimg" src="${m.image}" alt="${m.name}">` : ''}
+      <div class="machine-title">${m.tema.emoji} ${m.name}</div>
       <div class="machine-sub">${m.sub}</div>
       <div class="specs">${(m.specs||[]).map(s => `<span class="spec">${s}</span>`).join("")}</div>
       ${(m.links && m.links.length) ? `<div class="links">${m.links.map(l =>
         l.affiliate
-          ? `<a class="link-btn amazon-link" href="${l.url}" target="_blank" rel="noopener sponsored" style="background:linear-gradient(135deg,#ff9900,#e67e22);color:#fff;font-weight:700;">${l.label}</a>`
+          ? `<a class="link-btn amazon-link" href="${l.url}" target="_blank" rel="noopener sponsored" style="background:linear-gradient(135deg,#ff9900,#e67e22);color:#fff;">${l.label}</a>`
           : `<a class="link-btn" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join("")}</div>` : ""}
       ${m.fritext ? `<div class="notes" style="border-left-color:#3498db;background:#eef7fb;">${m.fritext}</div>` : ""}
       ${m.notes ? `<div class="notes">${m.notes}</div>` : ""}
@@ -281,8 +489,10 @@ function renderAll() {
         style="position:absolute;top:14px;right:14px;background:#fdf6ee;border:1.5px solid #e67e22;color:#e67e22;
         border-radius:10px;padding:6px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">✏️ Redigera</button>
       <div class="mk-maskinrecept" id="mrec-${m.id}"></div>
+      ${m.programs.length > 6 ? `<div class="prog-sok no-print"><input type="text" placeholder="🔍 Sök bland ${m.programs.length} program..." data-psok="${m.id}"></div>` : ''}
       ${m.programs.length ? `<table>
-        <tr><th>Program</th><th>Tid</th><th>Beskrivning</th><th>Bäst för</th></tr>
+        <thead><tr><th>Program</th><th>Tid</th><th>Beskrivning</th><th>Bäst för</th></tr></thead>
+        <tbody>
         ${m.programs.map(p => `
           <tr>
             <td class="prog-name">${p.name}<span class="prog-type">${p.type}</span></td>
@@ -290,18 +500,33 @@ function renderAll() {
             <td>${p.desc}</td>
             <td><span class="badge">${p.best}</span></td>
           </tr>`).join("")}
+        </tbody>
       </table>` : ""}`;
     cardsEl.appendChild(card);
   });
-}
-
-function showMachine(id, btn) {
-  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  MACHINES.forEach(m => {
-    document.getElementById("card-" + m.id).classList.toggle("hidden", m.id !== id);
+  /* 🔍 programsök inne i korten */
+  cardsEl.querySelectorAll('input[data-psok]').forEach(inp => {
+    inp.addEventListener('input', function () {
+      const q = this.value.trim().toLowerCase();
+      const rows = this.closest('.mcard').querySelectorAll('tbody tr');
+      rows.forEach(r => { r.style.display = (!q || r.textContent.toLowerCase().includes(q)) ? '' : 'none'; });
+    });
   });
 }
+
+/* Visa en maskin: markera i galleriet + visa detaljkortet */
+function visaMaskin(id) {
+  MACHINES.forEach(m => {
+    const c = document.getElementById("card-" + m.id);
+    if (c) c.classList.toggle("hidden", m.id !== id);
+    const g = document.getElementById("g-" + m.id);
+    if (g) g.classList.toggle("vald", m.id === id);
+  });
+  const kort = document.getElementById("card-" + id);
+  if (kort) { try { kort.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} }
+}
+/* bakåtkompatibelt namn (hash-öppning m.m. använde showMachine) */
+function showMachine(id) { visaMaskin(id); }
 
 /* ============ ✏️ MASKINREDIGERING (lösenordsskyddad) ============
    Penna på varje kort → dialog: namn, effekt, kapacitet, FRITEXT
@@ -378,13 +603,8 @@ document.addEventListener('click', async (e) => {
 function oppnaFranHash() {
   const id = decodeURIComponent(location.hash.replace('#', '')).trim();
   if (!id) return;
-  const i = MACHINES.findIndex(m => m.id === id);
-  if (i === -1) return;
-  const btn = document.querySelectorAll('.tab-btn')[i];
-  if (btn) {
-    showMachine(id, btn);
-    setTimeout(() => document.getElementById('card-' + id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-  }
+  if (!MACHINES.some(m => m.id === id)) return;
+  visaMaskin(id);
 }
 window.addEventListener('hashchange', oppnaFranHash);
 
@@ -396,6 +616,10 @@ window.addEventListener('hashchange', oppnaFranHash);
 async function byggMaskinRecept() {
   let files = [];
   try {
+    const d = await (await fetch('json/recept-index.json', { cache: 'no-store' })).json();
+    if (d && d.recept && d.recept.length) files = d.recept.map(r => r.fil).filter(f => /\.html?$/i.test(f));
+  } catch (e) {}
+  if (!files.length) try {
     const res = await fetch('https://api.github.com/repos/Tokke2/recept/contents/recept?ref=main');
     if (res.ok) files = (await res.json())
       .filter(i => i.type === 'file' && /\.html?$/i.test(i.name))
@@ -406,7 +630,7 @@ async function byggMaskinRecept() {
   const receptData = [];
   await Promise.all(files.map(async f => {
     try {
-      const html = await (await fetch('recept/' + encodeURIComponent(f))).text();
+      const html = await (await fetch('recept/' + f.split('/').map(encodeURIComponent).join('/'))).text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const g = n => { const el = doc.querySelector(`meta[name="recept:${n}"]`); return el ? el.content : ''; };
       if (!g('namn')) return;
@@ -432,6 +656,11 @@ async function byggMaskinRecept() {
     );
     const box = document.getElementById('mrec-' + m.id);
     if (!box || !träffar.length) return;
+    /* 📖-räknaren syns även på gallerikortet */
+    const g = document.getElementById('g-' + m.id);
+    if (g && !g.querySelector('.grec')) {
+      g.insertAdjacentHTML('beforeend', '<div class="grec" style="font-size:.72rem;color:#27ae60;font-weight:700;margin-top:2px;">📖 ' + träffar.length + ' recept</div>');
+    }
     box.innerHTML =
       `<div style="margin:4px 0 14px;padding:12px 16px;background:#f4fbf6;border-left:4px solid #27ae60;border-radius:10px;">
         <b style="font-size:.9rem;">📖 Recept för den här maskinen (${träffar.length})</b>
@@ -495,10 +724,11 @@ function recommend() {
     <h3>✅ Bästa valet: <b>${top.prog.name}</b> på <b>${top.machine.shortName || top.machine.name}</b></h3>
     <div class="why">${top.prog.desc}<br><b>Tid:</b> ${top.prog.time} · <b>Passar för:</b> ${top.prog.best}.</div>
     ${alts.length ? `<div class="alt"><b>Alternativ:</b> ${alts.map(a =>
-      `${a.prog.name} (${a.machine.shortName || a.machine.name})`).join(" · ")}</div>` : ""}
+      `<button class="chip" style="margin:2px 0;" onclick="visaMaskin('${a.machine.id}')">${a.prog.name} (${a.machine.shortName || a.machine.name})</button>`).join(" ")}</div>` : ""}
+    <div style="margin-top:8px;"><button class="chip" style="border-color:#27ae60;color:#1e8449;font-weight:800;" onclick="visaMaskin('${top.machine.id}')">👀 Visa ${top.machine.shortName || top.machine.name}</button></div>
   </div>`;
 }
 </script>
 <script src="assets/site.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a2f8c729889e1806',t:'MTc4NzQ3NDA2NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>

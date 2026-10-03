@@ -73,8 +73,14 @@
       var repo = parts.length ? parts[0] : user + '.github.io';
       if (location.hostname.indexOf('github.io') === -1) return;   /* lokalt/test → hoppa */
       var ut = [];
+      /* 📁 recept: index-filen (basnamn ur ev. kategorisökvägar) */
+      try {
+        var dIx = await (await fetch('json/recept-index.json', { cache: 'no-store' })).json();
+        if (dIx && dIx.recept) dIx.recept.forEach(function (r) { ut.push(String(r.fil).split('/').pop()); });
+      } catch (e2) {}
       for (var i = 0; i < 2; i++) {
         var mapp = ['recept', 'ratter'][i];
+        if (mapp === 'recept' && ut.length) continue;   /* index räckte */
         var res = await fetch('https://api.github.com/repos/' + user + '/' + repo +
           '/contents/' + mapp + '?ref=main');
         if (!res.ok) { if (mapp === 'recept') return; else continue; }  /* API-fel → avbryt säkert */

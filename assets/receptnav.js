@@ -132,6 +132,13 @@
   async function fetchList() {
     var files = [];
     try {
+      var dIx = await (await fetch((window.__MK_ROT || '../') + 'json/recept-index.json', { cache: 'no-store' })).json();
+      if (dIx && dIx.recept && dIx.recept.length) files = dIx.recept
+        .map(function (r) { return r.fil; })
+        .filter(function (f) { return /\.html?$/i.test(f); })
+        .sort(function (a, b) { return a.localeCompare(b, 'sv'); });
+    } catch (e) {}
+    if (!files.length) try {
       var parts = location.pathname.split('/').filter(Boolean);
       var user = location.hostname.split('.')[0];
       var repo = parts.length > 1 ? parts[0] : user + '.github.io';
@@ -171,7 +178,9 @@
   var prevFile = null, nextFile = null;
 
   getList().then(function (files) {
+    /* 📁 hitta MIN fil även när listan har kategorisökvägar (deg/x.html) */
     var i = files.indexOf(myFile);
+    if (i === -1) i = files.findIndex(function (f) { return f.split('/').pop() === myFile; });
     if (i === -1) return;
     prevFile = i > 0 ? files[i - 1] : null;
     nextFile = i < files.length - 1 ? files[i + 1] : null;
@@ -181,12 +190,12 @@
     if (prevFile) {
       pb.classList.remove('off');
       pb.title = 'Föregående: ' + prevFile.replace(/\.html$/i, '').replace(/[-_]+/g, ' ');
-      pb.addEventListener('click', function () { location.href = encodeURIComponent(prevFile); });
+      pb.addEventListener('click', function () { location.href = (window.__MK_ROT || '../') + 'recept/' + prevFile.split('/').map(encodeURIComponent).join('/'); });
     }
     if (nextFile) {
       nb.classList.remove('off');
       nb.title = 'Nästa: ' + nextFile.replace(/\.html$/i, '').replace(/[-_]+/g, ' ');
-      nb.addEventListener('click', function () { location.href = encodeURIComponent(nextFile); });
+      nb.addEventListener('click', function () { location.href = (window.__MK_ROT || '../') + 'recept/' + nextFile.split('/').map(encodeURIComponent).join('/'); });
     }
     byggSidopilar();
   });

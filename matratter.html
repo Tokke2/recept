@@ -177,7 +177,7 @@ function matcha(namn) {
 /* Läs ett recepts totala näring → per gram */
 async function receptPerGram(fil) {
   try {
-    const html = await (await fetch('recept/' + encodeURIComponent(fil))).text();
+    const html = await (await fetch('recept/' + String(fil).split('/').map(encodeURIComponent).join('/'))).text();
     const doc = new DOMParser().parseFromString(html, 'text/html');
     let tot = { g: 0, kcal: 0, prot: 0, kolh: 0, fett: 0, kr: 0 };
     let rader = 0;
@@ -220,6 +220,10 @@ async function init() {
 
   let files = [];
   try {
+    const d = await (await fetch('json/recept-index.json', { cache: 'no-store' })).json();
+    if (d && d.recept && d.recept.length) files = d.recept.map(r => r.fil).filter(f => /\.html?$/i.test(f));
+  } catch (e) {}
+  if (!files.length) try {
     const parts = location.pathname.split('/').filter(Boolean);
     const user = location.hostname.split('.')[0];
     const repo = parts.length ? parts[0] : user + '.github.io';
