@@ -187,6 +187,18 @@
     "min": 40,
     "moment": "Tillagning (🤖 auto ur receptets meta)"
    }
+  ],
+  "krispigt-grekiskt-lantbrod-air-fryer.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 90,
+    "moment": "Steg 1 – Deg &amp; jäsning (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "cosori-twinfry-10l",
+    "min": 12,
+    "moment": "Steg 4 – Gräddning (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }

@@ -51,3 +51,7 @@
 **2026-10-03**
 
 | krispigt-grekiskt-lantbrod-air-fryer.html | ⚡ energidata skapad: cosori-twinfry-10l 30 min, clatronic-bba3774 180 min |
+
+**2026-10-03**
+
+| krispigt-grekiskt-lantbrod-air-fryer.html | ⚡ energidata skapad: clatronic-bba3774 90 min, cosori-twinfry-10l 12 min |
