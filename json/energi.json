@@ -199,6 +199,18 @@
     "min": 12,
     "moment": "Steg 4 – Gräddning (🤖 auto ur receptets meta)"
    }
+  ],
+  "pulled-kycklinggryta-rotfrukter-vita-bonor.html": [
+   {
+    "maskin": "midea-mb-fs5017",
+    "min": 660,
+    "moment": "Steg 2 – Långkok grytbas (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "yumasia-sakura",
+    "min": 15,
+    "moment": "Steg 4 – Koka rotfrukter (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }
