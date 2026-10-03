@@ -47,3 +47,7 @@
 **2026-09-12**
 
 | ananaskaka-med-svartvinbarssylt-i-riskokare.html | ⚡ energidata skapad: midea-mb-fs5017 40 min |
+
+**2026-10-03**
+
+| krispigt-grekiskt-lantbrod-air-fryer.html | ⚡ energidata skapad: cosori-twinfry-10l 30 min, clatronic-bba3774 180 min |
