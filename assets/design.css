@@ -76,3 +76,27 @@ th {
 @media print {
   header { background: #fff !important; color: #000 !important; }
 }
+
+/* ============ 🎨 V2-POLISH: receptsidornas skärmanpassning ============
+   (laddas centralt på alla recept-/rättsidor – filerna ändras ALDRIG) */
+@media (max-width: 640px) {
+  body { padding: 13px !important; -webkit-text-size-adjust: 100%; }
+  header { padding: 18px 16px !important; border-radius: 14px !important; }
+  header h1 { font-size: 1.22rem !important; line-height: 1.3; }
+  .card { padding: 14px 13px !important; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .machine-step { padding: 11px 12px !important; }
+  .machine-step h3 { font-size: .92rem !important; }
+  table { font-size: .84rem; }
+  th, td { padding: 6px 5px !important; }
+  .hero-img { max-height: 220px !important; border-radius: 10px !important; }
+  ol { padding-left: 19px !important; }
+  .warn, .tip { padding: 10px 12px !important; font-size: .85rem !important; }
+}
+@media (min-width: 1400px) {
+  body { max-width: 980px !important; }   /* lite bredare på stora skärmar */
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+/* skarpare fokusringar överallt (tangentbord/tillgänglighet) */
+a:focus-visible, button:focus-visible { outline: 2.5px solid #e67e22; outline-offset: 2px; }

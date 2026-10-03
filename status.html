@@ -3,6 +3,7 @@
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
+<meta name="theme-color" content="#27ae60">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🩺 Hälsokontroll – Mitt Maskinkök</title>
 <style>
@@ -29,6 +30,51 @@
   .running { color:var(--muted); font-size:.9rem; padding:10px 0; }
   .btn { background:var(--dark); color:#fff; border:none; border-radius:10px; padding:11px 20px; font-weight:700; font-size:.92rem; cursor:pointer; font-family:inherit; }
   footer { text-align:center; color:var(--muted); font-size:.8rem; padding:24px; }
+
+  /* ============ 🎨 V2-POLISH (layout + ikoner + skärmanpassning) ============ */
+  body {
+    background:
+      radial-gradient(circle at 10% 6%, #27ae6012, transparent 32%),
+      radial-gradient(circle at 90% 14%, #2ecc7110, transparent 30%),
+      radial-gradient(circle at 50% 96%, #27ae600d, transparent 40%),
+      var(--bg, #f6f3ee);
+  }
+  header {
+    position: relative; overflow: hidden;
+    background: linear-gradient(120deg, #27ae60 0%, #2ecc71 70%, #58d68d 100%) !important;
+    border-radius: 20px; box-shadow: 0 10px 30px #27ae6040;
+  }
+  header::before {
+    content: '🩺 ✅ 🔍 💚 🩺 ✅ 🔍 💚 🩺 ✅ 🔍 💚';
+    position: absolute; inset: auto -20px -16px -20px;
+    font-size: 1.9rem; opacity: .13; letter-spacing: 14px; white-space: nowrap; pointer-events: none;
+  }
+  header h1 { text-shadow: 0 2px 6px rgba(0,0,0,.15); position: relative; }
+  .card { border-radius: 16px; box-shadow: 0 3px 12px rgba(0,0,0,.07); }
+  .btn, button:not(.mk-rowbtn):not(.tf):not(.chip), .go-btn { transition: transform .13s, opacity .15s, box-shadow .15s; }
+  .btn:hover, .go-btn:hover { transform: translateY(-2px); }
+  .btn:active, .go-btn:active { transform: translateY(0); }
+  input[type=text]:focus, input[type=search]:focus, select:focus, textarea:focus {
+    border-color: #2ecc71 !important; box-shadow: 0 0 0 4px #2ecc711f; outline: none;
+  }
+  a:focus-visible, button:focus-visible { outline: 2.5px solid #2ecc71; outline-offset: 2px; border-radius: 6px; }
+  /* 📱 MOBIL (alla telefoner) */
+  @media (max-width: 640px) {
+    body { padding: 14px !important; -webkit-text-size-adjust: 100%; }
+    header { padding: 20px 18px 18px !important; border-radius: 16px; }
+    header h1 { font-size: 1.3rem !important; }
+    header::before { font-size: 1.3rem; opacity: .1; }
+    .card { padding: 15px 14px !important; }
+    .btn, .go-btn { width: 100%; margin-right: 0 !important; text-align: center; }
+    .card { overflow-x: auto; -webkit-overflow-scrolling: touch; }  /* breda tabeller skrollar i kortet */
+    table { font-size: .84rem; }
+    th, td { padding: 7px 6px !important; }
+    input[type=text], select { font-size: 16px !important; }  /* stoppar iOS-zoom vid fokus */
+  }
+  /* 💻 STOR SKÄRM: lite mer luft */
+  @media (min-width: 1200px) { body { padding-top: 32px; } }
+  /* ♿ mindre rörelse */
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 <link rel="stylesheet" href="assets/print.css">
 </head>

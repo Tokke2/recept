@@ -92,6 +92,16 @@ En statisk sajt på GitHub Pages (gratis) med matlagningsmaskiner och recept.
 │                              generellt, "saftig" triggar ej saft). Standardvyn
 │                              visar rubriker per kategori; kategoripiller
 │                              filtrerar. Kombinerbart med maskinflikarna & sök.
+│  🎨 V2-POLISH (alla sidor, 2026-10): recept/matratter/ingredienser/
+│     forslag/status har appendad "V2-POLISH"-CSS sist i <style>
+│     (ändrar ALDRIG html/JS): tema-gradient-header med emoji-mönster
+│     per sida (recept=röd, maträtter=teal, varor=orange, förslag=blå,
+│     status=grön) + theme-color-meta, hover-lyft på knappar, fokus-
+│     ringar (a11y), 📱 mobilblock (fullbreddsknappar, tabell-skroll i
+│     kortet, 16px-inputs stoppar iOS-zoom), prefers-reduced-motion.
+│     assets/design.css: centralt mobilblock för ALLA recept-/rätt-
+│     sidor (padding/h1/tabeller/hero/machine-step skalas) – recept-
+│     filerna ändras aldrig (Centralt-principen).
 ├── maskindatabas.html      Maskindatabas med programförslag ("vad ska du laga?")
 │                              🎨 DESIGN v2 (färgglad + mobilanpassad):
 │                              header med flerfärgsgradient, emoji-mönster och
