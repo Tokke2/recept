@@ -92,8 +92,12 @@ th {
   ol { padding-left: 19px !important; }
   .warn, .tip { padding: 10px 12px !important; font-size: .85rem !important; }
 }
-@media (min-width: 1400px) {
-  body { max-width: 980px !important; }   /* lite bredare på stora skärmar */
+/* 📐 FULLBREDD men CENTRERAT (användarens regel): receptsidor växer med
+   skärmen (läsvänligt tak 1150px) och är ALLTID centrerade */
+body {
+  max-width: min(1150px, 94vw) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }

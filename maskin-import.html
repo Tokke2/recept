@@ -138,6 +138,10 @@
     .typgrid { grid-template-columns:repeat(3,1fr); }
     .robotbtn { font-size:.95rem; padding:15px 16px; }
   }
+
+  /* 📐 FULLBREDD men CENTRERAT (användarens regel): innehållet växer
+     med skärmen upp till 1460px och ligger alltid i mitten */
+  body { max-width: min(1460px, 95vw) !important; margin-left: auto !important; margin-right: auto !important; }
 </style>
 <link rel="stylesheet" href="assets/print.css">
 </head>

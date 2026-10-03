@@ -92,6 +92,14 @@ En statisk sajt på GitHub Pages (gratis) med matlagningsmaskiner och recept.
 │                              generellt, "saftig" triggar ej saft). Standardvyn
 │                              visar rubriker per kategori; kategoripiller
 │                              filtrerar. Kombinerbart med maskinflikarna & sök.
+│  📐 FULLBREDD men CENTRERAT (användarens regel, 2026-10): alla
+│     sidor har "FULLBREDD men CENTRERAT"-CSS sist i <style>:
+│     innehållet växer med skärmen (max-width: min(1460px, 95vw))
+│     och margin auto !important garanterar centrering överallt.
+│     Fullbleed-hero-sidor (index/recept) breddar CONTAINERN
+│     (.wrap/.nav-cards) istället – heron täcker fortsatt hela
+│     bredden. Receptsidorna via design.css: min(1150px, 94vw)
+│     (läsvänligt tak) + centrerings-garanti.
 │  🎨 V2-POLISH (alla sidor, 2026-10): recept/matratter/ingredienser/
 │     forslag/status har appendad "V2-POLISH"-CSS sist i <style>
 │     (ändrar ALDRIG html/JS): tema-gradient-header med emoji-mönster

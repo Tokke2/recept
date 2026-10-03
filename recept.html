@@ -176,6 +176,10 @@
   @media (min-width: 1200px) { body { padding-top: 32px; } }
   /* ♿ mindre rörelse */
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+  /* 📐 FULLBREDD men CENTRERAT (användarens regel) */
+  .wrap { max-width: min(1460px, 95vw) !important; margin-left: auto !important; margin-right: auto !important; }
+  .nav-cards { max-width: min(1460px, 95vw) !important; margin-left: auto !important; margin-right: auto !important; }
 </style>
 <link rel="stylesheet" href="assets/print.css">
 </head>
