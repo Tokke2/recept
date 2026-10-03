@@ -1940,8 +1940,18 @@ data i json/, ALDRIG per receptfil.
     kocklägets sista steg ("Kolla med termometer: 94–96°C").
     Perfekt för bröd (lantbrödet) och kött (pulled kyckling 95°C).
 
-68. 📁 FYSISKA KATEGORIMAPPAR (BESTÄLLD 2026-10 – pågår, väntar på
-    GitHub-token): recepten flyttas till recept/<kategori>/ (deg,
+68. 📁 FYSISKA KATEGORIMAPPAR ✔️ STEG 1+2 KLARA & LIVE (2026-10-03,
+    push 4d4f0a1 + df002ee via användarens GitHub-token):
+    25 recept flyttade till recept/<kategori>/ med stubbar på gamla
+    adresserna och json/recept-index.json som modulernas sanning.
+    ⏳ ÅTERSTÅR: robotfilerna (.github/workflows/) kunde inte pushas –
+    token saknar Workflows-rättighet (lägg till "Workflows: Read and
+    write" på token ELLER ladda upp de 4 filerna manuellt). Utan dem
+    ser robotarna inte undermapparna (sitemap/index uppdateras fel
+    tills de är uppe!). 🔑 ARBETSFLÖDE HÄDANEFTER: agenten pushar
+    direkt via token (sparad i /flytt/gh-token.txt utanför repot) –
+    inga uppladdningslistor utom för .github/-filer tills scope lagts
+    till. Ursprunglig plan: recepten flyttas till recept/<kategori>/ (deg,
     brod, bakning, glass, husdjur, saft, snacks, varmratt, sylt –
     samma id:n som recept.html:s KATEGORIER). Flyttscript FÄRDIGT
     & TESTAT (utanför repot): flyttar 20 filer, skriver om relativa
