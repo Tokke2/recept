@@ -2017,6 +2017,36 @@ data i json/, ALDRIG per receptfil.
     ovrigt/) med sökvägsomskrivning; kvarglömda stubbar raderas;
     MALL/sökmotorfiler rörs aldrig.
 
+69. 🔄 LÅG↔HÖG-VÄXLARE (förslag 502): Crock-Pot-recept får knapp i
+    maskinrutan som räknar om tiden LÅG↔HÖG (11 h LÅG ≈ 5,5 h HÖG,
+    faktor ~2). Endast visning – filen ändras inte (mk-lägesval
+    per besökare i localStorage).
+
+70. 📜 ÄNDRINGSLOGG-SIDA (förslag 500): robot genererar "Nytt på
+    sajten"-sida ur git-historiken – nya recept/maskiner/funktioner
+    grupperade per vecka. Länk i sidfoten.
+
+71. 🔍 STAVNINGSTÅLIG RECEPTSÖK (förslag 516): Levenshtein-
+    matchningen från kalkyl.js återanvänds i receptsamlingens sök
+    ("piza" hittar pizzadegen, "jogurt" hittar yoghurt-recepten).
+
+72. 🧯 BILDROBOT (förslag 519): recept utan foto får sin hero-SVG
+    renderad till riktig jpg via Actions (node-canvas i CI) →
+    images/recept/<fil>.jpg skapas automatiskt → bilder även i
+    delningar (og:image) och Google. Skriver ALDRIG över riktiga
+    foton – endast när bild saknas helt.
+
+73. 📷 BESÖKARBILDER "JAG LAGADE DETTA" (användarens beställning):
+    efter avslutat kockläge (eller via knapp på receptsidan) kan
+    man ladda upp sin bild på resultatet. Flöde: bilden krymps i
+    webbläsaren (canvas, max 1200px, samma teknik som verifierad.js)
+    → admin inloggad: sparas direkt till images/recept/galleri/
+    <fil>-N.jpg via token · besökare: skickas till granskningskön
+    (Web3Forms-mail till ägaren) – publiceras EFTER godkännande.
+    Bilderna visas som litet galleri under hero-bilden med
+    "📷 lagad av besökare"-märkning. Aldrig automatisk publicering
+    av främmande bilder (modereringsregel).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
