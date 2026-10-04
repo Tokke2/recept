@@ -50,4 +50,18 @@ jobs:
           git config user.name "maskinkok-konverterare"
           git config user.email "actions@users.noreply.github.com"
           git add recept/ json/
-          git diff --cached --quiet && echo "Inga ändringar." || (git commit -m "Auto-konvertering: nya recept till standardutformningen" && git push)
+          if git diff --cached --quiet; then echo "Inga ändringar."; exit 0; fi
+          git commit -m "Auto-konvertering: nya recept till standardutformningen"
+          for i in 1 2 3; do
+            if git push; then exit 0; fi
+            echo "Push-krock (försök $i) – hämtar om, kör om roboten mot färska main..."
+            git fetch origin main
+            git reset --hard origin/main
+            python3 .github/workflows/konvertera.py
+            python3 .github/workflows/ingrediens-import.py || true
+            git add recept/ json/
+            if git diff --cached --quiet; then echo "Inget nytt efter omkörning."; exit 0; fi
+            git commit -m "Auto-konvertering: nya recept till standardutformningen"
+            sleep 5
+          done
+          echo "Gav upp efter 3 försök – nästa trigger tar det."; exit 1

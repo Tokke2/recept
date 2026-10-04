@@ -105,9 +105,16 @@ jobs:
             DATUM=$(TZ=Europe/Stockholm date +%F)
             git commit -m "🗄️ Veckobackup av ingrediensdatabasen ($DATUM)"
             for i in 1 2 3; do
-              if git push; then break; fi
-              echo "Push-krock (försök $i) – rebasar..."
-              git pull --rebase origin main
+              if git push; then exit 0; fi
+              echo "Push-krock (försök $i) – hämtar om, kör om roboten mot färska main..."
+              git fetch origin main
+              git reset --hard origin/main
+              DATUM=$(TZ=Europe/Stockholm date +%F)
+              cp json/ingredienser.json "backup/ingredienser-$DATUM.json"
+              git add backup/
+              if git diff --cached --quiet; then echo "Inget nytt efter omkörning."; exit 0; fi
+              git commit -m "🗄️ Veckobackup av ingrediensdatabasen"
               sleep 5
             done
+            echo "Gav upp efter 3 försök – nästa trigger tar det."; exit 1
           fi

@@ -51,9 +51,15 @@ jobs:
             git commit -m "🩹 Självläkning: effekt/energi/bildvägar ($(date +%F))"
             # Krocktålig push: andra robotar kan pusha samtidigt → 3 försök med rebase
             for i in 1 2 3; do
-              if git push; then break; fi
-              echo "Push-krock (försök $i) – rebasar och provar igen..."
-              git pull --rebase origin main
+              if git push; then exit 0; fi
+              echo "Push-krock (försök $i) – hämtar om, kör om roboten mot färska main..."
+              git fetch origin main
+              git reset --hard origin/main
+              python3 .github/workflows/sjalvlakning.py
+              git add -A json/ recept/ ratter/ backup/ sitemap.xml
+              if git diff --cached --quiet; then echo "Inget nytt efter omkörning."; exit 0; fi
+              git commit -m "🩹 Självläkning: effekt/energi/bildvägar ($(date +%F))"
               sleep 5
             done
+            echo "Gav upp efter 3 försök – nästa trigger tar det."; exit 1
           fi

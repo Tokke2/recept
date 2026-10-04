@@ -48,9 +48,15 @@ jobs:
           else
             git commit -m "🤖 Maskinimport: nya maskiner via länk-kön"
             for i in 1 2 3; do
-              if git push; then break; fi
-              echo "Push-krock (försök $i) – rebasar..."
-              git pull --rebase origin main
+              if git push; then exit 0; fi
+              echo "Push-krock (försök $i) – hämtar om, kör om roboten mot färska main..."
+              git fetch origin main
+              git reset --hard origin/main
+              python3 .github/workflows/maskin-robot.py
+              git add json/maskiner/ json/maskiner-index.json json/maskin-ko.txt images/
+              if git diff --cached --quiet; then echo "Inget nytt efter omkörning."; exit 0; fi
+              git commit -m "🤖 Maskinimport: nya maskiner via länk-kön"
               sleep 5
             done
+            echo "Gav upp efter 3 försök – nästa trigger tar det."; exit 1
           fi
