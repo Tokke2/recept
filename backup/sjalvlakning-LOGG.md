@@ -82,3 +82,9 @@
 | krispigt-grekiskt-lantbrod-bakmaskin.html | ⚡ energidata skapad: clatronic-bba3774 180 min, clatronic-bba3774 20 min |
 | sitemap.xml | 🗺️ omgenererad (36 adresser) |
 | json/recept-index.json | 📁 omgenererad (26 recept) |
+
+**2026-10-04**
+
+| grona-tomat-chips.html | ⚡ energidata skapad: vevor-sus420 10 min, wmf-snacktogo 480 min |
+| sitemap.xml | 🗺️ omgenererad (37 adresser) |
+| json/recept-index.json | 📁 omgenererad (27 recept) |

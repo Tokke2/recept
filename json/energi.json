@@ -235,6 +235,18 @@
     "min": 20,
     "moment": "Eftergräddning för krispig skorpa (🤖 auto ur receptets meta)"
    }
+  ],
+  "grona-tomat-chips.html": [
+   {
+    "maskin": "vevor-sus420",
+    "min": 10,
+    "moment": "Steg 1 (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "wmf-snacktogo",
+    "min": 480,
+    "moment": "Alternativ (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }
