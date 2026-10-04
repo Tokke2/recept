@@ -724,7 +724,21 @@ En statisk sajt på GitHub Pages (gratis) med matlagningsmaskiner och recept.
 │   │                          när tabellen har Torrjäst, "mjölk" inte vid
 │   │                          havremjölk). Träffar → samma 🧹-panel
 │   │                          (textCleanup tar nu valfri kandidatlista som
-│   │                          andra argument). Fångade pizzadeg-fallet:
+│   │                          andra argument). 🏁 KAPPLÖPNINGS-FIX (lärdom av
+│   │                          live-falsklarm "vetemjöl saknas" på stekta
+│   │                          gröna tomater): skannern kunde läsa HALVBYGGD
+│   │                          tabell medan ingrediens.js byggde om den. Nu:
+│   │                          ① STABILITETSVAKT (vantaStabilTabell) – radantal
+│   │                          måste vara oförändrat två mätningar i rad (500ms
+│   │                          mellanrum, max ~8s; instabilt → ingen skanning
+│   │                          alls, hellre inget än fel) ② FÖRSLAGS-LÄGE:
+│   │                          skannerns fynd auto-appliceras ALDRIG längre –
+│   │                          varje fynd visas som 🧹-förslag med före/efter +
+│   │                          "✔ Städa"/"Behåll"-knappar (textCleanup tredje
+│   │                          argument forslagsLage; provaRensaEl returnerar
+│   │                          nyText utan att applicera). BORTTAGNINGS-flödet
+│   │                          (🗑️/✕) auto-applicerar som förut med ↩️ Ångra –
+│   │                          regressionstestat. Fångade pizzadeg-fallet:
 │   │                          majsmjöl borttaget live med GAMLA redigera.js
 │   │                          → låg kvar i "Tillsätt vetemjöl, majsmjöl och
 │   │                          proteinpulver" tills skannern städar.

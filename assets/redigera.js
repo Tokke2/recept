@@ -531,6 +531,7 @@
     if (harOrd(provText, kandidater)) return { ok: false };
     return {
       ok: true,
+      nyText: provText.replace(/\s+/g, ' ').trim(),
       apply: function () { plan.forEach(function (p) { p.nd.nodeValue = p.ny; }); }
     };
   }
@@ -554,17 +555,21 @@
     });
   }
 
-  function textCleanup(namn, kandidaterIn) {
+  function textCleanup(namn, kandidaterIn, forslagsLage) {
     var kandidater = kandidaterIn || ordKandidater(namn);
     if (!kandidater.length) return;
-    var safe = [], fragor = [];
+    var safe = [], fragor = [], forslag = [];
     textElement().forEach(function (el) {
       if (!harOrd(el.textContent, kandidater)) return;
       var före = el.innerHTML;
       var res = provaRensaEl(el, kandidater);
-      if (res.ok) {
-        var föreText = el.textContent.replace(/\s+/g, ' ').trim();
-        res.apply();                       /* ✅ säkert → städas direkt */
+      var föreText = el.textContent.replace(/\s+/g, ' ').trim();
+      if (res.ok && forslagsLage) {
+        /* 🛡️ SKANNERNS FYND = ENDAST FÖRSLAG (lärdom: falsklarm om
+           tabellen hinner byggas om) – användaren klickar ✔ Städa */
+        forslag.push({ el: el, apply: res.apply, foreText: föreText, nyText: res.nyText });
+      } else if (res.ok) {
+        res.apply();                       /* ✅ borttagnings-flödet → städas direkt */
         safe.push({ el: el, foreHtml: före, foreText: föreText,
                     nyText: el.textContent.replace(/\s+/g, ' ').trim() });
       } else {
@@ -577,9 +582,9 @@
       var mNy = rensaText(meta.getAttribute('content'), kandidater);
       if (!harOrd(mNy, kandidater)) meta.setAttribute('content', mNy);
     }
-    if (!safe.length && !fragor.length) return;
-    dirty = true;
-    visaTxtPanel(safe, fragor, namn);
+    if (!safe.length && !fragor.length && !forslag.length) return;
+    if (safe.length || fragor.length) dirty = true;   /* förslag smutsar först vid ✔ */
+    visaTxtPanel(safe, fragor, namn, forslag);
   }
 
   /* ============================================================
@@ -598,9 +603,27 @@
        · hittas något → samma 🧹-panel med Ångra/❓-frågor
      ============================================================ */
   var orphanScanKord = false;
+  /* ⏳ STABILITETSVAKT (lärdom: skannern hann läsa HALVBYGGD tabell →
+     "vetemjöl saknas"-falsklarm): vänta tills radantalet är OFÖRÄNDRAT
+     i två mätningar i rad (ingrediens.js/kalkyl.js klara). Blir det
+     aldrig stabilt → skanna INTE alls (hellre ingen skanning än fel). */
+  function vantaStabilTabell() {
+    return new Promise(function (klar) {
+      var forra = -1, forsok = 0;
+      (function koll() {
+        var tbl = ingTable();
+        var n = tbl ? tbl.querySelectorAll('tr').length : 0;
+        if (n >= 2 && n === forra) return klar(true);
+        forra = n;
+        if (++forsok > 16) return klar(false);   /* ~8 s – ge upp tyst */
+        setTimeout(koll, 500);
+      })();
+    });
+  }
   async function skannaForaldralosa() {
     if (orphanScanKord) return;
     orphanScanKord = true;
+    if (!(await vantaStabilTabell())) return;
     var tbl = ingTable();
     if (!tbl) return;
     /* alla kandidatord som FINNS i tabellen */
@@ -637,8 +660,8 @@
     });
     var ord = Object.keys(traffade);
     if (!ord.length) return;
-    /* samma städflöde som vid borttagning – alla orden i EN panel */
-    textCleanup('🧹 Borttagna ingredienser: ' + ord.join(', '), ord);
+    /* FÖRSLAGS-LÄGE: skannern ändrar ALDRIG själv – ✔ Städa krävs */
+    textCleanup('🧹 Omnämnda men saknas i tabellen: ' + ord.join(', '), ord, true);
   }
 
   /* ============================================================
@@ -838,7 +861,8 @@
     });
   }
 
-  function visaTxtPanel(safe, fragor, namn) {
+  function visaTxtPanel(safe, fragor, namn, forslag) {
+    forslag = forslag || [];
     var old = document.getElementById('mk-txt');
     if (old) old.remove();
     var box = document.createElement('div');
@@ -846,6 +870,13 @@
     box.className = 'no-print';
     box.contentEditable = 'false';
     var h = '<h4>🧹 <b>' + namn.slice(0, 40) + '</b> togs bort – texten städas</h4>';
+    forslag.forEach(function (f, i) {
+      h += '<div class="trad fraga" data-foi="' + i + '">🧹 Förslag – städa bort ur texten?<br>' +
+        '<span class="told">' + f.foreText.slice(0, 110) + '</span><br>' +
+        '<span class="tny">' + (f.nyText.slice(0, 110) || '(raden blir tom)') + '</span>' +
+        '<div class="trow"><button class="tja" data-stada="' + i + '" style="background:#27ae60;">✔ Städa</button>' +
+        '<button class="tnej" data-fbehall="' + i + '">Behåll</button></div></div>';
+    });
     safe.forEach(function (s, i) {
       h += '<div class="trad" data-si="' + i + '">✅ Omskrivet:<br>' +
         '<span class="told">' + s.foreText.slice(0, 110) + '</span><br>' +
@@ -864,7 +895,13 @@
     box.addEventListener('click', function (e) {
       var b = e.target.closest('button');
       if (!b) return;
-      if (b.dataset.angra !== undefined) {
+      if (b.dataset.stada !== undefined) {
+        var fo = forslag[+b.dataset.stada];
+        if (fo) { fo.apply(); dirty = true; markDirty(); }
+        b.closest('.trad').remove();
+      } else if (b.dataset.fbehall !== undefined) {
+        b.closest('.trad').remove();
+      } else if (b.dataset.angra !== undefined) {
         var s = safe[+b.dataset.angra];
         if (s) s.el.innerHTML = s.foreHtml;
         b.closest('.trad').remove();
