@@ -2081,6 +2081,18 @@ data i json/, ALDRIG per receptfil.
     Framtida koppling: butiksval/priser (roadmap-idéerna 479/506/
     552/559 kan bygga vidare på samma lista).
 
+80. 🥫 BURKSALDO (förslag 592): recept med "även ingrediens"-flaggan
+    (sylt/sås/buljong, 🫙-poster) får LAGERSALDO: efter avslutat
+    kockläge (eller via knapp på receptsidan) frågar sajten "hur
+    många burkar/gram blev det?" → saldot sparas på 🫙-posten i
+    ingrediensdatabasen (nytt fält lager_g + lager_datum, skrivs
+    via spara.js = ägarens data, aldrig robot). När ANDRA recept
+    använder ingrediensen (kalkylens matchning) kan saldot räknas
+    ner med "jag använde X g"-knapp. Ingredienssidan visar saldo-
+    pill ("🫙 ~480 g kvar, kokt 3 okt") + varning när det tryter
+    ("dags att koka svartvinbärssylt igen – recept här →").
+    Kopplas till hållbarhetsdatum (punkt 36) när den byggs.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
