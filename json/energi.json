@@ -254,6 +254,13 @@
     "min": 15,
     "moment": "Steg 4 (🤖 auto ur receptets meta)"
    }
+  ],
+  "gron-tomatketchup.html": [
+   {
+    "maskin": "midea-mb-fs5017",
+    "min": 5,
+    "moment": "Steg 1 (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }

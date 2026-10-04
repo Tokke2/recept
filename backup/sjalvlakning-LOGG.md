@@ -94,3 +94,9 @@
 | stekta-grona-tomater-air-fryer.html | ⚡ energidata skapad: cosori-twinfry-10l 15 min |
 | sitemap.xml | 🗺️ omgenererad (38 adresser) |
 | json/recept-index.json | 📁 omgenererad (28 recept) |
+
+**2026-10-04**
+
+| gron-tomatketchup.html | ⚡ energidata skapad: midea-mb-fs5017 5 min |
+| sitemap.xml | 🗺️ omgenererad (39 adresser) |
+| json/recept-index.json | 📁 omgenererad (29 recept) |
