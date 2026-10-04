@@ -88,3 +88,9 @@
 | grona-tomat-chips.html | ⚡ energidata skapad: vevor-sus420 10 min, wmf-snacktogo 480 min |
 | sitemap.xml | 🗺️ omgenererad (37 adresser) |
 | json/recept-index.json | 📁 omgenererad (27 recept) |
+
+**2026-10-04**
+
+| stekta-grona-tomater-air-fryer.html | ⚡ energidata skapad: cosori-twinfry-10l 15 min |
+| sitemap.xml | 🗺️ omgenererad (38 adresser) |
+| json/recept-index.json | 📁 omgenererad (28 recept) |

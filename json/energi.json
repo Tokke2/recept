@@ -247,6 +247,13 @@
     "min": 480,
     "moment": "Alternativ (🤖 auto ur receptets meta)"
    }
+  ],
+  "stekta-grona-tomater-air-fryer.html": [
+   {
+    "maskin": "cosori-twinfry-10l",
+    "min": 15,
+    "moment": "Steg 4 (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }
