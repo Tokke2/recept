@@ -349,36 +349,96 @@ PROGRAMORD = [
 ]
 
 
+def tid_ur(s):
+    """'12-15 min', '1,5 h', '60 minutes' → normaliserad sträng eller ''."""
+    m = re.search(r'(\d+(?:[.,:]\d+)?)\s*(?:[-–—]\s*(\d+(?:[.,:]\d+)?))?\s*'
+                  r'(min(?:ute[rs]?|uter)?|h(?:ours?|rs?)?\b|tim(?:me|mar)?)', s, re.I)
+    if not m:
+        return ''
+    enhet = 'h' if m.group(3).lower().startswith(('h', 'tim')) else 'min'
+    if m.group(2):
+        return '%s–%s %s' % (m.group(1), m.group(2), enhet)
+    return '%s %s' % (m.group(1), enhet)
+
+
+def temp_ur(s):
+    """'180°C', '160-200 °C', '390 °F' → sträng eller ''. °C föredras."""
+    for enh in ('C', 'F'):
+        m = re.search(r'(\d{2,3})\s*(?:[-–—]\s*(\d{2,3}))?\s*°\s*' + enh + r'\b', s)
+        if m:
+            if m.group(2):
+                return '%s–%s°%s' % (m.group(1), m.group(2), enh)
+            return '%s°%s' % (m.group(1), enh)
+    return ''
+
+
+def watt_ur_text(text):
+    """Effekt ur manual-/sidtext: 'Power: 1700W', 'Effekt 400 W'.
+       Rimlighetsfilter 100–3500 W; etikettrad vinner över lösryckt tal."""
+    for monster in (r'(?:power|effekt|rated|wattage|leistung)\s*[:=]?\s*(\d{3,4})\s*W\b',
+                    r'(\d{3,4})\s*W\b'):
+        for m in re.finditer(monster, text, re.I):
+            w = int(m.group(1))
+            if 100 <= w <= 3500:
+                return w
+    return 0
+
+
+def program_ur_text(text):
+    """🔬 RESEARCH v2 (användarens beställning): program MED tid/temp.
+       Skannar raderna; rad (+nästa rad) som innehåller ett PROGRAMORD
+       genomsöks efter tid och temperatur. ENDAST det som faktiskt står
+       i texten används – aldrig gissningar. Returnerar (poster, watt)."""
+    rader = [r.strip() for r in text.split('\n')]
+    poster, sedda = [], {}
+    for i, rad in enumerate(rader):
+        rl = rad.lower()
+        for ord_ in PROGRAMORD:
+            if ord_ not in rl:
+                continue
+            kontext = rad + ' ' + (rader[i + 1] if i + 1 < len(rader) else '')
+            tid, temp = tid_ur(kontext), temp_ur(kontext)
+            if ord_ not in sedda:
+                sedda[ord_] = {'namn': ord_.title(), 'tid': tid, 'temp': temp}
+                poster.append(sedda[ord_])
+            else:  # första förekomsten MED tid/temp vinner
+                if tid and not sedda[ord_]['tid']:
+                    sedda[ord_]['tid'] = tid
+                if temp and not sedda[ord_]['temp']:
+                    sedda[ord_]['temp'] = temp
+    return poster, watt_ur_text(text)
+
+
 def program_ur_pdf(pdf_url):
-    """Försök läsa programnamn ur manual-PDF (kräver pypdf).
-       Returnerar lista av programnamn – tider måste alltid verifieras."""
+    """Läser manual-PDF (pypdf) → (program-poster med tid/temp, watt ur PDF).
+       Hittas inget gissar roboten ALDRIG."""
     if not pdf_url:
-        return []
+        return [], 0
     try:
         from pypdf import PdfReader
     except ImportError:
         print('ℹ️  pypdf saknas – hoppar över PDF-läsning')
-        return []
+        return [], 0
     data = hamta_bin(pdf_url, max_mb=15)
     if not data or data[:4] != b'%PDF':
-        return []
+        return [], 0
     try:
         import io
         text = ''
         lasare = PdfReader(io.BytesIO(data))
         for sida in lasare.pages[:40]:
             text += (sida.extract_text() or '') + '\n'
-        text_lc = text.lower()
-        hittade = []
-        for ord_ in PROGRAMORD:
-            if ord_ in text_lc and ord_ not in [h.lower() for h in hittade]:
-                hittade.append(ord_.title())
-        if hittade:
-            print('📖 Program ur manualen: %s' % ', '.join(hittade))
-        return hittade
+        poster, pdf_watt = program_ur_text(text)
+        if poster:
+            print('📖 Program ur manualen: %s' % ', '.join(
+                p['namn'] + ((' (' + (p['tid'] or '') + (' @ ' + p['temp'] if p['temp'] else '') + ')')
+                             if (p['tid'] or p['temp']) else '') for p in poster))
+        if pdf_watt:
+            print('⚡ Effekt ur manualen: %d W' % pdf_watt)
+        return poster, pdf_watt
     except Exception as e:
         print('ℹ️  PDF-läsning misslyckades: %s' % e)
-        return []
+        return [], 0
 
 
 def hitta_tillverkarsida(varumarke, modell):
@@ -532,7 +592,11 @@ def bygg_maskin(urls):
     # 3) 📖 MANUAL-JAKT i flera steg: tillverkarsidan → PDF-sökning →
     #    manualsida. Verifierade PDF:er läses för programnamn.
     manual_pdf, manual_sida = sok_manual(varumarke, modell, tillv_html, tillv_url)
-    pdf_program = program_ur_pdf(manual_pdf)
+    pdf_program, pdf_watt = program_ur_pdf(manual_pdf)
+    # ⚡ effekt-prio: produktnamn/slug → manual-PDF → uppskattning (flaggad)
+    effekt_kalla = 'ur produktnamnet (Amazon-länkens titel)' if watt else ''
+    if not watt and pdf_watt:
+        watt, effekt_kalla = pdf_watt, 'ur bruksanvisningen (PDF)'
 
     # Länkar: ENDAST det som faktiskt HITTATS – aldrig sök-platshållare.
     lankar = {'kop': ('https://www.amazon.se/dp/%s/' % asin) if asin else (amazon_url or tillv_url)}
@@ -547,14 +611,21 @@ def bygg_maskin(urls):
     # 4) Program: ENDAST ur manual-PDF:en – roboten GISSAR ALDRIG.
     #    Hittas inget UTELÄMNAS programlistan HELT (inga platshållare,
     #    inga varningstexter – användarens beställning).
-    program = [{
-        'namn': p,
-        'typ': 'Ur manualen',
-        'standardtid': 'SE MANUALEN',
-        'beskrivning': 'Programnamnet hittades i bruksanvisningen – VERIFIERA tid/temperatur där!',
-        'bast_for': '...',
-        'nyckelord': [p.lower()],
-    } for p in pdf_program]
+    program = []
+    for p in pdf_program:
+        std = p['tid'] or ''
+        if p['temp']:
+            std = (std + ' @ ' + p['temp']).strip(' @')
+        program.append({
+            'namn': p['namn'],
+            'typ': 'Ur manualen',
+            'standardtid': std or 'SE MANUALEN',
+            'beskrivning': ('Tid/temperatur hittades på programmets rad i bruksanvisningen – dubbelkolla!'
+                            if std else
+                            'Programnamnet hittades i bruksanvisningen – VERIFIERA tid/temperatur där!'),
+            'bast_for': '...',
+            'nyckelord': [p['namn'].lower()],
+        })
 
     maskin = {
         '_plats': '/json/maskiner/%s.json  (en maskinfil per maskin – läses in automatiskt)' % mid,
@@ -564,7 +635,7 @@ def bygg_maskin(urls):
         'varumarke': varumarke or 'FYLL I',
         'modellnamn': modell or 'FYLL I',
         'effekt_w': watt or 1000,
-        'effekt_kalla': 'ur produktnamnet' if watt else 'UPPSKATTAD av roboten – kontrollera!',
+        'effekt_kalla': effekt_kalla if watt else 'UPPSKATTAD av roboten – kontrollera!',
         'egenskaper': (hitta_specs(namn, sok, extra, tillv_html[:40000] if tillv_html else '') or
                        ['🤖 Importerad automatiskt – kontrollera uppgifterna']),
         'lankar': lankar,
