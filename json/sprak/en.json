@@ -2575,7 +2575,23 @@
   "Steg 1: VEVOR SUS420 · Skivning (justerbar 0–15 mm) 10 min | Alternativ: WMF 0415250011 · Grönsaker (50–55°C) 6–10 h": "Step 1: VEVOR SUS420 · Slicing (adjustable 0-15mm) 10 min | Alternative: WMF 0415250011 · Vegetables (50–55°C) 6–10 h",
   "Torka på Grönsaker ⏱ 8–10 h, vänd efter halva tiden. Chipsen är klara när de är krispiga när de svalnat.": "Dry on Vegetables ⏱ 8–10 h, turn halfway through. The chips are ready when they are crispy when cooled.",
   "🍟 Gröna tomat-chips": "🍟 Green tomato chips",
-  "🍟 Gröna tomat-chips – Recept": "🍟 Green tomato chips - Recipe"
+  "🍟 Gröna tomat-chips – Recept": "🍟 Green tomato chips - Recipe",
+  "55 g (1 st)": "55 g (1 pc)",
+  "Gouda riven": "Gouda grated",
+  "Gröna tomater (egna, 1 cm skivor)": "Green tomatoes (own, 1 cm slices)",
+  "Krispiga panerade gröna tomater med ost, stekta i airfryer utan massor av olja. 4 portioner, ~180 kcal/portion.": "Crispy breaded green tomatoes with cheese, fried in an air fryer without lots of oil. 4 portions, ~180 kcal/portion.",
+  "Kör Air Fry 180°C, 15 min. Vänd skivorna efter ⏱ 8 min och spreja lätt på den andra sidan.": "Run Air Fry 180°C, 15 min. Turn the slices over after ⏱ 8 min and lightly spray the other side.",
+  "Lägg skivorna i airfryer-korgen i ett lager (gör i två omgångar om du har den mindre zonen). Spreja lätt med rapsolja ovanpå.": "Place the slices in the airfryer basket in a single layer (do in two batches if you have the smaller zone). Spray lightly with canola oil on top.",
+  "Låt vila ⏱ 2 min innan servering. Servera gärna med en klick créme fraîche eller yoghurt.": "Let rest ⏱ 2 min before serving. Serve with a dollop of crème fraîche or yogurt.",
+  "Rapsolja (till spray)": "Rapeseed oil (for spray)",
+  "Skär de gröna tomaterna i jämna 1 cm tjocka skivor. Torka lätt med hushållspapper. ⏱ 5 min": "Cut the green tomatoes into even 1 cm thick slices. Dry lightly with paper towels. ⏱ 5 min",
+  "Steg 4: COSORI CAF-TF101S (Dual Blaze TwinFry) · Air Fry 15 min": "Step 4: COSORI CAF-TF101S (Dual Blaze TwinFry) · Air Fry 15 min",
+  "Stekta gröna tomater – Air Fryer": "Fried Green Tomatoes – Air Fryer",
+  "Vispa ägget lätt i en djup tallrik. Blanda vetemjöl, riven gouda och salt i en annan tallrik.": "Beat the egg lightly in a deep plate. Mix wheat flour, grated gouda and salt in another plate.",
+  "Vänd varje tomatskiva först i ägget, sedan i mjöl-ost-blandningen så det täcker jämnt. Tryck till lätt så paneringen fastnar.": "Dip each tomato slice first in the egg, then in the flour-cheese mixture so that it covers evenly. Press lightly so the breading sticks.",
+  "⚙️ Steg 4: COSORI CAF-TF101S (Dual Blaze TwinFry) ·": "⚙️ Step 4: COSORI CAF-TF101S (Dual Blaze TwinFry) ·",
+  "🍅 Stekta gröna tomater – Air Fryer": "🍅 Fried green tomatoes - Air Fryer",
+  "🍅 Stekta gröna tomater – Air Fryer – Recept": "🍅 Fried green tomatoes - Air Fryer - Recipe"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2585,6 +2601,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2574,
+ "_auto_genererade": 2590,
  "_senast_robot": "2026-10-04"
 }

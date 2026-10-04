@@ -2677,13 +2677,31 @@
   "Steg 1: VEVOR SUS420 · Skivning (justerbar 0–15 mm) 10 min | Alternativ: WMF 0415250011 · Grönsaker (50–55°C) 6–10 h": "Schritt 1: VEVOR SUS420 · Schneiden (einstellbar 0-15 mm) 10 Min. | Alternativ: WMF 0415250011 · Gemüse (50–55°C) 6–10 Std",
   "Torka på Grönsaker ⏱ 8–10 h, vänd efter halva tiden. Chipsen är klara när de är krispiga när de svalnat.": "Auf dem Gemüse ⏱ 8–10 Stunden trocknen, nach der Hälfte der Zeit wenden. Die Chips sind fertig, wenn sie abgekühlt knusprig sind.",
   "🍟 Gröna tomat-chips": "🍟 Grüne Tomatenchips",
-  "🍟 Gröna tomat-chips – Recept": "🍟 Grüne Tomatenchips – Rezept"
+  "🍟 Gröna tomat-chips – Recept": "🍟 Grüne Tomatenchips – Rezept",
+  "55 g (1 st)": "55 g (1 Stück)",
+  "Air Fry · 15 min": "Luftfrittieren · 15 Min",
+  "COSORI CAF-TF101S (Dual Blaze TwinFry) · Air Fry": "COSORI CAF-TF101S (Dual Blaze TwinFry) · Heißluftfrittieren",
+  "Gouda riven": "Gouda gerieben",
+  "Gröna tomater (egna, 1 cm skivor)": "Grüne Tomaten (eigene, 1 cm große Scheiben)",
+  "Krispiga panerade gröna tomater med ost, stekta i airfryer utan massor av olja. 4 portioner, ~180 kcal/portion.": "Knusprig panierte grüne Tomaten mit Käse, in einer Heißluftfritteuse ohne viel Öl frittiert. 4 Portionen, ~180 kcal/Portion.",
+  "Kör Air Fry 180°C, 15 min. Vänd skivorna efter ⏱ 8 min och spreja lätt på den andra sidan.": "Heißluftfrittieren bei 180 °C, 15 Min. durchführen. Drehen Sie die Scheiben nach ⏱ 8 Min. um und sprühen Sie die andere Seite leicht ein.",
+  "Lägg skivorna i airfryer-korgen i ett lager (gör i två omgångar om du har den mindre zonen). Spreja lätt med rapsolja ovanpå.": "Legen Sie die Scheiben in einer einzigen Schicht in den Airfryer-Korb (machen Sie es in zwei Portionen, wenn Sie die kleinere Zone haben). Leicht mit Rapsöl besprühen.",
+  "Låt vila ⏱ 2 min innan servering. Servera gärna med en klick créme fraîche eller yoghurt.": "Vor dem Servieren ⏱ 2 Minuten ruhen lassen. Mit einem Klecks Crème fraîche oder Joghurt servieren.",
+  "Rapsolja (till spray)": "Rapsöl (zum Sprühen)",
+  "Skär de gröna tomaterna i jämna 1 cm tjocka skivor. Torka lätt med hushållspapper. ⏱ 5 min": "Die grünen Tomaten in gleichmäßige 1 cm dicke Scheiben schneiden. Mit Papiertüchern leicht trocknen. ⏱ 5 Min",
+  "Steg 4: COSORI CAF-TF101S (Dual Blaze TwinFry) · Air Fry 15 min": "Schritt 4: COSORI CAF-TF101S (Dual Blaze TwinFry) · 15 Min. an der Luft frittieren",
+  "Stekta gröna tomater – Air Fryer": "Gebratene grüne Tomaten – Heißluftfritteuse",
+  "Vispa ägget lätt i en djup tallrik. Blanda vetemjöl, riven gouda och salt i en annan tallrik.": "Das Ei in einem tiefen Teller leicht schlagen. In einem weiteren Teller Weizenmehl, geriebenen Gouda und Salz vermischen.",
+  "Vänd varje tomatskiva först i ägget, sedan i mjöl-ost-blandningen så det täcker jämnt. Tryck till lätt så paneringen fastnar.": "Tauchen Sie jede Tomatenscheibe zuerst in das Ei und dann in die Mehl-Käse-Mischung, sodass sie gleichmäßig bedeckt ist. Leicht andrücken, damit die Panade festklebt.",
+  "⚙️ Steg 4: COSORI CAF-TF101S (Dual Blaze TwinFry) ·": "⚙️ Schritt 4: COSORI CAF-TF101S (Dual Blaze TwinFry) ·",
+  "🍅 Stekta gröna tomater – Air Fryer": "🍅 Frittierte grüne Tomaten – Heißluftfritteuse",
+  "🍅 Stekta gröna tomater – Air Fryer – Recept": "🍅 Gebratene grüne Tomaten – Heißluftfritteuse – Rezept"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2676,
+ "_auto_genererade": 2694,
  "_senast_robot": "2026-10-04"
 }
