@@ -384,20 +384,72 @@ def watt_ur_text(text):
     return 0
 
 
-def program_ur_text(text):
+def manual_relevant(text, varumarke, modell):
+    """🛡️ RELEVANSVAKT (lärdom av live-test): en hittad PDF accepteras
+       ENDAST om den nämner varumärket eller modellen – annars är det
+       någon annans manual (Home Depot-generika m.m.) och FEL data är
+       värre än ingen data."""
+    lc = text.lower()
+    vm = (varumarke or '').lower().strip()
+    md = (modell or '').lower().strip()
+    if vm and vm in lc:
+        return True
+    if md and len(md) >= 4 and md in lc:
+        return True
+    return False
+
+
+# Generiska ord (ris/soup/sweet/bake...) skapar BARA program om tid eller
+# temperatur står i kontexten – annars är det löptexts-skräp. Distinkta
+# ord (air fry, dehydrate, slow cook, yoghurt...) räcker ensamma.
+GENERISKA_ORD = {
+    'basic', 'french', 'quick', 'sweet', 'cake', 'sandwich', 'jam',
+    'rice', 'porridge', 'soup', 'steam', 'bake', 'roast', 'grill',
+    'ris', 'gröt', 'soppa', 'kaka', 'deg', 'sylt', 'ångkok',
+    'smoothie', 'prove', 'proof', 'sync', 'broil', 'knead',
+}
+
+# Typfilter: en TORKAUTOMAT ska aldrig få bakmaskins-/riskokarprogram
+# ur en manuals recept-/löptext. Nyckel = första ordet i hitta_typ().
+TYPORD = {
+    'torkautomat': ['dehydrate', 'jerky'],
+    'airfryer': ['air fry', 'airfry', 'max crisp', 'roast', 'bake', 'grill',
+                 'reheat', 'dehydrate', 'prove', 'sync', 'broil', 'steam'],
+    'bakmaskin': ['basic', 'french', 'whole wheat', 'quick', 'sweet', 'gluten free',
+                  'dough', 'jam', 'cake', 'sandwich', 'ultra fast', 'knead', 'bake',
+                  'vitt bröd', 'fullkorn', 'snabbprogram', 'deg', 'sylt', 'kaka', 'glutenfri'],
+    'riskokare': ['rice', 'porridge', 'soup', 'slow cook', 'yoghurt', 'yogurt', 'keep warm',
+                  'steam', 'cake', 'ris', 'gröt', 'soppa', 'långkok', 'varmhållning', 'ångkok', 'kaka'],
+    'slow cooker': ['slow cook', 'keep warm', 'långkok', 'varmhållning'],
+    'glassmaskin': ['sorbet', 'ice cream', 'milkshake', 'slush', 'smoothie'],
+}
+
+
+def program_ur_text(text, typ=''):
     """🔬 RESEARCH v2 (användarens beställning): program MED tid/temp.
        Skannar raderna; rad (+nästa rad) som innehåller ett PROGRAMORD
        genomsöks efter tid och temperatur. ENDAST det som faktiskt står
        i texten används – aldrig gissningar. Returnerar (poster, watt)."""
     rader = [r.strip() for r in text.split('\n')]
+    # 🎛️ typfilter: känd maskintyp → endast typens programord
+    typnyckel = (typ or '').split('/')[0].strip().lower()
+    ordlista = TYPORD.get(typnyckel, PROGRAMORD)
     poster, sedda = [], {}
     for i, rad in enumerate(rader):
         rl = rad.lower()
-        for ord_ in PROGRAMORD:
+        for ord_ in ordlista:
             if ord_ not in rl:
                 continue
             kontext = rad + ' ' + (rader[i + 1] if i + 1 < len(rader) else '')
-            tid, temp = tid_ur(kontext), temp_ur(kontext)
+            if ord_ in GENERISKA_ORD:
+                # 🛡️ generiska ord: tid/temp måste stå på ORDETS EGEN rad –
+                # nästa-rad-kontexten får inte smitta ("soup"-raden ska inte
+                # låna Dough-radens 1:30 h). Utan egen data = löptext → hoppa.
+                tid, temp = tid_ur(rad), temp_ur(rad)
+                if not (tid or temp):
+                    continue
+            else:
+                tid, temp = tid_ur(kontext), temp_ur(kontext)
             if ord_ not in sedda:
                 sedda[ord_] = {'namn': ord_.title(), 'tid': tid, 'temp': temp}
                 poster.append(sedda[ord_])
@@ -409,36 +461,41 @@ def program_ur_text(text):
     return poster, watt_ur_text(text)
 
 
-def program_ur_pdf(pdf_url):
-    """Läser manual-PDF (pypdf) → (program-poster med tid/temp, watt ur PDF).
-       Hittas inget gissar roboten ALDRIG."""
+def program_ur_pdf(pdf_url, varumarke='', modell='', typ=''):
+    """Läser manual-PDF (pypdf) → (program-poster med tid/temp, watt ur PDF,
+       relevant: bool). FEL MANUAL (nämner inte märket/modellen) förkastas
+       helt – värre med fel data än ingen. Gissar ALDRIG."""
     if not pdf_url:
-        return [], 0
+        return [], 0, False
     try:
         from pypdf import PdfReader
     except ImportError:
         print('ℹ️  pypdf saknas – hoppar över PDF-läsning')
-        return [], 0
+        return [], 0, True
     data = hamta_bin(pdf_url, max_mb=15)
     if not data or data[:4] != b'%PDF':
-        return [], 0
+        return [], 0, False
     try:
         import io
         text = ''
         lasare = PdfReader(io.BytesIO(data))
         for sida in lasare.pages[:40]:
             text += (sida.extract_text() or '') + '\n'
-        poster, pdf_watt = program_ur_text(text)
+        if (varumarke or modell) and not manual_relevant(text, varumarke, modell):
+            print('🛡️ Manualen nämner inte %s – FÖRKASTAD (fel produkts manual)'
+                  % (varumarke or modell))
+            return [], 0, False
+        poster, pdf_watt = program_ur_text(text, typ)
         if poster:
             print('📖 Program ur manualen: %s' % ', '.join(
                 p['namn'] + ((' (' + (p['tid'] or '') + (' @ ' + p['temp'] if p['temp'] else '') + ')')
                              if (p['tid'] or p['temp']) else '') for p in poster))
         if pdf_watt:
             print('⚡ Effekt ur manualen: %d W' % pdf_watt)
-        return poster, pdf_watt
+        return poster, pdf_watt, True
     except Exception as e:
         print('ℹ️  PDF-läsning misslyckades: %s' % e)
-        return [], 0
+        return [], 0, False
 
 
 def hitta_tillverkarsida(varumarke, modell):
@@ -592,7 +649,9 @@ def bygg_maskin(urls):
     # 3) 📖 MANUAL-JAKT i flera steg: tillverkarsidan → PDF-sökning →
     #    manualsida. Verifierade PDF:er läses för programnamn.
     manual_pdf, manual_sida = sok_manual(varumarke, modell, tillv_html, tillv_url)
-    pdf_program, pdf_watt = program_ur_pdf(manual_pdf)
+    pdf_program, pdf_watt, pdf_ok = program_ur_pdf(manual_pdf, varumarke, modell, typ)
+    if manual_pdf and not pdf_ok:
+        manual_pdf = ''   # 🛡️ fel produkts manual → länkas ALDRIG i maskinfilen
     # ⚡ effekt-prio: produktnamn/slug → manual-PDF → uppskattning (flaggad)
     effekt_kalla = 'ur produktnamnet (Amazon-länkens titel)' if watt else ''
     if not watt and pdf_watt:
