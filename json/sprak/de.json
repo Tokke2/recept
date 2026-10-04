@@ -2666,13 +2666,24 @@
   "🍞 Krispigt grekiskt lantbröd i bakmaskin": "🍞 Knuspriges griechisches Landbrot im Backautomaten",
   "🍞 Krispigt grekiskt lantbröd i bakmaskin – Recept": "🍞 Knuspriges griechisches Landbrot im Backautomaten – Rezept",
   "💧 Spreja med VATTEN på ovansidan innan Bake-programmet skapar ånga inuti maskinen: ångan håller skorpan mjuk en stund så brödet reser sig lite till innan skorpan stelnar, vilket ger en extra fast, krispig och glansig skorpa när vattnet dunstat. Använd vatten, inte oljespray, för ånga-effekten – oljespray ger istället en gyllene, rostad, oljig skorpa (focaccia-stil) men ingen extra resning av brödet. Bästa kombo: vatten först, en tunn oljespray + lite flingsalt efter 10 min in på Bake.": "💧 Sprühen Sie WASSER auf die Oberseite, bevor das Backprogramm Dampf im Inneren der Maschine erzeugt: Der Dampf hält die Kruste eine Weile weich, sodass das Brot noch etwas aufgeht, bevor die Kruste hart wird. Dadurch entsteht eine besonders feste, knusprige und glänzende Kruste, wenn das Wasser verdunstet. Verwenden Sie für den Dampfeffekt Wasser und keinen Ölspray. Ölspray sorgt stattdessen für eine goldene, geröstete, ölige Kruste (Focaccia-Art), aber ohne zusätzliches Aufgehen des Brotes. Beste Kombination: Zuerst Wasser, ein dünner Ölspray + etwas Flockensalz nach 10 Minuten Backzeit.",
-  "📐 42,2 × 30,5 × 21,4 cm · ⚖️ 7,3 kg": "📐 42.2 × 30.5 × 21.4 cm · ⚖️ 7.3 kg"
+  "📐 42,2 × 30,5 × 21,4 cm · ⚖️ 7,3 kg": "📐 42.2 × 30.5 × 21.4 cm · ⚖️ 7.3 kg",
+  "Gröna tomat-chips": "Grüne Tomatenchips",
+  "Gröna tomater (egna, 4 mm skivor)": "Grüne Tomaten (eigene, 4 mm dicke Scheiben)",
+  "Krispiga syrliga chips på gröna tomater med salt och lite olja, torkade i mattorken. 2 portioner.": "Knusprig-saure Chips auf grünen Tomaten mit Salz und etwas Öl, im Dörrgerät getrocknet. 2 Portionen.",
+  "Lägg i en bunke, ringla över olja och strö salt. Vänd runt. Fördela på torkgallren i ett lager.": "In eine Schüssel geben, mit Öl beträufeln und mit Salz bestreuen. Umdrehen. In einer Schicht auf den Trockengestellen verteilen.",
+  "Låt svalna helt innan förvaring i lufttät burk.": "Lassen Sie es vollständig abkühlen, bevor Sie es in einem luftdichten Behälter aufbewahren.",
+  "Skiva tomaterna tunt (ca 4 mm) med mandolin eller köttslicer. Torka lätt med hushållspapper. ⏱ 10 min": "Schneiden Sie die Tomaten mit einer Mandoline oder einem Fleischhobel in dünne Scheiben (ca. 4 mm). Mit Papiertüchern leicht trocknen. ⏱ 10 Min",
+  "Skivning (justerbar 0–15 mm) · 10 min": "Schneiden (einstellbar 0–15 mm) · 10 Min",
+  "Steg 1: VEVOR SUS420 · Skivning (justerbar 0–15 mm) 10 min | Alternativ: WMF 0415250011 · Grönsaker (50–55°C) 6–10 h": "Schritt 1: VEVOR SUS420 · Schneiden (einstellbar 0-15 mm) 10 Min. | Alternativ: WMF 0415250011 · Gemüse (50–55°C) 6–10 Std",
+  "Torka på Grönsaker ⏱ 8–10 h, vänd efter halva tiden. Chipsen är klara när de är krispiga när de svalnat.": "Auf dem Gemüse ⏱ 8–10 Stunden trocknen, nach der Hälfte der Zeit wenden. Die Chips sind fertig, wenn sie abgekühlt knusprig sind.",
+  "🍟 Gröna tomat-chips": "🍟 Grüne Tomatenchips",
+  "🍟 Gröna tomat-chips – Recept": "🍟 Grüne Tomatenchips – Rezept"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2665,
+ "_auto_genererade": 2676,
  "_senast_robot": "2026-10-04"
 }
