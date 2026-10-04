@@ -110,7 +110,8 @@ jobs:
               git fetch origin main
               git reset --hard origin/main
               DATUM=$(TZ=Europe/Stockholm date +%F)
-              cp json/ingredienser.json "backup/ingredienser-$DATUM.json"
+              mkdir -p backup/ingredienser
+              cp json/ingredienser.json "backup/ingredienser/ingredienser-$DATUM.json"
               git add backup/
               if git diff --cached --quiet; then echo "Inget nytt efter omkörning."; exit 0; fi
               git commit -m "🗄️ Veckobackup av ingrediensdatabasen"
