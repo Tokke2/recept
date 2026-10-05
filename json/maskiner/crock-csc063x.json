@@ -20,7 +20,6 @@
  ],
  "lankar": {
   "kop": "https://www.amazon.se/dp/B082BG5229/",
-  "bruksanvisning": "https://www.manualslib.com/manual/2370860/Crock-Pot-Csc063x.html",
   "tillverkare": "https://crockpot.co.uk/products/CSC063X/"
  },
  "program": [
@@ -30,7 +29,14 @@
    "standardtid": "8 h (timer 30 min–20 h)",
    "beskrivning": "Låg temperatur under lång tid – klassiskt crockpot-läge. Perfekt för pulled chicken/pork som ska dras isär.",
    "bast_for": "pulled kyckling, pulled pork, högrev, grytor över 6 h",
-   "nyckelord": ["låg", "low", "långkok", "slow cook", "pulled", "över natten"]
+   "nyckelord": [
+    "låg",
+    "low",
+    "långkok",
+    "slow cook",
+    "pulled",
+    "över natten"
+   ]
   },
   {
    "namn": "Långkok HÖG (High)",
@@ -38,7 +44,11 @@
    "standardtid": "4 h (timer 30 min–20 h)",
    "beskrivning": "Högre temperatur – halverar ungefär tiden mot LÅG. Bra när middagen ska bli klar samma eftermiddag.",
    "bast_for": "grytor, soppor, kalops på 3–5 h",
-   "nyckelord": ["hög", "high", "snabbare långkok"]
+   "nyckelord": [
+    "hög",
+    "high",
+    "snabbare långkok"
+   ]
   },
   {
    "namn": "Varmhållning (Keep warm)",
@@ -46,7 +56,11 @@
    "standardtid": "Auto efter timern",
    "beskrivning": "Slår på automatiskt när tillagningstiden är slut – maten är varm när du är redo.",
    "bast_for": "servering, buffé",
-   "nyckelord": ["varmhållning", "hålla varm", "keep warm"]
+   "nyckelord": [
+    "varmhållning",
+    "hålla varm",
+    "keep warm"
+   ]
   }
  ],
  "bild": "images/crock-csc063x.jpg",

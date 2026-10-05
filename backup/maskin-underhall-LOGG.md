@@ -35,3 +35,15 @@
 | clatronic-bba3774.json | 🔗 död manuallänk borttagen |
 | clatronic-bba3774.json | 📖 manual hittad: https://www.manualslib.com/manual/2423327/Clatronic-Bba-3774 |
 | yashe-food-dehydrator.json | 📖 manual hittad: https://ae01.alicdn.com/kf/Sa93117d44284459091cfd12aa5f29153 |
+
+**2026-10-05**
+
+| clatronic-bba3774.json | 🔗 död manuallänk borttagen |
+| cosori-twinfry-10l.json | 🔗 död manuallänk borttagen |
+| cosori-twinfry-10l.json | 🔗 död tillverkarlänk ersatt |
+| crock-csc063x.json | 🔗 död manuallänk borttagen |
+| midea-mb-fs5017.json | 🔗 död manuallänk borttagen |
+| ninja-detect-power.json | 🔗 död manuallänk borttagen |
+| ninja-nc502eu.json | 🔗 död manuallänk borttagen |
+| silonn-ismaskin.json | 🔗 död manuallänk borttagen |
+| silonn-ismaskin.json | 🔗 död tillverkarlänk borttagen |
