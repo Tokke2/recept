@@ -100,3 +100,7 @@
 | gron-tomatketchup.html | ⚡ energidata skapad: midea-mb-fs5017 5 min |
 | sitemap.xml | 🗺️ omgenererad (39 adresser) |
 | json/recept-index.json | 📁 omgenererad (29 recept) |
+
+**2026-10-05**
+
+| sitemap.xml | 🗺️ omgenererad (39 adresser) |
