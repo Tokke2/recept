@@ -104,3 +104,7 @@
 **2026-10-05**
 
 | sitemap.xml | 🗺️ omgenererad (39 adresser) |
+
+**2026-10-06**
+
+| sitemap.xml | 🗺️ omgenererad (39 adresser) |
