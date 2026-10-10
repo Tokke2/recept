@@ -188,6 +188,17 @@ En statisk sajt på GitHub Pages (gratis) med matlagningsmaskiner och recept.
 │                              typgrid, inputmode=numeric på effekt.
 │                              Robotkö-flödet (maskin-ko.txt), ASIN-igen-
 │                              känningen och spara-flödet HELT oförändrade.
+├── stod.html               💚 STÖDSIDAN (användarens beställning, Audiobro-
+│                              stil i MK-tema): Swish (QR/app-länk – numret
+│                              ALDRIG i klartext, läses ur donation.json),
+│                              PayPal (paypal.me/Rickard3dPrint, nivåer 39/99/
+│                              299 kr), Ko-fi (tokke2, månadsstöd). ÄKTA live-
+│                              statistik ur recept-/maskinindex – INGA påhittade
+│                              betyg/givarsiffror (ärlighetsprincip). FAQ,
+│                              användnings-fördelning (~55/25/20), slut-CTA.
+│                              Länkad från footer-raden (site.js 💖-pill på
+│                              alla sidor), startsidans sitemapgrupp och
+│                              sitemap-roboten. donation.json: + kofi=tokke2.
 ├── status.html             Hälsokontroll: testar recept/metadata/bilder/energi/maskiner live
 ├── ratter/                 🍽️ EN .html-FIL PER MATRÄTT (egen sida likt recepten).
 │                              Byggs AUTOMATISKT av matratter.html vid sparning
@@ -2106,6 +2117,37 @@ data i json/, ALDRIG per receptfil.
     pill ("🫙 ~480 g kvar, kokt 3 okt") + varning när det tryter
     ("dags att koka svartvinbärssylt igen – recept här →").
     Kopplas till hållbarhetsdatum (punkt 36) när den byggs.
+
+81. 🦠 JÄST-KALKYLATORN (förslag 607, användarens tillägg: visas i
+    ALLA recept där jäst förekommer, STANDARD = TORRJÄST): verktyg
+    på receptsidan som räknar om färsk ↔ torr ↔ surdeg (torr = 1/3
+    av färsk vikt) + jästid vid olika rumstemperaturer. Tabellens
+    jästrad kan växlas mellan formerna med omräknad mängd.
+
+82. 👯 DUBBLETTVAKTEN (förslag 609): robot flaggar nästan-identiska
+    recept (titel- + ingredienslikhet via Levenshtein) i gransknings-
+    kön: "slå ihop toastbröd v1+v2?" – raderar ALDRIG själv.
+
+83. 🏷️ NÄRING PÅ BURKETIKETTEN (förslag 615): etikettgeneratorn
+    hämtar live-kalkylens kcal/protein/kolh/fett per 100 g automatiskt
+    → riktiga innehållsdeklarationer på sylt-/såsburkar.
+
+84. ❄️ KALLJÄSNINGS-KOMPENSATORN (förslag 617): ange kylskåpstemp
+    (4–8°C) → jästiden räknas om i recept med kalljäsning. Kopplas
+    till jäst-kalkylatorn (81).
+
+85. 🎚️ KRISPIGHETS-REGLAGET (förslag 625): airfryer-recept får
+    mjuk↔extra krispig-slider som justerar tid/temp ENDAST inom
+    programmets tillåtna spann ur maskinfilen (aldrig utanför).
+
+86. ⏱️ AKTIV/PASSIV TID-SPLIT (förslag 628): receptkorten visar
+    "🙋 10 min jobb + 🤖 3 h maskin" – parsas ur ⏱-märkena i stegen
+    (maskinsteg = passiv, övriga = aktiv).
+
+87. 🍓 SÄSONGSROTATIONEN (förslag 629): "1 år sedan du kokade
+    svartvinbärssylt – bären är i säsong NU!" – kockhistoriken
+    (lokal) + säsongsdata per ingrediens → diskret påminnelse på
+    startsidan/receptet.
 
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 

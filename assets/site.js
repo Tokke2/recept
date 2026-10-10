@@ -229,6 +229,8 @@
         el.id = 'mk-donation';
         el.className = 'no-print';
         el.style.cssText = 'text-align:center;padding:10px 16px 18px;font-size:.8rem;color:#7f8c8d;font-family:Segoe UI,system-ui,sans-serif;';
+        btns += '<a href="' + root + 'stod.html" style="' + pill +
+          'border:1.5px solid #e67e22;color:#e67e22;">\uD83D\uDC96 St\u00f6dsidan</a>';
         el.innerHTML = msg + ' &nbsp;' + btns;
         var footer = document.querySelector('footer');
         if (footer) footer.parentNode.insertBefore(el, footer.nextSibling);

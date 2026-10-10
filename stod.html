@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<!-- PLATS: /stod.html  (repo-roten – stödsida: Swish-QR/PayPal/Ko-fi, inga påhittade siffror) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#27ae60">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💚 Stöd Mitt Maskinkök – håll sajten gratis & självgående</title>
+<meta name="description" content="Mitt Maskinkök är gratis, reklamfritt och öppen källkod. Din gåva håller recepten, robotarna och maskindatabasen vid liv. Tack!">
+<style>
+  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; --gold:#f1c40f; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family:'Segoe UI',system-ui,sans-serif; color:var(--dark);
+    background:
+      radial-gradient(circle at 10% 6%, rgba(39,174,96,.10), transparent 32%),
+      radial-gradient(circle at 90% 14%, rgba(230,126,34,.09), transparent 30%),
+      radial-gradient(circle at 50% 96%, rgba(241,196,15,.06), transparent 40%),
+      var(--bg);
+    padding:24px; max-width:min(1100px,95vw); margin:0 auto;
+  }
+  header {
+    position:relative; overflow:hidden; text-align:center;
+    background:linear-gradient(120deg,#27ae60 0%,#1e8449 45%,#e67e22 100%);
+    color:#fff; border-radius:22px; padding:34px 26px 30px; margin-bottom:20px;
+    box-shadow:0 12px 34px rgba(39,174,96,.3);
+  }
+  header::before {
+    content:'💚 🍳 ☕ 🤖 💚 🍳 ☕ 🤖 💚 🍳 ☕ 🤖';
+    position:absolute; inset:auto -20px -16px -20px;
+    font-size:1.9rem; opacity:.14; letter-spacing:14px; white-space:nowrap; pointer-events:none;
+  }
+  header img.logo { width:84px; height:84px; background:#f6f3ee; border-radius:20px; padding:8px; box-shadow:0 10px 26px rgba(0,0,0,.25); margin-bottom:10px; }
+  .eyebrow { display:inline-block; background:rgba(255,255,255,.2); border:1.5px solid rgba(255,255,255,.4); border-radius:999px; padding:5px 16px; font-size:.72rem; font-weight:800; letter-spacing:.1em; margin-bottom:12px; }
+  header h1 { font-size:clamp(1.5rem,4vw,2.1rem); margin-bottom:8px; text-shadow:0 2px 6px rgba(0,0,0,.15); }
+  header h1 span { color:#ffe9a8; }
+  header p.sub { opacity:.96; font-size:.98rem; max-width:620px; margin:0 auto; line-height:1.6; }
+  .hstats { display:flex; gap:9px; flex-wrap:wrap; justify-content:center; margin-top:16px; }
+  .hstat { background:rgba(255,255,255,.18); border:1.5px solid rgba(255,255,255,.35); border-radius:999px; padding:6px 15px; font-size:.82rem; font-weight:700; }
+  .ctas { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:18px; }
+
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:13px 22px; border-radius:13px; font-weight:800; font-size:.95rem; text-decoration:none; border:none; cursor:pointer; font-family:inherit; transition:transform .13s, box-shadow .15s; }
+  .btn:hover { transform:translateY(-2px); }
+  .btn:active { transform:translateY(0); }
+  .btn-swish { background:#00C67A; color:#fff; box-shadow:0 8px 18px rgba(0,198,122,.3); }
+  .btn-paypal { background:#0070BA; color:#fff; box-shadow:0 8px 18px rgba(0,112,186,.3); }
+  .btn-kofi { background:#FF5E5B; color:#fff; box-shadow:0 8px 18px rgba(255,94,91,.3); }
+  .btn-ghost { background:#fff; color:var(--dark); border:1.5px solid #e8e2d8; box-shadow:0 4px 12px rgba(0,0,0,.06); }
+
+  .card { background:var(--card); border-radius:16px; padding:20px 24px; margin-bottom:16px; box-shadow:0 3px 14px rgba(0,0,0,.07); border-top:5px solid var(--tc,#27ae60); }
+  .kicker { font-size:.7rem; letter-spacing:.1em; font-weight:800; color:#a5967e; text-transform:uppercase; margin-bottom:6px; }
+  h2 { font-size:1.15rem; margin-bottom:8px; }
+  .muted { color:var(--muted); font-size:.9rem; line-height:1.6; }
+
+  .tiers { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin-top:6px; }
+  .tier { position:relative; background:#fff; border:1.5px solid #eee2d2; border-radius:16px; padding:18px 16px 14px; display:flex; flex-direction:column; box-shadow:0 5px 18px rgba(0,0,0,.05); }
+  .tier.popular { border-color:var(--green); box-shadow:0 10px 28px rgba(39,174,96,.2); }
+  .tier .badge { position:absolute; top:-11px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,#27ae60,#1e8449); color:#fff; font-size:.68rem; font-weight:800; letter-spacing:.06em; padding:5px 12px; border-radius:999px; white-space:nowrap; }
+  .tier h3 { font-size:1rem; margin-bottom:2px; }
+  .price { font-size:1.9rem; font-weight:900; letter-spacing:-.02em; }
+  .price small { font-size:.85rem; font-weight:600; color:var(--muted); }
+  .tier ul { list-style:none; margin:10px 0 14px; display:grid; gap:7px; }
+  .tier li { display:flex; gap:8px; font-size:.82rem; line-height:1.45; color:var(--muted); }
+  .tier li::before { content:'✓'; color:var(--green); font-weight:800; }
+  .tier .btn { width:100%; margin-top:auto; }
+  .tier .hint { margin-top:8px; text-align:center; font-size:.7rem; color:#a5967e; }
+
+  .impact { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-top:10px; }
+  .impact .item { background:linear-gradient(135deg,#fff,#faf6ef); border:1px solid #eee2d2; border-radius:14px; padding:14px; display:flex; gap:12px; align-items:flex-start; }
+  .impact .ico { width:38px; height:38px; border-radius:12px; display:grid; place-items:center; font-size:1.1rem; flex-shrink:0; }
+  .impact h4 { font-size:.85rem; margin-bottom:3px; }
+  .impact p { color:var(--muted); font-size:.78rem; line-height:1.5; }
+
+  .trust { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .trust span { display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #eee2d2; padding:7px 12px; border-radius:999px; font-size:.75rem; color:var(--muted); }
+
+  details { background:#fff; border:1.5px solid #eee2d2; border-radius:13px; padding:12px 16px; margin-bottom:10px; }
+  details[open] { box-shadow:0 6px 18px rgba(0,0,0,.05); border-color:#d9ede2; }
+  summary { font-weight:800; cursor:pointer; list-style:none; font-size:.9rem; }
+  summary::-webkit-details-marker { display:none; }
+  details p { margin-top:8px; color:var(--muted); font-size:.85rem; line-height:1.6; }
+
+  #qrbox { display:none; text-align:center; margin-top:14px; padding:16px; background:#f4fbf6; border:2px solid #27ae60; border-radius:14px; }
+  #qrbox img { border-radius:10px; background:#fff; padding:8px; box-shadow:0 4px 14px rgba(0,0,0,.1); }
+
+  .slutcta { background:linear-gradient(135deg,#2c3e50,#1a252f); color:#fff; text-align:center; border-top:none; }
+  .slutcta h2 { color:#fff; }
+  .slutcta p { color:#cbd5e1; }
+  footer { text-align:center; color:var(--muted); font-size:.78rem; padding:20px; line-height:1.7; }
+  footer a { color:var(--accent2); font-weight:700; }
+  @media (max-width:640px) {
+    body { padding:14px; }
+    header { padding:24px 16px 22px; }
+    .card { padding:16px; }
+    .btn { width:100%; }
+    .ctas .btn { width:auto; flex:1; min-width:130px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+</style>
+<link rel="stylesheet" href="assets/print.css">
+</head>
+<body>
+
+<header>
+  <div class="no-print" style="text-align:left;margin-bottom:4px;"><a href="index.html" style="color:#fff;opacity:.9;text-decoration:none;font-size:.85rem;">← Till startsidan</a></div>
+  <img class="logo" src="images/logo-mark.svg" alt="Mitt Maskinkök" onerror="this.style.display='none'">
+  <div><span class="eyebrow">✨ GRATIS • REKLAMFRITT • ÖPPEN KÄLLKOD</span></div>
+  <h1>Gillar du maskinköket? <span>Hjälp oss hålla det gratis</span> 💚</h1>
+  <p class="sub"><b>Mitt Maskinkök</b> ger dig recept med exakt maskin, program och tid – med livepriser,
+  näringskalkyl, kockläge och 8 robotar som sköter sajten dygnet runt. Ingen reklam. Inga prenumerationer.
+  Din gåva är det som håller grytan kokande.</p>
+  <div class="hstats" id="hstats">
+    <span class="hstat">📖 Recept med verifierade program</span>
+    <span class="hstat">🔧 Hela maskinparken dokumenterad</span>
+    <span class="hstat">🤖 8 robotar jobbar gratis – men servern av kaffe är låg</span>
+  </div>
+  <div class="ctas no-print">
+    <button class="btn btn-swish" id="swishBtn">💚 Swish – skanna QR</button>
+    <a class="btn btn-paypal" href="https://paypal.me/Rickard3dPrint" target="_blank" rel="noopener">💙 PayPal</a>
+    <a class="btn btn-kofi" href="https://ko-fi.com/tokke2" target="_blank" rel="noopener">☕ Ko-fi</a>
+  </div>
+</header>
+
+<div class="card" style="--tc:#27ae60;">
+  <div id="qrbox">
+    <b>📱 Skanna med Swish-appen</b><br><br>
+    <img id="qrimg" width="220" height="220" alt="Swish QR">
+    <div class="muted" style="margin-top:10px;">Numret visas aldrig i klartext – QR-koden öppnar betalningen direkt i appen. På mobil öppnas Swish automatiskt.</div>
+  </div>
+  <p class="kicker">Varför din hjälp gör skillnad</p>
+  <h2>Du stödjer en hemmakock-utvecklare – inte ett bolag</h2>
+  <p class="muted">Varje krona går direkt till det som märks: nya testade recept (ingredienser kostar!), robotarnas drift,
+  maskindatabasens underhåll och nya funktioner som hydreringsreglaget och kockläget. Sajten förblir
+  <b>100% gratis för alla</b> – donationer låser aldrig upp något, de håller bara allting vid liv.</p>
+  <div class="impact">
+    <div class="item"><div class="ico" style="background:#eaf7ef;">🍞</div><div><h4>Provlagade recept</h4><p>Varje recept bakas/lagas på riktigt innan det publiceras – mjöl, kyckling och el kostar.</p></div></div>
+    <div class="item"><div class="ico" style="background:#fdf6ee;">🤖</div><div><h4>Robotarna rullar</h4><p>Prisimport, självläkning, översättningar och sitemap sköts automatiskt – din gåva ger utvecklingstid.</p></div></div>
+    <div class="item"><div class="ico" style="background:#fff8e1;">💡</div><div><h4>Önskefunktioner</h4><p>80+ punkter på önskelistan – gåvor gör att fler blir verklighet, snabbare.</p></div></div>
+  </div>
+  <div class="trust">
+    <span>🔒 Swish, PayPal & Ko-fi – krypterat & säkert</span>
+    <span>🧾 Kvitto direkt från betaltjänsten</span>
+    <span>🕊️ Ingen spårning – bara tacksamhet</span>
+    <span>🇸🇪 Svensk utvecklare</span>
+  </div>
+</div>
+
+<div class="card" style="--tc:#e67e22;">
+  <p class="kicker">Välj hur du vill hjälpa – alla belopp värmer</p>
+  <div class="tiers">
+    <div class="tier">
+      <h3>☕ En kaffe</h3>
+      <div class="price">39 <small>kr</small></div>
+      <ul>
+        <li>Energi till kvällens receptbygge</li>
+        <li>Håller en robot rullande en månad</li>
+        <li>30 sekunder via Swish/PayPal</li>
+      </ul>
+      <a class="btn btn-ghost" href="https://paypal.me/Rickard3dPrint/39SEK" target="_blank" rel="noopener">Ge 39 kr →</a>
+      <div class="hint">eller Swish-knappen överst</div>
+    </div>
+    <div class="tier popular">
+      <span class="badge">⭐ POPULÄRAST – TACK!</span>
+      <h3>🍲 Kockvän</h3>
+      <div class="price">99 <small>kr</small></div>
+      <ul>
+        <li>Täcker ingredienserna till ett nytt testrecept</li>
+        <li>Dina önskemål väger extra tungt i förslagslådan</li>
+        <li>Evig tacksamhet + varm gryta</li>
+      </ul>
+      <a class="btn btn-swish" href="https://paypal.me/Rickard3dPrint/99SEK" target="_blank" rel="noopener">Ge 99 kr – mest vald →</a>
+      <div class="hint">eller <a href="https://ko-fi.com/tokke2" target="_blank" rel="noopener">3 kaffe på Ko-fi</a></div>
+    </div>
+    <div class="tier">
+      <h3>🌟 Kökshjälte</h3>
+      <div class="price">299 <small>kr</small></div>
+      <ul>
+        <li>En hel utvecklingskväll – ny funktion ur önskelistan</li>
+        <li>Tack i nästa uppdaterings-notis (om du vill)</li>
+        <li>Du bär projektet en extra bit</li>
+      </ul>
+      <a class="btn btn-ghost" href="https://paypal.me/Rickard3dPrint/299SEK" target="_blank" rel="noopener">Ge 299 kr →</a>
+      <div class="hint">valfritt belopp funkar lika bra 💚</div>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="--tc:#2980b9;">
+  <p class="kicker">Så används din gåva – ungefärlig fördelning</p>
+  <div class="impact">
+    <div class="item"><div class="ico" style="background:#e8f0ff;">⚙️</div><div><h4>~55% Utveckling</h4><p>Nya funktioner, maskinstöd, robotförbättringar, buggfixar.</p></div></div>
+    <div class="item"><div class="ico" style="background:#fff0b3;">🛒</div><div><h4>~25% Ingredienser & test</h4><p>Riktiga råvaror till provlagningen – recepten publiceras aldrig otestade.</p></div></div>
+    <div class="item"><div class="ico" style="background:#eaf7ef;">☕</div><div><h4>~20% Kaffe & el</h4><p>Bakmaskinen och utvecklaren går båda på energi.</p></div></div>
+  </div>
+  <p class="muted" style="margin-top:12px;">All kod är öppen på <a href="https://github.com/Tokke2/recept" target="_blank" rel="noopener" style="color:var(--accent2);font-weight:700;">GitHub</a>.
+  Donationer är helt frivilliga – sajten funkar precis lika bra utan. Vill du hjälpa utan pengar?
+  Tipsa en matglad vän eller lämna en ⭐ på GitHub – det värmer lika mycket!</p>
+</div>
+
+<div class="card" style="--tc:#8e44ad;">
+  <p class="kicker">Vanliga frågor – lugnt & tryggt</p>
+  <details open>
+    <summary>💳 Hur betalar jag säkert?</summary>
+    <p>Swish-knappen öppnar appen direkt på mobilen (QR på dator) via Swish officiella format. PayPal- och Ko-fi-knapparna
+    går direkt till <b>paypal.me</b> och <b>ko-fi.com</b> (HTTPS). Sajten ser aldrig dina betaluppgifter och kvittot kommer från betaltjänsten.</p>
+  </details>
+  <details>
+    <summary>💚 Hur funkar Swish-knappen?</summary>
+    <p>På mobilen öppnas Swish-appen med allt förifyllt. På datorn visas en QR-kod att skanna. Numret visas aldrig i klartext på sidan – det är en medveten säkerhetsprincip.</p>
+  </details>
+  <details>
+    <summary>🔁 Kan jag ge månadsvis?</summary>
+    <p>Ja! På <b>Ko-fi</b> väljer du månadsstöd med valfritt belopp – avsluta när du vill, ingen bindning.</p>
+  </details>
+  <details>
+    <summary>🎁 Vad får jag som tack?</summary>
+    <p>Evig tacksamhet och en sajt som fortsätter växa. Ingen betalvägg – alla funktioner är gratis för alla, alltid.
+    Vill du synas med namn i uppdaterings-notiserna? Skriv det i meddelandet!</p>
+  </details>
+  <details>
+    <summary>🤖 Men robotarna jobbar väl gratis?</summary>
+    <p>Japp – GitHubs robotar kostar inget! Men ingredienserna till provlagningen, elräkningen för 11-timmars långkok och utvecklarens kaffe gör det. 😄</p>
+  </details>
+</div>
+
+<div class="card slutcta">
+  <div style="font-size:2rem;margin-bottom:8px;">💚</div>
+  <h2>Redo att hålla grytan kokande?</h2>
+  <p class="muted" style="margin-bottom:14px;">39 kr eller 299 kr, engångs eller månadsvis – allt gör skillnad direkt.</p>
+  <div class="ctas no-print">
+    <button class="btn btn-swish" onclick="document.getElementById('swishBtn').click();window.scrollTo({top:0,behavior:'smooth'})">💚 Swish</button>
+    <a class="btn btn-paypal" href="https://paypal.me/Rickard3dPrint" target="_blank" rel="noopener">💙 PayPal</a>
+    <a class="btn" style="background:#fff;color:#2c3e50;" href="https://ko-fi.com/tokke2" target="_blank" rel="noopener">☕ Ko-fi</a>
+  </div>
+  <div style="margin-top:12px;font-size:.72rem;color:#94a3b8;">Säker betalning • Kvitto direkt • Sajten förblir gratis för alla</div>
+</div>
+
+<footer>
+  Byggd med 💚 för maskinkök · <a href="https://github.com/Tokke2/recept" target="_blank" rel="noopener">Öppen källkod</a> · Inga trackers<br>
+  <a href="index.html">Startsidan</a> · <a href="recept.html">Recepten</a> · <a href="forslag.html">Önska en funktion</a>
+</footer>
+
+<script>
+/* 📊 Livestatistik ur recept-index + maskiner-index (äkta siffror, aldrig påhittade) */
+(async function () {
+  try {
+    const r = await (await fetch('json/recept-index.json', { cache: 'no-store' })).json();
+    const m = await (await fetch('json/maskiner-index.json')).json();
+    document.getElementById('hstats').innerHTML =
+      '<span class="hstat">📖 <b>' + r.recept.length + '</b> provlagade recept</span>' +
+      '<span class="hstat">🔧 <b>' + m.length + '</b> maskiner dokumenterade</span>' +
+      '<span class="hstat">🤖 <b>8</b> robotar · dygnet runt</span>' +
+      '<span class="hstat">💚 <b>100%</b> gratis – alltid</span>';
+  } catch (e) {}
+})();
+
+/* 💚 Swish: mobil → appen direkt · dator → QR (numret ur donation.json, aldrig i klartext) */
+document.getElementById('swishBtn').addEventListener('click', async function () {
+  try {
+    const d = await (await fetch('json/donation.json', { cache: 'no-store' })).json();
+    const nr = String(d.swish_nummer || '').trim();
+    if (!nr) return;
+    const data = JSON.stringify({ version: 1, payee: { value: nr, editable: false }, message: { value: 'Mitt Maskinkok', editable: true } });
+    if (/android|iphone|ipad/i.test(navigator.userAgent)) {
+      location.href = 'swish://payment?data=' + encodeURIComponent(data);
+      return;
+    }
+    const box = document.getElementById('qrbox');
+    document.getElementById('qrimg').src =
+      'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent('swish://payment?data=' + encodeURIComponent(data));
+    box.style.display = 'block';
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch (e) {}
+});
+</script>
+<script src="assets/site.js"></script>
+</body>
+</html>
