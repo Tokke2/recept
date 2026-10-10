@@ -1,0 +1,13 @@
+{
+ "_plats": "/json/forslag-lista.json  (förslagslistan som visas & röstas på forslag.html)",
+ "kommentar": "Fylls på av ADMIN via ➕-knappen på forslag.html (lösenordsskyddat) när förslag mailats in. Status: 'oppen' (röstbar), 'kommande' (vald att byggas), 'fardig' (visas nedtonad med ✅), borttagna raderas helt. Rösterna räknas i Abacus (idea-<id>).",
+ "forslag": [
+  {
+   "id": "exempel-veckomeny",
+   "titel": "Veckomeny-planerare",
+   "beskrivning": "Dra recept till veckodagar och få en samlad inköpslista för hela veckan.",
+   "status": "oppen",
+   "datum": "2026-08-29"
+  }
+ ]
+}

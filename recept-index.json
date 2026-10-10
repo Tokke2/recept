@@ -1,0 +1,105 @@
+{
+ "_plats": "/json/recept-index.json (byggs av flytten + underhålls av sjalvlakning.py)",
+ "recept": [
+  {
+   "fil": "bakning/ananaskaka-med-svartvinbarssylt-i-riskokare.html",
+   "kategori": "bakning"
+  },
+  {
+   "fil": "bakning/applekaka-i-riskokare.html",
+   "kategori": "bakning"
+  },
+  {
+   "fil": "brod/brod-med-rivet-apple-bakmaskin.html",
+   "kategori": "brod"
+  },
+  {
+   "fil": "brod/krispigt-grekiskt-lantbrod-air-fryer.html",
+   "kategori": "brod"
+  },
+  {
+   "fil": "brod/lokbrod-i-bakmaskin.html",
+   "kategori": "brod"
+  },
+  {
+   "fil": "brod/majsbrod-saftig-print.html",
+   "kategori": "brod"
+  },
+  {
+   "fil": "brod/mjukt-protein-ostbrod-med-turkisk-yoghurt.html",
+   "kategori": "brod"
+  },
+  {
+   "fil": "brod/mjukt-toastbrod-med-turkisk-yoghurt-hemgjord-sylt-utan-margarin.html",
+   "kategori": "brod"
+  },
+  {
+   "fil": "brod/recept_pitabrod_airfryer.html",
+   "kategori": "brod"
+  },
+  {
+   "fil": "brod/saft-wheybrod.html",
+   "kategori": "brod"
+  },
+  {
+   "fil": "deg/klassisk-havresmuldeg-lagom-sot.html",
+   "kategori": "deg"
+  },
+  {
+   "fil": "deg/pizzadeg-bakmaskin-4x250g.html",
+   "kategori": "deg"
+  },
+  {
+   "fil": "deg/pizzadeg-med-50-g-rivet-apple.html",
+   "kategori": "deg"
+  },
+  {
+   "fil": "deg/proteinrik-biscoff-smuldeg-for-pizza-bakmaskinsanpassad.html",
+   "kategori": "deg"
+  },
+  {
+   "fil": "glass/Mjukglass MAX.html",
+   "kategori": "glass"
+  },
+  {
+   "fil": "glass/grundrecept-glass-i-ninja-creami-nc502eu-mjolk-yoghurt-protein-hemgjord-sylt.html",
+   "kategori": "glass"
+  },
+  {
+   "fil": "husdjur/annanasglas_hund.html",
+   "kategori": "husdjur"
+  },
+  {
+   "fil": "saft/Ananas_Rom_Yoghurt_Slush.html",
+   "kategori": "saft"
+  },
+  {
+   "fil": "saft/recept_proteinshake_saft.html",
+   "kategori": "saft"
+  },
+  {
+   "fil": "snacks/a4-makaronichips-airfryer-salt--peppar.html",
+   "kategori": "snacks"
+  },
+  {
+   "fil": "sylt/svartvinbarssylt-klassiskt-recept.html",
+   "kategori": "sylt"
+  },
+  {
+   "fil": "varmratt/frysbar-tomatsas-pa-egna-tomater-squash-lok-vitlok.html",
+   "kategori": "varmratt"
+  },
+  {
+   "fil": "varmratt/helstekt-flaskytterfil-i-airfryer-800-g-kallskuren-med-kottslicer.html",
+   "kategori": "varmratt"
+  },
+  {
+   "fil": "varmratt/kokt-ris-i-riskokare-500-g-ris-1000-g-vatten.html",
+   "kategori": "varmratt"
+  },
+  {
+   "fil": "varmratt/pulled-kycklinggryta-rotfrukter-vita-bonor.html",
+   "kategori": "varmratt"
+  }
+ ]
+}
