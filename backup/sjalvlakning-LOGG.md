@@ -124,3 +124,7 @@
 **2026-10-10**
 
 | sitemap.xml | 🗺️ omgenererad (39 adresser) |
+
+**2026-10-10**
+
+| sitemap.xml | 🗺️ omgenererad (40 adresser) |
