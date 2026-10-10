@@ -1592,10 +1592,17 @@ Användaren har valt dessa – bygg i denna ordning när de beställs "nästa
 punkt på roadmapen" e.d. Följ Centralt-principen: nya moduler i assets/,
 data i json/, ALDRIG per receptfil.
 
-1.  🏷️ SEO-TITLAR: sökordsoptimera alla receptens <title>/H1
-    ("Pizzadeg i bakmaskin – Clatronic BBA 3774 (4×250 g)") – nischord
-    med maskinnamn vinner gratis i Google. Central hjälp i seo.js +
-    genomgång av befintliga recept.
+1.  🏷️ SEO-TITLAR — ✔️ KLAR (2026-10-10): alla 29 receptens <title>
+    omskrivna till "<Namn> – <Maskinmodell(er)> | Mitt Maskinkök"
+    (t.ex. "🍕 Pizzadeg – Bakmaskin 4 × 250 g – Clatronic BBA 3774 &
+    KLAIF Pizzaugn | Mitt Maskinkök"). Modellerna hämtas ENDAST ur
+    receptets egen recept:maskiner-meta (inget hittas på), max 2 st,
+    dubbletter mot namnet filtreras. H1 lämnas orörd (receptnamnet är
+    ägardata). Central hjälp i assets/seo.js (avsnitt 1b): recept vars
+    titel saknar "| Mitt Maskinkök" får SEO-titeln vid sidvisning –
+    og:title/twitter:title ärver den automatiskt. nytt-recept.html
+    bygger SEO-titeln statiskt för alla FRAMTIDA recept (seoTitel av
+    valda maskiners varumärke+modellnamn).
 2.  ❓ FAQ PER RECEPT: 2–4 vanliga frågor/svar per recept ("Kan degen
     frysas?"), renderas som kort + FAQPage JSON-LD-schema (extra
     Google-yta, röstsök). Data: json/faq.json (fil → [{q,a}]) eller

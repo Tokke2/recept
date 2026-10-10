@@ -43,6 +43,30 @@
     document.head.appendChild(c);
   }
 
+  /* ---------- 1b) 🏷️ SEO-TITEL (roadmap 1) ---------- */
+  /* Receptens <title> får maskinmodellerna ur recept:maskiner-metan
+     ("Pizzadeg i bakmaskin – Clatronic BBA 3774 | Mitt Maskinkök") –
+     nischord med maskinnamn vinner gratis i Google. Statiskt satta
+     SEO-titlar (innehåller redan "| Mitt Maskinkök") lämnas orörda.
+     HITTAR ALDRIG PÅ: bara modeller som receptet självt anger. */
+  if (isRecipePage && document.title.indexOf('| Mitt Maskinkök') === -1) {
+    var seoBas = document.title.replace(/\s*[–-]\s*Recept\s*$/i, '').trim();
+    var seoMod = [];
+    var mmRaw = meta('maskiner');
+    if (mmRaw) {
+      mmRaw.split('|').forEach(function (seg) {
+        var del = seg.split('·')[0].split(' - ')[0];
+        var ci = del.indexOf(':');
+        var nm = (ci > -1 ? del.slice(ci + 1) : del).trim();
+        if (nm && seoMod.indexOf(nm) === -1 &&
+            seoBas.toLowerCase().indexOf(nm.toLowerCase()) === -1) seoMod.push(nm);
+      });
+    }
+    document.title = seoBas +
+      (seoMod.length ? ' – ' + seoMod.slice(0, 2).join(' & ') : '') +
+      ' | Mitt Maskinkök';
+  }
+
   /* ---------- 2) Description + Open Graph + Twitter ---------- */
   var titel = document.title;
   var beskr = meta('beskrivning') ||

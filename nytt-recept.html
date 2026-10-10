@@ -879,12 +879,20 @@ function buildHtml() {
   }
   const machineBoxes = ovrigaBox;
 
+  /* 🏷️ SEO-titel (roadmap 1): maskinmodellerna in i <title> –
+     nischord med maskinnamn vinner gratis i Google. Bara maskiner
+     som användaren själv valt – inget hittas på. */
+  const seoMod = machines.map(h => ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn)
+    .filter((n, i, a) => n && a.indexOf(n) === i && namn.toLowerCase().indexOf(n.toLowerCase()) === -1)
+    .slice(0, 2);
+  const seoTitel = namn + (seoMod.length ? ' – ' + seoMod.join(' & ') : '');
+
   return '<!DOCTYPE html>\n' +
 '<!-- PLATS: /recept/' + valdKat() + '/' + fil + '  (kategorimapp - läses in automatiskt) -->\n' +
 '<!-- mk-std-v4 : skapad via nytt-recept.html i standardutformningen -->\n' +
 '<html lang="sv">\n<head>\n<meta charset="UTF-8">\n' +
 '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
-'<title>' + emoji + ' ' + esc(namn) + ' – Recept</title>\n\n' +
+'<title>' + emoji + ' ' + esc(seoTitel) + ' | Mitt Maskinkök</title>\n\n' +
 '<!-- ===== RECEPT-METADATA ===== -->\n' +
 '<meta name="recept:namn" content="' + esc(namn) + '">\n' +
 '<meta name="recept:emoji" content="' + emoji + '">\n' +
