@@ -2247,6 +2247,19 @@ data i json/, ALDRIG per receptfil.
     receptfiler ändras ALDRIG. recept:maskiner-metan, metaMask och
     chips behåller gamla formatet (parser-/robotstabilitet).
 
+91. 🗑️➡️🏠 STARTSIDAN EFTER RADERING — ✔️ KLAR (2026-10-11,
+    användarens regel "inom 3 sek till startsidan, nu 404"):
+    deleteRecipe i redigera.js visar borttaget-skärmen med
+    rot-säkra länkar (window.__MK_ROT – tidigare hårdkodad
+    ../recept.html → 404 ur kategorimappar) + nedräkning 3→0 och
+    automatisk location.href till index.html. alert() vid saknad
+    spara-modul ersatt med toast (Brave-regeln).
+    SAMMA RUNDA: ⏱ klockformat-buggen i nytt-recepts stegTidUt
+    lagad ("3:00 h" blev "00 h" – rostbröds-buggen): regexen tar
+    nu \d+(:[0-5]\d)? och stegTimmar räknar "3:00"→3.0 h för
+    rimlighetsspärren. Rostbrödsfilen rättad (meta + maskinruta
+    → 11. Sandwich 3:00 h).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

@@ -552,18 +552,22 @@ const ALIAS_PROG = {'crockpot':'långkok','crock pot':'långkok','crock-pot':'l�
   'slowcooker':'långkok','slow cooker':'långkok'};
 
 /* ⏱ Tid ur ett steg: "totalt 11 h"/"totaltiden blir 11 h" vinner,
-   annars första tidsangivelsen. {tid, total} */
+   annars första tidsangivelsen. {tid, total}
+   🐛 Klockformat stöds ("3:00 h"/"1:30 h") – tidigare åt regexen
+   bara upp minutdelen ("3:00 h" → "00 h", rostbröds-buggen). */
 function stegTidUt(s) {
   const l = s.toLowerCase();
-  let m = l.match(/total\w*[^.\d]{0,14}(\d+[\d.,]*)\s*(h|tim)/);
+  let m = l.match(/total\w*[^.\d]{0,14}(\d+(?::[0-5]\d)?(?:[.,]\d+)?)\s*(h|tim)/);
   if (m) return { tid: m[1] + ' h', total: true };
-  m = l.match(/(\d+[\d.,]*)\s*(?:h|tim(?:me|mar|mars)?)\b/);
+  m = l.match(/(\d+(?::[0-5]\d)?(?:[.,]\d+)?)\s*(?:h|tim(?:me|mar|mars)?)\b/);
   if (m) return { tid: m[1] + ' h', total: false };
   m = l.match(/(?:ca\s*)?(\d+)\s*min\b/);
   if (m) return { tid: m[1] + ' min', total: false };
   return { tid: '', total: false };
 }
 function stegTimmar(tid) {
+  const k = String(tid).match(/(\d+):([0-5]\d)\s*h/);          /* "3:00 h" → 3.0 */
+  if (k) return parseInt(k[1], 10) + parseInt(k[2], 10) / 60;
   const m = String(tid).match(/([\d.,]+)\s*h/);
   return m ? parseFloat(m[1].replace(',', '.')) : 0;
 }

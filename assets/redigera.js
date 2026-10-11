@@ -1511,7 +1511,8 @@
      ============================================================ */
   async function deleteRecipe() {
     if (!window.__MK_SPARA || !window.__MK_SPARA.remove) {
-      alert('Spara-modulen saknas – ta bort filen manuellt på GitHub.'); return;
+      if (window.__MK_TOAST) window.__MK_TOAST('⚠️ Spara-modulen saknas – ladda om sidan eller ta bort filen på GitHub.');
+      return;
     }
     var fname = decodeURIComponent(location.pathname.split('/').pop());
     var rNamn = ((document.querySelector('meta[name="recept:namn"]') || {}).content || fname)
@@ -1575,12 +1576,28 @@
         } catch (e) {}
         dirty = false;
         window.removeEventListener('beforeunload', warnUnload);
+        /* 🏠 EFTER RADERING → STARTSIDAN INOM 3 SEK (användarens regel).
+           Tidigare: kvar på den raderade sidan med fel-djupad länk
+           (../recept.html ur kategorimapp) → 404. Nu: rot-säkra
+           länkar + automatisk nedräkning till startsidan. */
+        var rot = window.__MK_ROT || '../';
         document.body.innerHTML =
           '<div style="max-width:520px;margin:15vh auto;text-align:center;font-family:Segoe UI,system-ui,sans-serif;padding:20px;">' +
           '<div style="font-size:3rem;">\uD83D\uDDD1\uFE0F</div>' +
           '<h2 style="color:#2c3e50;margin:10px 0;">Receptet \u00e4r borttaget</h2>' +
           '<p style="color:#7f8c8d;">\u201C' + rNamn + '\u201D raderades fr\u00e5n sajten. Det f\u00f6rsvinner ur receptsamlingen om ~1 minut (gr\u00f6n bock i Actions).</p>' +
-          '<a href="../recept.html" style="display:inline-block;margin-top:16px;background:#c0392b;color:#fff;text-decoration:none;border-radius:12px;padding:12px 26px;font-weight:700;">\uD83D\uDCD6 Till receptsamlingen</a></div>';
+          '<p style="color:#2c3e50;font-weight:700;">\uD83C\uDFE0 Du skickas till startsidan om <span id="mk-del-nedr">3</span> s\u2026</p>' +
+          '<a href="' + rot + 'index.html" style="display:inline-block;margin-top:10px;background:#27ae60;color:#fff;text-decoration:none;border-radius:12px;padding:12px 26px;font-weight:700;">\uD83C\uDFE0 Till startsidan nu</a></div>';
+        var kvar = 3;
+        var nedr = setInterval(function () {
+          kvar--;
+          var el = document.getElementById('mk-del-nedr');
+          if (el) el.textContent = kvar;
+          if (kvar <= 0) {
+            clearInterval(nedr);
+            location.href = rot + 'index.html';
+          }
+        }, 1000);
       } else {
         okBtn.disabled = false; okBtn.textContent = '\uD83D\uDDD1\uFE0F Ta bort';
         msg.textContent = '\u26A0\uFE0F Kunde inte ta bort: ' + res.error;
