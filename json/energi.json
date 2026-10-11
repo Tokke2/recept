@@ -261,18 +261,6 @@
     "min": 5,
     "moment": "Steg 1 (🤖 auto ur receptets meta)"
    }
-  ],
-  "rostbrod-for-smorgasgrill-bakmaskin.html": [
-   {
-    "maskin": "clatronic-bba3774",
-    "min": 5,
-    "moment": "Steg 1 (🤖 auto ur receptets meta)"
-   },
-   {
-    "maskin": "krups-fdk452",
-    "min": 4,
-    "moment": "Alternativ (🤖 auto ur receptets meta)"
-   }
   ]
  }
 }
