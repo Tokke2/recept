@@ -1421,11 +1421,13 @@
         'title="Kryssa i om receptet (sylt/saft/buljong...) även ska finnas i ingrediensdatabasen – pris & näring per 100 g räknas ur kalkylen och uppdateras vid varje sparning.">' +
         '<input type="checkbox" id="eb-ing"' + (metaIng ? ' checked' : '') + ' style="width:16px;height:16px;accent-color:#27ae60;cursor:pointer;">🫙 Även ingrediens</label>' +
       '<button class="eb save" id="eb-save" style="background:#27ae60;color:#fff;">💾 Spara på sajten</button>' +
+      '<button class="eb" id="eb-paste" style="background:rgba(255,255,255,.2);color:#fff;" title="Ersätt HELA receptet med inklistrad HTML-kod (t.ex. från chatten)">📋 Klistra in HTML</button>' +
       '<button class="eb" id="eb-dl" style="background:rgba(255,255,255,.2);color:#fff;" title="Reserv: ladda ner filen istället">⬇️</button>' +
       '<button class="eb" id="eb-del" style="background:#c0392b;color:#fff;" title="Ta bort hela receptet från sajten">🗑️ Ta bort receptet</button>' +
       '<button class="eb exit" id="eb-exit">✕ Avsluta</button>';
     document.body.appendChild(bar);
     document.getElementById('eb-save').onclick = saveToSite;
+    document.getElementById('eb-paste').onclick = oppnaKlistra;
     document.getElementById('eb-dl').onclick = saveFile;
     document.getElementById('eb-del').onclick = deleteRecipe;
     document.getElementById('eb-exit').onclick = tryStopEdit;
@@ -1589,6 +1591,141 @@
      Lösenordsskyddad (spara.js frågar). Redigeringen avslutas
      INTE förrän sparningen lyckats.
      ============================================================ */
+  /* ============================================================
+     📋 KLISTRA IN HTML (användarens beställning, roadmap 88):
+     ersätt HELA receptfilen med inklistrad HTML-kod – t.ex. en ny
+     version genererad i chatten. Filen sparas på SAMMA plats som
+     receptet du redigerar (kategori byts som vanligt via 🗂️).
+     · Hårt-klick-dialog (stängs ENDAST via knappar – Brave-regeln,
+       ingen confirm()/alert())
+     · Live-validering med inline-fel (aldrig tyst miss)
+     · Normalisering: skräp före <!DOCTYPE bort, gammal PLATS-rad
+       bort → korrekt PLATS för nuvarande sökväg injiceras,
+       relativa sökvägar (href/src/content/url()) skrivs om till
+       rätt mappdjup (../ ↔ ../../) precis som kategoriflytten
+     · Gamla versionen finns alltid kvar i GitHub-historiken
+     ============================================================ */
+  function valideraInklistrad(t) {
+    if (!t || t.trim().length < 200) return 'Klistra in HELA receptfilen (texten är för kort).';
+    if (!/<html[\s>]/i.test(t)) return 'Ingen <html>-tagg hittades – klistra in hela filen, inte bara en del.';
+    if (!/<title>/i.test(t)) return 'Ingen <title> hittades – är det verkligen en hel receptfil?';
+    if (!(/recept:namn/i.test(t) || /<h1[\s>]/i.test(t))) return 'Ser inte ut som ett recept (varken recept:namn-meta eller <h1>-rubrik hittades).';
+    if (t.indexOf('STUB - receptet har flyttat') !== -1) return 'Detta är en flytt-stubb – inte ett riktigt recept.';
+    if (!/<\/html>/i.test(t)) return 'Filen verkar avklippt – </html> saknas i slutet.';
+    return '';
+  }
+
+  function normaliseraInklistrad(t, nuv) {
+    t = String(t).replace(/^\uFEFF/, '').trim();
+    /* skräp före <!DOCTYPE (t.ex. ```html från chatt-kopiering) bort */
+    var i = t.search(/<!DOCTYPE/i);
+    if (i > 0) t = t.slice(i);
+    else if (i === -1) t = '<!DOCTYPE html>\n' + t;
+    /* skräp efter </html> (t.ex. ``` ) bort */
+    var li = t.toLowerCase().lastIndexOf('</html>');
+    if (li !== -1) t = t.slice(0, li + 7) + '\n';
+    /* gammal PLATS-rad bort (ny injiceras nedan med RÄTT sökväg) */
+    t = t.replace(/<!--\s*PLATS:[\s\S]*?-->\s*\n?/i, '');
+    /* 📁 mappdjup: normalisera först allt till ../ och lyft sedan till
+       måldjupet – klarar inklistrat från både rot- och mappformat */
+    t = t.replace(/((?:href|src|content)=["'])\.\.\/\.\.\//g, '$1../')
+         .replace(/url\((['"]?)\.\.\/\.\.\//g, 'url($1../');
+    if (nuv.indexOf('/') !== -1) {
+      t = t.replace(/((?:href|src|content)=["'])\.\.\//g, '$1../../')
+           .replace(/url\((['"]?)\.\.\//g, 'url($1../../');
+    }
+    /* 🏷️ PLATS-märkning rad 2 (platsmärkningsregeln gäller ALLA filer) */
+    t = t.replace(/<!DOCTYPE[^>]*>/i, '<!DOCTYPE html>\n<!-- PLATS: /recept/' + nuv + '  (kategorimapp - läses in automatiskt) -->');
+    return t;
+  }
+  /* MK-PASTE-EXPORT */
+
+  function oppnaKlistra() {
+    if (document.getElementById('mk-paste-bg')) return;
+    var nuv = receptSokvag();
+    var fname = decodeURIComponent(location.pathname.split('/').pop());
+    var bg = document.createElement('div');
+    bg.id = 'mk-paste-bg';
+    bg.className = 'no-print';
+    bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100000;display:flex;align-items:center;justify-content:center;padding:14px;';
+    bg.innerHTML =
+      '<div style="background:#fff;color:#2c3e50;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.4);width:min(760px,96vw);max-height:92vh;display:flex;flex-direction:column;padding:clamp(14px,3vw,22px);gap:10px;">' +
+        '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+          '<b style="font-size:clamp(1rem,2.6vw,1.15rem);">📋 Ersätt receptet med inklistrad HTML</b>' +
+          '<span style="font-size:.76rem;color:#7f8c8d;flex:1;min-width:140px;">sparas som <b>/recept/' + nuv + '</b></span>' +
+        '</div>' +
+        '<div style="font-size:.8rem;color:#7f8c8d;line-height:1.5;">Klistra in HELA den nya receptfilen (från <code>&lt;!DOCTYPE html&gt;</code> till <code>&lt;/html&gt;</code>). ' +
+          'Sökvägar och PLATS-raden rättas automatiskt till rätt mapp. Gamla versionen finns kvar i GitHub-historiken.</div>' +
+        '<textarea id="mk-paste-ta" spellcheck="false" placeholder="<!DOCTYPE html>&#10;<html lang=&quot;sv&quot;>&#10;..." ' +
+          'style="flex:1;min-height:clamp(180px,38vh,340px);resize:vertical;border:2px solid #e8e2d8;border-radius:10px;padding:12px;font-family:ui-monospace,Consolas,monospace;font-size:.78rem;line-height:1.45;outline:none;"></textarea>' +
+        '<div id="mk-paste-info" style="font-size:.8rem;min-height:1.2em;color:#7f8c8d;">Väntar på inklistring…</div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+          '<button id="mk-paste-klipp" style="background:#f0ebe3;color:#2c3e50;border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85rem;">📥 Hämta från urklipp</button>' +
+          '<span style="flex:1;"></span>' +
+          '<button id="mk-paste-avbryt" style="background:#eee;color:#2c3e50;border:none;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85rem;">Avbryt</button>' +
+          '<button id="mk-paste-ok" disabled style="background:#27ae60;color:#fff;border:none;border-radius:10px;padding:10px 18px;font-weight:800;cursor:pointer;font-family:inherit;font-size:.85rem;opacity:.5;">🔄 Ersätt &amp; spara</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(bg);
+    /* hårt-klick: INGEN stängning via bakgrund/Escape – endast knapparna */
+
+    var ta = document.getElementById('mk-paste-ta');
+    var info = document.getElementById('mk-paste-info');
+    var ok = document.getElementById('mk-paste-ok');
+
+    function kolla() {
+      var fel = valideraInklistrad(ta.value);
+      if (fel) {
+        info.textContent = '⚠️ ' + fel;
+        info.style.color = '#c0392b';
+        ok.disabled = true; ok.style.opacity = '.5';
+      } else {
+        var namn = (ta.value.match(/recept:namn"\s+content="([^"]*)"/) || [])[1] || '';
+        info.textContent = '✅ Ser bra ut' + (namn ? ' – "' + namn + '"' : '') + ' (' + ta.value.length + ' tecken)';
+        info.style.color = '#27ae60';
+        ok.disabled = false; ok.style.opacity = '1';
+      }
+    }
+    ta.addEventListener('input', kolla);
+
+    document.getElementById('mk-paste-klipp').onclick = function () {
+      if (!navigator.clipboard || !navigator.clipboard.readText) {
+        info.textContent = '⚠️ Webbläsaren tillåter inte urklippsläsning här – klistra in med Ctrl+V i rutan.';
+        info.style.color = '#c0392b';
+        return;
+      }
+      navigator.clipboard.readText().then(function (t) { ta.value = t; kolla(); })
+        .catch(function () {
+          info.textContent = '⚠️ Fick inte läsa urklippet – klistra in med Ctrl+V i rutan istället.';
+          info.style.color = '#c0392b';
+        });
+    };
+    document.getElementById('mk-paste-avbryt').onclick = function () { bg.remove(); };
+
+    ok.onclick = async function () {
+      var fel = valideraInklistrad(ta.value);
+      if (fel) { kolla(); return; }
+      if (!window.__MK_SPARA) {
+        info.textContent = '⚠️ Spara-modulen saknas – ladda om sidan och försök igen.';
+        info.style.color = '#c0392b';
+        return;
+      }
+      ok.disabled = true; ok.textContent = '⏳ Sparar…';
+      var html = normaliseraInklistrad(ta.value, nuv);
+      var res = await window.__MK_SPARA.save('recept/' + nuv, html, '📋 Recept ersatt via inklistrad HTML: ' + fname);
+      if (res.ok) {
+        dirty = false;
+        bg.remove();
+        if (window.__MK_TOAST) window.__MK_TOAST('🎉 Receptet ersatt! Live om ~1 minut – sidan laddas om…');
+        setTimeout(function () { location.reload(); }, 1600);
+      } else {
+        ok.disabled = false; ok.textContent = '🔄 Ersätt & spara';
+        info.textContent = '⚠️ Kunde inte spara: ' + (res.error || 'okänt fel') + ' – prova igen eller ⬇️ som reserv.';
+        info.style.color = '#c0392b';
+      }
+    };
+  }
+
   async function saveToSite() {
     if (!window.__MK_SPARA) {
       if (window.__MK_TOAST) window.__MK_TOAST('Spara-modulen saknas – använder nedladdning istället');
@@ -1680,7 +1817,7 @@
       '#mk-lang, #mk-auto-qr, #mk-provenance, #mk-betyg, #mk-maskinmatch, #mk-kalkyl, #mk-donation, #mk-aff-disclosure, ' +
       '.share-btn, .print-btn, [id^="mk-pd"], [id^="mk-pw"], [id^="mk-swish"], ' +
       '.mk-saknas, .mk-prodlank, .mk-ingsub, #mk-byt-notis, .mk-ingsok, .mk-bytsmak, .mk-smakval, .mk-kallval, .mk-gruppval, #mk-match-bg, #mk-kedja, #mk-kommentarer, #mk-komm-pill, ' +
-      '#mk-verif-badge, #mk-verif-info, #mk-verif-bg, .mk-sidepil, #mk-sidepil-css, #cmResume, #mk-portion, .mk-testad, #mk-testad-bg, #mk-txt, #mk-hydr').forEach(function (el) { el.remove(); });
+      '#mk-verif-badge, #mk-verif-info, #mk-verif-bg, .mk-sidepil, #mk-sidepil-css, #cmResume, #mk-portion, .mk-testad, #mk-testad-bg, #mk-txt, #mk-hydr, #mk-paste-bg').forEach(function (el) { el.remove(); });
     /* 🌡️ Enhets-spans + ⚖️ skalnings-spans + ✨ steg-markeringar → exakt originaltext */
     clone.querySelectorAll('span.mk-enh, span.mk-skala, span.mk-stegmark').forEach(function (s) {
       s.parentNode.replaceChild(clone.ownerDocument.createTextNode(s.getAttribute('data-orig') || s.textContent), s);

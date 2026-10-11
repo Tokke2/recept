@@ -664,6 +664,10 @@ En statisk sajt på GitHub Pages (gratis) med matlagningsmaskiner och recept.
 │   │                            uppslagning, gtx behövs bara för splitternytt
 │   │                            innehåll tills nästa natt-körning).
 │   ├── redigera.js         ✏️ REDIGERING v2: ändra text direkt på sidan.
+│   │                          📋 ERSÄTT VIA INKLISTRAD HTML (roadmap 88):
+│   │                          knapp i redigeringsbalken → hårt-klick-dialog,
+│   │                          live-validering, PLATS/djup-normalisering,
+│   │                          sparas på samma sökväg via __MK_SPARA.
 │   │                          🔧 LÄGG TILL MASKIN I EFTERHAND: "+ Lägg till
 │   │                          maskin"-knapp i Gör så här-kortet → dialog med
 │   │                          maskin + program ur databasen + moment-text →
@@ -2188,6 +2192,21 @@ data i json/, ALDRIG per receptfil.
     svartvinbärssylt – bären är i säsong NU!" – kockhistoriken
     (lokal) + säsongsdata per ingrediens → diskret påminnelse på
     startsidan/receptet.
+
+88. 📋 ERSÄTT RECEPT VIA INKLISTRAD HTML — ✔️ KLAR (2026-10-11,
+    användarens beställning): ny knapp "📋 Klistra in HTML" i ✏️-
+    redigeringsbalken (redigera.js). Hårt-klick-dialog med textarea
+    + 📥 urklippsknapp + live-validering (hel fil? <title>?
+    recept:namn/<h1>? inte stubb? </html> finns?) – inline-fel,
+    aldrig confirm/alert. Normalisering före sparning:
+    chatt-skräp före <!DOCTYPE och efter </html> klipps, gammal
+    PLATS-rad ersätts med korrekt för NUVARANDE sökväg, relativa
+    sökvägar (href/src/content/url()) skrivs om till rätt mappdjup
+    (../ ↔ ../../ – klarar inklistrat i både rot- och mappformat).
+    Sparas på SAMMA plats som receptet (kategori byts som vanligt
+    via 🗂️) via __MK_SPARA; gamla versionen kvar i git-historiken;
+    sidan laddas om efter lyckad sparning. Autofix-roboten
+    standardiserar sedan som vanligt.
 
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
