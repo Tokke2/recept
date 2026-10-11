@@ -139,3 +139,9 @@
 
 | sitemap.xml | 🗺️ omgenererad (40 adresser) |
 | json/recept-index.json | 📁 omgenererad (29 recept) |
+
+**2026-10-11**
+
+| rostbrod-for-smorgasgrill-bakmaskin.html | ⚡ energidata skapad: clatronic-bba3774 5 min |
+| sitemap.xml | 🗺️ omgenererad (41 adresser) |
+| json/recept-index.json | 📁 omgenererad (30 recept) |
