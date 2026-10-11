@@ -2761,7 +2761,20 @@
   "💙 PayPal – beloppet": "💙 PayPal - the amount",
   "💚 Swisha beloppet": "💚 Swish the amount",
   "📻 Köksradio – bakgrundsmusik": "📻 Kitchen radio - background music",
-  "🤖 Robotarna jobbar dygnet runt": "🤖 The robots work around the clock"
+  "🤖 Robotarna jobbar dygnet runt": "🤖 The robots work around the clock",
+  "Detta är en flytt-stubb – inte ett riktigt recept.": "This is a move stub - not a real recipe.",
+  "Ersätt HELA receptet med inklistrad HTML-kod (t.ex. från chatten)": "Replace the ENTIRE recipe with pasted HTML code (eg from the chat)",
+  "Fastare proteinberikat vitt bröd med rejäl skorpa som håller formen i smörgåsgrillen utan att bli mosigt eller blött. Bakas helt i bakmaskinen. 1 limpa (~930 g).": "Firmer protein-enriched white bread with a solid crust that holds its shape in the sandwich grill without becoming mushy or soggy. Bake completely in the baking machine. 1 loaf (~930 g).",
+  "Klistra in HELA receptfilen (texten är för kort).": "Paste the ENTIRE recipe file (the text is too short).",
+  "Lägg ingredienserna i bakmaskinen i ordning: vatten, turkisk yoghurt, rapsolja, strösocker, jäst, vetemjöl och whey-80 proteinpulver. Lägg saltet i ett hörn så det inte rör jästen före start. ⏱ 5 min": "Place the ingredients in the baking machine in order: water, Turkish yogurt, canola oil, granulated sugar, yeast, wheat flour and whey-80 protein powder. Put the salt in a corner so it doesn't touch the yeast before starting. ⏱ 5 min",
+  "STUB - receptet har flyttat": "STUB - the recipe has moved",
+  "Steg 1: Clatronic BBA 3774 · 11. Sandwich 5 min": "Step 1: Clatronic BBA 3774 · 11. Sandwich 5 min",
+  "Whey-80 proteinpulver": "Whey-80 protein powder",
+  "⚠️ Fick inte läsa urklippet – klistra in med Ctrl+V i rutan istället.": "⚠️ Couldn't read the clipping - paste with Ctrl+V in the box instead.",
+  "⚠️ Spara-modulen saknas – ladda om sidan och försök igen.": "⚠️ The save module is missing - reload the page and try again.",
+  "⚠️ Webbläsaren tillåter inte urklippsläsning här – klistra in med Ctrl+V i rutan.": "⚠️ The browser does not allow clipboard reading here - paste with Ctrl+V in the box.",
+  "🍞 Rostbröd för smörgåsgrill – Bakmaskin – Clatronic BBA 3774 | Mitt Maskinkök": "🍞 Toast for sandwich grill - Baking machine - Clatronic BBA 3774 | My Machine Kitchen",
+  "🔄 Ersätt & spara": "🔄 Replace & save"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2771,6 +2784,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2760,
+ "_auto_genererade": 2773,
  "_senast_robot": "2026-10-11"
 }

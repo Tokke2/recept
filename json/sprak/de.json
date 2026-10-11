@@ -2866,13 +2866,26 @@
   "💙 PayPal – beloppet": "💙 PayPal - der Betrag",
   "💚 Swisha beloppet": "💚 Schwenken Sie die Menge",
   "📻 Köksradio – bakgrundsmusik": "📻 Küchenradio – Hintergrundmusik",
-  "🤖 Robotarna jobbar dygnet runt": "🤖 Die Roboter arbeiten rund um die Uhr"
+  "🤖 Robotarna jobbar dygnet runt": "🤖 Die Roboter arbeiten rund um die Uhr",
+  "Detta är en flytt-stubb – inte ett riktigt recept.": "Dies ist ein Umzugsstub – kein echtes Rezept.",
+  "Ersätt HELA receptet med inklistrad HTML-kod (t.ex. från chatten)": "Ersetzen Sie das GESAMTE Rezept durch eingefügten HTML-Code (z. B. aus dem Chat)",
+  "Fastare proteinberikat vitt bröd med rejäl skorpa som håller formen i smörgåsgrillen utan att bli mosigt eller blött. Bakas helt i bakmaskinen. 1 limpa (~930 g).": "Festeres, proteinreiches Weißbrot mit fester Kruste, das auch auf dem Sandwichgrill seine Form behält, ohne matschig oder matschig zu werden. Im Backautomaten komplett ausbacken. 1 Laib (~930 g).",
+  "Klistra in HELA receptfilen (texten är för kort).": "Fügen Sie die GESAMTE Rezeptdatei ein (der Text ist zu kurz).",
+  "Lägg ingredienserna i bakmaskinen i ordning: vatten, turkisk yoghurt, rapsolja, strösocker, jäst, vetemjöl och whey-80 proteinpulver. Lägg saltet i ett hörn så det inte rör jästen före start. ⏱ 5 min": "Geben Sie die Zutaten der Reihe nach in die Backmaschine: Wasser, türkischer Joghurt, Rapsöl, Kristallzucker, Hefe, Weizenmehl und Molkenproteinpulver. Legen Sie das Salz in eine Ecke, damit es die Hefe nicht berührt, bevor Sie beginnen. ⏱ 5 Min",
+  "STUB - receptet har flyttat": "STUB – das Rezept ist umgezogen",
+  "Steg 1: Clatronic BBA 3774 · 11. Sandwich 5 min": "Schritt 1: Clatronic BBA 3774 · 11. Sandwich 5 Min",
+  "Whey-80 proteinpulver": "Whey-80-Proteinpulver",
+  "⚠️ Fick inte läsa urklippet – klistra in med Ctrl+V i rutan istället.": "⚠️ Der Ausschnitt konnte nicht gelesen werden – fügen Sie ihn stattdessen mit Strg+V in das Feld ein.",
+  "⚠️ Spara-modulen saknas – ladda om sidan och försök igen.": "⚠️ Das Speichermodul fehlt – laden Sie die Seite neu und versuchen Sie es erneut.",
+  "⚠️ Webbläsaren tillåter inte urklippsläsning här – klistra in med Ctrl+V i rutan.": "⚠️ Der Browser erlaubt hier kein Lesen der Zwischenablage – Einfügen mit Strg+V in das Feld.",
+  "🍞 Rostbröd för smörgåsgrill – Bakmaskin – Clatronic BBA 3774 | Mitt Maskinkök": "🍞 Toast für Sandwichgrill - Backmaschine - Clatronic BBA 3774 | Meine Maschinenküche",
+  "🔄 Ersätt & spara": "🔄 Ersetzen und speichern"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2865,
+ "_auto_genererade": 2878,
  "_senast_robot": "2026-10-11"
 }
