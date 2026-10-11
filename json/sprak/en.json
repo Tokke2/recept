@@ -2737,7 +2737,31 @@
   "Vetemjöl (extra, för fastare skorpa)": "Wheat flour (extra, for firmer crust)",
   "⚙️ Steg 1: Clatronic BBA 3774 ·": "⚙️ Step 1: Clatronic BBA 3774 ·",
   "🍞 Rostbröd för smörgåsgrill – Bakmaskin": "🍞 Toast for sandwich grill - Baking machine",
-  "🍞 Rostbröd för smörgåsgrill – Bakmaskin – Clatronic BBA 3774 & KRUPS FDK452 | Mitt Maskinkök": "🍞 Toast for sandwich grill - Baking machine - Clatronic BBA 3774 & KRUPS FDK452 | My Machine Kitchen"
+  "🍞 Rostbröd för smörgåsgrill – Bakmaskin – Clatronic BBA 3774 & KRUPS FDK452 | Mitt Maskinkök": "🍞 Toast for sandwich grill - Baking machine - Clatronic BBA 3774 & KRUPS FDK452 | My Machine Kitchen",
+  ". Donationer är helt frivilliga – sajten funkar precis lika bra utan. Vill du hjälpa utan pengar? Tipsa en matglad vän,": ". Donations are completely voluntary - the site works just as well without it. Do you want to help without money? Tell a foodie friend,",
+  "Du stödjer en hemmakock-utvecklare – inte ett bolag 🧑‍🍳": "You are supporting a home cook developer - not a company 🧑‍🍳",
+  "Eget…": "Own…",
+  "Hjälp oss hålla grytan kokande": "Help us keep the pot boiling",
+  "Ingen summa är för liten och inget låses upp – sajten är och förblir 100% gratis för alla. Beloppet följer med in i Swish och PayPal (och går alltid att ändra där).": "No amount is too small and nothing is unlocked – the site is and will remain 100% free for everyone. The amount is included in Swish and PayPal (and can always be changed there).",
+  "Mitt Maskinkök är gratis, reklamfritt och öppen källkod. Din gåva håller recepten, robotarna och maskindatabasen vid liv. Valfritt belopp via Swish, PayPal eller Ko-fi. Tack!": "Mitt Maskinkök is free, ad-free and open source. Your gift keeps the recipes, robots and machine database alive. Any amount via Swish, PayPal or Ko-fi. Thanks!",
+  "Numret visas aldrig i klartext – QR-koden öppnar betalningen direkt i appen. Beloppet är förifyllt men går att ändra fritt. På mobil öppnas Swish automatiskt.": "The number is never displayed in plain text – the QR code opens the payment directly in the app. The amount is pre-filled but can be changed freely. On mobile, Swish opens automatically.",
+  "På mobilen öppnas Swish-appen med mottagare och valt belopp förifyllt (ändra fritt!). På datorn visas en QR-kod att skanna. Numret visas aldrig i klartext på sidan – det är en medveten säkerhetsprincip.": "On the mobile, the Swish app is opened with recipient and selected amount pre-filled (change freely!). A QR code appears on the computer to scan. The number is never displayed in plain text on the page – this is a conscious security principle.",
+  "Swish QR-kod": "Swish QR code",
+  "Valfritt belopp – varje krona värmer": "Any amount – every kroner warms",
+  "Valfritt belopp, engångs eller månadsvis – allt gör skillnad direkt.": "Any amount, one-off or monthly - everything makes an immediate difference.",
+  "Valt: 50 kr – tack! 💚": "Selected: SEK 50 - thank you! 💚",
+  "Varje krona går direkt till det som märks: nya testade recept (ingredienser kostar!), robotarnas drift, maskindatabasens underhåll och nya funktioner som köksradion, hydreringsreglaget och kockläget. Donationer låser aldrig upp något – de håller bara allting vid liv.": "Every penny goes directly to what matters: new tested recipes (ingredients cost!), the operation of the robots, the maintenance of the machine database and new features such as the kitchen radio, the hydration control and the cook mode. Donations never unlock anything - they just keep everything alive.",
+  "Välj en summa eller skriv en egen 🪙": "Choose a sum or write your own 🪙",
+  "eller lämna en ⭐ på GitHub – det värmer lika mycket!": "or leave a ⭐ on GitHub - it warms just as much!",
+  "ger dig recept med exakt maskin, program och tid – med livepriser, näringskalkyl, kockläge med köksradio och robotar som sköter sajten dygnet runt. Ingen reklam. Inga prenumerationer. Ingen betalvägg. Din gåva är det som håller allting vid liv.": "gives you recipes with exact machine, program and time - with live prices, nutritional calculation, chef mode with kitchen radio and robots that manage the site around the clock. No advertising. No subscriptions. No paywall. Your gift is what keeps everything alive.",
+  "låg volym under lagningen": "low volume during repair",
+  "önska en funktion": "wish a feature",
+  "☕ Ko-fi – valfritt / månadsvis": "☕ Coffee – optional / monthly",
+  "🎁 Välj belopp ↓": "🎁 Select amount ↓",
+  "💙 PayPal – beloppet": "💙 PayPal - the amount",
+  "💚 Swisha beloppet": "💚 Swish the amount",
+  "📻 Köksradio – bakgrundsmusik": "📻 Kitchen radio - background music",
+  "🤖 Robotarna jobbar dygnet runt": "🤖 The robots work around the clock"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2747,6 +2771,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2736,
+ "_auto_genererade": 2760,
  "_senast_robot": "2026-10-11"
 }
