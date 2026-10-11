@@ -2912,13 +2912,15 @@
   "⚙️ Steg 2 – Eftergräddning för skorpa: Clatronic BBA 3774 ·": "⚙️ Schritt 2 – Nachbacken für die Kruste: Clatronic BBA 3774 ·",
   "⚠️ Skiva brödet i ca 12–15 mm tjocka skivor när det svalnat HELT. För tunna skivor går sönder i grillen; för tjocka blir inte krispiga.": "⚠️ Das Brot in ca. 2 cm dicke Scheiben schneiden. Sobald es VOLLSTÄNDIG abgekühlt ist, in 12–15 mm dicke Scheiben schneiden. Zu dünne Scheiben brechen im Grill; Zu dick wird nicht knusprig.",
   "🍞 Rostbröd för smörgåsgrill – Bakmaskin – Recept": "🍞 Toast für Sandwichgrill – Backmaschine – Rezept",
-  "🔑 Nyckeln till en bra grillad macka är att brödet är HELT svalt innan gräddning. Varmt bröd blir mosigt i grillen.": "🔑 Der Schlüssel zu einem guten gegrillten Sandwich ist, dass das Brot vor dem Backen VOLLSTÄNDIG abgekühlt ist. Warmes Brot wird im Grill matschig."
+  "🔑 Nyckeln till en bra grillad macka är att brödet är HELT svalt innan gräddning. Varmt bröd blir mosigt i grillen.": "🔑 Der Schlüssel zu einem guten gegrillten Sandwich ist, dass das Brot vor dem Backen VOLLSTÄNDIG abgekühlt ist. Warmes Brot wird im Grill matschig.",
+  "Steg 1: Clatronic BBA 3774 · 11. Sandwich 3:00 h": "Schritt 1: Clatronic BBA 3774 · 11. Sandwich 3:00 h",
+  "⚠️ Spara-modulen saknas – ladda om sidan eller ta bort filen på GitHub.": "⚠️ Das Speichermodul fehlt – laden Sie die Seite neu oder löschen Sie die Datei auf GitHub."
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2911,
+ "_auto_genererade": 2913,
  "_senast_robot": "2026-10-11"
 }
