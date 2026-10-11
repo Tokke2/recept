@@ -1,7 +1,9 @@
 {
- "_plats": "/json/forslag.json  (central inställning för Förslagslådan)",
- "kommentar": "Styr HUR besökare skickar in förslag på forslag.html. 'metod': 'github' (standard – förslag blir GitHub Issues, kräver GH-konto) eller 'epost' (förslag skickas som mail till 'epost'-adressen nedan, inget konto krävs – används när sajten flyttar från GitHub). Fyll i 'epost' redan nu om du vill – den används INTE förrän metod byts till 'epost'.",
- "metod": "github",
+ "_plats": "/json/forslag.json  (central inställning för Förslagslådan + felrapporterna)",
+ "kommentar": "Styr HUR besökare skickar in förslag på forslag.html. 'metod': 'web3forms' (REKOMMENDERAS – förslag + felrapporter MAILAS till ägaren, adressen syns aldrig, inget konto krävs; kräver att 'web3forms_nyckel' är ifylld – annars faller sidan automatiskt tillbaka till github-läget) · 'github' (förslag blir GitHub Issues, kräver GH-konto) · 'epost' (mailto – OBS adressen blir synlig i repot).",
+ "sa_skaffar_du_nyckeln": "1) Gå till https://web3forms.com  2) Skriv din e-postadress i rutan 'Create your Access Key'  3) Klicka Create Access Key  4) Kolla din mail – nyckeln (ser ut som xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx) kommer direkt  5) Klistra in den i 'web3forms_nyckel' nedan (eller ge den till agenten i chatten). KLART – både Förslagslådan och felrapporterna börjar maila dig. Gratis: 250 mail/månad.",
+ "metod": "web3forms",
+ "web3forms_nyckel": "",
  "epost": "",
  "epost_amne": "Förslag till Mitt Maskinkök"
 }

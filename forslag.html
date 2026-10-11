@@ -128,30 +128,76 @@ const NS = 'mitt-maskinkok-tokke2';
 
 /* ============================================================
    INSKICKSMETOD – styrs centralt av json/forslag.json:
-   · "github" (standard): förslag = GitHub Issue (kräver GH-konto)
-   · "epost": förslag mailas till angiven adress (inget konto) –
-     FÖRBEREDD men aktiveras först när "metod" byts till "epost"
-     (t.ex. när sajten flyttar från GitHub Pages).
+   · "web3forms": förslag MAILAS direkt till ägaren via
+     api.web3forms.com (nyckeln i web3forms_nyckel – adressen
+     syns ALDRIG i repot, inget konto/mailprogram behövs).
+     Saknas nyckeln → automatisk reträtt till "github".
+   · "github" (standard-reträtt): förslag = GitHub Issue (kräver GH-konto)
+   · "epost": förslag via besökarens mailprogram (mailto) –
+     OBS adressen blir synlig i repot.
    ============================================================ */
-let CFG = { metod: 'github', epost: '', epost_amne: 'Förslag till Mitt Maskinkök' };
+let CFG = { metod: 'github', epost: '', epost_amne: 'Förslag till Mitt Maskinkök', web3forms_nyckel: '' };
 
 async function loadCfg() {
   try {
     const d = await (await fetch('json/forslag.json', { cache: 'no-store' })).json();
     if (d && typeof d === 'object') CFG = Object.assign(CFG, d);
   } catch (e) {}
-  /* E-postläge kräver ifylld adress – annars fall tillbaka till github */
+  /* Web3Forms-läget kräver nyckel, e-postläget adress – annars github */
+  if (CFG.metod === 'web3forms' && !String(CFG.web3forms_nyckel || '').trim()) CFG.metod = 'github';
   if (CFG.metod === 'epost' && !String(CFG.epost || '').trim()) CFG.metod = 'github';
-  if (CFG.metod === 'epost') {
+  if (CFG.metod === 'web3forms') {
+    document.getElementById('submitHint').innerHTML =
+      '💡 Förslaget <b>mailas direkt</b> till sajtens ägare – inget konto eller mailprogram behövs! 📧';
+  } else if (CFG.metod === 'epost') {
     document.getElementById('submitHint').innerHTML =
       '💡 Förslaget skickas som <b>e-post</b> till sajtens ägare – ditt mailprogram öppnas med allt förifyllt. Inget konto behövs! 📧';
   }
 }
 
-function submitIdea() {
+/* Inline-besked vid fältet (ALDRIG alert() – Brave-regeln) */
+function skickStatus(txt, farg) {
+  const el = document.getElementById('submitHint');
+  if (el) { el.innerHTML = txt; el.style.color = farg || ''; }
+}
+
+async function submitIdea() {
   const t = document.getElementById('fTitel').value.trim();
   const b = document.getElementById('fText').value.trim();
-  if (!t) { alert('Skriv en rubrik för förslaget!'); return; }
+  if (!t) {
+    skickStatus('⚠️ Skriv en rubrik för förslaget först!', '#c0392b');
+    document.getElementById('fTitel').focus();
+    return;
+  }
+
+  /* --- 📧 WEB3FORMS-LÄGE: mailas direkt, adressen hemlig --- */
+  if (CFG.metod === 'web3forms') {
+    skickStatus('⏳ Skickar förslaget…', '');
+    try {
+      const r = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: String(CFG.web3forms_nyckel).trim(),
+          subject: (CFG.epost_amne || 'Förslag till Mitt Maskinkök') + ': ' + t,
+          from_name: 'Förslagslådan – Mitt Maskinkök',
+          rubrik: t,
+          message: (b || '(ingen beskrivning)') + '\n\n---\nSkickat via Förslagslådan på ' + location.origin + location.pathname
+        })
+      });
+      const d = await r.json();
+      if (d && d.success) {
+        document.getElementById('fTitel').value = '';
+        document.getElementById('fText').value = '';
+        skickStatus('🎉 Tack! Förslaget är mailat till sajtens ägare 📧', '#27ae60');
+        return;
+      }
+      throw new Error((d && d.message) || 'okänt svar');
+    } catch (e) {
+      skickStatus('⚠️ Mailet gick inte fram (' + e.message + ') – förslaget öppnas som GitHub-ärende istället.', '#c0392b');
+      /* reträtt: github-vägen så förslaget aldrig tappas */
+    }
+  }
 
   /* --- E-POSTLÄGE (aktiveras via json/forslag.json → "metod": "epost") --- */
   if (CFG.metod === 'epost') {

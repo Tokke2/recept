@@ -104,3 +104,64 @@ body {
 }
 /* skarpare fokusringar överallt (tangentbord/tillgänglighet) */
 a:focus-visible, button:focus-visible { outline: 2.5px solid #e67e22; outline-offset: 2px; }
+
+/* ============================================================
+   📐 RESPONSIV & WEBBLÄSAR-BAS v3 (användarens beställning:
+   "alla sidor anpassas för olika skärmar och webbläsare")
+   ============================================================
+   Laddas centralt på ALLA sidor efter deras egna <style> –
+   försiktigt ADDITIV: förstärker utan att skriva om designen.
+   Testat tänk: Chrome/Edge/Brave (Blink), Firefox (Gecko),
+   Safari/iOS (WebKit) + mobil/surfplatta/dator/jätteskärm.
+   ============================================================ */
+
+/* --- Universalskydd (alla webbläsare) --- */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }   /* iOS/Safari: ingen vild textuppskalning i liggande */
+body { overflow-x: hidden; }                                        /* aldrig sidledsscroll av misstag */
+@supports (overflow: clip) { body { overflow-x: clip; } }           /* modernare variant där den finns */
+img, svg, video, canvas { max-width: 100%; }                        /* media spränger aldrig layouten */
+img { height: auto; }
+h1, h2, h3, h4, p, li, td, th, summary { overflow-wrap: break-word; } /* långa ord/URL:er bryts snyggt */
+input, select, textarea, button { font-family: inherit; }           /* Safari ärver inte annars */
+* { -webkit-tap-highlight-color: transparent; }                     /* ingen blå blixt vid tryck (Android/iOS) */
+
+/* --- 📱 Mobil (≤640px) --- */
+@media (max-width: 640px) {
+  input, select, textarea { font-size: 16px; }   /* iOS zoomar in vid <16px – detta stoppar hoppet */
+  table { max-width: 100%; }
+}
+
+/* --- 🤏 Små mobiler (≤380px, t.ex. iPhone SE) --- */
+@media (max-width: 380px) {
+  body { padding: 10px !important; }
+  header h1 { font-size: 1.08rem !important; }
+  th, td { padding: 5px 4px !important; font-size: .8rem; }
+}
+
+/* --- 📱↔️ Liggande mobil (kort skärm) --- */
+@media (max-height: 480px) and (orientation: landscape) {
+  header { padding: 12px 16px !important; }
+  .hero-img { max-height: 140px !important; }
+}
+
+/* --- 🖥️ Jätteskärmar (≥1800px): något större bastext, läsvänligt --- */
+@media (min-width: 1800px) {
+  html { font-size: 17px; }
+}
+
+/* --- 👆 Pekskärmar: bekvämare tryckytor i navigering --- */
+@media (pointer: coarse) {
+  .topnav a, nav a { padding-top: 10px; padding-bottom: 10px; }
+}
+
+/* --- 🦊/🧭 Webbläsarfinish --- */
+@supports (-webkit-touch-callout: none) {      /* endast iOS/Safari */
+  input, textarea {
+    -webkit-appearance: none; appearance: none; /* iOS lägger egna skuggor/ramar annars */
+    border-radius: var(--radius-sm);
+  }
+}
+@supports (scrollbar-width: thin) {             /* Firefox: smal snygg rullist */
+  * { scrollbar-width: thin; }
+}
+summary { cursor: pointer; }                    /* Firefox visar inte hand-pekare annars */

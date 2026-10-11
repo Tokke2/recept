@@ -2208,6 +2208,28 @@ data i json/, ALDRIG per receptfil.
     sidan laddas om efter lyckad sparning. Autofix-roboten
     standardiserar sedan som vanligt.
 
+89. 📐 RESPONSIV & WEBBLÄSAR-BAS + 📧 MAIL VIA FÖRSLAGSSIDAN —
+    ✔️ KLAR (2026-10-11, användarens beställning "alla sidor
+    anpassas för olika skärmar och webbläsare" + "maila mig om
+    förbättringsideer via förslagssidan").
+    A) design.css RESPONSIV & WEBBLÄSAR-BAS v3 (central, alla
+    sidor): text-size-adjust (iOS), overflow-x hidden/clip,
+    media max-width 100%, overflow-wrap på rubriker/celler,
+    font-family inherit på formulärfält (Safari), tap-highlight
+    bort, 16px-fält på mobil (stoppar iOS-zoom), småmobil ≤380px,
+    liggande mobil, jätteskärm ≥1800px (17px bas), pekskärms-
+    tryckytor, iOS appearance-none, Firefox scrollbar-width thin +
+    summary-pekare. ALLT ADDITIVT – skriver inte om sidors design.
+    B) forslag.html metod 'web3forms': förslag POST:as till
+    api.web3forms.com → MAILAS till ägaren (adressen aldrig i
+    repot). Nyckel i json/forslag.json → web3forms_nyckel (delas
+    med felrapport.js som redan läser samma fält!). Saknas nyckel
+    → automatisk reträtt till github-läget. Misslyckat mail →
+    github-reträtt så inget förslag tappas. alert() ersatt med
+    inline-besked (Brave-regeln). ⏳ VÄNTAR: användarens
+    Web3Forms-nyckel (web3forms.com → e-post → Create Access Key
+    → klistra in i chatten eller forslag.json).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
