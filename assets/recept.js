@@ -202,6 +202,7 @@
     stopAllaTimers();
     stopSpeak();
     rostStopp();   /* 🎤 mikrofonen ALLTID av när kockläget stängs */
+    if (window.__MK_RADIO) window.__MK_RADIO.stopp();   /* 📻 radion ALLTID av när kockläget stängs */
     if (overlay) overlay.remove();
     overlay = null;
     document.body.style.overflow = '';
@@ -334,12 +335,13 @@
       var u = new SpeechSynthesisUtterance(text);
       u.lang = document.documentElement.lang === 'sv' || !document.documentElement.lang ? 'sv-SE' : document.documentElement.lang;
       u.rate = 0.95;
-      u.onend = function () { speaking = false; paintSpeak(); };
+      u.onend = function () { speaking = false; paintSpeak(); if (window.__MK_RADIO) window.__MK_RADIO.tystare(false); };
       speechSynthesis.speak(u);
       speaking = true; paintSpeak();
+      if (window.__MK_RADIO) window.__MK_RADIO.tystare(true);   /* 📻 dämpa musiken under uppläsning */
     } catch (e) {}
   }
-  function stopSpeak() { try { speechSynthesis.cancel(); } catch (e) {} speaking = false; }
+  function stopSpeak() { try { speechSynthesis.cancel(); } catch (e) {} speaking = false; if (window.__MK_RADIO) window.__MK_RADIO.tystare(false); }
   function paintSpeak() {
     var el = overlay && overlay.querySelector('#cmSpeak');
     if (el) el.textContent = speaking ? '🔇 Tyst' : '🔊 Läs upp';
@@ -442,6 +444,7 @@
           '<button id="cmFontM" title="Mindre text (' + Math.round(fontScale * 100) + '%)" style="' + miniBtn() + '">A−</button>' +
           '<button id="cmFontP" title="Större text (' + Math.round(fontScale * 100) + '%)" style="' + miniBtn() + '">A+</button>' +
           (RostAPI ? '<button id="cmRost" style="' + miniBtn() + '">🎙️</button>' : '') +
+          (window.__MK_RADIO ? '<button id="cmRadio" title="📻 Köksradio – bakgrundsmusik" style="' + miniBtn() + '">📻</button>' : '') +
           (ingHTML ? '<button id="cmIng" style="' + miniBtn() + '">🧾</button>' : '') +
           '<button id="cmClose" style="' + miniBtn() + '">✕</button>' +
         '</div>' +
@@ -457,6 +460,8 @@
       '<div id="cmTimers" style="display:none;flex-wrap:wrap;gap:7px;margin-bottom:8px;"></div>' +
       /* 🎤 Röststyrningens statusrad (fylls av paintRost) */
       '<div id="cmRostInfo" style="display:none;background:rgba(39,174,96,.2);border:1px solid rgba(39,174,96,.5);border-radius:9px;padding:6px 12px;font-size:.85rem;margin-bottom:8px;"></div>' +
+      /* 📻 Köksradions rad (roadmap 75 – fylls av __MK_RADIO.mala, överlever stegbyten) */
+      '<div id="cmRadioRad" style="display:none;margin-bottom:8px;"></div>' +
       /* Steget + ingrediensmängder som nämns i steget */
       /* margin:auto 0 istället för justify-content:center → toppen klipps
          ALDRIG bort vid stor zoom (flex-centrering + overflow-bugg) */
@@ -495,6 +500,10 @@
 
     /* Händelser */
     overlay.querySelector('#cmClose').onclick = close;
+    /* 📻 Köksradio (roadmap 75): knapp + ommålning av panelen efter stegbyte */
+    var radioBtn = overlay.querySelector('#cmRadio');
+    if (radioBtn && window.__MK_RADIO) radioBtn.onclick = function () { window.__MK_RADIO.vaxla(overlay); };
+    if (window.__MK_RADIO) window.__MK_RADIO.mala(overlay);
     overlay.querySelector('#cmPrev').onclick = prev;
     overlay.querySelector('#cmNext').onclick = (idx === steps.length - 1)
       ? function () {

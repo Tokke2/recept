@@ -188,17 +188,25 @@ En statisk sajt på GitHub Pages (gratis) med matlagningsmaskiner och recept.
 │                              typgrid, inputmode=numeric på effekt.
 │                              Robotkö-flödet (maskin-ko.txt), ASIN-igen-
 │                              känningen och spara-flödet HELT oförändrade.
-├── stod.html               💚 STÖDSIDAN (användarens beställning, Audiobro-
-│                              stil i MK-tema): Swish (QR/app-länk – numret
-│                              ALDRIG i klartext, läses ur donation.json),
-│                              PayPal (paypal.me/Rickard3dPrint, nivåer 39/99/
-│                              299 kr), Ko-fi (tokke2, månadsstöd). ÄKTA live-
-│                              statistik ur recept-/maskinindex – INGA påhittade
-│                              betyg/givarsiffror (ärlighetsprincip). FAQ,
-│                              användnings-fördelning (~55/25/20), slut-CTA.
-│                              Länkad från footer-raden (site.js 💖-pill på
-│                              alla sidor), startsidans sitemapgrupp och
-│                              sitemap-roboten. donation.json: + kofi=tokke2.
+├── stod.html               💚 STÖDSIDAN v2 (2026-10-11, användarens order
+│                              "inga tiers"): Audiobro-inspirerad färgdesign
+│                              (grön→orange→guld-hero, flytande logga, glans-
+│                              animation – prefers-reduced-motion respekteras).
+│                              INGA nivåpaket – istället 💰 BELOPPSVÄLJARE
+│                              (chips 25/50/100/200 + eget fält) där beloppet
+│                              följer med in i BÅDE Swish-länken (amount,
+│                              editable:true) och PayPal-URL:en (/NNSEK).
+│                              Swish: QR/app-länk – numret ALDRIG i klartext,
+│                              läses ur donation.json. Ko-fi (tokke2, månads-
+│                              stöd). 📱 STICKY SNABBRAD på mobil (≤720px,
+│                              Swish/PayPal/Ko-fi; flyttas ovanför PWA-botten-
+│                              flikarna via display-mode:standalone). ÄKTA
+│                              livestatistik ur recept-/maskinindex – INGA
+│                              påhittade betyg/givarsiffror (ärlighetsprincip).
+│                              FAQ, fördelning (~55/25/20), slut-CTA. Helt
+│                              responsiv (clamp-typografi, auto-fit-grids).
+│                              Länkad från footer-raden (site.js 💖-pill),
+│                              startsidan och sitemap-roboten.
 ├── status.html             Hälsokontroll: testar recept/metadata/bilder/energi/maskiner live
 ├── ratter/                 🍽️ EN .html-FIL PER MATRÄTT (egen sida likt recepten).
 │                              Byggs AUTOMATISKT av matratter.html vid sparning
@@ -1157,6 +1165,12 @@ En statisk sajt på GitHub Pages (gratis) med matlagningsmaskiner och recept.
 │   │                          (väntar in ingrediens.js mk-ing2-ombyggnad);
 │   │                          funkar med BÅDA tabellformaten (.mg-pastill/
 │   │                          klassisk kolumn 2).
+│   ├── radio.js            📻 KÖKSRADION (roadmap 75): spelare i kockläget –
+│   │                          stationer ur json/radio.json, EN <audio> på body
+│   │                          (överlever stegbyten), aldrig autostart, volym
+│   │                          35% standard, localStorage mk-radio:*, reserv-
+│   │                          servrar vid fel, tystare() dämpar vid uppläsning,
+│   │                          stängs alltid med kockläget. API: __MK_RADIO.
 │   ├── skala.js            ⚖️ SATS-SKALNING + SKÖRDE-KALKYLATOR (receptsidor):
 │   │                          exponerar __MK_SKALA_APPLY(f) för portion.js.
 │   │                          knapp i verktygsraden → dialog med tre sätt:
@@ -1244,6 +1258,12 @@ En statisk sajt på GitHub Pages (gratis) med matlagningsmaskiner och recept.
 │   │                          dator, öppnar Swish-appen direkt på mobil) och
 │   │                          kofi (användarnamn på ko-fi.com). Endast ifyllda
 │   │                          visas. Båda tomma = ingen rad. (assets/site.js)
+│   ├── radio.json          📻 KÖKSRADIONS STATIONER (roadmap 75): 7 st –
+│   │                          3 × SomaFM (lofi/50-60-tal/retro, URL:er +
+│   │                          reservservrar ur officiella .pls-spellistor)
+│   │                          + SR P1/P2/P3/P4 Örebro (ur api.sr.se). ALLA
+│   │                          verifierade som audio/mpeg – inga påhittade
+│   │                          länkar. Fler stationer läggs ENDAST hit.
 │   ├── ingredienser.json   Ingrediensdatabas: pris kr/kg + näring per 100 g
 │   ├── ingrediens-lankar.txt 🛒 PRODUKTLÄNKAR (via ingredienser.html eller direkt),
 │   │                          en per rad → roboten (ingrediens-import.py) hämtar
@@ -2084,9 +2104,22 @@ data i json/, ALDRIG per receptfil.
     vid (samma Web Speech som röststyrningen; knappen/läget döljs
     helt i webbläsare utan stöd, Brave/Firefox-regeln).
 
-75. 📻 KÖKSRADIO I KOCKLÄGET (förslag 524): valbar bakgrundsmusik
-    (lofi/50-tal) på låg volym under lagningen. Spelas via inbäddad
-    spelare – startar ALDRIG automatiskt (autoplay-regler + artighet).
+75. 📻 KÖKSRADIO I KOCKLÄGET — ✔️ KLAR (2026-10-11, förslag 524):
+    ny modul assets/radio.js + stationslista json/radio.json.
+    📻-knapp i kocklägets verktygsrad → panel med 7 stationer:
+    3 × SomaFM (🎧 Lofi/Groove Salad, 🍸 50/60-tal/Illinois Street
+    Lounge, 🕵️ Retro/Secret Agent) + SR P1/P2/P3/P4 Örebro. ALLA
+    URL:er ur officiella källor (somafm.com/*.pls resp.
+    api.sr.se/api/v2/channels) och verifierade med riktig hämtning
+    (audio/mpeg) – inga påhittade länkar. Startar ALDRIG automatiskt
+    (endast klick), standardvolym 35% ("låg volym"), volymreglage,
+    station+volym minns i localStorage (mk-radio:*), SomaFM-reserv-
+    servrar provas automatiskt vid fel, ärligt felbesked annars.
+    Radion stängs ALLTID när kockläget stängs (samma princip som
+    🎤). Dämpas automatiskt till 25% under 🔊-uppläsning
+    (__MK_RADIO.tystare). Panelen överlever stegbyten (placeholder
+    #cmRadioRad + mala(overlay) efter varje render). Responsiv:
+    flex-wrap-chips + clamp()-typografi.
 
 76. 📺 SPEGLA TILL TV:N (förslag 528): knapp i kockläget visar en
     JÄTTE-QR → öppna samma recept/kockläge i smart-TV:ns webbläsare.

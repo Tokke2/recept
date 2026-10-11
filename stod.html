@@ -1,101 +1,172 @@
 <!DOCTYPE html>
-<!-- PLATS: /stod.html  (repo-roten – stödsida: Swish-QR/PayPal/Ko-fi, inga påhittade siffror) -->
+<!-- PLATS: /stod.html  (repo-roten – stödsida v2: Swish-QR/PayPal/Ko-fi, valfritt belopp, INGA tiers, inga påhittade siffror) -->
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
 <meta name="theme-color" content="#27ae60">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>💚 Stöd Mitt Maskinkök – håll sajten gratis & självgående</title>
-<meta name="description" content="Mitt Maskinkök är gratis, reklamfritt och öppen källkod. Din gåva håller recepten, robotarna och maskindatabasen vid liv. Tack!">
+<meta name="description" content="Mitt Maskinkök är gratis, reklamfritt och öppen källkod. Din gåva håller recepten, robotarna och maskindatabasen vid liv. Valfritt belopp via Swish, PayPal eller Ko-fi. Tack!">
 <style>
-  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; --gold:#f1c40f; }
+  :root {
+    --bg:#f6f3ee; --card:#fff; --dark:#22313f; --muted:#7f8c8d;
+    --green:#27ae60; --green2:#1e8449; --orange:#e67e22; --gold:#f1c40f;
+    --rosa:#e84393; --lila:#8e44ad; --bla:#2980b9;
+    --line:#eee2d2;
+  }
   * { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
   body {
     font-family:'Segoe UI',system-ui,sans-serif; color:var(--dark);
     background:
-      radial-gradient(circle at 10% 6%, rgba(39,174,96,.10), transparent 32%),
-      radial-gradient(circle at 90% 14%, rgba(230,126,34,.09), transparent 30%),
-      radial-gradient(circle at 50% 96%, rgba(241,196,15,.06), transparent 40%),
+      radial-gradient(circle at 8% 4%,  rgba(39,174,96,.14),  transparent 34%),
+      radial-gradient(circle at 92% 10%, rgba(230,126,34,.13), transparent 32%),
+      radial-gradient(circle at 15% 85%, rgba(232,67,147,.08), transparent 30%),
+      radial-gradient(circle at 85% 90%, rgba(142,68,173,.09), transparent 32%),
+      radial-gradient(circle at 50% 45%, rgba(241,196,15,.06), transparent 44%),
       var(--bg);
-    padding:24px; max-width:min(1100px,95vw); margin:0 auto;
+    padding:clamp(12px,3vw,26px); max-width:min(1100px,95vw); margin:0 auto;
+    padding-bottom:110px; /* plats för sticky mobilrad */
   }
+  @media (min-width:721px) { body { padding-bottom:clamp(12px,3vw,26px); } }
+
+  /* ===== HERO ===== */
   header {
     position:relative; overflow:hidden; text-align:center;
-    background:linear-gradient(120deg,#27ae60 0%,#1e8449 45%,#e67e22 100%);
-    color:#fff; border-radius:22px; padding:34px 26px 30px; margin-bottom:20px;
-    box-shadow:0 12px 34px rgba(39,174,96,.3);
+    background:linear-gradient(130deg,#27ae60 0%,#1e8449 34%,#e67e22 72%,#f1c40f 110%);
+    color:#fff; border-radius:clamp(18px,3vw,26px);
+    padding:clamp(24px,5vw,40px) clamp(16px,4vw,30px) clamp(22px,4vw,32px);
+    margin-bottom:clamp(14px,2.5vw,22px);
+    box-shadow:0 16px 44px rgba(39,174,96,.32);
   }
   header::before {
-    content:'💚 🍳 ☕ 🤖 💚 🍳 ☕ 🤖 💚 🍳 ☕ 🤖';
-    position:absolute; inset:auto -20px -16px -20px;
-    font-size:1.9rem; opacity:.14; letter-spacing:14px; white-space:nowrap; pointer-events:none;
+    content:'💚 🍳 ☕ 🤖 📻 🍞 💚 🍳 ☕ 🤖 📻 🍞 💚 🍳 ☕ 🤖';
+    position:absolute; inset:auto -30px -18px -30px;
+    font-size:clamp(1.4rem,4vw,2rem); opacity:.15; letter-spacing:14px; white-space:nowrap; pointer-events:none;
   }
-  header img.logo { width:84px; height:84px; background:#f6f3ee; border-radius:20px; padding:8px; box-shadow:0 10px 26px rgba(0,0,0,.25); margin-bottom:10px; }
-  .eyebrow { display:inline-block; background:rgba(255,255,255,.2); border:1.5px solid rgba(255,255,255,.4); border-radius:999px; padding:5px 16px; font-size:.72rem; font-weight:800; letter-spacing:.1em; margin-bottom:12px; }
-  header h1 { font-size:clamp(1.5rem,4vw,2.1rem); margin-bottom:8px; text-shadow:0 2px 6px rgba(0,0,0,.15); }
-  header h1 span { color:#ffe9a8; }
-  header p.sub { opacity:.96; font-size:.98rem; max-width:620px; margin:0 auto; line-height:1.6; }
-  .hstats { display:flex; gap:9px; flex-wrap:wrap; justify-content:center; margin-top:16px; }
-  .hstat { background:rgba(255,255,255,.18); border:1.5px solid rgba(255,255,255,.35); border-radius:999px; padding:6px 15px; font-size:.82rem; font-weight:700; }
-  .ctas { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:18px; }
+  header::after {
+    content:''; position:absolute; right:-70px; top:-70px; width:240px; height:240px;
+    background:radial-gradient(circle at 35% 35%, rgba(255,255,255,.35), transparent 65%); pointer-events:none;
+  }
+  header img.logo {
+    width:clamp(68px,12vw,96px); height:clamp(68px,12vw,96px); background:#f6f3ee;
+    border-radius:22px; padding:9px; box-shadow:0 12px 30px rgba(0,0,0,.28); margin-bottom:12px;
+  }
+  @media (prefers-reduced-motion:no-preference) {
+    header img.logo { animation:flyt 4.5s ease-in-out infinite; }
+    @keyframes flyt { 0%,100% { transform:translateY(0) rotate(-2deg); } 50% { transform:translateY(-6px) rotate(2deg); } }
+  }
+  .eyebrow {
+    display:inline-block; background:rgba(255,255,255,.22); border:1.5px solid rgba(255,255,255,.45);
+    border-radius:999px; padding:6px 18px; font-size:clamp(.62rem,1.8vw,.74rem); font-weight:800; letter-spacing:.11em; margin-bottom:14px;
+  }
+  header h1 { font-size:clamp(1.45rem,4.6vw,2.3rem); margin-bottom:10px; text-shadow:0 2px 8px rgba(0,0,0,.18); line-height:1.15; }
+  header h1 span { background:linear-gradient(90deg,#fff6c9,#ffe9a8,#ffd1dc); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  header p.sub { opacity:.97; font-size:clamp(.88rem,2.4vw,1rem); max-width:640px; margin:0 auto; line-height:1.65; }
+  .hstats { display:flex; gap:9px; flex-wrap:wrap; justify-content:center; margin-top:18px; }
+  .hstat { background:rgba(255,255,255,.18); border:1.5px solid rgba(255,255,255,.38); backdrop-filter:blur(4px); border-radius:999px; padding:7px 16px; font-size:clamp(.72rem,2vw,.84rem); font-weight:700; }
+  .ctas { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:20px; }
 
-  .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:13px 22px; border-radius:13px; font-weight:800; font-size:.95rem; text-decoration:none; border:none; cursor:pointer; font-family:inherit; transition:transform .13s, box-shadow .15s; }
-  .btn:hover { transform:translateY(-2px); }
-  .btn:active { transform:translateY(0); }
-  .btn-swish { background:#00C67A; color:#fff; box-shadow:0 8px 18px rgba(0,198,122,.3); }
-  .btn-paypal { background:#0070BA; color:#fff; box-shadow:0 8px 18px rgba(0,112,186,.3); }
-  .btn-kofi { background:#FF5E5B; color:#fff; box-shadow:0 8px 18px rgba(255,94,91,.3); }
-  .btn-ghost { background:#fff; color:var(--dark); border:1.5px solid #e8e2d8; box-shadow:0 4px 12px rgba(0,0,0,.06); }
+  /* ===== KNAPPAR ===== */
+  .btn {
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:clamp(12px,2.6vw,15px) clamp(18px,3.4vw,26px); border-radius:14px;
+    font-weight:800; font-size:clamp(.88rem,2.3vw,1rem); text-decoration:none; border:none; cursor:pointer;
+    font-family:inherit; transition:transform .13s, box-shadow .15s, filter .15s; position:relative; overflow:hidden;
+  }
+  .btn:hover { transform:translateY(-2px) scale(1.02); filter:brightness(1.06); }
+  .btn:active { transform:translateY(1px) scale(.99); }
+  .btn-swish  { background:linear-gradient(135deg,#00d68a,#00b06c); color:#fff; box-shadow:0 10px 22px rgba(0,198,122,.38); }
+  .btn-paypal { background:linear-gradient(135deg,#1a8ad6,#0070BA); color:#fff; box-shadow:0 10px 22px rgba(0,112,186,.35); }
+  .btn-kofi   { background:linear-gradient(135deg,#ff7572,#FF5E5B); color:#fff; box-shadow:0 10px 22px rgba(255,94,91,.35); }
+  .btn-ghost  { background:#fff; color:var(--dark); border:1.5px solid var(--line); box-shadow:0 4px 12px rgba(0,0,0,.06); }
+  @media (prefers-reduced-motion:no-preference) {
+    .btn-swish::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);
+      transform:translateX(-120%); animation:glans 3.2s ease-in-out infinite;
+    }
+    @keyframes glans { 0%,60% { transform:translateX(-120%); } 85%,100% { transform:translateX(120%); } }
+  }
 
-  .card { background:var(--card); border-radius:16px; padding:20px 24px; margin-bottom:16px; box-shadow:0 3px 14px rgba(0,0,0,.07); border-top:5px solid var(--tc,#27ae60); }
-  .kicker { font-size:.7rem; letter-spacing:.1em; font-weight:800; color:#a5967e; text-transform:uppercase; margin-bottom:6px; }
-  h2 { font-size:1.15rem; margin-bottom:8px; }
-  .muted { color:var(--muted); font-size:.9rem; line-height:1.6; }
+  /* ===== KORT ===== */
+  .card {
+    background:var(--card); border-radius:clamp(14px,2.5vw,18px); padding:clamp(16px,3.4vw,26px);
+    margin-bottom:clamp(12px,2.4vw,18px); box-shadow:0 4px 18px rgba(0,0,0,.07); border-top:5px solid var(--tc,#27ae60);
+  }
+  .kicker { font-size:clamp(.62rem,1.8vw,.72rem); letter-spacing:.11em; font-weight:800; color:#a5967e; text-transform:uppercase; margin-bottom:7px; }
+  h2 { font-size:clamp(1.02rem,2.8vw,1.25rem); margin-bottom:9px; }
+  .muted { color:var(--muted); font-size:clamp(.82rem,2.2vw,.92rem); line-height:1.65; }
 
-  .tiers { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin-top:6px; }
-  .tier { position:relative; background:#fff; border:1.5px solid #eee2d2; border-radius:16px; padding:18px 16px 14px; display:flex; flex-direction:column; box-shadow:0 5px 18px rgba(0,0,0,.05); }
-  .tier.popular { border-color:var(--green); box-shadow:0 10px 28px rgba(39,174,96,.2); }
-  .tier .badge { position:absolute; top:-11px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,#27ae60,#1e8449); color:#fff; font-size:.68rem; font-weight:800; letter-spacing:.06em; padding:5px 12px; border-radius:999px; white-space:nowrap; }
-  .tier h3 { font-size:1rem; margin-bottom:2px; }
-  .price { font-size:1.9rem; font-weight:900; letter-spacing:-.02em; }
-  .price small { font-size:.85rem; font-weight:600; color:var(--muted); }
-  .tier ul { list-style:none; margin:10px 0 14px; display:grid; gap:7px; }
-  .tier li { display:flex; gap:8px; font-size:.82rem; line-height:1.45; color:var(--muted); }
-  .tier li::before { content:'✓'; color:var(--green); font-weight:800; }
-  .tier .btn { width:100%; margin-top:auto; }
-  .tier .hint { margin-top:8px; text-align:center; font-size:.7rem; color:#a5967e; }
+  /* ===== BELOPPSVÄLJAREN (ersätter tiers) ===== */
+  .beloppsrad { display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin:14px 0 6px; }
+  .bchip {
+    border:2px solid var(--line); background:#fff; color:var(--dark); border-radius:999px;
+    padding:10px 20px; font-weight:800; font-size:clamp(.88rem,2.4vw,1rem); cursor:pointer; font-family:inherit;
+    transition:transform .12s, border-color .15s, background .15s;
+  }
+  .bchip:hover { transform:translateY(-2px); border-color:#bfe8cf; }
+  .bchip.vald { background:linear-gradient(135deg,#27ae60,#1e8449); color:#fff; border-color:#1e8449; box-shadow:0 8px 20px rgba(39,174,96,.35); }
+  .eget { display:inline-flex; align-items:center; gap:6px; background:#fff; border:2px solid var(--line); border-radius:999px; padding:6px 14px 6px 18px; }
+  .eget input { border:none; outline:none; width:76px; font:inherit; font-weight:800; font-size:clamp(.88rem,2.4vw,1rem); color:var(--dark); background:transparent; }
+  .eget b { color:var(--muted); font-size:.9rem; }
+  .betalrad { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+  #beloppInfo { font-size:clamp(.74rem,2vw,.82rem); color:var(--green2); font-weight:700; margin-top:10px; min-height:1.2em; }
 
-  .impact { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-top:10px; }
-  .impact .item { background:linear-gradient(135deg,#fff,#faf6ef); border:1px solid #eee2d2; border-radius:14px; padding:14px; display:flex; gap:12px; align-items:flex-start; }
-  .impact .ico { width:38px; height:38px; border-radius:12px; display:grid; place-items:center; font-size:1.1rem; flex-shrink:0; }
-  .impact h4 { font-size:.85rem; margin-bottom:3px; }
-  .impact p { color:var(--muted); font-size:.78rem; line-height:1.5; }
+  /* ===== IMPACT / TRUST / FAQ ===== */
+  .impact { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr)); gap:12px; margin-top:10px; }
+  .impact .item {
+    background:linear-gradient(135deg,#fff,#faf6ef); border:1px solid var(--line); border-radius:14px;
+    padding:14px; display:flex; gap:12px; align-items:flex-start; transition:transform .15s, box-shadow .15s;
+  }
+  .impact .item:hover { transform:translateY(-3px); box-shadow:0 10px 24px rgba(0,0,0,.08); }
+  .impact .ico { width:40px; height:40px; border-radius:12px; display:grid; place-items:center; font-size:1.15rem; flex-shrink:0; }
+  .impact h4 { font-size:clamp(.8rem,2.2vw,.88rem); margin-bottom:3px; }
+  .impact p { color:var(--muted); font-size:clamp(.72rem,2vw,.8rem); line-height:1.5; }
 
-  .trust { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
-  .trust span { display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #eee2d2; padding:7px 12px; border-radius:999px; font-size:.75rem; color:var(--muted); }
+  .trust { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .trust span { display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid var(--line); padding:7px 13px; border-radius:999px; font-size:clamp(.68rem,1.9vw,.76rem); color:var(--muted); }
 
-  details { background:#fff; border:1.5px solid #eee2d2; border-radius:13px; padding:12px 16px; margin-bottom:10px; }
-  details[open] { box-shadow:0 6px 18px rgba(0,0,0,.05); border-color:#d9ede2; }
-  summary { font-weight:800; cursor:pointer; list-style:none; font-size:.9rem; }
+  details { background:#fff; border:1.5px solid var(--line); border-radius:13px; padding:12px 16px; margin-bottom:10px; transition:border-color .2s; }
+  details[open] { box-shadow:0 6px 18px rgba(0,0,0,.05); border-color:#bfe8cf; }
+  summary { font-weight:800; cursor:pointer; list-style:none; font-size:clamp(.84rem,2.3vw,.92rem); display:flex; align-items:center; gap:6px; }
   summary::-webkit-details-marker { display:none; }
-  details p { margin-top:8px; color:var(--muted); font-size:.85rem; line-height:1.6; }
+  summary::after { content:'▾'; margin-left:auto; color:var(--green); transition:transform .2s; }
+  details[open] summary::after { transform:rotate(180deg); }
+  details p { margin-top:9px; color:var(--muted); font-size:clamp(.78rem,2.1vw,.86rem); line-height:1.65; }
 
-  #qrbox { display:none; text-align:center; margin-top:14px; padding:16px; background:#f4fbf6; border:2px solid #27ae60; border-radius:14px; }
-  #qrbox img { border-radius:10px; background:#fff; padding:8px; box-shadow:0 4px 14px rgba(0,0,0,.1); }
+  /* ===== SWISH-QR ===== */
+  #qrbox { display:none; text-align:center; margin:0 0 16px; padding:clamp(14px,3vw,20px); background:#f0fbf4; border:2px solid var(--green); border-radius:16px; }
+  #qrbox img { border-radius:12px; background:#fff; padding:9px; box-shadow:0 6px 18px rgba(0,0,0,.12); max-width:min(240px,70vw); height:auto; }
 
-  .slutcta { background:linear-gradient(135deg,#2c3e50,#1a252f); color:#fff; text-align:center; border-top:none; }
+  /* ===== SLUT-CTA / FOOTER ===== */
+  .slutcta { background:linear-gradient(135deg,#22313f 0%,#17212c 55%,#27384a 100%); color:#fff; text-align:center; border-top:none; position:relative; overflow:hidden; }
+  .slutcta::before { content:''; position:absolute; left:-60px; bottom:-60px; width:200px; height:200px; background:radial-gradient(circle, rgba(39,174,96,.35), transparent 65%); pointer-events:none; }
   .slutcta h2 { color:#fff; }
   .slutcta p { color:#cbd5e1; }
-  footer { text-align:center; color:var(--muted); font-size:.78rem; padding:20px; line-height:1.7; }
-  footer a { color:var(--accent2); font-weight:700; }
-  @media (max-width:640px) {
-    body { padding:14px; }
-    header { padding:24px 16px 22px; }
-    .card { padding:16px; }
-    .btn { width:100%; }
-    .ctas .btn { width:auto; flex:1; min-width:130px; }
+  footer { text-align:center; color:var(--muted); font-size:clamp(.7rem,2vw,.78rem); padding:20px 10px; line-height:1.8; }
+  footer a { color:var(--orange); font-weight:700; }
+
+  /* ===== STICKY MOBILRAD (snabbdonation) ===== */
+  .stickycta {
+    position:fixed; left:0; right:0; bottom:0; z-index:60; display:none;
+    background:rgba(255,255,255,.95); backdrop-filter:blur(8px);
+    border-top:1.5px solid var(--line); padding:10px max(12px, env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom));
+    box-shadow:0 -6px 24px rgba(0,0,0,.1);
   }
-  @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+  .stickycta .rad { display:flex; gap:8px; max-width:520px; margin:0 auto; }
+  .stickycta .btn { flex:1; padding:12px 8px; font-size:.86rem; border-radius:12px; }
+  @media (max-width:720px) { .stickycta { display:block; } }
+  @media (display-mode: standalone) { .stickycta { bottom:62px; } } /* krockar inte med PWA-bottenflikarna */
+
+  @media (max-width:640px) {
+    .ctas .btn { flex:1; min-width:126px; }
+    .beloppsrad { gap:7px; }
+    .bchip { flex:1; min-width:72px; text-align:center; padding:10px 8px; }
+    .eget { flex:1 1 100%; justify-content:center; }
+    .betalrad .btn { flex:1 1 100%; }
+  }
+  @media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
 </style>
 <link rel="stylesheet" href="assets/print.css">
 </head>
@@ -105,33 +176,57 @@
   <div class="no-print" style="text-align:left;margin-bottom:4px;"><a href="index.html" style="color:#fff;opacity:.9;text-decoration:none;font-size:.85rem;">← Till startsidan</a></div>
   <img class="logo" src="images/logo-mark.svg" alt="Mitt Maskinkök" onerror="this.style.display='none'">
   <div><span class="eyebrow">✨ GRATIS • REKLAMFRITT • ÖPPEN KÄLLKOD</span></div>
-  <h1>Gillar du maskinköket? <span>Hjälp oss hålla det gratis</span> 💚</h1>
+  <h1>Gillar du maskinköket? <span>Hjälp oss hålla grytan kokande</span> 💚</h1>
   <p class="sub"><b>Mitt Maskinkök</b> ger dig recept med exakt maskin, program och tid – med livepriser,
-  näringskalkyl, kockläge och 8 robotar som sköter sajten dygnet runt. Ingen reklam. Inga prenumerationer.
-  Din gåva är det som håller grytan kokande.</p>
+  näringskalkyl, kockläge med köksradio och robotar som sköter sajten dygnet runt. Ingen reklam.
+  Inga prenumerationer. Ingen betalvägg. Din gåva är det som håller allting vid liv.</p>
   <div class="hstats" id="hstats">
     <span class="hstat">📖 Recept med verifierade program</span>
     <span class="hstat">🔧 Hela maskinparken dokumenterad</span>
-    <span class="hstat">🤖 8 robotar jobbar gratis – men servern av kaffe är låg</span>
+    <span class="hstat">🤖 Robotarna jobbar dygnet runt</span>
   </div>
   <div class="ctas no-print">
-    <button class="btn btn-swish" id="swishBtn">💚 Swish – skanna QR</button>
-    <a class="btn btn-paypal" href="https://paypal.me/Rickard3dPrint" target="_blank" rel="noopener">💙 PayPal</a>
+    <button class="btn btn-swish" id="swishBtn">💚 Swish</button>
+    <a class="btn btn-paypal" id="paypalBtn" href="https://paypal.me/Rickard3dPrint" target="_blank" rel="noopener">💙 PayPal</a>
     <a class="btn btn-kofi" href="https://ko-fi.com/tokke2" target="_blank" rel="noopener">☕ Ko-fi</a>
+    <a class="btn btn-ghost" href="#belopp">🎁 Välj belopp ↓</a>
   </div>
 </header>
 
-<div class="card" style="--tc:#27ae60;">
+<!-- ===== 💰 VALFRITT BELOPP (inga paket, inga krav – bara en hjälpsam genväg) ===== -->
+<div class="card" id="belopp" style="--tc:#e67e22;">
   <div id="qrbox">
     <b>📱 Skanna med Swish-appen</b><br><br>
-    <img id="qrimg" width="220" height="220" alt="Swish QR">
-    <div class="muted" style="margin-top:10px;">Numret visas aldrig i klartext – QR-koden öppnar betalningen direkt i appen. På mobil öppnas Swish automatiskt.</div>
+    <img id="qrimg" width="220" height="220" alt="Swish QR-kod">
+    <div class="muted" style="margin-top:10px;">Numret visas aldrig i klartext – QR-koden öppnar betalningen direkt i appen.
+    Beloppet är förifyllt men går att ändra fritt. På mobil öppnas Swish automatiskt.</div>
+    <button class="btn btn-ghost" style="margin-top:12px;" onclick="document.getElementById('qrbox').style.display='none'">Stäng</button>
   </div>
+  <p class="kicker">Valfritt belopp – varje krona värmer</p>
+  <h2>Välj en summa eller skriv en egen 🪙</h2>
+  <p class="muted">Ingen summa är för liten och inget låses upp – sajten är och förblir 100% gratis för alla.
+  Beloppet följer med in i Swish och PayPal (och går alltid att ändra där).</p>
+  <div class="beloppsrad no-print" id="beloppsrad">
+    <button class="bchip" data-kr="25">25 kr</button>
+    <button class="bchip vald" data-kr="50">50 kr</button>
+    <button class="bchip" data-kr="100">100 kr</button>
+    <button class="bchip" data-kr="200">200 kr</button>
+    <label class="eget"><input id="egetKr" type="number" min="1" max="99999" inputmode="numeric" placeholder="Eget…"><b>kr</b></label>
+  </div>
+  <div id="beloppInfo">Valt: 50 kr – tack! 💚</div>
+  <div class="betalrad no-print">
+    <button class="btn btn-swish" id="swishBtn2">💚 Swisha beloppet</button>
+    <a class="btn btn-paypal" id="paypalBtn2" href="https://paypal.me/Rickard3dPrint/50SEK" target="_blank" rel="noopener">💙 PayPal – beloppet</a>
+    <a class="btn btn-kofi" href="https://ko-fi.com/tokke2" target="_blank" rel="noopener">☕ Ko-fi – valfritt / månadsvis</a>
+  </div>
+</div>
+
+<div class="card" style="--tc:#27ae60;">
   <p class="kicker">Varför din hjälp gör skillnad</p>
-  <h2>Du stödjer en hemmakock-utvecklare – inte ett bolag</h2>
+  <h2>Du stödjer en hemmakock-utvecklare – inte ett bolag 🧑‍🍳</h2>
   <p class="muted">Varje krona går direkt till det som märks: nya testade recept (ingredienser kostar!), robotarnas drift,
-  maskindatabasens underhåll och nya funktioner som hydreringsreglaget och kockläget. Sajten förblir
-  <b>100% gratis för alla</b> – donationer låser aldrig upp något, de håller bara allting vid liv.</p>
+  maskindatabasens underhåll och nya funktioner som köksradion, hydreringsreglaget och kockläget. Donationer låser
+  aldrig upp något – de håller bara allting vid liv.</p>
   <div class="impact">
     <div class="item"><div class="ico" style="background:#eaf7ef;">🍞</div><div><h4>Provlagade recept</h4><p>Varje recept bakas/lagas på riktigt innan det publiceras – mjöl, kyckling och el kostar.</p></div></div>
     <div class="item"><div class="ico" style="background:#fdf6ee;">🤖</div><div><h4>Robotarna rullar</h4><p>Prisimport, självläkning, översättningar och sitemap sköts automatiskt – din gåva ger utvecklingstid.</p></div></div>
@@ -145,46 +240,6 @@
   </div>
 </div>
 
-<div class="card" style="--tc:#e67e22;">
-  <p class="kicker">Välj hur du vill hjälpa – alla belopp värmer</p>
-  <div class="tiers">
-    <div class="tier">
-      <h3>☕ En kaffe</h3>
-      <div class="price">39 <small>kr</small></div>
-      <ul>
-        <li>Energi till kvällens receptbygge</li>
-        <li>Håller en robot rullande en månad</li>
-        <li>30 sekunder via Swish/PayPal</li>
-      </ul>
-      <a class="btn btn-ghost" href="https://paypal.me/Rickard3dPrint/39SEK" target="_blank" rel="noopener">Ge 39 kr →</a>
-      <div class="hint">eller Swish-knappen överst</div>
-    </div>
-    <div class="tier popular">
-      <span class="badge">⭐ POPULÄRAST – TACK!</span>
-      <h3>🍲 Kockvän</h3>
-      <div class="price">99 <small>kr</small></div>
-      <ul>
-        <li>Täcker ingredienserna till ett nytt testrecept</li>
-        <li>Dina önskemål väger extra tungt i förslagslådan</li>
-        <li>Evig tacksamhet + varm gryta</li>
-      </ul>
-      <a class="btn btn-swish" href="https://paypal.me/Rickard3dPrint/99SEK" target="_blank" rel="noopener">Ge 99 kr – mest vald →</a>
-      <div class="hint">eller <a href="https://ko-fi.com/tokke2" target="_blank" rel="noopener">3 kaffe på Ko-fi</a></div>
-    </div>
-    <div class="tier">
-      <h3>🌟 Kökshjälte</h3>
-      <div class="price">299 <small>kr</small></div>
-      <ul>
-        <li>En hel utvecklingskväll – ny funktion ur önskelistan</li>
-        <li>Tack i nästa uppdaterings-notis (om du vill)</li>
-        <li>Du bär projektet en extra bit</li>
-      </ul>
-      <a class="btn btn-ghost" href="https://paypal.me/Rickard3dPrint/299SEK" target="_blank" rel="noopener">Ge 299 kr →</a>
-      <div class="hint">valfritt belopp funkar lika bra 💚</div>
-    </div>
-  </div>
-</div>
-
 <div class="card" style="--tc:#2980b9;">
   <p class="kicker">Så används din gåva – ungefärlig fördelning</p>
   <div class="impact">
@@ -192,9 +247,10 @@
     <div class="item"><div class="ico" style="background:#fff0b3;">🛒</div><div><h4>~25% Ingredienser & test</h4><p>Riktiga råvaror till provlagningen – recepten publiceras aldrig otestade.</p></div></div>
     <div class="item"><div class="ico" style="background:#eaf7ef;">☕</div><div><h4>~20% Kaffe & el</h4><p>Bakmaskinen och utvecklaren går båda på energi.</p></div></div>
   </div>
-  <p class="muted" style="margin-top:12px;">All kod är öppen på <a href="https://github.com/Tokke2/recept" target="_blank" rel="noopener" style="color:var(--accent2);font-weight:700;">GitHub</a>.
+  <p class="muted" style="margin-top:12px;">All kod är öppen på <a href="https://github.com/Tokke2/recept" target="_blank" rel="noopener" style="color:var(--orange);font-weight:700;">GitHub</a>.
   Donationer är helt frivilliga – sajten funkar precis lika bra utan. Vill du hjälpa utan pengar?
-  Tipsa en matglad vän eller lämna en ⭐ på GitHub – det värmer lika mycket!</p>
+  Tipsa en matglad vän, <a href="forslag.html" style="color:var(--orange);font-weight:700;">önska en funktion</a>
+  eller lämna en ⭐ på GitHub – det värmer lika mycket!</p>
 </div>
 
 <div class="card" style="--tc:#8e44ad;">
@@ -206,7 +262,8 @@
   </details>
   <details>
     <summary>💚 Hur funkar Swish-knappen?</summary>
-    <p>På mobilen öppnas Swish-appen med allt förifyllt. På datorn visas en QR-kod att skanna. Numret visas aldrig i klartext på sidan – det är en medveten säkerhetsprincip.</p>
+    <p>På mobilen öppnas Swish-appen med mottagare och valt belopp förifyllt (ändra fritt!). På datorn visas en QR-kod att
+    skanna. Numret visas aldrig i klartext på sidan – det är en medveten säkerhetsprincip.</p>
   </details>
   <details>
     <summary>🔁 Kan jag ge månadsvis?</summary>
@@ -219,18 +276,19 @@
   </details>
   <details>
     <summary>🤖 Men robotarna jobbar väl gratis?</summary>
-    <p>Japp – GitHubs robotar kostar inget! Men ingredienserna till provlagningen, elräkningen för 11-timmars långkok och utvecklarens kaffe gör det. 😄</p>
+    <p>Japp – GitHubs robotar kostar inget! Men ingredienserna till provlagningen, elräkningen för 11-timmars långkok
+    och utvecklarens kaffe gör det. 😄</p>
   </details>
 </div>
 
 <div class="card slutcta">
-  <div style="font-size:2rem;margin-bottom:8px;">💚</div>
+  <div style="font-size:2.2rem;margin-bottom:8px;">💚</div>
   <h2>Redo att hålla grytan kokande?</h2>
-  <p class="muted" style="margin-bottom:14px;">39 kr eller 299 kr, engångs eller månadsvis – allt gör skillnad direkt.</p>
+  <p class="muted" style="margin-bottom:14px;">Valfritt belopp, engångs eller månadsvis – allt gör skillnad direkt.</p>
   <div class="ctas no-print">
-    <button class="btn btn-swish" onclick="document.getElementById('swishBtn').click();window.scrollTo({top:0,behavior:'smooth'})">💚 Swish</button>
-    <a class="btn btn-paypal" href="https://paypal.me/Rickard3dPrint" target="_blank" rel="noopener">💙 PayPal</a>
-    <a class="btn" style="background:#fff;color:#2c3e50;" href="https://ko-fi.com/tokke2" target="_blank" rel="noopener">☕ Ko-fi</a>
+    <button class="btn btn-swish" onclick="document.getElementById('swishBtn2').click();document.getElementById('belopp').scrollIntoView({behavior:'smooth'})">💚 Swish</button>
+    <a class="btn btn-paypal" id="paypalBtn3" href="https://paypal.me/Rickard3dPrint" target="_blank" rel="noopener">💙 PayPal</a>
+    <a class="btn" style="background:#fff;color:#22313f;" href="https://ko-fi.com/tokke2" target="_blank" rel="noopener">☕ Ko-fi</a>
   </div>
   <div style="margin-top:12px;font-size:.72rem;color:#94a3b8;">Säker betalning • Kvitto direkt • Sajten förblir gratis för alla</div>
 </div>
@@ -240,7 +298,23 @@
   <a href="index.html">Startsidan</a> · <a href="recept.html">Recepten</a> · <a href="forslag.html">Önska en funktion</a>
 </footer>
 
+<!-- 📱 Sticky snabbrad på mobil (döljs i PWA-läge flyttas ovanför bottenflikarna) -->
+<div class="stickycta no-print">
+  <div class="rad">
+    <button class="btn btn-swish" onclick="document.getElementById('swishBtn2').click()">💚 Swish</button>
+    <a class="btn btn-paypal" id="paypalBtnS" href="https://paypal.me/Rickard3dPrint/50SEK" target="_blank" rel="noopener">💙 PayPal</a>
+    <a class="btn btn-kofi" href="https://ko-fi.com/tokke2" target="_blank" rel="noopener">☕ Ko-fi</a>
+  </div>
+</div>
+
 <script>
+/* ============================================================
+   stod.html v2 – beloppsväljare + Swish + ärlig livestatistik
+   · Inga tiers, inga påhittade siffror (ärlighetsprincipen)
+   · Beloppet följer med i Swish-länken (editable) och PayPal-URL:en
+   · Ingen confirm()/alert()
+   ============================================================ */
+
 /* 📊 Livestatistik ur recept-index + maskiner-index (äkta siffror, aldrig påhittade) */
 (async function () {
   try {
@@ -249,18 +323,52 @@
     document.getElementById('hstats').innerHTML =
       '<span class="hstat">📖 <b>' + r.recept.length + '</b> provlagade recept</span>' +
       '<span class="hstat">🔧 <b>' + m.length + '</b> maskiner dokumenterade</span>' +
-      '<span class="hstat">🤖 <b>8</b> robotar · dygnet runt</span>' +
+      '<span class="hstat">🤖 Robotar · dygnet runt</span>' +
       '<span class="hstat">💚 <b>100%</b> gratis – alltid</span>';
   } catch (e) {}
 })();
 
-/* 💚 Swish: mobil → appen direkt · dator → QR (numret ur donation.json, aldrig i klartext) */
-document.getElementById('swishBtn').addEventListener('click', async function () {
+/* 💰 Beloppsväljaren */
+var valtKr = 50;
+function visaBelopp() {
+  document.getElementById('beloppInfo').textContent = 'Valt: ' + valtKr + ' kr – tack! 💚';
+  var pp = 'https://paypal.me/Rickard3dPrint/' + valtKr + 'SEK';
+  ['paypalBtn2', 'paypalBtnS'].forEach(function (id) {
+    var el = document.getElementById(id); if (el) el.href = pp;
+  });
+}
+document.querySelectorAll('.bchip').forEach(function (c) {
+  c.addEventListener('click', function () {
+    document.querySelectorAll('.bchip').forEach(function (x) { x.classList.remove('vald'); });
+    c.classList.add('vald');
+    document.getElementById('egetKr').value = '';
+    valtKr = parseInt(c.getAttribute('data-kr'), 10);
+    visaBelopp();
+  });
+});
+document.getElementById('egetKr').addEventListener('input', function () {
+  var v = parseInt(this.value, 10);
+  if (v > 0 && v < 100000) {
+    document.querySelectorAll('.bchip').forEach(function (x) { x.classList.remove('vald'); });
+    valtKr = v;
+    visaBelopp();
+  }
+});
+visaBelopp();
+
+/* 💚 Swish: mobil → appen direkt · dator → QR (numret ur donation.json, aldrig i klartext).
+   Valt belopp skickas med – men är ALLTID ändringsbart i Swish-appen. */
+async function swisha() {
   try {
     const d = await (await fetch('json/donation.json', { cache: 'no-store' })).json();
     const nr = String(d.swish_nummer || '').trim();
     if (!nr) return;
-    const data = JSON.stringify({ version: 1, payee: { value: nr, editable: false }, message: { value: 'Mitt Maskinkok', editable: true } });
+    const data = JSON.stringify({
+      version: 1,
+      payee: { value: nr, editable: false },
+      amount: { value: valtKr, editable: true },
+      message: { value: 'Mitt Maskinkok', editable: true }
+    });
     if (/android|iphone|ipad/i.test(navigator.userAgent)) {
       location.href = 'swish://payment?data=' + encodeURIComponent(data);
       return;
@@ -271,7 +379,9 @@ document.getElementById('swishBtn').addEventListener('click', async function () 
     box.style.display = 'block';
     box.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } catch (e) {}
-});
+}
+document.getElementById('swishBtn').addEventListener('click', swisha);
+document.getElementById('swishBtn2').addEventListener('click', swisha);
 </script>
 <script src="assets/site.js"></script>
 </body>

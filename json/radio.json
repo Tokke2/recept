@@ -1,0 +1,69 @@
+{
+ "_plats": "/json/radio.json  (central stationslista för köksradion i kockläget – roadmap 75)",
+ "kommentar": "ENDAST verifierade officiella strömmar – inga påhittade länkar! SomaFM-adresserna kommer ur deras egna spellistor (somafm.com/<kanal>.pls) och Sveriges Radio-adresserna ur officiella API:t (api.sr.se/api/v2/channels). Alla kontrollerade med riktig HTTP-hämtning (audio/mpeg) 2026-10-11. 'reserv' = SomaFM:s alternativa servrar ur samma .pls-fil – provas automatiskt om huvudservern inte svarar.",
+ "stationer": [
+  {
+   "id": "lofi",
+   "emoji": "🎧",
+   "namn": "Lofi & chill",
+   "beskrivning": "SomaFM Groove Salad – lugn elektronisk bakgrundsmusik",
+   "url": "https://ice2.somafm.com/groovesalad-128-mp3",
+   "reserv": ["https://ice6.somafm.com/groovesalad-128-mp3", "https://ice5.somafm.com/groovesalad-128-mp3"],
+   "kalla": "somafm.com/groovesalad.pls"
+  },
+  {
+   "id": "lounge5060",
+   "emoji": "🍸",
+   "namn": "50/60-tals lounge",
+   "beskrivning": "SomaFM Illinois Street Lounge – cocktailmusik från svunna år",
+   "url": "https://ice2.somafm.com/illstreet-128-mp3",
+   "reserv": ["https://ice6.somafm.com/illstreet-128-mp3", "https://ice5.somafm.com/illstreet-128-mp3"],
+   "kalla": "somafm.com/illstreet.pls"
+  },
+  {
+   "id": "retroagent",
+   "emoji": "🕵️",
+   "namn": "Retro-lounge",
+   "beskrivning": "SomaFM Secret Agent – smygsnygg spionmusik",
+   "url": "https://ice2.somafm.com/secretagent-128-mp3",
+   "reserv": ["https://ice6.somafm.com/secretagent-128-mp3", "https://ice5.somafm.com/secretagent-128-mp3"],
+   "kalla": "somafm.com/secretagent.pls"
+  },
+  {
+   "id": "p1",
+   "emoji": "🎙️",
+   "namn": "SR P1",
+   "beskrivning": "Prat, nyheter & samhälle",
+   "url": "https://www.sverigesradio.se/topsy/direkt/srapi/132.mp3",
+   "reserv": [],
+   "kalla": "api.sr.se/api/v2/channels"
+  },
+  {
+   "id": "p2",
+   "emoji": "🎻",
+   "namn": "SR P2",
+   "beskrivning": "Klassiskt & jazz",
+   "url": "https://www.sverigesradio.se/topsy/direkt/srapi/163.mp3",
+   "reserv": [],
+   "kalla": "api.sr.se/api/v2/channels"
+  },
+  {
+   "id": "p3",
+   "emoji": "🎸",
+   "namn": "SR P3",
+   "beskrivning": "Pop & aktuellt",
+   "url": "https://www.sverigesradio.se/topsy/direkt/srapi/164.mp3",
+   "reserv": [],
+   "kalla": "api.sr.se/api/v2/channels"
+  },
+  {
+   "id": "p4orebro",
+   "emoji": "📍",
+   "namn": "SR P4 Örebro",
+   "beskrivning": "Lokalradio & blandad musik",
+   "url": "https://www.sverigesradio.se/topsy/direkt/srapi/221.mp3",
+   "reserv": [],
+   "kalla": "api.sr.se/api/v2/channels"
+  }
+ ]
+}
