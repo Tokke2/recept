@@ -2226,9 +2226,11 @@ data i json/, ALDRIG per receptfil.
     med felrapport.js som redan läser samma fält!). Saknas nyckel
     → automatisk reträtt till github-läget. Misslyckat mail →
     github-reträtt så inget förslag tappas. alert() ersatt med
-    inline-besked (Brave-regeln). ⏳ VÄNTAR: användarens
-    Web3Forms-nyckel (web3forms.com → e-post → Create Access Key
-    → klistra in i chatten eller forslag.json).
+    inline-besked (Brave-regeln). ✅ AKTIVERAD 2026-10-11:
+    användarens Web3Forms-nyckel ligger i forslag.json →
+    web3forms_nyckel (publik per design – spamskydd sköts av
+    Web3Forms, 250 mail/mån gratis). Förslagslådan OCH
+    felrapporterna mailar nu ägaren automatiskt.
 
 90. 🏷️ MASKINTYP I ALLA MASKINNAMN — ✔️ KLAR (2026-10-11,
     användarens regel): överallt där maskiner visas står typen –
