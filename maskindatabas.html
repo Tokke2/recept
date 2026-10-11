@@ -380,7 +380,8 @@ async function init() {
   MACHINES = machines.map(m => ({
     id: m.id,
     name: m.namn,
-    shortName: (m.varumarke + ' ' + (m.modellnamn || '')).trim(),
+    /* 🏷️ typ i namnet – "Clatronic BBA 3774 (Bakmaskin)" (användarens regel) */
+    shortName: (window.__MK_MED_TYP || function (n) { return n; })((m.varumarke + ' ' + (m.modellnamn || '')).trim(), m.typ),
     typ: m.typ || '',
     tema: temaFor(m.typ),
     sub: [m.typ, m.modellnamn ? 'Modell ' + m.modellnamn : '', m.kapacitet || ''].filter(Boolean).join(' · '),

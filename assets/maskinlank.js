@@ -111,10 +111,33 @@
         nod.parentNode.replaceChild(frag, nod);
       });
     });
+
+    /* 🏷️ MASKINTYP I MASKINRUTORNAS RUBRIKER (användarens regel):
+       "⚙️ Clatronic BBA 3774 (Bakmaskin) · 11 Sandwich". Läggs som
+       runtime-span (.mk-masktyp) – städas ALLTID bort av
+       buildCleanHtml vid sparning och av RESET i redigeringsläget,
+       så receptfilerna ändras aldrig. Hoppar över rubriker där
+       typordet redan står. */
+    var typAv = {};
+    maskiner.forEach(function (m) {
+      typAv[m.id] = window.__MK_KORT_TYP ? window.__MK_KORT_TYP(m.typ) : String(m.typ || '').split('/')[0].trim();
+    });
+    document.querySelectorAll('.machine-step h3 a.mk-masklank').forEach(function (a) {
+      var h3 = a.closest('h3');
+      var id = (a.getAttribute('href') || '').split('#')[1] || '';
+      var t = typAv[id];
+      if (!h3 || !t) return;
+      if (h3.textContent.toLowerCase().indexOf(t.toLowerCase()) !== -1) return;
+      var s = document.createElement('span');
+      s.className = 'mk-masktyp';
+      s.textContent = ' (' + t + ')';
+      a.parentNode.insertBefore(s, a.nextSibling);
+    });
   }
 
   /* Ta bort länkarna (redigeringsläget) + kör om */
   window.__MK_MASKLANK_RESET = function () {
+    document.querySelectorAll('span.mk-masktyp').forEach(function (s) { s.remove(); });
     document.querySelectorAll('a.mk-masklank').forEach(function (a) {
       a.parentNode.replaceChild(document.createTextNode(a.textContent), a);
     });

@@ -242,7 +242,8 @@
         var syskon = machines.filter(function (x) {
           return typKey(x) === t && x.id !== m.id;
         }).map(function (x) {
-          return ((x.varumarke || '') + ' ' + (x.modellnamn || '')).trim() || x.namn || x.id;
+          var n = ((x.varumarke || '') + ' ' + (x.modellnamn || '')).trim() || x.namn || x.id;
+          return window.__MK_MED_TYP ? window.__MK_MED_TYP(n, x.typ) : n;   /* 🏷️ typ i namnet */
         });
         var b = document.createElement('span');
         b.className = 'mk-testad no-print';
@@ -260,6 +261,8 @@
     var hits = [];
     machines.forEach(function (m) {
       var name = ((m.varumarke || '') + ' ' + (m.modellnamn || '')).trim();
+      /* 🏷️ typ i namnet – "Clatronic BBA 3774 (Bakmaskin)" (användarens regel) */
+      name = window.__MK_MED_TYP ? window.__MK_MED_TYP(name || m.namn || m.id, m.typ) : name;
       /* hoppa över maskiner som redan står i receptet */
       if (arKand(m)) return;
       var b = bestProgram(m, text);

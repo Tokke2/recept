@@ -2230,6 +2230,23 @@ data i json/, ALDRIG per receptfil.
     Web3Forms-nyckel (web3forms.com → e-post → Create Access Key
     → klistra in i chatten eller forslag.json).
 
+90. 🏷️ MASKINTYP I ALLA MASKINNAMN — ✔️ KLAR (2026-10-11,
+    användarens regel): överallt där maskiner visas står typen –
+    "Clatronic BBA 3774 (Bakmaskin)". Centrala hjälpare i site.js:
+    __MK_KORT_TYP(typ) = texten före första "/" utan parenteser;
+    __MK_MED_TYP(namn, typ) = namn + " (typ)" MEN aldrig dubbelt
+    (hoppar över om typordet redan finns i namnet, t.ex. "Clatronic
+    Bakmaskin BBA 3774"). Används i: maskindatabas.html (kortens
+    titel), index.html (maskinbandet), maskinmatch.js (förslags-
+    namn + syskonlista), nytt-recept.html (förslagslista, extra-
+    dropdown, extralista, genererade maskinrutor via boxFor),
+    redigera.js (+Lägg till maskin-dialogen → nya rutor).
+    Befintliga recepts maskinrutor: maskinlank.js lägger runtime-
+    span .mk-masktyp efter länkade namn i .machine-step h3 –
+    städas ALLTID av buildCleanHtml + __MK_MASKLANK_RESET, så
+    receptfiler ändras ALDRIG. recept:maskiner-metan, metaMask och
+    chips behåller gamla formatet (parser-/robotstabilitet).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

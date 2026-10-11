@@ -719,7 +719,7 @@ async function analyze() {
                       : '<span class="stat warn">🔧 inga maskinträffar</span>');
 
   document.getElementById('mList').innerHTML = SUGGESTED.length ? SUGGESTED.map((h, i) => {
-    const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
+    const name = (window.__MK_MED_TYP || (n => n))(((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn, h.m.typ);
     /* ❓ OSÄKER programmatchning → dropdown så ANVÄNDAREN väljer
        (t.ex. Kaka vs Yoghurt på Midea när båda orden finns i texten) */
     const valHtml = h.val
@@ -767,7 +767,7 @@ function exFyllValjare() {
   const sel = document.getElementById('exMaskin');
   if (!sel || !MACHINES.length) return;
   const sorterade = [...MACHINES].sort((a, b) => (a.namn || '').localeCompare(b.namn || '', 'sv'));
-  sel.innerHTML = sorterade.map(m => `<option value="${m.id}">${(m.varumarke || '') + ' ' + (m.modellnamn || m.namn || m.id)}</option>`).join('');
+  sel.innerHTML = sorterade.map(m => `<option value="${m.id}">${(window.__MK_MED_TYP || (n => n))((m.varumarke || '') + ' ' + (m.modellnamn || m.namn || m.id), m.typ)}</option>`).join('');
   exFyllProgram();
 }
 function exFyllProgram() {
@@ -792,7 +792,7 @@ function exLaggTill() {
 function exTaBort(i) { EXTRA.splice(i, 1); exRita(); rebuild(); }
 function exRita() {
   document.getElementById('exList').innerHTML = EXTRA.map((e, i) => {
-    const name = ((e.m.varumarke || '') + ' ' + (e.m.modellnamn || '')).trim() || e.m.namn;
+    const name = (window.__MK_MED_TYP || (n => n))(((e.m.varumarke || '') + ' ' + (e.m.modellnamn || '')).trim() || e.m.namn, e.m.typ);
     return '<div class="mrow" style="border-left:4px solid #27ae60;">' +
       '<span style="font-weight:800;color:#27ae60;">' + (i + 1) + '.</span>' +
       (e.m.bild ? '<img src="' + e.m.bild + '" onerror="this.remove()">' : '') +
@@ -845,7 +845,8 @@ function buildHtml() {
 
   const ingRows = PARSED.ings.map(i => '    <tr><td>' + esc(i[0]) + '</td><td>' + esc(i[1]) + '</td></tr>').join('\n');
   const boxFor = h => {
-    const name = ((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn;
+    /* 🏷️ typ i rubriken – "Clatronic BBA 3774 (Bakmaskin)" (användarens regel) */
+    const name = (window.__MK_MED_TYP || (n => n))(((h.m.varumarke || '') + ' ' + (h.m.modellnamn || '')).trim() || h.m.namn, h.m.typ);
     /* Momentet visas i rutan ("Blenda basen: Ninja Detect · BlendSense") */
     const momPrefix = h.moment ? esc(h.moment) + ': ' : '';
     /* 👣 Receptets egen tid vinner över programmets standardtid */

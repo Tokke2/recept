@@ -435,7 +435,7 @@
       return `
       <a class="m" href="maskindatabas.html#${m.id}" title="${m.namn}" style="--tc:${t.farg};">
         ${m.bild ? `<img src="${m.bild}" alt="${m.namn}" loading="lazy" onerror="this.outerHTML='<span class=&quot;memoji&quot;>${t.emoji}</span>'">` : `<span class="memoji">${t.emoji}</span>`}
-        <span>${m.varumarke} ${m.modellnamn || ''}</span>
+        <span>${(window.__MK_MED_TYP || (n => n))(`${m.varumarke} ${m.modellnamn || ''}`.trim(), m.typ)}</span>
         <small>${t.emoji} ${(m.program || []).length ? (m.program.length + ' program') : (m.typ ? m.typ.split('/')[0].trim() : '')}</small>
       </a>`;
     }).join('');

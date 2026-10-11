@@ -44,6 +44,21 @@
   window.__MK_IS_RECIPE = isRecipePage;
   window.__MK_IS_RATT = isRattPage;
 
+  /* 🏷️ MASKINTYP ÖVERALLT (användarens regel): alla maskinnamn visas
+     med typ – "Clatronic BBA 3774 (Bakmaskin)". Kort typ = texten före
+     första "/" i maskinfilens typ-fält, utan parenteser. Typen läggs
+     ALDRIG till dubbelt (hoppar över om ordet redan finns i namnet). */
+  window.__MK_KORT_TYP = function (typ) {
+    return String(typ || '').split('/')[0].replace(/\([^)]*\)/g, '').trim();
+  };
+  window.__MK_MED_TYP = function (namn, typ) {
+    namn = String(namn || '').trim();
+    var t = window.__MK_KORT_TYP(typ);
+    if (!t || !namn) return namn;
+    if (namn.toLowerCase().indexOf(t.toLowerCase()) !== -1) return namn;
+    return namn + ' (' + t + ')';
+  };
+
   var report = { loaded: [], present: [], failed: [] };
 
   /* ============================================================
