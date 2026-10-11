@@ -1836,7 +1836,19 @@
       '#mk-lang, #mk-auto-qr, #mk-provenance, #mk-betyg, #mk-maskinmatch, #mk-kalkyl, #mk-donation, #mk-aff-disclosure, ' +
       '.share-btn, .print-btn, [id^="mk-pd"], [id^="mk-pw"], [id^="mk-swish"], ' +
       '.mk-saknas, .mk-prodlank, .mk-ingsub, #mk-byt-notis, .mk-ingsok, .mk-bytsmak, .mk-smakval, .mk-kallval, .mk-gruppval, #mk-match-bg, #mk-kedja, #mk-kommentarer, #mk-komm-pill, ' +
-      '#mk-verif-badge, #mk-verif-info, #mk-verif-bg, .mk-sidepil, #mk-sidepil-css, #cmResume, #mk-portion, .mk-testad, #mk-testad-bg, #mk-txt, #mk-hydr, #mk-paste-bg, .mk-masktyp').forEach(function (el) { el.remove(); });
+      '#mk-verif-badge, #mk-verif-info, #mk-verif-bg, .mk-sidepil, #mk-sidepil-css, #cmResume, #mk-portion, .mk-testad, #mk-testad-bg, #mk-txt, #mk-hydr, #mk-paste-bg, .mk-masktyp, #mk-jast').forEach(function (el) { el.remove(); });
+    /* 🦠 jästomvandlarens radväxling är per besökare – sparade filen får
+       ALLTID receptets originaljäst tillbaka (data-mk-jast-orig) */
+    clone.querySelectorAll('tr[data-mk-jast-orig]').forEach(function (tr) {
+      try {
+        var o = JSON.parse(tr.getAttribute('data-mk-jast-orig'));
+        var nc = tr.querySelector('td');
+        var qc = tr.querySelector('.mg') || tr.querySelectorAll('td')[1];
+        if (nc) nc.textContent = o.namn;
+        if (qc) qc.textContent = o.mangd;
+      } catch (e) {}
+      tr.removeAttribute('data-mk-jast-orig');
+    });
     /* 🌡️ Enhets-spans + ⚖️ skalnings-spans + ✨ steg-markeringar → exakt originaltext */
     clone.querySelectorAll('span.mk-enh, span.mk-skala, span.mk-stegmark').forEach(function (s) {
       s.parentNode.replaceChild(clone.ownerDocument.createTextNode(s.getAttribute('data-orig') || s.textContent), s);

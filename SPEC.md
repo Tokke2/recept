@@ -1169,6 +1169,12 @@ En statisk sajt på GitHub Pages (gratis) med matlagningsmaskiner och recept.
 │   │                          (väntar in ingrediens.js mk-ing2-ombyggnad);
 │   │                          funkar med BÅDA tabellformaten (.mg-pastill/
 │   │                          klassisk kolumn 2).
+│   ├── jast.js             🦠 JÄSTOMVANDLAREN (roadmap 81): färsk ↔ torr
+│   │                          (torr = 1/3 av färsk vikt, ägarens regel) i alla
+│   │                          recept med jäst. 🔄 växlar tabellens jästrad,
+│   │                          ↩️ återställer. mk-jast:<fil>; data-mk-jast-orig
+│   │                          återställs i buildCleanHtml. Aldrig jästflingor/
+│   │                          näringsjäst/surdeg. Endast gram – inga gissningar.
 │   ├── radio.js            📻 KÖKSRADION (roadmap 75): spelare i kockläget –
 │   │                          stationer ur json/radio.json, EN <audio> på body
 │   │                          (överlever stegbyten), aldrig autostart, volym
@@ -2162,11 +2168,21 @@ data i json/, ALDRIG per receptfil.
     ("dags att koka svartvinbärssylt igen – recept här →").
     Kopplas till hållbarhetsdatum (punkt 36) när den byggs.
 
-81. 🦠 JÄST-KALKYLATORN (förslag 607, användarens tillägg: visas i
-    ALLA recept där jäst förekommer, STANDARD = TORRJÄST): verktyg
-    på receptsidan som räknar om färsk ↔ torr ↔ surdeg (torr = 1/3
-    av färsk vikt) + jästid vid olika rumstemperaturer. Tabellens
-    jästrad kan växlas mellan formerna med omräknad mängd.
+81. 🦠 JÄST-KALKYLATORN — ✔️ KLAR, kärnan (2026-10-11, användarens
+    order "omvandlare/ersättare mellan torr och färsk jäst i alla
+    recept med jäst"): ny modul assets/jast.js på ALLA receptsidor.
+    Hittar jästrader i ingredienstabellen (ALDRIG jästflingor/
+    näringsjäst/jästextrakt/surdeg; "jäst" utan form = färsk, dvs
+    kuben), visar 🦠-rutan under tabellen med omräkningen åt båda
+    håll (ägarens regel: TORR = 1/3 AV FÄRSK VIKT) och 🔄-knapp som
+    växlar tabellraden till andra formen med omräknad mängd
+    (↩️ Receptets original återställer exakt). Endast gram-mängder
+    omvandlas – "1 pkt" lämnas (inga gissningar). Per besökare:
+    localStorage mk-jast:<fil> (städas av stadare.js), sparade
+    filer får ALLTID originaljästen tillbaka via data-mk-jast-orig
+    i buildCleanHtml. Live-kalkylen uppdateras (__MK_KALKYL_REFRESH).
+    KVARSTÅR som framtida utbyggnad (byggs vid order): surdegs-
+    ersättning + jästid vid olika rumstemperaturer.
 
 82. 👯 DUBBLETTVAKTEN (förslag 609): robot flaggar nästan-identiska
     recept (titel- + ingredienslikhet via Levenshtein) i gransknings-
