@@ -356,26 +356,32 @@ document.getElementById('egetKr').addEventListener('input', function () {
 });
 visaBelopp();
 
-/* 💚 Swish: mobil → appen direkt · dator → QR (numret ur donation.json, aldrig i klartext).
-   Valt belopp skickas med – men är ALLTID ändringsbart i Swish-appen. */
+/* 💚 Swish: mobil → appen direkt (swish://-länk) · dator → QR i Swish
+   OFFICIELLA C-format: "C<nummer>;<belopp>;<meddelande>;<mask>"
+   (mask 6 = belopp+meddelande ändringsbara, numret låst). QR med
+   swish://-länk funkar INTE i Swish-appens skanner – det var buggen!
+   Swish egna QR-API saknar CORS och kan inte anropas från webbläsaren,
+   men C-payloaden i valfri QR-bild läses perfekt av appen.
+   Numret läses ur donation.json – aldrig i klartext på sidan. */
 async function swisha() {
   try {
     const d = await (await fetch('json/donation.json', { cache: 'no-store' })).json();
-    const nr = String(d.swish_nummer || '').trim();
+    const nr = String(d.swish_nummer || '').replace(/\D/g, '');
     if (!nr) return;
-    const data = JSON.stringify({
-      version: 1,
-      payee: { value: nr, editable: false },
-      amount: { value: valtKr, editable: true },
-      message: { value: 'Mitt Maskinkok', editable: true }
-    });
     if (/android|iphone|ipad/i.test(navigator.userAgent)) {
+      const data = JSON.stringify({
+        version: 1,
+        payee: { value: nr, editable: false },
+        amount: { value: valtKr, editable: true },
+        message: { value: 'Mitt Maskinkok', editable: true }
+      });
       location.href = 'swish://payment?data=' + encodeURIComponent(data);
       return;
     }
+    const payload = 'C' + nr + ';' + String(valtKr) + ';' + encodeURIComponent('Mitt Maskinkok') + ';6';
     const box = document.getElementById('qrbox');
     document.getElementById('qrimg').src =
-      'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent('swish://payment?data=' + encodeURIComponent(data));
+      'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(payload);
     box.style.display = 'block';
     box.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } catch (e) {}

@@ -276,10 +276,11 @@
           document.body.appendChild(bg);
           bg.querySelector('#mk-swish-qr-close').onclick = function () { bg.remove(); };
           bg.addEventListener('click', function (e) { if (e.target === bg) bg.remove(); });
-          /* QR med Swish-betalformat (C<nummer>;;;) via qrserver-bildtjänsten.
+          /* QR med Swish OFFICIELLA C-format: C<nummer>;<belopp>;<medd>;<mask>
+             - mask 6 = belopp+meddelande ändringsbara, numret låst.
              (Swish egna QR-API saknar CORS-headers och kan inte anropas
              från webbläsaren - bild-taggen behöver dock ingen CORS.) */
-          var qrData = encodeURIComponent('C' + swish.replace(/[^0-9]/g, '') + ';;;');
+          var qrData = encodeURIComponent('C' + swish.replace(/[^0-9]/g, '') + ';;;6');
           var box = document.getElementById('mk-swish-qr-box');
           if (box) {
             box.innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + qrData +

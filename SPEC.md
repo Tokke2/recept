@@ -2278,6 +2278,21 @@ data i json/, ALDRIG per receptfil.
     rimlighetsspärren. Rostbrödsfilen rättad (meta + maskinruta
     → 11. Sandwich 3:00 h).
 
+92. 💚 SWISH-QR-FIXEN — ✔️ KLAR (2026-10-12, användarens felrapport
+    "QR-koden på donationssidan funkar inte"): QR-koderna innehöll
+    swish://-länken – men SWISH-APPENS SKANNER LÄSER INTE DEEPLINKS,
+    den kräver Swish officiella C-format (verifierat mot Swish
+    QR-spec v1.7.2 + fungerande öppen källkod):
+    "C<nummer>;<belopp>;<meddelande URL-kodat>;<mask>" där mask =
+    bitsumma av ÄNDRINGSBARA fält (1 nummer, 2 belopp, 4 meddelande;
+    6 = belopp+meddelande fria, numret låst). 07-nummer används som
+    de är (10 siffror). stod.html: dator-QR → C-payload med valt
+    belopp via api.qrserver.com (Swish egna QR-API saknar CORS →
+    kan ALDRIG anropas från webbläsaren, testat). site.js-pillen:
+    hade C-format men TOM mask (";;;") → rättad till ";;;6".
+    Mobil-flödet (swish://-länk som TRYCKS, inte skannas) var
+    korrekt och är oförändrat.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
