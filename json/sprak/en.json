@@ -2805,7 +2805,9 @@
   "🍞 Rostbröd för smörgåsgrill – Bakmaskin – Recept": "🍞 Toast for sandwich grill - Baking machine - Recipe",
   "🔑 Nyckeln till en bra grillad macka är att brödet är HELT svalt innan gräddning. Varmt bröd blir mosigt i grillen.": "🔑 The key to a good grilled sandwich is that the bread is COMPLETELY cool before baking. Warm bread becomes mushy in the grill.",
   "Steg 1: Clatronic BBA 3774 · 11. Sandwich 3:00 h": "Step 1: Clatronic BBA 3774 · 11. Sandwich 3:00 h",
-  "⚠️ Spara-modulen saknas – ladda om sidan eller ta bort filen på GitHub.": "⚠️ The save module is missing - reload the page or delete the file on GitHub."
+  "⚠️ Spara-modulen saknas – ladda om sidan eller ta bort filen på GitHub.": "⚠️ The save module is missing - reload the page or delete the file on GitHub.",
+  "Jäst": "Yeast",
+  "färsk jäst": "fresh yeast"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2815,6 +2817,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2804,
- "_senast_robot": "2026-10-11"
+ "_auto_genererade": 2806,
+ "_senast_robot": "2026-10-12"
 }
