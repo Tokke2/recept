@@ -160,3 +160,7 @@
 **2026-10-12**
 
 | sitemap.xml | 🗺️ omgenererad (41 adresser) |
+
+**2026-10-13**
+
+| sitemap.xml | 🗺️ omgenererad (41 adresser) |
