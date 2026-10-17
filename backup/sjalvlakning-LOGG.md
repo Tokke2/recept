@@ -186,3 +186,8 @@
 | squashraggmunk-med-protein.html | ⚡ energidata skapad: cosori-twinfry-10l 25 min |
 | sitemap.xml | 🗺️ omgenererad (42 adresser) |
 | json/recept-index.json | 📁 omgenererad (31 recept) |
+
+**2026-10-17**
+
+| sitemap.xml | 🗺️ omgenererad (41 adresser) |
+| json/recept-index.json | 📁 omgenererad (30 recept) |
