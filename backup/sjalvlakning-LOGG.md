@@ -176,3 +176,7 @@
 **2026-10-16**
 
 | sitemap.xml | 🗺️ omgenererad (41 adresser) |
+
+**2026-10-17**
+
+| sitemap.xml | 🗺️ omgenererad (41 adresser) |
