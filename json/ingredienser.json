@@ -129,8 +129,7 @@
       "kalla": "import ingredienser.json v5.1.1",
       "noll_ok": true,
       "alias": [
-        "Falksalt Mineralsalt12 g",
-        "Falksalt Mineralsalt"
+        "Falksalt Mineralsalt12 g"
       ]
     },
     {
@@ -145,7 +144,8 @@
       "varumarke": "Kronjäst",
       "kalla": "import ingredienser.json v5.1.1",
       "alias": [
-        "Torrjäst (Kronjäst)2 g"
+        "Torrjäst (Kronjäst)2 g",
+        "Torrjäst (Kronjäst)"
       ]
     },
     {
