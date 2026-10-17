@@ -203,7 +203,10 @@
       "fett": 3,
       "fiber": 0,
       "varumarke": "Garant",
-      "kalla": "import ingredienser.json v5.1.1"
+      "kalla": "import ingredienser.json v5.1.1",
+      "alias": [
+        "Mjölk 3%"
+      ]
     },
     {
       "id": "smor",
