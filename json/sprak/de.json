@@ -2916,13 +2916,36 @@
   "Steg 1: Clatronic BBA 3774 · 11. Sandwich 3:00 h": "Schritt 1: Clatronic BBA 3774 · 11. Sandwich 3:00 h",
   "⚠️ Spara-modulen saknas – ladda om sidan eller ta bort filen på GitHub.": "⚠️ Das Speichermodul fehlt – laden Sie die Seite neu oder löschen Sie die Datei auf GitHub.",
   "Jäst": "Hefe",
-  "färsk jäst": "frische Hefe"
+  "färsk jäst": "frische Hefe",
+  "110 g (2 st)": "110 g (2 Stück)",
+  "Bake (Baka) · 25 min": "Backen · 25 Min",
+  "COSORI CAF-TF101S (Dual Blaze TwinFry) · Bake (Baka)": "COSORI CAF-TF101S (Dual Blaze TwinFry) · Backen",
+  "Efter 25 minuter: stick med en kniv i mitten – är den fast och ingen lös smet på kniven är den klar. Är den mjuk, kör ytterligare 5 min.": "Nach 25 Minuten: Ein Messer in die Mitte stechen – wenn der Teig fest ist und kein loser Teig mehr am Messer ist, ist er fertig. Wenn es weich ist, lassen Sie es weitere 5 Minuten laufen.",
+  "Gul lök, finriven": "Gelbe Zwiebel, fein gerieben",
+  "Lägg den urkramade squashen, löken och äggen i blenderns tillbringare. Puls några gånger på Small Chop så det blandas. ⏱ 10 sek": "Geben Sie den Kürbis, die Zwiebeln und die Eier in den Behälter des Mixers. Zum Mischen ein paar Mal auf dem Small Chop pulsieren. ⏱ 10 Sek",
+  "Lättare raggmunkskaka på riven urkramad squash med proteinpulver – bakad i djup form i airfryer, smet mixas i blender. 2 portioner.": "Leichterer Roggen-Donut-Kuchen auf geriebenem Kürbis mit Proteinpulver – in einer tiefen Form in einer Heißluftfritteuse gebacken, der Teig wird in einem Mixer gemischt. 2 Portionen.",
+  "Låt vila i formen 10 minuter innan du lossar kanterna och skär i bitar.": "10 Minuten in der Form ruhen lassen, dann den Rand lösen und in Stücke schneiden.",
+  "Ninja TB401EU · Small Chop (Processing Mode)": "Ninja TB401EU · Kleines Hackfleisch (Verarbeitungsmodus)",
+  "Rapsolja (till formen)": "Rapsöl (für die Form)",
+  "Riv squashen grovt. Krama ur den i omgångar i en ren kökshandduk eller silduk tills nästan ingen vätska kommer ut när du trycker. Finriv löken.": "Den Kürbis grob reiben. Drücken Sie es portionsweise in einem sauberen Küchentuch oder Käsetuch aus, bis beim Drücken fast keine Flüssigkeit mehr austritt. Die Zwiebel fein reiben.",
+  "Small Chop (Processing Mode) · auto – stannar själv": "Small Chop (Verarbeitungsmodus) · Auto – stoppt sich selbst",
+  "Smörj en mindre rund bakform (ca 16–18 cm i diameter) med rapsolja. Häll smeten i formen och tryck till ytan jämn.": "Eine kleinere runde Auflaufform (ca. 16–18 cm Durchmesser) mit Rapsöl einfetten. Den Teig in die Form füllen und andrücken, bis die Oberfläche gleichmäßig ist.",
+  "Squash (egen, riven, väl urkramad)": "Kürbis (eigener, geriebener, gut gepresster)",
+  "Squashraggmunk med protein – Air Fryer": "Kürbis-Rag-Donut mit Protein – Heißluftfritteuse",
+  "Steg 5: COSORI CAF-TF101S (Dual Blaze TwinFry) · Bake (Baka) 25 min | Alternativ: Ninja TB401EU · Small Chop (Processing Mode) auto – stannar själv": "Schritt 5: COSORI CAF-TF101S (Dual Blaze TwinFry) · 25 Min. backen | Alternative: Ninja TB401EU · Small Chop (Verarbeitungsmodus) automatisch – stoppt sich selbst",
+  "Ställ formen i airfryer-korgen. Kör Bake 160°C, 25 min.": "Legen Sie die Form in den Airfryer-Korb. 25 Min. bei 160 °C backen.",
+  "Tillsätt vetemjöl, proteinpulver och salt. Puls ytterligare tills smeten är jämn men fortfarande lite tuggig – kör inte för länge så det blir puré. ⏱ 20 sek": "Weizenmehl, Proteinpulver und Salz hinzufügen. Weiter pulsieren, bis die Mischung glatt, aber noch etwas zäh ist – nicht zu stark verarbeiten, damit ein Püree entsteht. ⏱ 20 Sek",
+  "protein, airfryer": "Protein, Heißluftfritteuse",
+  "⚙️ Ninja TB401EU (Blender) ·": "⚙️ Ninja TB401EU (Mixer) ·",
+  "⚙️ Steg 5: COSORI CAF-TF101S (Dual Blaze TwinFry) (Airfryer) ·": "⚙️ Schritt 5: COSORI CAF-TF101S (Dual Blaze TwinFry) (Airfryer) ·",
+  "🥔 Squashraggmunk med protein – Air Fryer": "🥔 Kürbisdonut mit Protein – Heißluftfritteuse",
+  "🥔 Squashraggmunk med protein – Air Fryer – COSORI CAF-TF101S (Dual Blaze TwinFry) & Ninja TB401EU | Mitt Maskinkök": "🥔 Squash Rag Donut mit Protein – Heißluftfritteuse – COSORI CAF-TF101S (Dual Blaze TwinFry) & Ninja TB401EU | Meine Maschinenküche"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2915,
+ "_auto_genererade": 2938,
  "_senast_robot": "2026-10-17"
 }
