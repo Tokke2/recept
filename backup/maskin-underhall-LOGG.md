@@ -53,3 +53,7 @@
 | clatronic-bba3774.json | 📖 manual hittad: https://cdn.bueromarkt-ag.de/downloads/produktdatenblaetter/ |
 | cosori-twinfry-10l.json | 📖 manual hittad: https://cosori.com/cdn/shop/files/TurboBlaze_Manual_US.pdf?v |
 | crock-csc063x.json | 📖 manual hittad: https://crockpot.se/wp-content/uploads/2023/01/CSC063X_20102 |
+
+**2026-10-19**
+
+| ninja-af500eucp.json | 🔗 död tillverkarlänk ersatt |
