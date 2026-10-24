@@ -221,3 +221,7 @@
 **2026-10-23**
 
 | sitemap.xml | 🗺️ omgenererad (42 adresser) |
+
+**2026-10-24**
+
+| sitemap.xml | 🗺️ omgenererad (42 adresser) |
