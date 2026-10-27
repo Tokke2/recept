@@ -233,3 +233,7 @@
 **2026-10-26**
 
 | sitemap.xml | 🗺️ omgenererad (42 adresser) |
+
+**2026-10-27**
+
+| sitemap.xml | 🗺️ omgenererad (42 adresser) |
