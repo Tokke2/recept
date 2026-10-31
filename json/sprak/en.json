@@ -2872,7 +2872,9 @@
   "⚙️ Tillagning: COSORI CAF-TF101S (Dual Blaze TwinFry) (Airfryer) ·": "⚙️ Cooking: COSORI CAF-TF101S (Dual Blaze TwinFry) (Airfryer) ·",
   "⚙️ Tillagning: Clatronic BBA 3774 (Bakmaskin) ·": "⚙️ Cooking: Clatronic BBA 3774 (Baking machine) ·",
   "🥖 Snabba frallor – Bakmaskin": "🥖 Quick rolls - Baking machine",
-  "🥖 Snabba frallor – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🥖 Quick rolls - Baking machine - Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | My Machine Kitchen"
+  "🥖 Snabba frallor – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🥖 Quick rolls - Baking machine - Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | My Machine Kitchen",
+  "Admin har verifierat receptet": "Admin has verified the recipe",
+  "Admin har verifierat receptet i denna maskin": "Admin has verified the recipe in this machine"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2882,6 +2884,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2871,
+ "_auto_genererade": 2873,
  "_senast_robot": "2026-10-31"
 }
