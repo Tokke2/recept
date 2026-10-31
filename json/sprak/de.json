@@ -2961,13 +2961,14 @@
   "⚙️ Clatronic BBA 3774 (Bakmaskin) ·": "⚙️ Clatronic BBA 3774 (Backmaschine) ·",
   "⚙️ Steg 10: KLAIF LMR (Röd) (Pizzaugn) ·": "⚙️ Schritt 10: KLAIF LMR (Rot) (Pizzaofen) ·",
   "🍕 Pizzadeg i bakmaskin – 4 × 250 g (utan protein)": "🍕 Pizzateig im Backautomaten – 4 × 250 g (ohne Protein)",
-  "🍕 Pizzadeg i bakmaskin – 4 × 250 g (utan protein) – KLAIF LMR (Röd) & Clatronic BBA 3774 | Mitt Maskinkök": "🍕 Pizzateig im Backautomaten – 4 × 250 g (ohne Protein) – KLAIF LMR (Rot) & Clatronic BBA 3774 | Meine Maschinenküche"
+  "🍕 Pizzadeg i bakmaskin – 4 × 250 g (utan protein) – KLAIF LMR (Röd) & Clatronic BBA 3774 | Mitt Maskinkök": "🍕 Pizzateig im Backautomaten – 4 × 250 g (ohne Protein) – KLAIF LMR (Rot) & Clatronic BBA 3774 | Meine Maschinenküche",
+  "Gröna Tomater (hemmaodlade)": "Grüne Tomaten (selbst angebaut)"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2960,
+ "_auto_genererade": 2961,
  "_senast_robot": "2026-10-31"
 }
