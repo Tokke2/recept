@@ -249,3 +249,8 @@
 **2026-10-30**
 
 | sitemap.xml | 🗺️ omgenererad (42 adresser) |
+
+**2026-10-31**
+
+| sitemap.xml | 🗺️ omgenererad (41 adresser) |
+| json/recept-index.json | 📁 omgenererad (30 recept) |
