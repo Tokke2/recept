@@ -238,7 +238,7 @@
       vp.title = 'Föregående recept: ' + namn(prevFile);
       vp.setAttribute('aria-label', vp.title);
       vp.innerHTML = '←<small>Förra</small>';
-      vp.addEventListener('click', function () { location.href = encodeURIComponent(prevFile); });
+      vp.addEventListener('click', function () { location.href = prevFile.split('/').map(encodeURIComponent).join('/'); });
       document.body.appendChild(vp);
     }
     if (nextFile) {
@@ -247,7 +247,7 @@
       hp.title = 'Nästa recept: ' + namn(nextFile);
       hp.setAttribute('aria-label', hp.title);
       hp.innerHTML = '→<small>Nästa</small>';
-      hp.addEventListener('click', function () { location.href = encodeURIComponent(nextFile); });
+      hp.addEventListener('click', function () { location.href = nextFile.split('/').map(encodeURIComponent).join('/'); });
       document.body.appendChild(hp);
     }
   }
@@ -256,7 +256,7 @@
   document.addEventListener('keydown', function (e) {
     if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
     if (document.querySelector('[style*="z-index:1000"], #mk-pd-bg')) return; // overlay öppet
-    if (e.key === 'ArrowLeft' && prevFile) location.href = encodeURIComponent(prevFile);
-    if (e.key === 'ArrowRight' && nextFile) location.href = encodeURIComponent(nextFile);
+    if (e.key === 'ArrowLeft' && prevFile) location.href = prevFile.split('/').map(encodeURIComponent).join('/');
+    if (e.key === 'ArrowRight' && nextFile) location.href = nextFile.split('/').map(encodeURIComponent).join('/');
   });
 })();

@@ -145,7 +145,7 @@
 
   /* ---------- Bygg sektionen ---------- */
   function kort(r, rubrik, motivering, farg) {
-    return '<a href="recept/' + encodeURIComponent(r.fil) + '" style="display:flex;gap:16px;align-items:center;' +
+    return '<a href="recept/' + r.fil.split('/').map(encodeURIComponent).join('/') + '" style="display:flex;gap:16px;align-items:center;' +
       'background:#fff;border-radius:14px;padding:18px 20px;text-decoration:none;color:#2c3e50;' +
       'box-shadow:0 2px 8px rgba(0,0,0,.07);border-left:5px solid ' + farg + ';flex:1;min-width:260px;">' +
       '<span style="font-size:2.6rem;flex-shrink:0;">' + r.emoji + '</span>' +

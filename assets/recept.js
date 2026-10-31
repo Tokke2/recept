@@ -662,7 +662,7 @@
     if (!same.length && !similar.length) return;
 
     function chip(r) {
-      return '<a href="' + encodeURIComponent(r.file) + '" style="display:inline-flex;align-items:center;gap:6px;background:#f0ebe3;border-radius:999px;padding:8px 16px;margin:3px 4px 3px 0;text-decoration:none;color:#2c3e50;font-size:.87rem;font-weight:600;">' + r.emoji + ' ' + r.namn + '</a>';
+      return '<a href="' + r.file.split('/').map(encodeURIComponent).join('/') + '" style="display:inline-flex;align-items:center;gap:6px;background:#f0ebe3;border-radius:999px;padding:8px 16px;margin:3px 4px 3px 0;text-decoration:none;color:#2c3e50;font-size:.87rem;font-weight:600;">' + r.emoji + ' ' + r.namn + '</a>';
     }
 
     var box = document.createElement('div');

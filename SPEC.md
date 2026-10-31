@@ -2293,6 +2293,33 @@ data i json/, ALDRIG per receptfil.
     Mobil-flödet (swish://-länk som TRYCKS, inte skannas) var
     korrekt och är oförändrat.
 
+93. 🧊 FRYSETIKETTER (förslag 641, användarens beställning):
+    etikettgeneratorn får frysläge – "Tillagad ÅÅÅÅ-MM-DD · ät inom
+    X mån" på etiketten, för frysbara rätter som tomatsåsen.
+
+94. 📲 DELA-KNAPPEN (förslag 658, användarens beställning):
+    Web Share API på receptsidorna – receptnamn + länk direkt till
+    WhatsApp/SMS/valfri app. Döljs i webbläsare utan stöd
+    (skrivbords-Firefox m.fl.) – aldrig en död knapp.
+
+95. 🖨️ QR PÅ UTSKRIFTER (förslag 659, användarens beställning):
+    print.css/print.js lägger en liten QR-kod till receptets URL på
+    varje utskrift – från pappret tillbaka till live-versionen med
+    kalkyl, betyg och kockläge.
+
+96. 🔗 %2F-LÄNKBUGGEN — ✔️ KLAR (2026-10-12, användarens felrapport
+    "varför saknas kcal på pulled-kyckling-sidan?"): länkar byggda
+    med encodeURIComponent på HELA sökvägen gav %2F-URL:er
+    (recept/varmratt%2Fpulled...). GitHub Pages SERVERAR sidan (200)
+    men webbläsaren ser EN sökvägsdel → ../../ pekar på github.io-
+    ROTEN → site.js 404 → INGA moduler (ingen kalkyl/kcal, nav,
+    betyg...). Fixat med per-segment-kodning (split('/').map(
+    encodeURIComponent).join('/')) i de 4 missade modulerna:
+    hem.js (startsidans kort – där användaren klickade!),
+    recept.js (relaterade-chips), receptnav.js (sidopilar + pil-
+    tangenter, 4 ställen), ratt.js (fetch + länk, 2 ställen).
+    LÄRDOM: nya länkbyggen ska ALLTID per-segment-koda.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

@@ -66,7 +66,7 @@
 
   async function receptPerGram(fil, DB) {
     try {
-      var html = await (await fetch(root + 'recept/' + encodeURIComponent(fil))).text();
+      var html = await (await fetch(root + 'recept/' + fil.split('/').map(encodeURIComponent).join('/'))).text();
       var doc = new DOMParser().parseFromString(html, 'text/html');
       var tot = { g: 0, kcal: 0, prot: 0, kolh: 0, fett: 0, kr: 0 }, rader = 0;
       var namnEl = doc.querySelector('meta[name="recept:namn"]');
@@ -145,7 +145,7 @@
         var r = await receptPerGram(d.ref, DB);
         if (!r) { rader.push({ namn: d.ref.replace(/\.html?$/i, ''), g: d.g, saknas: true }); continue; }
         namn = r.namn;
-        lank = root + 'recept/' + encodeURIComponent(d.ref);
+        lank = root + 'recept/' + d.ref.split('/').map(encodeURIComponent).join('/');
         perG = r.perG;
       }
       tot.g += d.g; tot.kcal += perG.kcal * d.g; tot.prot += perG.prot * d.g;
