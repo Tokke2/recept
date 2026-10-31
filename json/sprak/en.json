@@ -2857,7 +2857,22 @@
   "– receptet är provlagat med denna": "- the recipe is trial prepared with this",
   "⚠️ Ange program & tid som funkade!": "⚠️ Enter program & time that worked!",
   "⚠️ Spara-modulen kunde inte laddas – ladda om sidan.": "⚠️ The save module could not be loaded - reload the page.",
-  "⚠️ Spara-modulen kunde inte laddas – prova igen om en stund.": "⚠️ The save module could not be loaded - try again in a moment."
+  "⚠️ Spara-modulen kunde inte laddas – prova igen om en stund.": "⚠️ The save module could not be loaded - try again in a moment.",
+  "10 g (≈ 3,3 g torrjäst)": "10 g (≈ 3.3 g dry yeast)",
+  "12. Bake (Endast gräddning) · 10–60 min (ej timer)": "12. Bake (Baking only) · 10–60 min (no timer)",
+  "Bake (Baka) · 25 min @ 160°C (80–205°C, 1–240 min)": "Bake · 25 min @ 160°C (80–205°C, 1–240 min)",
+  "Clatronic BBA 3774 · 12. Bake (Endast gräddning)": "Clatronic BBA 3774 · 12. Bake (Baking only)",
+  "Forma bollar: Stjälp upp degen på bakbordet. Dela i 8 bitar. Rulla till spända bollar.": "Shape into balls: Turn the dough onto the baking table. Divide into 8 pieces. Roll into tight balls.",
+  "Lägg i maskinen: vatten, yoghurt, olja, socker, smulad färsk jäst. Häll på mjölet. Lägg saltet i ett hörn.": "Put in the machine: water, yogurt, oil, sugar, crumbled fresh yeast. Pour on the flour. Put the salt in a corner.",
+  "Snabba frallor – Bakmaskin": "Quick rolls - Baking machine",
+  "Snabba frallor: degen knådas och jäser i bakmaskinen, formas till bollar, gräddas i bakmaskinen eller airfryer. 8 frallor på drygt 2 h.": "Quick rolls: the dough is kneaded and raised in the baking machine, formed into balls, baked in the baking machine or air fryer. 8 rolls in just over 2 hours.",
+  "Starta Program 8 Dough. Låt hela programmet gå.": "Start Program 8 Dough. Let the whole program run.",
+  "Tillagning: Clatronic BBA 3774 · 8. Dough (Deg) 1:30 h (timer OK) | Tillagning: Clatronic BBA 3774 · 12. Bake (Endast gräddning) 10–60 min (ej timer) | Tillagning: COSORI CAF-TF101S (Dual Blaze TwinFry) · Bake (Baka) 25 min @ 160°C (80–205°C, 1–240 min)": "Preparation: Clatronic BBA 3774 · 8. Dough 1:30 h (timer OK) | Preparation: Clatronic BBA 3774 · 12. Bake (Baking only) 10–60 min (no timer) | Cooking: COSORI CAF-TF101S (Dual Blaze TwinFry) · Bake 25 min @ 160°C (80–205°C, 1–240 min)",
+  "alltid i alla recept där färsk jäst anges, även visa konvertering av torr jäst": "always in all recipes where fresh yeast is specified, also show conversion of dry yeast",
+  "⚙️ Tillagning: COSORI CAF-TF101S (Dual Blaze TwinFry) (Airfryer) ·": "⚙️ Cooking: COSORI CAF-TF101S (Dual Blaze TwinFry) (Airfryer) ·",
+  "⚙️ Tillagning: Clatronic BBA 3774 (Bakmaskin) ·": "⚙️ Cooking: Clatronic BBA 3774 (Baking machine) ·",
+  "🥖 Snabba frallor – Bakmaskin": "🥖 Quick rolls - Baking machine",
+  "🥖 Snabba frallor – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🥖 Quick rolls - Baking machine - Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | My Machine Kitchen"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2867,6 +2882,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2856,
+ "_auto_genererade": 2871,
  "_senast_robot": "2026-10-31"
 }

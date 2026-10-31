@@ -2968,13 +2968,28 @@
   "– receptet är provlagat med denna": "- Das Rezept ist damit probeweise zubereitet",
   "⚠️ Ange program & tid som funkade!": "⚠️ Geben Sie Programm und Zeit ein, die funktioniert haben!",
   "⚠️ Spara-modulen kunde inte laddas – ladda om sidan.": "⚠️ Das Speichermodul konnte nicht geladen werden – laden Sie die Seite neu.",
-  "⚠️ Spara-modulen kunde inte laddas – prova igen om en stund.": "⚠️ Das Speichermodul konnte nicht geladen werden – versuchen Sie es gleich noch einmal."
+  "⚠️ Spara-modulen kunde inte laddas – prova igen om en stund.": "⚠️ Das Speichermodul konnte nicht geladen werden – versuchen Sie es gleich noch einmal.",
+  "10 g (≈ 3,3 g torrjäst)": "10 g (≈ 3,3 g Trockenhefe)",
+  "12. Bake (Endast gräddning) · 10–60 min (ej timer)": "12. Backen (nur Backen) · 10–60 Minuten (kein Timer)",
+  "Bake (Baka) · 25 min @ 160°C (80–205°C, 1–240 min)": "Backen · 25 Min. bei 160 °C (80–205 °C, 1–240 Min.)",
+  "Clatronic BBA 3774 · 12. Bake (Endast gräddning)": "Clatronic BBA 3774 · 12. Backen (nur Backen)",
+  "Forma bollar: Stjälp upp degen på bakbordet. Dela i 8 bitar. Rulla till spända bollar.": "Zu Kugeln formen: Den Teig auf den Backtisch stürzen. In 8 Stücke teilen. Zu festen Kugeln rollen.",
+  "Lägg i maskinen: vatten, yoghurt, olja, socker, smulad färsk jäst. Häll på mjölet. Lägg saltet i ett hörn.": "In die Maschine geben: Wasser, Joghurt, Öl, Zucker, zerbröckelte frische Hefe. Mehl darübergießen. Legen Sie das Salz in eine Ecke.",
+  "Snabba frallor – Bakmaskin": "Schnelle Brötchen - Backmaschine",
+  "Snabba frallor: degen knådas och jäser i bakmaskinen, formas till bollar, gräddas i bakmaskinen eller airfryer. 8 frallor på drygt 2 h.": "Schnelle Brötchen: Der Teig wird in der Backmaschine geknetet und aufgegangen, zu Kugeln geformt und in der Backmaschine oder Heißluftfritteuse gebacken. 8 Brötchen in etwas mehr als 2 Stunden.",
+  "Starta Program 8 Dough. Låt hela programmet gå.": "Starten Sie Programm 8 Teig. Lassen Sie das gesamte Programm laufen.",
+  "Tillagning: Clatronic BBA 3774 · 8. Dough (Deg) 1:30 h (timer OK) | Tillagning: Clatronic BBA 3774 · 12. Bake (Endast gräddning) 10–60 min (ej timer) | Tillagning: COSORI CAF-TF101S (Dual Blaze TwinFry) · Bake (Baka) 25 min @ 160°C (80–205°C, 1–240 min)": "Zubereitung: Clatronic BBA 3774 · 8. Teig 1:30 h (Timer OK) | Zubereitung: Clatronic BBA 3774 · 12. Backen (nur Backen) 10–60 Min. (ohne Timer) | Kochen: COSORI CAF-TF101S (Dual Blaze TwinFry) · 25 Min. bei 160 °C backen (80–205 °C, 1–240 Min.)",
+  "alltid i alla recept där färsk jäst anges, även visa konvertering av torr jäst": "In allen Rezepten, in denen Frischhefe angegeben ist, wird immer auch die Umrechnung von Trockenhefe angezeigt",
+  "⚙️ Tillagning: COSORI CAF-TF101S (Dual Blaze TwinFry) (Airfryer) ·": "⚙️ Kochen: COSORI CAF-TF101S (Dual Blaze TwinFry) (Airfryer) ·",
+  "⚙️ Tillagning: Clatronic BBA 3774 (Bakmaskin) ·": "⚙️ Kochen: Clatronic BBA 3774 (Backmaschine) ·",
+  "🥖 Snabba frallor – Bakmaskin": "🥖 Schnelle Brötchen – Backmaschine",
+  "🥖 Snabba frallor – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🥖 Schnelle Brötchen – Backmaschine – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2967,
+ "_auto_genererade": 2982,
  "_senast_robot": "2026-10-31"
 }
