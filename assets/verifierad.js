@@ -103,7 +103,10 @@
      Bekräftelsedialog (egen dialog – aldrig confirm(); hårt klick)
      ============================================================ */
   async function oppnaDialog() {
-    if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas – prova igen om en stund.'); return; }
+    if (!window.__MK_SPARA) {
+      if (window.__MK_TOAST) window.__MK_TOAST('⚠️ Spara-modulen kunde inte laddas – prova igen om en stund.');
+      return;
+    }
     /* 🔒 Lösenordet FÖRST – utan upplåsning visas inte ens dialogen */
     if (!(await window.__MK_SPARA.unlock())) return;
 

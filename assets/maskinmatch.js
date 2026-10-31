@@ -123,7 +123,10 @@
   }
 
   async function markeraTestad(maskin) {
-    if (!window.__MK_SPARA) { alert('Spara-modulen kunde inte laddas – ladda om sidan.'); return; }
+    if (!window.__MK_SPARA) {
+      if (window.__MK_TOAST) window.__MK_TOAST('⚠️ Spara-modulen kunde inte laddas – ladda om sidan.');
+      return;
+    }
     if (!(await window.__MK_SPARA.unlock())) return;   /* 🔒 lösenord först */
     var old = document.getElementById('mk-testad-bg');
     if (old) old.remove();
@@ -151,7 +154,11 @@
     bg.addEventListener('click', function (e) { if (e.target === bg && dn) bg.remove(); });
     bg.querySelector('#mt-spara').onclick = async function () {
       var prog = bg.querySelector('#mt-prog').value.trim();
-      if (!prog) { alert('Ange program & tid som funkade!'); return; }
+      if (!prog) {
+        bg.querySelector('#mt-result').textContent = '⚠️ Ange program & tid som funkade!';
+        bg.querySelector('#mt-prog').focus();
+        return;
+      }
       var out = bg.querySelector('#mt-result');
       out.textContent = '⏳ Sparar...';
       var fname = decodeURIComponent(location.pathname.split('/').pop());
