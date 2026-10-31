@@ -2184,11 +2184,14 @@ data i json/, ALDRIG per receptfil.
     🏷️ RAD-KONVERTERING (användarens regel 2026-10-31: "alltid i
     alla recept där färsk jäst anges, även visa konvertering av
     torr jäst"): mängdcellen får diskret tillägg direkt på jäst-
-    raden – "10 g (≈ 3,3 g torrjäst)" (och omvänt för torrjäst-
+    raden – "10 g (≈ 3 g torrjäst)" (och omvänt för torrjäst-
     recept). Rader där ägaren REDAN skrivit andra formen ("7 g
     (eller 2 g torrjäst)") lämnas orörda. Runtime-span .mk-jastalt:
     syns även på utskrift, städas alltid ur sparade filer
     (buildCleanHtml), mängd-parsers opåverkade (läser första talet).
+    🔢 HELTALSREGELN (användaren 2026-10-31): alla omräknade jäst-
+    mängder avrundas ALLTID till närmaste heltal (fmtG), minsta
+    visade mängd 1 g – gäller radtipset, 🦠-rutan och växlade rader.
     KVARSTÅR som framtida utbyggnad (byggs vid order): surdegs-
     ersättning + jästid vid olika rumstemperaturer.
 

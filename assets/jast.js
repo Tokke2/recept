@@ -60,8 +60,11 @@
     return m ? parseFloat(m[1].replace(',', '.')) : 0;
   }
   function fmtG(n) {
-    var r = Math.round(n * 10) / 10;
-    return String(r).replace('.', ',') + ' g';
+    /* 🔢 ALLTID NÄRMASTE HELTAL (användarens regel) – aldrig "0 g":
+       minsta visade mängd är 1 g. 10/3 → "3 g", 2×3 → "6 g". */
+    var r = Math.round(n);
+    if (r < 1 && n > 0) r = 1;
+    return r + ' g';
   }
 
   /* Alla äkta jästrader med form + gram */
