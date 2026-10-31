@@ -2320,6 +2320,30 @@ data i json/, ALDRIG per receptfil.
     tangenter, 4 ställen), ratt.js (fetch + länk, 2 ställen).
     LÄRDOM: nya länkbyggen ska ALLTID per-segment-koda.
 
+97. 🧹 RECEPTSTANDARD-VAKTEN — ✔️ KLAR (2026-10-31, användarens
+    order "uppdatera till senaste + håll ALLTID alla recept
+    uppdaterade via robot"): sjalvlakning.py steg9, körs VARJE
+    körning för alltid. A) Näringsblock/näringsrader i ingrediens-
+    tabellerna tas bort (SPEC-regeln: live-kalkylen är enda
+    sanningen) – exakt-matchning på kända näringsord, "📊 NÄRINGS-
+    VÄRDE"-block klipps, riktiga ingredienser/stegtexter röres
+    ALDRIG (diffverifierat på lokbrödet: exakt 17 rader bort, allt
+    annat identiskt). B) recept:kategori-metan autofylls ur mapp-
+    namnet när den saknas (SJÄLVLÄRANDE: mappen är sanningen →
+    ✏️-väljaren förvald rätt; 18 recept fixades första körningen).
+    sjalvlakning.yml triggas nu även av ändringar i sjalvlakning.py.
+    SAMMA RUNDA: 📷 FOTO-v2 i verifierad.js (användarens order):
+    "📷 Ta foto nu"-knapp (capture=environment → mobilkameran
+    direkt, funkar i PWA-appen) + "🖼️ Välj bild"; 🗜️ adaptiv
+    komprimering max 1200px och kvalitet 0.8→0.5 (+krymp till
+    1000/800px vid behov) tills ≤250 kB – minsta möjliga disk.
+    DATA: Gröna Tomater (hemmaodlade) tillagd i ingredienser.json
+    på ägarens order – pris 0 kr, näring som röd tomat, alias täcker
+    "tomater, egna" (4 recept får nu kcal/pris). KONSTATERAT:
+    recept läggs till/tas bort ur sitemap + recept-index HELT
+    AUTOMATISKT av steg6/7 vid varje push (verifierat live med
+    raderade pizzadeg-med-50g och nya utan-protein-receptet).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

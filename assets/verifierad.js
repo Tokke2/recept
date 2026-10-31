@@ -134,27 +134,40 @@
         /* 📷 Bild på baket – frivillig, laddas upp ihop med verifieringen */
         '<div style="margin-top:14px;border-top:1.5px solid #f0ebe3;padding-top:12px;text-align:left;">' +
           '<label style="display:block;font-size:.78rem;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">📷 Bild på baket/rätten (frivilligt)</label>' +
-          '<input type="file" id="vf-bild" accept="image/*" style="font-size:.85rem;width:100%;font-family:inherit;">' +
+          /* 📱 TVÅ vägar (användarens beställning): direkt till mobilens
+             KAMERA (capture) eller galleri/fil – funkar i PWA-appen. */
+          '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+            '<label style="flex:1;min-width:120px;background:#27ae60;color:#fff;border-radius:10px;padding:10px;text-align:center;font-weight:700;cursor:pointer;font-size:.85rem;">📷 Ta foto nu' +
+              '<input type="file" id="vf-kamera" accept="image/*" capture="environment" style="display:none;"></label>' +
+            '<label style="flex:1;min-width:120px;background:#f0ebe3;color:#2c3e50;border-radius:10px;padding:10px;text-align:center;font-weight:700;cursor:pointer;font-size:.85rem;">🖼️ Välj bild' +
+              '<input type="file" id="vf-bild" accept="image/*" style="display:none;"></label>' +
+          '</div>' +
           '<div id="vf-bild-preview" style="margin-top:8px;"></div>' +
-          '<div style="font-size:.72rem;color:#7f8c8d;margin-top:4px;">Bilden förminskas automatiskt (max 1200 px, JPEG) och blir receptets bild – syns överst på receptet och på receptkortet. Befintlig bild ersätts.</div>' +
+          '<div style="font-size:.72rem;color:#7f8c8d;margin-top:4px;">Bilden krymps automatiskt till minsta möjliga (max 1200 px, smart JPEG-kvalitet, mål ≤ 250 kB) och blir receptets bild. Befintlig bild ersätts.</div>' +
         '</div>' +
         '<div id="vf-result" style="margin-top:10px;font-size:.85rem;"></div>' +
       '</div>';
     document.body.appendChild(bg);
 
-    /* 📷 Förhandsvisning + "spara bara bilden"-knapp när en bild valts */
+    /* 📷 Förhandsvisning + "spara bara bilden"-knapp när en bild valts
+       (📱 kameran OCH galleriet går genom samma flöde – väljer man
+       nytt i det ena töms det andra, så EN bild gäller) */
     var fil = bg.querySelector('#vf-bild');
-    fil.addEventListener('change', function () {
+    var kam = bg.querySelector('#vf-kamera');
+    function bildVald(aktiv, andra) {
       var pv = bg.querySelector('#vf-bild-preview');
       pv.innerHTML = '';
-      if (!fil.files || !fil.files[0]) return;
-      var url = URL.createObjectURL(fil.files[0]);
+      if (!aktiv.files || !aktiv.files[0]) return;
+      if (andra) andra.value = '';
+      var url = URL.createObjectURL(aktiv.files[0]);
       pv.innerHTML = '<img src="' + url + '" alt="" style="max-width:100%;max-height:140px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.2);">' +
         '<button id="vf-barabild" style="display:block;width:100%;margin-top:8px;background:#2c3e50;color:#fff;border:none;border-radius:10px;padding:10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.88rem;">📷 Spara bara bilden (rör inte verifieringen)</button>';
       pv.querySelector('#vf-barabild').onclick = function () {
         sparaVerifiering(bg, getDatum() || null, true);   /* behåll nuvarande status */
       };
-    });
+    }
+    fil.addEventListener('change', function () { bildVald(fil, kam); });
+    if (kam) kam.addEventListener('change', function () { bildVald(kam, fil); });
 
     var ja = bg.querySelector('#vf-ja');
     var idag = bg.querySelector('#vf-idag');
@@ -170,7 +183,11 @@
 
   /* ============================================================
      📷 Bild → nedskalad JPEG som ren base64 (för GitHub-API:t)
-     Max 1200 px längsta sida, kvalitet 0.8 – bra för Pages.
+     🗜️ MINSTA MÖJLIGA DISKUTRYMME (användarens regel): max 1200 px,
+     därefter sänks JPEG-kvaliteten stegvis (0.8 → 0.5) tills bilden
+     är ≤ 250 kB; räcker inte det krymps den till 1000/800 px också.
+     Mobilkamerors 4–12 MB blir typiskt 120–240 kB – utan synlig
+     försämring på en receptsida.
      ============================================================ */
   function bildTillB64(file) {
     return new Promise(function (resolve, reject) {
@@ -178,17 +195,28 @@
       var url = URL.createObjectURL(file);
       img.onload = function () {
         try {
-          var MAX = 1200;
           var w = img.naturalWidth, h = img.naturalHeight;
           if (!w || !h) throw new Error('kunde inte läsa bilden');
-          var skala = Math.min(1, MAX / Math.max(w, h));
-          var c = document.createElement('canvas');
-          c.width = Math.round(w * skala);
-          c.height = Math.round(h * skala);
-          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-          var dataUrl = c.toDataURL('image/jpeg', 0.8);
+          var MAL_BYTES = 250 * 1024;
+          var basta = null;
+          var storlekar = [1200, 1000, 800];
+          var kvaliteter = [0.8, 0.7, 0.6, 0.5];
+          for (var si = 0; si < storlekar.length && !basta; si++) {
+            var skala = Math.min(1, storlekar[si] / Math.max(w, h));
+            var c = document.createElement('canvas');
+            c.width = Math.round(w * skala);
+            c.height = Math.round(h * skala);
+            c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+            for (var ki = 0; ki < kvaliteter.length; ki++) {
+              var b64 = c.toDataURL('image/jpeg', kvaliteter[ki]).split(',')[1];
+              var bytes = Math.round(b64.length * 3 / 4);
+              if (bytes <= MAL_BYTES) { basta = b64; break; }
+              /* sista storleken + sista kvaliteten → ta det vi har */
+              if (si === storlekar.length - 1 && ki === kvaliteter.length - 1) basta = b64;
+            }
+          }
           URL.revokeObjectURL(url);
-          resolve(dataUrl.split(',')[1]);   /* ren base64 utan prefix */
+          resolve(basta);   /* ren base64 utan prefix */
         } catch (e) { URL.revokeObjectURL(url); reject(e); }
       };
       img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('ogiltig bildfil')); };
@@ -222,7 +250,8 @@
 
     /* 📷 Bilden först (om vald) – oberoende av verifieringsstatus */
     var bildRes = null;
-    var filEl = bg.querySelector('#vf-bild');
+    var filEl = bg.querySelector('#vf-kamera');                       /* 📱 kameran först */
+    if (!(filEl && filEl.files && filEl.files[0])) filEl = bg.querySelector('#vf-bild');
     if (filEl && filEl.files && filEl.files[0]) {
       out.innerHTML = '⏳ Förminskar & laddar upp bilden...';
       var bildNamn = 'images/recept/' + fname.replace(/\.html?$/i, '') + '.jpg';

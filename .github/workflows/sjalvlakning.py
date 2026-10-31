@@ -444,6 +444,102 @@ def steg8_mappvakt():
         rader.append('| recept/%s | 📁 flyttad till %s/ (mappvakten) |' % (namn, kat))
 
 
+def steg9_receptstandard():
+    """🧹 RECEPTSTANDARD-VAKTEN (användarens order: "håll alltid alla
+    recept uppdaterade via robot"). Körs VARJE körning, för alltid:
+    A) NÄRINGSBLOCK I INGREDIENSTABELLEN TAS BORT – SPEC-regeln är
+       att sajten ALDRIG har statiska näringstabeller (live-kalkylen
+       räknar mot databasen). Gamla konverterade recept har rubrikrad
+       "📊 NÄRINGSVÄRDE" + kcal/Protein/Fett/Fiber-rader instoppade i
+       tabellen → de förvirrar kalkylen. Tas bort med EXAKT-matchning
+       på kända näringsord ("Proteinpulver (whey)" är alltid trygg).
+    B) recept:kategori-METAN AUTOFYLLS ur mappnamnet när den saknas
+       (självlärande: mappen är sanningen, ✏️-väljaren förvald rätt).
+    FÖRBÄTTRAR ENDAST: tar aldrig bort ingredienser eller recepttext."""
+    import re as _re
+    NARINGSORD = {'kcal', 'energi', 'kalorier', 'protein', 'kolhydrater', 'kolhydrat',
+                  'fett', 'mättat fett', 'fiber', 'socker', 'näringsvärde'}
+
+    def rensa_tabell(m):
+        inre = m.group(1)
+        trs = _re.findall(r'<tr[^>]*>.*?</tr>', inre, _re.S)
+        if not trs:
+            return m.group(0)
+        nya, i_block, bort = [], False, 0
+        for tr in trs:
+            tds = _re.findall(r'<td[^>]*>(.*?)</td>', tr, _re.S)
+            c1 = _re.sub(r'<[^>]+>', '', tds[0]).strip() if tds else ''
+            c2 = _re.sub(r'<[^>]+>', '', tds[1]).strip() if len(tds) > 1 else ''
+            norm = _re.sub(r'^[^A-Za-zÅÄÖåäö0-9]+', '', c1).lower().rstrip(' :').strip()
+            ar_rubrik = norm.startswith('näringsvärde')
+            ar_narings = (norm in NARINGSORD
+                          or bool(_re.fullmatch(r'per (skiva|portion|bit|styck|100 ?g).*', norm))
+                          or bool(_re.fullmatch(r'hela (brödet|satsen|limpan|degen|grytan)', norm))
+                          or bool(_re.fullmatch(r'[\d\s.,]+kcal', norm))
+                          or norm.startswith('salt: ca') or norm.startswith('salthalt'))
+            if ar_rubrik:
+                i_block = True
+                bort += 1
+                continue
+            if i_block and (ar_narings or not c2):
+                bort += 1
+                continue
+            if i_block and c2 and not ar_narings:
+                i_block = False          # blocket slut – riktiga rader igen
+            if not i_block and ar_narings:
+                bort += 1                # lös näringsrad utanför block
+                continue
+            nya.append(tr)
+        if not bort:
+            return m.group(0)
+        rensa_tabell.bort += bort
+        return m.group(0).replace(m.group(1), _ersatt_rader(inre, trs, nya))
+
+    def _ersatt_rader(inre, gamla, nya):
+        ut = inre
+        behall = set(nya)
+        for tr in gamla:
+            if tr not in behall:
+                ut = ut.replace(tr, '', 1)
+        return ut
+
+    for f in sorted(glob.glob('recept/*/*.html')):
+        namn = os.path.basename(f)
+        if namn.upper().startswith('MALL'):
+            continue
+        try:
+            with open(f, encoding='utf-8') as fp:
+                html = fp.read()
+        except OSError:
+            continue
+        if 'STUB - receptet har flyttat' in html[:500]:
+            continue
+        orig = html
+        atg = []
+
+        # --- A) näringsblock/näringsrader bort ur alla tabeller ---
+        rensa_tabell.bort = 0
+        html = _re.sub(r'<table[^>]*>(.*?)</table>', rensa_tabell, html, flags=_re.S)
+        if rensa_tabell.bort:
+            atg.append('%d näringsrader bort (live-kalkylen räknar)' % rensa_tabell.bort)
+
+        # --- B) kategori-meta ur mappnamnet ---
+        if 'name="recept:kategori"' not in html:
+            kat = os.path.basename(os.path.dirname(f))
+            ny_meta = '<meta name="recept:kategori" content="%s">\n' % kat
+            ankare = _re.search(r'<meta name="recept:namn"[^>]*>\n?', html)
+            if ankare:
+                html = html[:ankare.end()] + ny_meta + html[ankare.end():]
+            else:
+                html = html.replace('</head>', ny_meta + '</head>', 1)
+            atg.append('kategori-meta "%s" ifylld ur mappen' % kat)
+
+        if html != orig:
+            with open(f, 'w', encoding='utf-8') as fp:
+                fp.write(html)
+            rader.append('| %s | 🧹 %s (steg9 receptstandard) |' % (f, ' · '.join(atg)))
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -452,6 +548,7 @@ def main():
     steg4_verifieringsfiler()
     steg5_matrattssidor()
     steg8_mappvakt()
+    steg9_receptstandard()
     steg6_sitemap()
     steg7_receptindex()
 

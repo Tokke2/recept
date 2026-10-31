@@ -20,6 +20,7 @@ on:
       - 'recept/**.html'
       - 'json/maskiner/**.json'
       - 'json/matratter.json'   # 🍽️ ny maträtt → sidan byggs DIREKT (~30 sek)
+      - '.github/workflows/sjalvlakning.py'   # 🧹 robotuppdatering → kör direkt (steg9-regeln)
   workflow_dispatch: {}
 
 permissions:
