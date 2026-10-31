@@ -233,18 +233,21 @@
     var testadeTyper = {};
     testade.forEach(function (m) { var t = typKey(m); if (t) testadeTyper[t] = m; });
 
-    /* ✅ GRÖN BOCK PÅ MASKINRUTAN (användarens regel): VARJE maskin
-       som receptet självt anger får en tydlig grön bock VID namnet
-       + en klartextrad "✅ Verifierad maskin: ..." i rutan – recepten
-       publiceras aldrig otestade, så receptets egna maskiner ÄR
-       verifierade. Finns en ✅-markerad tid i recept:testad-metan
-       visas den också. Alternativa maskiner (förslagsrutan nedanför)
-       får avvakta med ⚠️ tills de ✅-markeras – varje maskin bedöms
-       för sig. Allt är runtime-element (.mk-verifmask) som städas
-       ur sparade filer av buildCleanHtml.
-       🧪-pillen ("Testad med denna") visas som förut när det finns
-       typ-syskon i parken. */
+    /* ✅ GRÖN BOCK PÅ MASKINRUTAN (användarens regel): maskiner som
+       receptet självt anger får en tydlig grön bock VID namnet + en
+       klartextrad "✅ Verifierad maskin: ..." i rutan – MEN ENDAST
+       när ägaren faktiskt VERIFIERAT (användarens regel 2026-10-31:
+       "inga recept man laddar upp ska vara verifierade innan
+       användaren har lagat/bakat"). Kravet: receptet är 🌟-verifierat
+       (recept:verifierad-metan) ELLER maskinen är ✅-markerad med tid
+       i recept:testad-metan. Overifierade recept visar INGENTING –
+       och alternativa maskiner avvaktar som vanligt med ⚠️ i
+       förslagsrutan tills de ✅-markeras. Runtime-element
+       (.mk-verifmask) städas alltid av buildCleanHtml.
+       🧪-syskonpillen kräver samma verifiering (annars vore
+       "Testad med denna" en osann utfästelse). */
     var manTest = lasTestade();   /* ur recept:testad-metan */
+    var receptVerifierad = !!document.querySelector('meta[name="recept:verifierad"]');
     document.querySelectorAll('.machine-step h3').forEach(function (h3) {
       if (h3.querySelector('.mk-testad') || h3.querySelector('.mk-verifmask')) return;
       var txt = h3.textContent.toLowerCase();
@@ -254,6 +257,9 @@
         var traff = (modell && txt.indexOf(modell) !== -1) ||
                     (marke && modell && txt.indexOf(marke) !== -1 && txt.indexOf(modell.split(' ')[0]) !== -1);
         if (!traff) return;
+        var tid = manTest[m.id] || '';
+        /* 🛡️ grindvakten: ingen verifierad-märkning utan verklig verifiering */
+        if (!receptVerifierad && !tid) return;
         var box = h3.closest('.machine-step');
 
         /* ✅ bocken + klartexten (en gång per ruta) */
@@ -270,7 +276,6 @@
 
           var namn = ((m.varumarke || '') + ' ' + (m.modellnamn || '')).trim() || m.namn || m.id;
           if (window.__MK_MED_TYP) namn = window.__MK_MED_TYP(namn, m.typ);
-          var tid = manTest[m.id] || '';
           var rad = document.createElement('div');
           rad.className = 'mk-verifmask no-print';
           rad.style.cssText = 'margin-top:8px;background:#eaf7ef;border:1.5px solid #27ae60;border-radius:9px;' +

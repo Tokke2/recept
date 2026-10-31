@@ -1645,6 +1645,11 @@
     if (li !== -1) t = t.slice(0, li + 7) + '\n';
     /* gammal PLATS-rad bort (ny injiceras nedan med RÄTT sökväg) */
     t = t.replace(/<!--\s*PLATS:[\s\S]*?-->\s*\n?/i, '');
+    /* 🛡️ UPPLADDADE RECEPT ÄR ALDRIG FÖRVERIFIERADE (användarens regel
+       2026-10-31): recept:verifierad/recept:testad-metas i inklistrad
+       HTML strippas – verifiering sker ENDAST via 🌟/✅ efter att
+       ägaren faktiskt lagat/bakat receptet. */
+    t = t.replace(/<meta\s+name="recept:(verifierad|testad)"[^>]*>\s*\n?/gi, '');
     /* 📁 mappdjup: normalisera först allt till ../ och lyft sedan till
        måldjupet – klarar inklistrat från både rot- och mappformat */
     t = t.replace(/((?:href|src|content)=["'])\.\.\/\.\.\//g, '$1../')

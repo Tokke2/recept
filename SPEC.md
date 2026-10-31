@@ -2379,6 +2379,18 @@ data i json/, ALDRIG per receptfil.
     maskinigenkänningen ser allt. Reträtt till gamla beteendet för
     udda format. recept:-metadata återanvändes redan sedan tidigare.
 
+100. 🛡️ INGEN FÖRVERIFIERING — ✔️ KLAR (2026-10-31, användarens
+    regel "inga recept man laddar upp ska vara verifierade innan
+    användaren har lagat/bakat den"): maskinrutornas gröna bock +
+    "Verifierad maskin"-text (punkt 98) och 🧪-syskonpillen visas nu
+    ENDAST när receptet är 🌟-verifierat ELLER maskinen ✅-markerats
+    med tid i recept:testad. Overifierade recept visar ingen
+    verifierings-märkning alls. 📋-inklistringen STRIPPAR dessutom
+    recept:verifierad/recept:testad-metas ur uppladdad HTML (mallar
+    från chatten kan inte smyga in förverifiering). nytt-recept
+    genererar aldrig sådana metas (kontrollerat). Verifiering sker
+    ENDAST via 🌟-knappen och "✅ Jag har testat"-flödet.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
