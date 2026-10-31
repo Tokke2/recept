@@ -2851,7 +2851,13 @@
   "⚙️ Steg 10: KLAIF LMR (Röd) (Pizzaugn) ·": "⚙️ Step 10: KLAIF LMR (Red) (Pizza Oven) ·",
   "🍕 Pizzadeg i bakmaskin – 4 × 250 g (utan protein)": "🍕 Pizza dough in a baking machine - 4 × 250 g (without protein)",
   "🍕 Pizzadeg i bakmaskin – 4 × 250 g (utan protein) – KLAIF LMR (Röd) & Clatronic BBA 3774 | Mitt Maskinkök": "🍕 Pizza dough in a baking machine - 4 × 250 g (without protein) - KLAIF LMR (Red) & Clatronic BBA 3774 | My Machine Kitchen",
-  "Gröna Tomater (hemmaodlade)": "Green Tomatoes (home grown)"
+  "Gröna Tomater (hemmaodlade)": "Green Tomatoes (home grown)",
+  "Testad med denna": "Tested with this",
+  "Verifierad maskin – receptet är provlagat med denna": "Verified machine - the recipe is trial cooked with this one",
+  "– receptet är provlagat med denna": "- the recipe is trial prepared with this",
+  "⚠️ Ange program & tid som funkade!": "⚠️ Enter program & time that worked!",
+  "⚠️ Spara-modulen kunde inte laddas – ladda om sidan.": "⚠️ The save module could not be loaded - reload the page.",
+  "⚠️ Spara-modulen kunde inte laddas – prova igen om en stund.": "⚠️ The save module could not be loaded - try again in a moment."
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2861,6 +2867,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2850,
+ "_auto_genererade": 2856,
  "_senast_robot": "2026-10-31"
 }
