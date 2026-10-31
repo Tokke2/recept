@@ -52,7 +52,7 @@
     }
     var b = document.createElement('div');
     b.id = 'mk-verif-badge';
-    b.title = 'Verifierat recept – bakat & godkänt av kocken ' + datum;
+    b.title = 'Admin har verifierat receptet ' + datum + ' – bakat/lagat & godkänt';
     b.setAttribute('aria-label', b.title);
     b.style.cssText = 'position:absolute;top:10px;right:10px;width:40px;height:40px;' +
       'background:#27ae60;color:#fff;border-radius:50%;display:flex;align-items:center;' +
@@ -71,7 +71,7 @@
       t.style.cssText = 'position:absolute;top:56px;right:10px;background:#fff;color:#2c3e50;' +
         'border:2px solid #27ae60;border-radius:10px;padding:8px 14px;font-size:.82rem;' +
         'box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:6;max-width:230px;';
-      t.innerHTML = '<b style="color:#27ae60;">\u2605 Verifierat recept</b><br>Bakat &amp; godkänt av kocken ' + datum + '.';
+      t.innerHTML = '<b style="color:#27ae60;">\u2605 Verifierat recept</b><br>Admin har verifierat receptet ' + datum + '.';
       header.appendChild(t);
       setTimeout(function () { var x = document.getElementById('mk-verif-info'); if (x) x.remove(); }, 5000);
     });

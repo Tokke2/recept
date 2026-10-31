@@ -266,7 +266,7 @@
         if (box && !box.querySelector('.mk-verifmask')) {
           var bock = document.createElement('span');
           bock.className = 'mk-verifmask no-print';
-          bock.title = 'Verifierad maskin – receptet är provlagat med denna';
+          bock.title = 'Admin har verifierat receptet i denna maskin';
           bock.setAttribute('aria-label', bock.title);
           bock.textContent = '✓';
           bock.style.cssText = 'display:inline-flex;width:26px;height:26px;background:#27ae60;color:#fff;' +
@@ -280,7 +280,7 @@
           rad.className = 'mk-verifmask no-print';
           rad.style.cssText = 'margin-top:8px;background:#eaf7ef;border:1.5px solid #27ae60;border-radius:9px;' +
             'padding:6px 12px;font-size:.82rem;color:#1e8449;font-weight:700;';
-          rad.textContent = '✅ Verifierad maskin: ' + namn + ' – receptet är provlagat med denna' +
+          rad.textContent = '✅ Admin har verifierat i denna maskin: ' + namn +
             (tid ? ' (' + tid + ')' : '');
           box.appendChild(rad);
         }

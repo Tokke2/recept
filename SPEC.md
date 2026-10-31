@@ -2391,6 +2391,19 @@ data i json/, ALDRIG per receptfil.
     genererar aldrig sådana metas (kontrollerat). Verifiering sker
     ENDAST via 🌟-knappen och "✅ Jag har testat"-flödet.
 
+101. 🧹 VERIFIERING NOLLSTÄLLD + ADMIN-TEXT — ✔️ KLAR (2026-10-31,
+    användarens order "rensa i alla recept; när verifierat ska det
+    stå om admin verifierat den, annars aldrig"): engångsrensning
+    strippade recept:verifierad/recept:testad ur ALLA receptfiler
+    (1 träff: glassreceptet) – ren spelplan, admin återverifierar
+    efter verkligt bak. All verifierings-text säger nu ADMIN:
+    🌟-badgen "Admin har verifierat receptet DATUM", inforutan,
+    maskinrutans bock/klartext "✅ Admin har verifierat i denna
+    maskin: X (tid)" och receptkortens stjärn-tooltip. Overifierat
+    → ingen märkning alls (grindvakten, punkt 100). OBS: rensningen
+    är en ENGÅNGSÅTGÄRD – roboten strippar ALDRIG metas (admins 🌟/✅
+    skrivs ju dit avsiktligt).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

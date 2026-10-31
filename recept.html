@@ -487,7 +487,7 @@ function card(r) {
     : '';
   /* 🌟 Verifierat = grön stjärna uppe i vänstra hörnet (betygen bor i högra) */
   const verif = r.verifierad
-    ? `<span title="Verifierat recept – bakat &amp; godkänt av kocken ${r.verifierad}" style="position:absolute;top:10px;left:10px;width:32px;height:32px;background:#27ae60;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.05rem;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);line-height:1;">★</span>`
+    ? `<span title="Admin har verifierat receptet ${r.verifierad}" style="position:absolute;top:10px;left:10px;width:32px;height:32px;background:#27ae60;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.05rem;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);line-height:1;">★</span>`
     : '';
   return `<a class="rcard" href="${r.file}"${r.isPdf ? ' target="_blank" rel="noopener"' : ''}${r.arRatt ? ' style="border:2px solid #e6a817;"' : ''}>
     <div class="media"><span class="big-emoji">${r.emoji}</span>${verif}${r.arRatt ? '<span style="position:absolute;top:10px;left:10px;background:#e6a817;color:#fff;border-radius:999px;padding:3px 12px;font-size:.72rem;font-weight:700;">🍽️ Maträtt</span>' : ''}
