@@ -2368,6 +2368,17 @@ data i json/, ALDRIG per receptfil.
     (.mk-verifmask) – städas ALLTID av buildCleanHtml, filerna
     röres aldrig.
 
+99. 🧩 HTML-ANALYSEN LÄSER HELA RECEPTET — ✔️ KLAR (2026-10-31,
+    användarens felrapport "analyserar endast delar"): parseHtml i
+    nytt-recept läste ENDAST första <ol> – recept med flera moment
+    (deg-steg + gräddningsalternativ A/B som frallorna) tappade allt
+    efter första listan. Nu: Gör så här-kortet gås igenom i DOKUMENT-
+    ORDNING – alla <ol><li>, A)/B)-etiketter (p>b/.alt>b) och maskin-
+    rubriker utan program blir steg; maskinrubriker MED program (·)
+    + .why + tips/varningar går till matchningstexten (others) så
+    maskinigenkänningen ser allt. Reträtt till gamla beteendet för
+    udda format. recept:-metadata återanvändes redan sedan tidigare.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
