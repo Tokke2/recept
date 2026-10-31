@@ -2403,6 +2403,13 @@ data i json/, ALDRIG per receptfil.
     → ingen märkning alls (grindvakten, punkt 100). OBS: rensningen
     är en ENGÅNGSÅTGÄRD – roboten strippar ALDRIG metas (admins 🌟/✅
     skrivs ju dit avsiktligt).
+    🧟 LÄRDOM SAMMA RUNDA (zombie-incidenten): cp -r repo→workspace
+    SPEGLAR INTE BORTTAGNINGAR – en av ägaren raderad fil låg kvar i
+    arbetsytan och återuppstod när recept/ helkopierades vid push.
+    NY HELIG SYNKRUTIN: arbetsytan ERSÄTTS helt varje synk
+    (rm -rf site && cp -r klon). Vid push av receptträdet: kopiera
+    ALDRIG hela recept/-mappen från arbetsytan – endast namngivna
+    ändrade filer.
 
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
