@@ -2411,6 +2411,17 @@ data i json/, ALDRIG per receptfil.
     ALDRIG hela recept/-mappen från arbetsytan – endast namngivna
     ändrade filer.
 
+102. 🧩 VERIFIERING PER MASKINDEL — ✔️ KLAR (2026-10-31, användarens
+    regel "om recept har fler maskiner ska man verifiera var
+    maskindel"): i FLERMASKINSRECEPT räcker 🌟 INTE för grön bock på
+    maskinrutorna – varje del kräver egen ✅-markering med tid
+    (recept:testad, maskinens id). Overifierade delar får en diskret
+    "✅ Verifiera denna maskindel"-knapp i rutan (admin, lösenord via
+    markeraTestad-dialogen; programförslaget förifylls ur rubriken).
+    ETT-maskinsrecept: 🌟 ELLER ✅ räcker som förut (hela receptet =
+    den maskinen). Knappen är runtime (.mk-verifdel) – städas av
+    buildCleanHtml.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

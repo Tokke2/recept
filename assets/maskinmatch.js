@@ -258,9 +258,37 @@
                     (marke && modell && txt.indexOf(marke) !== -1 && txt.indexOf(modell.split(' ')[0]) !== -1);
         if (!traff) return;
         var tid = manTest[m.id] || '';
-        /* 🛡️ grindvakten: ingen verifierad-märkning utan verklig verifiering */
-        if (!receptVerifierad && !tid) return;
         var box = h3.closest('.machine-step');
+        /* 🛡️ grindvakten + 🧩 PER MASKINDEL (användarens regel
+           2026-10-31: "om recept har fler maskiner ska man verifiera
+           var maskindel"): har receptet FLERA egna maskiner räcker
+           INTE 🌟 för grön bock – varje maskindel kräver egen
+           ✅-markering med tid (recept:testad). Ett-maskinsrecept:
+           🌟 ELLER ✅ räcker (hela receptet = den maskinen). */
+        var delKlar = tid || (receptVerifierad && testade.length < 2);
+        if (!delKlar) {
+          /* overifierad DEL i flermaskinsrecept → diskret admin-knapp
+             så varje del kan verifieras på plats (lösenord krävs) */
+          if (box && testade.length >= 2 && !box.querySelector('.mk-verifdel')) {
+            var vb = document.createElement('button');
+            vb.className = 'mk-verifdel no-print';
+            vb.textContent = '✅ Verifiera denna maskindel';
+            vb.title = 'Admin: har du lagat/bakat momentet i denna maskin med lyckat resultat? Klicka och ange program & tid (lösenord krävs).';
+            vb.style.cssText = 'display:inline-block;margin-top:8px;background:transparent;color:#7f8c8d;' +
+              'border:1.5px dashed #b0bec5;border-radius:999px;padding:4px 12px;font-size:.74rem;' +
+              'font-weight:700;cursor:pointer;font-family:inherit;';
+            (function (mm2, h32) {
+              vb.onclick = function () {
+                var prog = h32.textContent.split('·').slice(1).join('·').replace(/\s+/g, ' ').trim();
+                markeraTestad({ id: mm2.id,
+                  namn: ((mm2.varumarke || '') + ' ' + (mm2.modellnamn || '')).trim() || mm2.namn || mm2.id,
+                  forslag: prog });
+              };
+            })(m, h3);
+            box.appendChild(vb);
+          }
+          return;
+        }
 
         /* ✅ bocken + klartexten (en gång per ruta) */
         if (box && !box.querySelector('.mk-verifmask')) {
