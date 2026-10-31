@@ -115,6 +115,47 @@
     return /torr/i.test(rowName(tr0)) ? 'torr' : 'farsk';
   }
 
+  /* 🏷️ KONVERTERING DIREKT PÅ JÄSTRADEN (användarens regel: "alltid
+     i alla recept där färsk jäst anges, även visa konvertering av
+     torr jäst"): mängdcellen får ett diskret tillägg –
+     "10 g (≈ 3,3 g torrjäst)". Åt båda håll (torr → färsk visas
+     också). Hoppar över rader som REDAN nämner andra formen
+     (t.ex. "7 g (eller 2 g torrjäst)" skriven av ägaren).
+     Runtime-span (.mk-jastalt): följer med på UTSKRIFT men städas
+     ALLTID ur sparade filer av buildCleanHtml. Mängd-parsers
+     (kalkyl/hydrering/skala) läser första talet – opåverkade. */
+  function radTips() {
+    jastRader().forEach(function (rad) {
+      var qc = qtyCell(rad.tr);
+      if (!qc || qc.querySelector('.mk-jastalt')) return;
+      var text = qc.textContent;
+      if (rad.form === 'farsk' && /torrjäst|torr jäst/i.test(text)) return;
+      if (rad.form === 'torr' && /färsk/i.test(text)) return;
+      var alt;
+      var origAttr = rad.tr.getAttribute('data-mk-jast-orig');
+      if (origAttr) {
+        /* raden är VÄXLAD → visa ägarens EXAKTA originalmängd
+           (annars blir 10 g → 3,3 g → "9,9 g" av avrundningen) */
+        var o = JSON.parse(origAttr);
+        var og = parseFloat((o.mangd.match(/([\d.,]+)\s*g/i) || [0, 0])[1].replace(',', '.'));
+        var oForm = /torr/i.test(o.namn) ? 'torr' : 'farsk';
+        if (oForm !== rad.form && og) {
+          alt = fmtG(og) + (oForm === 'torr' ? ' torrjäst' : ' färsk jäst');
+        }
+      }
+      if (!alt) {
+        alt = rad.form === 'farsk'
+          ? fmtG(rad.g / FAKTOR) + ' torrjäst'
+          : fmtG(rad.g * FAKTOR) + ' färsk jäst';
+      }
+      var s = document.createElement('span');
+      s.className = 'mk-jastalt';
+      s.textContent = ' (≈ ' + alt + ')';
+      s.style.cssText = 'color:#7f8c8d;font-weight:400;font-size:.88em;white-space:nowrap;';
+      qc.appendChild(s);
+    });
+  }
+
   function bygg() {
     if (document.getElementById('mk-jast')) return;
     var rader = jastRader();
@@ -130,6 +171,7 @@
     card.appendChild(box);
 
     function mala() {
+      radTips();   /* 🏷️ rad-konverteringen alltid på plats (användarens regel) */
       var r = jastRader();
       if (!r.length) { box.style.display = 'none'; return; }
       var form = aktuellForm(r);
