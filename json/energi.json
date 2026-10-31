@@ -268,6 +268,18 @@
     "min": 25,
     "moment": "Steg 5 (🤖 auto ur receptets meta)"
    }
+  ],
+  "pizzadeg-i-bakmaskin-4-250-g-utan-protein.html": [
+   {
+    "maskin": "klaif-pizzaugn",
+    "min": 12,
+    "moment": "Steg 10 (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 90,
+    "moment": "Alternativ (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }

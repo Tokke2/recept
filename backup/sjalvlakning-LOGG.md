@@ -254,3 +254,9 @@
 
 | sitemap.xml | 🗺️ omgenererad (41 adresser) |
 | json/recept-index.json | 📁 omgenererad (30 recept) |
+
+**2026-10-31**
+
+| pizzadeg-i-bakmaskin-4-250-g-utan-protein.html | ⚡ energidata skapad: klaif-pizzaugn 12 min, clatronic-bba3774 90 min |
+| sitemap.xml | 🗺️ omgenererad (42 adresser) |
+| json/recept-index.json | 📁 omgenererad (31 recept) |
