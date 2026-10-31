@@ -298,3 +298,8 @@
 | recept/deg/pizzadeg-med-50-g-rivet-apple.html | 🧹 kategori-meta "deg" ifylld ur mappen (steg9 receptstandard) |
 | sitemap.xml | 🗺️ omgenererad (44 adresser) |
 | json/recept-index.json | 📁 omgenererad (33 recept) |
+
+**2026-10-31**
+
+| sitemap.xml | 🗺️ omgenererad (43 adresser) |
+| json/recept-index.json | 📁 omgenererad (32 recept) |
