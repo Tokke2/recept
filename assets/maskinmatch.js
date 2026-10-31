@@ -233,10 +233,20 @@
     var testadeTyper = {};
     testade.forEach(function (m) { var t = typKey(m); if (t) testadeTyper[t] = m; });
 
-    /* 🧪 Badge på maskinstegen: receptets maskin har typ-syskon i
-       parken → "Testad med denna – du har även X" */
+    /* ✅ GRÖN BOCK PÅ MASKINRUTAN (användarens regel): VARJE maskin
+       som receptet självt anger får en tydlig grön bock VID namnet
+       + en klartextrad "✅ Verifierad maskin: ..." i rutan – recepten
+       publiceras aldrig otestade, så receptets egna maskiner ÄR
+       verifierade. Finns en ✅-markerad tid i recept:testad-metan
+       visas den också. Alternativa maskiner (förslagsrutan nedanför)
+       får avvakta med ⚠️ tills de ✅-markeras – varje maskin bedöms
+       för sig. Allt är runtime-element (.mk-verifmask) som städas
+       ur sparade filer av buildCleanHtml.
+       🧪-pillen ("Testad med denna") visas som förut när det finns
+       typ-syskon i parken. */
+    var manTest = lasTestade();   /* ur recept:testad-metan */
     document.querySelectorAll('.machine-step h3').forEach(function (h3) {
-      if (h3.querySelector('.mk-testad')) return;
+      if (h3.querySelector('.mk-testad') || h3.querySelector('.mk-verifmask')) return;
       var txt = h3.textContent.toLowerCase();
       testade.forEach(function (m) {
         var modell = String(m.modellnamn || '').toLowerCase();
@@ -244,8 +254,35 @@
         var traff = (modell && txt.indexOf(modell) !== -1) ||
                     (marke && modell && txt.indexOf(marke) !== -1 && txt.indexOf(modell.split(' ')[0]) !== -1);
         if (!traff) return;
+        var box = h3.closest('.machine-step');
+
+        /* ✅ bocken + klartexten (en gång per ruta) */
+        if (box && !box.querySelector('.mk-verifmask')) {
+          var bock = document.createElement('span');
+          bock.className = 'mk-verifmask no-print';
+          bock.title = 'Verifierad maskin – receptet är provlagat med denna';
+          bock.setAttribute('aria-label', bock.title);
+          bock.textContent = '✓';
+          bock.style.cssText = 'display:inline-flex;width:26px;height:26px;background:#27ae60;color:#fff;' +
+            'border-radius:50%;align-items:center;justify-content:center;font-size:.95rem;font-weight:900;' +
+            'margin-right:8px;vertical-align:middle;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);line-height:1;flex-shrink:0;';
+          h3.insertBefore(bock, h3.firstChild);
+
+          var namn = ((m.varumarke || '') + ' ' + (m.modellnamn || '')).trim() || m.namn || m.id;
+          if (window.__MK_MED_TYP) namn = window.__MK_MED_TYP(namn, m.typ);
+          var tid = manTest[m.id] || '';
+          var rad = document.createElement('div');
+          rad.className = 'mk-verifmask no-print';
+          rad.style.cssText = 'margin-top:8px;background:#eaf7ef;border:1.5px solid #27ae60;border-radius:9px;' +
+            'padding:6px 12px;font-size:.82rem;color:#1e8449;font-weight:700;';
+          rad.textContent = '✅ Verifierad maskin: ' + namn + ' – receptet är provlagat med denna' +
+            (tid ? ' (' + tid + ')' : '');
+          box.appendChild(rad);
+        }
+
+        /* 🧪-pillen endast när det FINNS syskon i parken */
         var t = typKey(m);
-        if (!t || (typAntal[t] || 0) < 2) return;   /* bara när det FINNS syskon */
+        if (!t || (typAntal[t] || 0) < 2) return;
         var syskon = machines.filter(function (x) {
           return typKey(x) === t && x.id !== m.id;
         }).map(function (x) {

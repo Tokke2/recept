@@ -2344,6 +2344,19 @@ data i json/, ALDRIG per receptfil.
     AUTOMATISKT av steg6/7 vid varje push (verifierat live med
     raderade pizzadeg-med-50g och nya utan-protein-receptet).
 
+98. ✅ GRÖN BOCK PÅ MASKINRUTAN — ✔️ KLAR (2026-10-31, användarens
+    order "tydlig grön bock vid/över maskinen + text om vilken
+    maskin som är verifierad"): maskinmatch.js sätter på VARJE
+    maskinruta vars maskin receptet självt anger: (1) grön ✓-bock
+    först i rubriken, (2) klartextrad i rutan "✅ Verifierad maskin:
+    Clatronic BBA 3774 (Bakmaskin) – receptet är provlagat med
+    denna" + den ✅-markerade tiden ur recept:testad-metan när den
+    finns. Alternativa maskiner avvaktar med ⚠️ i förslagsrutan
+    tills de ✅-markeras (varje maskin bedöms för sig – användarens
+    modell). 🧪-syskonpillen kvar som förut. Runtime-element
+    (.mk-verifmask) – städas ALLTID av buildCleanHtml, filerna
+    röres aldrig.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

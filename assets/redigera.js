@@ -1836,7 +1836,7 @@
       '#mk-lang, #mk-auto-qr, #mk-provenance, #mk-betyg, #mk-maskinmatch, #mk-kalkyl, #mk-donation, #mk-aff-disclosure, ' +
       '.share-btn, .print-btn, [id^="mk-pd"], [id^="mk-pw"], [id^="mk-swish"], ' +
       '.mk-saknas, .mk-prodlank, .mk-ingsub, #mk-byt-notis, .mk-ingsok, .mk-bytsmak, .mk-smakval, .mk-kallval, .mk-gruppval, #mk-match-bg, #mk-kedja, #mk-kommentarer, #mk-komm-pill, ' +
-      '#mk-verif-badge, #mk-verif-info, #mk-verif-bg, .mk-sidepil, #mk-sidepil-css, #cmResume, #mk-portion, .mk-testad, #mk-testad-bg, #mk-txt, #mk-hydr, #mk-paste-bg, .mk-masktyp, #mk-jast').forEach(function (el) { el.remove(); });
+      '#mk-verif-badge, #mk-verif-info, #mk-verif-bg, .mk-sidepil, #mk-sidepil-css, #cmResume, #mk-portion, .mk-testad, #mk-testad-bg, #mk-txt, #mk-hydr, #mk-paste-bg, .mk-masktyp, #mk-jast, .mk-verifmask').forEach(function (el) { el.remove(); });
     /* 🦠 jästomvandlarens radväxling är per besökare – sparade filen får
        ALLTID receptets originaljäst tillbaka (data-mk-jast-orig) */
     clone.querySelectorAll('tr[data-mk-jast-orig]').forEach(function (tr) {
