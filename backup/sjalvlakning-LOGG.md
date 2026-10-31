@@ -291,3 +291,10 @@
 | snabba-frallor-bakmaskin.html | ⚡ energidata skapad: clatronic-bba3774 90 min, clatronic-bba3774 35 min, cosori-twinfry-10l 120 min |
 | sitemap.xml | 🗺️ omgenererad (43 adresser) |
 | json/recept-index.json | 📁 omgenererad (32 recept) |
+
+**2026-10-31**
+
+| pizzadeg-med-50-g-rivet-apple.html | ⚡ energidata skapad: clatronic-bba3774 90 min |
+| recept/deg/pizzadeg-med-50-g-rivet-apple.html | 🧹 kategori-meta "deg" ifylld ur mappen (steg9 receptstandard) |
+| sitemap.xml | 🗺️ omgenererad (44 adresser) |
+| json/recept-index.json | 📁 omgenererad (33 recept) |
