@@ -280,6 +280,23 @@
     "min": 90,
     "moment": "Alternativ (🤖 auto ur receptets meta)"
    }
+  ],
+  "snabba-frallor-bakmaskin.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 90,
+    "moment": "Tillagning (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 35,
+    "moment": "Tillagning (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "cosori-twinfry-10l",
+    "min": 120,
+    "moment": "Tillagning (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }

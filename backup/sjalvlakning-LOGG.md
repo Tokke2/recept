@@ -285,3 +285,9 @@
 | recept/varmratt/helstekt-flaskytterfil-i-airfryer-800-g-kallskuren-med-kottslicer.html | 🧹 6 näringsrader bort (live-kalkylen räknar) · kategori-meta "varmratt" ifylld ur mappen (steg9 receptstandard) |
 | recept/varmratt/kokt-ris-i-riskokare-500-g-ris-1000-g-vatten.html | 🧹 8 näringsrader bort (live-kalkylen räknar) (steg9 receptstandard) |
 | recept/varmratt/pulled-kycklinggryta-rotfrukter-vita-bonor.html | 🧹 kategori-meta "varmratt" ifylld ur mappen (steg9 receptstandard) |
+
+**2026-10-31**
+
+| snabba-frallor-bakmaskin.html | ⚡ energidata skapad: clatronic-bba3774 90 min, clatronic-bba3774 35 min, cosori-twinfry-10l 120 min |
+| sitemap.xml | 🗺️ omgenererad (43 adresser) |
+| json/recept-index.json | 📁 omgenererad (32 recept) |
