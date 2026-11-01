@@ -138,7 +138,7 @@
       var l = document.createElement('link');
       l.rel = 'icon';
       l.type = 'image/svg+xml';
-      l.href = root + 'images/logo-mark.svg';
+      l.href = root + 'images/logo.png';
       document.head.appendChild(l);
       /* 🍎 Safari stödjer INTE SVG-favicon → PNG-reserv */
       var p = document.createElement('link');

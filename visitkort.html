@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<!-- PLATS: /visitkort.html  (repo-roten – dubbelsidigt visitkort 85×55 mm, print-exakt) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💳 Visitkort – Mitt Maskinkök (dubbelsidigt, 85×55 mm)</title>
+<style>
+  /* ============================================================
+     DUBBELSIDIGT VISITKORT – standardmått 85 × 55 mm
+     · Skärm: båda sidorna förhandsvisas sida vid sida
+     · Utskrift: EN sida per ark i exakt storlek (@page 85×55,
+       margin 0) → skriv ut dubbelsidigt ("vänd längs kortsidan")
+       eller sida för sida på kortpapper
+     ============================================================ */
+  :root { --rod:#c0392b; --orange:#e67e22; --gron:#27ae60; --mork:#2c3e50; --kram:#f6f3ee; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:#e8e2d8; padding:24px;
+         display:flex; flex-wrap:wrap; gap:26px; justify-content:center; align-items:flex-start; }
+  .info { width:100%; text-align:center; color:#7f8c8d; font-size:.9rem; margin-bottom:4px; }
+  .info b { color:var(--mork); }
+  .kort {
+    width:85mm; height:55mm; border-radius:3.5mm; overflow:hidden; position:relative;
+    box-shadow:0 10px 30px rgba(0,0,0,.25); background:#fff;
+  }
+
+  /* ---------- FRAMSIDA ---------- */
+  .fram { display:flex; flex-direction:column; align-items:center; justify-content:center;
+          text-align:center; background:linear-gradient(135deg,#fffdf9 0%,var(--kram) 100%); }
+  .fram::before { content:''; position:absolute; inset:0 0 auto 0; height:7mm;
+                  background:linear-gradient(90deg,var(--rod),var(--orange)); }
+  .fram::after  { content:''; position:absolute; inset:auto 0 0 0; height:3mm; background:var(--gron); }
+  .fram img { width:21mm; height:21mm; object-fit:contain; margin-bottom:2mm;
+              filter:drop-shadow(0 1.5mm 2mm rgba(0,0,0,.18)); }
+  .fram h1 { font-size:6.4mm; color:var(--mork); letter-spacing:.2mm; }
+  .fram h1 span { background:linear-gradient(90deg,var(--rod),var(--orange));
+                  -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .fram .tag { font-size:3.1mm; color:#7f8c8d; margin-top:1mm; font-weight:600; }
+  .fram .url { font-size:3mm; color:var(--gron); font-weight:800; margin-top:2.2mm; letter-spacing:.1mm; }
+
+  /* ---------- BAKSIDA ---------- */
+  .bak { background:linear-gradient(135deg,var(--mork) 0%,#1a252f 100%); color:#fff;
+         display:flex; align-items:center; gap:4mm; padding:5mm 6mm; }
+  .bak .qr { width:23mm; height:23mm; background:#fff; border-radius:2mm; padding:1.2mm; flex-shrink:0; }
+  .bak .qr img { width:100%; height:100%; display:block; }
+  .bak .txt { flex:1; min-width:0; }
+  .bak .txt h2 { font-size:4.6mm; margin-bottom:1.6mm; }
+  .bak .txt h2 em { font-style:normal; color:#ffd39b; }
+  .bak ul { list-style:none; font-size:2.9mm; line-height:1.85; color:#dfe6ec; }
+  .bak ul b { color:#fff; }
+  .bak .url { margin-top:1.8mm; font-size:3mm; font-weight:800; color:var(--gron);
+              background:rgba(39,174,96,.14); border:0.35mm solid var(--gron);
+              border-radius:99mm; padding:1mm 2.6mm; display:inline-block; }
+  .bak::after { content:'🍞 🤖 🍳'; position:absolute; right:3mm; bottom:1.6mm;
+                font-size:3.4mm; opacity:.4; letter-spacing:1.4mm; }
+
+  /* ---------- UTSKRIFT: exakta kort, en sida per ark ---------- */
+  @media print {
+    @page { size:85mm 55mm; margin:0; }
+    body { background:none; padding:0; display:block; }
+    .info { display:none; }
+    .kort { box-shadow:none; border-radius:0; page-break-after:always; }
+    .kort:last-child { page-break-after:auto; }
+  }
+</style>
+</head>
+<body>
+
+<p class="info"><b>🖨️ Så skriver du ut:</b> Ctrl+P → pappersstorlek sköts av sidan (85×55 mm, en sida per kort).
+Dubbelsidig skrivare: välj "vänd längs kortsidan". Annars: skriv ut sidorna var för sig på kortpapper.</p>
+
+<!-- ============ FRAMSIDA ============ -->
+<div class="kort fram">
+  <img src="images/logo.png" alt="Mitt Maskinkök – logotyp">
+  <h1>Mitt <span>Maskinkök</span></h1>
+  <div class="tag">Recept för maskinerna på DIN köksbänk</div>
+  <div class="url">tokke2.github.io/recept</div>
+</div>
+
+<!-- ============ BAKSIDA ============ -->
+<div class="kort bak">
+  <div class="qr"><img
+    src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Ftokke2.github.io%2Frecept%2F"
+    alt="QR-kod till tokke2.github.io/recept"></div>
+  <div class="txt">
+    <h2>Skanna &amp; <em>börja laga</em></h2>
+    <ul>
+      <li>✅ <b>Verifierade program</b> &amp; tider per maskin</li>
+      <li>🧮 <b>Livekalkyl</b> – pris &amp; näring på allt</li>
+      <li>🧑‍🍳 <b>Kockläge</b> med timers &amp; köksradio</li>
+    </ul>
+    <span class="url">tokke2.github.io/recept</span>
+  </div>
+</div>
+
+</body>
+</html>

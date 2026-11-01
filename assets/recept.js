@@ -557,12 +557,6 @@
     try { r = JSON.parse(localStorage.getItem('recept-' + location.pathname.split('/').pop()) || '{}'); } catch (e) {}
     var k = {};
     try { k = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
-    var meta = document.querySelector('meta[name="recept:maskiner"]');
-    var machines = meta ? meta.content.split('|').map(function (s) {
-      var p = s.split('·')[0]; return p.replace(/^[^:]*:/, '').trim();
-    }).filter(Boolean) : [];
-    var uniq = machines.filter(function (v, i) { return machines.indexOf(v) === i; });
-
     var parts = [];
     /* Globalt betyg (alla besökare, via betyg.js) före lokalt */
     var g = window.__MK_PROV_GLOBAL;
@@ -574,7 +568,11 @@
     }
     parts.push(k.cooked ? 'Tillagad <b>' + k.cooked + '</b> ' + (k.cooked === 1 ? 'gång' : 'ggr') : 'Ännu inte provlagad');
     if (k.lastCooked) parts.push('Senast: ' + k.lastCooked);
-    if (uniq.length) parts.push('Verifierad med <b>' + uniq.join('</b>, <b>') + '</b>');
+    /* 🛡️ "Verifierad med <maskiner>" BORTTAGEN (användarens regel
+       2026-11-01: det var ett osant påstående – metan listar bara
+       vilka maskiner som ANVÄNDS). Maskinerna visas istället som
+       🔧-thumbs med länkar ÖVER receptet (maskinmatch.js) och
+       verifieringsstatus ägs av bock-/⏳-systemet (punkt 100–108). */
 
     el.innerHTML = '<span style="font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#a5967e;display:block;margin-bottom:4px;">Ur Maskinkökets samling</span>' +
       parts.join('<span style="opacity:.35;margin:0 8px;">·</span>');

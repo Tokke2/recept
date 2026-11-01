@@ -249,6 +249,46 @@
     var manTest = lasTestade();   /* ur recept:testad-metan */
     var receptVerifierad = !!document.querySelector('meta[name="recept:verifierad"]');
 
+    /* 🔧 MASKIN-THUMBS ÖVER RECEPTET (användarens regel 2026-11-01:
+       "visa thumb med länkar ovan receptet, ange att det är de
+       maskiner som ANVÄNDS – overifierad tills man säger till").
+       Bild + namn (med typ) + länk till maskindatabasen per maskin.
+       Status per maskin: ✅ endast när delen är admin-verifierad
+       (recept:testad, eller 🌟 på ett-maskinsrecept) – annars ⏳.
+       INGA "Verifierad med"-påståenden. Runtime (#mk-maskintop). */
+    (function maskinTop() {
+      if (!testade.length || document.getElementById('mk-maskintop')) return;
+      var header = document.querySelector('body > header') || document.querySelector('header');
+      if (!header) return;
+      var rot = window.__MK_ROT || '../';
+      var rad = document.createElement('div');
+      rad.id = 'mk-maskintop';
+      rad.className = 'no-print';
+      rad.style.cssText = 'background:#fff;border:1.5px solid #eee2d2;border-radius:14px;' +
+        'padding:10px 14px;margin:14px 0;box-shadow:0 2px 8px rgba(0,0,0,.06);';
+      var chips = testade.map(function (m) {
+        var n = ((m.varumarke || '') + ' ' + (m.modellnamn || '')).trim() || m.namn || m.id;
+        if (window.__MK_MED_TYP) n = window.__MK_MED_TYP(n, m.typ);
+        var klar = manTest[m.id] || (receptVerifierad && testade.length < 2);
+        var status = klar
+          ? '<span title="Admin har verifierat receptet i denna maskin" style="color:#27ae60;font-weight:900;">✅</span>'
+          : '<span title="Ej verifierad av admin ännu" style="opacity:.75;">⏳</span>';
+        var bild = m.bild
+          ? '<img src="' + rot + m.bild + '" alt="" loading="lazy" onerror="this.remove()" ' +
+            'style="width:34px;height:34px;object-fit:contain;border-radius:8px;background:#f6f3ee;flex-shrink:0;">'
+          : '';
+        return '<a href="' + rot + 'maskindatabas.html#' + encodeURIComponent(m.id) + '" ' +
+          'style="display:inline-flex;align-items:center;gap:8px;background:#f6f3ee;border:1px solid #eee2d2;' +
+          'border-radius:999px;padding:5px 14px 5px 6px;text-decoration:none;color:#2c3e50;' +
+          'font-size:.84rem;font-weight:700;margin:3px 6px 3px 0;">' +
+          bild + '<span>' + n + '</span>' + status + '</a>';
+      }).join('');
+      rad.innerHTML = '<span style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;' +
+        'color:#a5967e;display:block;margin-bottom:6px;">🔧 Maskiner som används i receptet ' +
+        '<span style="text-transform:none;letter-spacing:0;">(⏳ = ej verifierad av admin ännu)</span></span>' + chips;
+      header.parentNode.insertBefore(rad, header.nextSibling);
+    })();
+
     /* 🔀 ALTERNATIVGRUPPER (användarens regel 2026-11-01: "maskiner för
        samma sak, t.ex. gräddning i olika maskiner → ska tydligt stå
        att det funkar i dessa, men ej vara verifierat innan admin

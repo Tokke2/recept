@@ -2486,6 +2486,22 @@ data i json/, ALDRIG per receptfil.
     (redan sektionerad) orörd. KOMMANDE recept: nytt-recept bygger
     redan formatet; 📋-inklistrade klungor fixas av roboten vid push.
 
+110. 🎨 NY LOGOTYP + 💳 VISITKORT + 🔧 MASKIN-THUMBS — ✔️ KLAR
+    (2026-11-01, användarens order): A) Ny logotyp (användaren valde
+    mellan 2 AI-kandidater) → images/logo.png (512px, optimerad till
+    ~214 kB); inbytt på stod.html, index.html (nav+hero+footer) och
+    site.js-faviconen. B) visitkort.html: dubbelsidigt 85×55 mm –
+    framsida logo+namn+tagline, baksida QR till sajten + tre USP:ar;
+    print-exakt (@page 85mm 55mm, en sida/ark, dubbelsidig-
+    instruktion). C) BUGGFIX "Verifierad med <maskiner>" i kokboks-
+    remsan (recept.js) var ett OSANT påstående (listade bara metans
+    maskiner) → BORTTAGEN. Istället: 🔧 MASKIN-THUMBS ÖVER RECEPTET
+    (#mk-maskintop i maskinmatch.js): bild + namn (med typ) + länk
+    till maskindatabasen per använd maskin, rubrik "Maskiner som
+    används i receptet", status ✅ ENDAST när delen är admin-
+    verifierad, annars ⏳ (= "overifierad tills man säger till").
+    Runtime – städas av buildCleanHtml.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
