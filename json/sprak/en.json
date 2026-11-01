@@ -2981,7 +2981,25 @@
   "⚙️ Steg 13: Ninja AF500EUCP (koppar/svart) (Airfryer) ·": "⚙️ Step 13: Ninja AF500EUCP (Copper/Black) (Airfryer) ·",
   "⚙️ Steg 1: Ninja AF500EUCP (koppar/svart) (Airfryer) ·": "⚙️ Step 1: Ninja AF500EUCP (Copper/Black) (Airfryer) ·",
   "🧇 Syltfyllda våfflor i airfryer": "🧇 Jam-filled waffles in air fryer",
-  "🧇 Syltfyllda våfflor i airfryer – Ninja AF500EUCP (koppar/svart) & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🧇 Jam filled waffles in airfryer – Ninja AF500EUCP (copper/black) & COSORI CAF-TF101S (Dual Blaze TwinFry) | My Machine Kitchen"
+  "🧇 Syltfyllda våfflor i airfryer – Ninja AF500EUCP (koppar/svart) & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🧇 Jam filled waffles in airfryer – Ninja AF500EUCP (copper/black) & COSORI CAF-TF101S (Dual Blaze TwinFry) | My Machine Kitchen",
+  "10 min": "10 minutes",
+  "3 min": "3 minutes",
+  "Laddar…": "Loading…",
+  "Visa bara recept med högst 150 kcal per 100 g": "Only show recipes with a maximum of 150 kcal per 100 g",
+  "Visa bara recept med minst 8 g protein per 100 g (beräknat ur ingrediensdatabasen)": "Only show recipes with at least 8 g of protein per 100 g (calculated from the ingredient database)",
+  "minuter": "minutes",
+  "surfplattan på bänken – klocka, timers, veckans recept": "the tablet on the bench – clock, timers, the week's recipe",
+  "⛶ Helskärm": "⛶ Full screen",
+  "➕ Egen…": "➕ Own…",
+  "🍃 Lägst kcal/100 g": "🍃 Lowest kcal/100 g",
+  "🍃 Lätt": "🍃 Easy",
+  "🏅 Veckans recept": "🏅 This week's recipe",
+  "💡 Skärmen hålls tänd medan sidan är öppen": "💡 The screen is kept on while the page is open",
+  "💪 Mest protein/100 g": "💪 Most protein/100 g",
+  "💪 Proteinrikt": "💪 Protein-rich",
+  "📖 Recepten": "📖 The recipes",
+  "🖥️ Köksskärm – Mitt Maskinkök": "🖥️ Kitchen screen - My Machine Kitchen",
+  "🖥️ Köksskärmen": "🖥️ The kitchen screen"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2991,6 +3009,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2980,
+ "_auto_genererade": 2998,
  "_senast_robot": "2026-11-01"
 }

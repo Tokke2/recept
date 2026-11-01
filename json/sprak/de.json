@@ -3093,13 +3093,33 @@
   "⚙️ Steg 13: Ninja AF500EUCP (koppar/svart) (Airfryer) ·": "⚙️ Schritt 13: Ninja AF500EUCP (Kupfer/Schwarz) (Airfryer) ·",
   "⚙️ Steg 1: Ninja AF500EUCP (koppar/svart) (Airfryer) ·": "⚙️ Schritt 1: Ninja AF500EUCP (Kupfer/Schwarz) (Airfryer) ·",
   "🧇 Syltfyllda våfflor i airfryer": "🧇 Mit Marmelade gefüllte Waffeln in der Heißluftfritteuse",
-  "🧇 Syltfyllda våfflor i airfryer – Ninja AF500EUCP (koppar/svart) & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🧇 Mit Marmelade gefüllte Waffeln im Airfryer – Ninja AF500EUCP (Kupfer/Schwarz) & COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche"
+  "🧇 Syltfyllda våfflor i airfryer – Ninja AF500EUCP (koppar/svart) & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🧇 Mit Marmelade gefüllte Waffeln im Airfryer – Ninja AF500EUCP (Kupfer/Schwarz) & COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche",
+  "1 min": "1 Minute",
+  "10 min": "10 Minuten",
+  "3 min": "3 Minuten",
+  "Laddar…": "Laden…",
+  "Visa bara recept med högst 150 kcal per 100 g": "Nur Rezepte mit maximal 150 kcal pro 100 g anzeigen",
+  "Visa bara recept med minst 8 g protein per 100 g (beräknat ur ingrediensdatabasen)": "Nur Rezepte mit mindestens 8 g Protein pro 100 g anzeigen (berechnet aus der Zutatendatenbank)",
+  "minuter": "Minuten",
+  "surfplattan på bänken – klocka, timers, veckans recept": "das Tablet auf der Bank – Uhr, Timer, das Wochenrezept",
+  "⏲️ Timers": "⏲️ Timer",
+  "⛶ Helskärm": "⛶ Vollbild",
+  "➕ Egen…": "➕ Eigene…",
+  "🍃 Lägst kcal/100 g": "🍃 Niedrigste kcal/100 g",
+  "🍃 Lätt": "🍃 Einfach",
+  "🏅 Veckans recept": "🏅 Das Rezept dieser Woche",
+  "💡 Skärmen hålls tänd medan sidan är öppen": "💡 Der Bildschirm bleibt eingeschaltet, während die Seite geöffnet ist",
+  "💪 Mest protein/100 g": "💪 Das meiste Protein/100 g",
+  "💪 Proteinrikt": "💪 Proteinreich",
+  "📖 Recepten": "📖 Die Rezepte",
+  "🖥️ Köksskärm – Mitt Maskinkök": "🖥️ Küchenbildschirm – My Machine Kitchen",
+  "🖥️ Köksskärmen": "🖥️ Der Küchenbildschirm"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3092,
+ "_auto_genererade": 3112,
  "_senast_robot": "2026-11-01"
 }
