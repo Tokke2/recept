@@ -2942,7 +2942,16 @@
   "💳 Visitkort – Mitt Maskinkök (dubbelsidigt, 85×55 mm)": "💳 Business card - My Machine Kitchen (double-sided, 85×55 mm)",
   "🖨️ Så skriver du ut:": "🖨️ This is how you print:",
   "4 hundportioner": "4 dog portions",
-  "Per styck (1 av": "Per piece (1 of"
+  "Per styck (1 av": "Per piece (1 of",
+  "(öppna i ny flik för utskrift i exakt 148×210 mm):": "(open in new tab for printing in exactly 148×210 mm):",
+  "A5-flyer – Mitt Maskinkök": "A5 flyer - My Machine Kitchen",
+  "⬇️ Ladda ner / skriv ut direkt (SVG – skalbart för tryck):": "⬇️ Download / print directly (SVG – scalable for print):",
+  "👁️ Öppna flyern → Ctrl+P": "👁️ Open the flyer → Ctrl+P",
+  "💳 Baksida (SVG)": "💳 Back (SVG)",
+  "💳 Framsida (SVG)": "💳 Front page (SVG)",
+  "📄 A5-flyer (SVG)": "📄 A5 flyer (SVG)",
+  "📄 A5-flyern": "📄 The A5 flyer",
+  "🖨️ Så skriver du ut korten härifrån:": "🖨️ This is how you print the cards from here:"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2952,6 +2961,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2941,
+ "_auto_genererade": 2950,
  "_senast_robot": "2026-11-01"
 }
