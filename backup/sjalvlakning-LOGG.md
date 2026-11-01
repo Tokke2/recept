@@ -317,3 +317,9 @@
 | recept/efterratt/squash-chips-i-torkautomat.html | 📍 2 maskinrutor till sina steg, 0 kvar överst (steg10) |
 | recept/snacks/grona-tomat-chips.html | 📍 2 maskinrutor till sina steg, 0 kvar överst (steg10) |
 | recept/varmratt/pulled-kycklinggryta-rotfrukter-vita-bonor.html | 📍 2 maskinrutor till sina steg, 0 kvar överst (steg10) |
+
+**2026-11-01**
+
+| pajdeg-i-bakmaskin.html | ⚡ energidata skapad: clatronic-bba3774 6 min, cosori-twinfry-10l 30 min |
+| sitemap.xml | 🗺️ omgenererad (45 adresser) |
+| json/recept-index.json | 📁 omgenererad (34 recept) |

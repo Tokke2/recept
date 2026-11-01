@@ -326,6 +326,18 @@
     "min": 18,
     "moment": "Steg 11 (🤖 auto ur receptets meta)"
    }
+  ],
+  "pajdeg-i-bakmaskin.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 6,
+    "moment": "Steg 1 (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "cosori-twinfry-10l",
+    "min": 30,
+    "moment": "Steg 5 (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }
