@@ -264,7 +264,7 @@
   <b>vilken maskin</b>, <b>vilket program</b> och <b>vilken tid</b> som gäller – med kostnad
   per portion, energiförbrukning och steg-för-steg-läge vid spisen.</p>
   <div class="stats" id="heroStats">
-    <span class="stat">📖 Recept med verifierade program</span>
+    <span class="stat">📖 Recept med exakta maskinprogram</span>
     <span class="stat">🔧 <b>11</b> maskiner dokumenterade</span>
     <span class="stat">⚡ Kostnad &amp; energi per rätt</span>
   </div>
@@ -467,7 +467,7 @@
 
   const nProg = machines.reduce((s, m) => s + ((m.program || []).length), 0);
   document.getElementById('heroStats').innerHTML =
-    (nR ? `<span class="stat">📖 <b>${nR}</b> recept med verifierade program</span>` : `<span class="stat">📖 Recept med verifierade program</span>`) +
+    (nR ? `<span class="stat">📖 <b>${nR}</b> recept med exakta maskinprogram</span>` : `<span class="stat">📖 Recept med exakta maskinprogram</span>`) +
     `<span class="stat">🔧 <b>${machines.length || 11}</b> maskiner</span>` +
     (nProg ? `<span class="stat">🎛️ <b>${nProg}</b> program</span>` : '') +
     `<span class="stat">⚡ Kostnad &amp; energi per rätt</span>`;

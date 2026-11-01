@@ -2664,6 +2664,34 @@ data i json/, ALDRIG per receptfil.
     kortet+modalen+JS borttagna ur recept.html (endast ETT kort
     kvar: Nytt recept).
 
+124. 🏷️ KATEGORICHIPS PÅ STARTSIDAN (förslag 775, användarens
+    beställning): klickbara chips (Bröd/Glass/Snacks...) på
+    startsidan som hoppar direkt till kategorin i receptsamlingen.
+
+125. 🔡 TEXTSTORLEKSVÄXLARE PÅ RECEPTSIDOR (förslag 782, användarens
+    beställning): A−/A⁺-knappar på själva receptsidan (kockläget
+    har redan egna) – köksavstånd & äldre ögon; sparas per besökare.
+
+126. 🧲 "TILL TOPPEN"-KNAPP (förslag 790, användarens beställning):
+    flytande ⬆️-knapp på långa sidor (receptsamlingen, maskin-
+    databasen, ingredienser) – visas först efter en skärmlängds
+    skroll, aldrig i vägen för receptens verktygsrad.
+
+127. 🏠 LOGGA+HEMKNAPP ÖVERALLT + 📖 ÄRLIG STATISTIKRAD +
+    🧑‍🍳 BÄTTRE KOCKLÄGE — ✔️ KLAR (2026-11-01, användarens order):
+    A) site.js-navets märke bytt från gamla logo-mark.svg till NYA
+    logo-nav.png → nya loggan + hemlänk på ALLA sidor som laddar
+    site.js (alla utom 404/visitkort/generator – 404 och visitkort
+    har egna 🏠-knappar). B) Startsidans statistikrad sa "recept
+    med verifierade program" trots 0 verifieringar → nu ärligt
+    "recept med exakta maskinprogram" (båda ställena: statisk +
+    livestatistiken). C) Kockläget: 🔘 klickbara stegprickar
+    (grön=klarad/vit=nuvarande/grå=kvar, 3–30 steg) för direkthopp,
+    👀 "Nästa:"-förhandstitt ovanför knapparna (HTML-escapad),
+    📳 vibration vid timerklart (som köksskärmen). Befintligt
+    (wake lock, svep, piltangenter, A−/A⁺, timers+beep, uppläsning,
+    röststyrning, radio, 🧾-panel, position sparas) orört.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

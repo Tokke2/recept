@@ -262,6 +262,8 @@
           if (t.left <= 0) {
             t.done = true;
             beep();
+            /* 📳 vibration vid timerklart (bättre kockläge – som köksskärmen) */
+            try { if (navigator.vibrate) navigator.vibrate([400, 150, 400]); } catch (e2) {}
             if (overlay) {
               overlay.style.background = '#c0392b';
               setTimeout(function () { if (overlay) overlay.style.background = '#2c3e50'; }, 400);
@@ -455,8 +457,17 @@
       '<div style="background:rgba(255,255,255,.15);border-radius:99px;height:8px;margin-bottom:10px;">' +
         '<div style="background:#27ae60;height:8px;border-radius:99px;width:' + pct + '%;transition:width .3s;"></div>' +
       '</div>' +
-      '<div style="display:flex;justify-content:space-between;opacity:.75;font-size:.95rem;margin-bottom:6px;">' +
-        '<span>Steg ' + (idx + 1) + ' av ' + steps.length + '</span>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;font-size:.95rem;margin-bottom:6px;gap:8px;">' +
+        '<span style="opacity:.75;flex-shrink:0;">Steg ' + (idx + 1) + ' av ' + steps.length + '</span>' +
+        /* 🔘 Klickbara stegprickar (bättre kockläge): hoppa direkt till
+           valfritt steg – grön=klarad, vit=nuvarande, grå=kvar */
+        (steps.length >= 3 && steps.length <= 30 ?
+          '<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">' +
+          steps.map(function (_, i) {
+            return '<button class="cmDot" data-i="' + i + '" title="Hoppa till steg ' + (i + 1) + '" ' +
+              'style="width:16px;height:16px;border-radius:50%;border:none;padding:0;cursor:pointer;background:' +
+              (i === idx ? '#fff' : (i < idx ? '#27ae60' : 'rgba(255,255,255,.25)')) + ';"></button>';
+          }).join('') + '</div>' : '') +
       '</div>' +
       /* ⏲️ Multitimer-rad: överlever stegbyten (fylls av paintTimers) */
       '<div id="cmTimers" style="display:none;flex-wrap:wrap;gap:7px;margin-bottom:8px;"></div>' +
@@ -490,6 +501,10 @@
         }).join('') +
         '<button id="cmSpeak" style="background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:1rem;cursor:pointer;">🔊 Läs upp</button>' +
       '</div>' +
+      /* 👀 Förhandstitt på nästa steg (bättre kockläge) */
+      (idx < steps.length - 1 && steps[idx + 1] ?
+        '<div style="opacity:.55;font-size:clamp(.8rem,2.2vw,.95rem);margin:0 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">👀 Nästa: ' +
+        String(steps[idx + 1].plain || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').slice(0, 110) + '</div>' : '') +
       /* Navigering – 📱 knapphöjd/textstorlek skalar med skärmen */
       '<div style="display:flex;gap:clamp(8px,2vw,12px);">' +
         '<button id="cmPrev" style="flex:1;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:14px;padding:clamp(14px,3.5vw,20px);font-size:clamp(1.05rem,3vw,1.25rem);font-weight:700;cursor:pointer;min-height:56px;' + (idx === 0 ? 'opacity:.3;' : '') + '">←</button>' +
@@ -509,6 +524,10 @@
     if (radioBtn && window.__MK_RADIO) radioBtn.onclick = function () { window.__MK_RADIO.vaxla(overlay); };
     if (window.__MK_RADIO) window.__MK_RADIO.mala(overlay);
     overlay.querySelector('#cmPrev').onclick = prev;
+    /* 🔘 stegprickarna – hoppa direkt */
+    overlay.querySelectorAll('.cmDot').forEach(function (b) {
+      b.onclick = function () { idx = parseInt(b.getAttribute('data-i'), 10); save(); render(); };
+    });
     overlay.querySelector('#cmNext').onclick = (idx === steps.length - 1)
       ? function () {
           saved.idx = 0;

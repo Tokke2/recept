@@ -191,7 +191,7 @@
     nav.setAttribute('aria-label', 'Huvudmeny');
     nav.innerHTML =
       '<a class="brand" href="' + root + 'index.html" aria-label="Startsidan">' +
-        '<img src="' + root + 'images/logo-mark.svg" alt="" width="26" height="26" ' +
+        '<img src="' + root + 'images/logo-nav.png" alt="" width="26" height="26" ' +
         'style="display:block;" onerror="this.outerHTML=\'🍳\'"> Mitt Maskinkök</a>' +
       pages.map(function (p) {
         var on = here === p.file || (isRecipePage && p.file === 'recept.html') ||
