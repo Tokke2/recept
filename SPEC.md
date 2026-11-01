@@ -2436,6 +2436,27 @@ data i json/, ALDRIG per receptfil.
     och 🧾-panelen läser tabellen FÄRSKT vid öppning så radtipsen
     följer med.
 
+104. 🎯 VÄLJ DINA MASKINER (förslag 711, användarens beställning):
+    onboarding första besöket – besökaren bockar i sina maskiner →
+    HELA sajten filtreras till deras kök (receptsamling, förslag),
+    localStorage utan konto, synlig "visa allt"-växel. Killer-
+    funktionen för återbesök.
+
+105. 🌍 ENGELSK STATISK SPEGEL (förslag 712, användarens beställning):
+    språkroboten genererar riktiga statiska /en/-sidor (inte bara
+    runtime-översättning) + hreflang-alternates i sitemapen →
+    utländska maskinägare googlar in på sina modellnamn.
+
+106. ⭐ STJÄRNOR I GOOGLE-TRÄFFEN (förslag 713) — ✔️ VAR REDAN BYGGD
+    (upptäckt 2026-10-31 vid granskning): seo.js injicerar
+    AggregateRating i Recipe-schemat ur ÄKTA Abacus-betyg, endast
+    när count > 0 (ärlighetsprincipen). Inget att bygga.
+
+107. 🧲 QR-KLISTERMÄRKEN FÖR MASKINERNA (förslag 717, användarens
+    beställning): utskrivbart ark (print-optimerat) med en etikett
+    per maskin – namn + typ + QR till maskinens recept på sajten.
+    Klistras på maskinerna, delbart till vänner med samma modell.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
