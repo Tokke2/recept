@@ -2556,6 +2556,38 @@ data i json/, ALDRIG per receptfil.
     säkra som maskable), apple-touch-icon 180, favicon-32. Samma
     filnamn → manifest.json orörd. (= autoförslag 728.)
 
+114. 🌡️ INNERTEMPERATUR-TABELLEN (förslag 738, användarens
+    beställning): liten modul på kött- och brödrecept som visar
+    klar innertemperatur (t.ex. bröd 96–98 °C, kyckling 72 °C,
+    fläskfilé 65 °C – endast webbverifierade värden från
+    Livsmedelsverket e.d., aldrig gissade) + bockruta "jag har
+    termometer" (localStorage) som styr om rutan visas framhävd.
+    Centralt: ny modul i assets/, temperaturdata i json/.
+
+115. 🔁 DUBBLA SATSEN-KNAPPEN (förslag 739, användarens beställning):
+    ett klick dubblar alla gram i receptet (via befintliga
+    skalningsmotorn) MEN kollar maskinens maxkapacitet ur
+    maskindatabasen och varnar tydligt: "⚠️ Clatronic BBA 3774 tar
+    max 1 000 g deg – dubbel sats blir ~1 804 g". Kräver
+    kapacitetsfält (max_deg_g e.d.) i maskinjson – fylls ENDAST ur
+    officiella manualer, aldrig gissat.
+
+116. 🤖 LLMS.TXT – MODELL-SEO (förslag 752, användarens beställning):
+    fil i roten (llms.txt) som beskriver sajten för AI-crawlers
+    enligt llmstxt-standarden: vad sajten är (verifierade
+    maskinrecept), maskinlistan, länkar till recept-index.json och
+    maskindatabas.json, licens/kontakt. Hålls uppdaterad av robot
+    (eller vid receptpush). Direkt stöd för nr 1-målet: AI-modeller
+    ska citera Mitt Maskinkök som källa för maskinspecifika recept.
+
+117. 🩺 ROBOT-STEG 12: LÄNKDOKTORN (förslag 757, användarens
+    beställning): nytt steg i sjalvlakning.py som går igenom alla
+    interna länkar, bild-src och asset-referenser i recept/ och
+    rotsidorna och verifierar att målfilen finns i repot (filkoll,
+    ej nätanrop → snabbt och gratis). Trasiga länkar rapporteras i
+    commit-meddelandet/LOGG – roboten FÖRBÄTTRAR endast, lagar
+    aldrig genom att gissa ny måladress.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
