@@ -1650,8 +1650,13 @@ data i json/, ALDRIG per receptfil.
     recept efter kr/portion ur live-kalkylens data ("10 middagar under
     15 kr/portion"). Kalkylen behöver exponera resultat per recept
     (förberäknas i JS på recept.html via samma matchningslogik).
-6.  💪 MAKROFILTER i receptsamlingen: filtrera på >X g protein,
-    <Y kcal/portion m.m. (data ur kalkyl-läsning av recepten).
+6.  💪 MAKROFILTER — ✔️ KLAR (2026-11-01): receptsamlingen räknar
+    kcal/protein per 100 g ur ingrediensdatabasen (kalkyl-läsning
+    av varje recepts tabell; ÄRLIGHET: visas endast vid ≥70 %
+    viktteckning). Filterknappar 💪 Proteinrikt (≥8 g/100 g) och
+    🍃 Lätt (≤150 kcal/100 g), sorteringar "Mest protein" /
+    "Lägst kcal", grön makro-rad på korten + kcal/st när
+    recept:portioner finns (portionsvakten).
 7.  📈 PRISHISTORIK: ingrediens-import.py sparar datum+pris i
     json/prishistorik.json vid varje månadsuppdatering; graf på
     ingredienser.html (canvas, ingen extern lib).
@@ -1731,11 +1736,14 @@ data i json/, ALDRIG per receptfil.
     rekommendationsmotor, autocomplete i redigeringsläget. Central
     hjälpfunktion i assets/app.js (window.__MK_FUZZY) som alla
     sökningar återanvänder.
-20. 🖥️ KÖKSSKÄRM-LÄGE: surfplattan på köksbänken – helskärmssida
-    (koksskarm.html) med stor klocka, aktiva timers, dagens/veckans
-    recept och snabbknappar till kockläget. Wake Lock så skärmen
-    hålls tänd. Mörk design som passar kök (fettfingrar-vänliga
-    STORA knappar).
+20. 🖥️ KÖKSSKÄRM-LÄGE — ✔️ KLAR (2026-11-01): koksskarm.html –
+    mörk helskärmssida för surfplattan: STOR klocka+datum, timers
+    (1/3/5/10/15 min + egen; pip via WebAudio + vibration + röd
+    blink), 🏅 veckans 3 recept (deterministiskt per vecka ur
+    recept-index) + 🎲 Slumpa + 📖 Recepten, Wake Lock med
+    visibilitychange-återtag, ⛶-helskärmsknapp. Fettfinger-stora
+    knappar (min 52–64 px). Länkad från startsidans verktygsgrupp;
+    med i sitemap-robotens rotsidor.
 21. ⏲️ FRISTÅENDE TIMERSIDA: äggklocka utan recept (timer.html) –
     flera samtidiga namngivna timers där VARJE TIMER HAR TEXT om
     vad den hör till ("Pasta – spisen", "Jäsning – bunken på

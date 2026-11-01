@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<!-- PLATS: /koksskarm.html  (repo-roten – 🖥️ KÖKSSKÄRM-LÄGE, roadmap 20: surfplattan på köksbänken) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#121a22">
+<title>🖥️ Köksskärm – Mitt Maskinkök</title>
+<style>
+  /* Mörk design för köket · STORA fettfinger-vänliga ytor · Wake Lock */
+  :root { --bg:#121a22; --kort:#1c2733; --kant:#2c3a49; --text:#eef3f7; --dmp:#8fa3b5; --gron:#27ae60; --orange:#e67e22; --rod:#c0392b; }
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text);
+         min-height:100vh; padding:clamp(12px,2.5vw,28px); max-width:1500px; margin:0 auto; }
+  .rad { display:flex; gap:clamp(10px,2vw,20px); flex-wrap:wrap; }
+
+  /* ---------- Klockan ---------- */
+  #klocka { flex:2; min-width:min(420px,100%); background:var(--kort); border:1px solid var(--kant);
+            border-radius:22px; padding:clamp(16px,3vw,30px); text-align:center; }
+  #tid { font-size:clamp(4.5rem,15vw,9.5rem); font-weight:800; letter-spacing:.02em; line-height:1;
+         font-variant-numeric:tabular-nums; }
+  #datum { font-size:clamp(1rem,2.6vw,1.5rem); color:var(--dmp); margin-top:6px; text-transform:capitalize; }
+  #vaken { margin-top:10px; font-size:.82rem; color:var(--dmp); }
+
+  /* ---------- Timers ---------- */
+  #tpanel { flex:1.4; min-width:min(360px,100%); background:var(--kort); border:1px solid var(--kant);
+            border-radius:22px; padding:clamp(14px,2.5vw,24px); }
+  h2 { font-size:clamp(1rem,2.2vw,1.25rem); margin-bottom:12px; color:var(--dmp);
+       text-transform:uppercase; letter-spacing:.1em; }
+  .tknappar { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .tknappar button, .stor-knapp { background:#243242; color:var(--text); border:1px solid var(--kant);
+    border-radius:16px; padding:clamp(14px,2.4vw,22px) 6px; font-size:clamp(1rem,2.4vw,1.3rem);
+    font-weight:800; cursor:pointer; font-family:inherit; min-height:60px; }
+  .tknappar button:active { background:var(--gron); }
+  #tlista { margin-top:14px; display:flex; flex-direction:column; gap:10px; }
+  .timer { display:flex; align-items:center; gap:12px; background:#243242; border-radius:16px;
+           padding:12px 16px; border-left:6px solid var(--gron); }
+  .timer.klar { border-left-color:var(--rod); animation:blink .6s infinite alternate; }
+  @keyframes blink { from { background:#243242; } to { background:#7a2420; } }
+  .timer b { font-size:clamp(1.6rem,5vw,2.4rem); font-variant-numeric:tabular-nums; min-width:3.6em; }
+  .timer span { flex:1; font-size:clamp(.95rem,2.2vw,1.15rem); color:var(--dmp); }
+  .timer button { background:var(--rod); color:#fff; border:none; border-radius:12px;
+                  padding:12px 18px; font-size:1.1rem; font-weight:800; cursor:pointer; min-height:52px; }
+
+  /* ---------- Veckans recept + snabbknappar ---------- */
+  #vpanel { flex:1; min-width:min(320px,100%); background:var(--kort); border:1px solid var(--kant);
+            border-radius:22px; padding:clamp(14px,2.5vw,24px); }
+  .vrecept { display:flex; align-items:center; gap:14px; background:#243242; border-radius:16px;
+             padding:14px 16px; margin-bottom:10px; text-decoration:none; color:var(--text); min-height:64px; }
+  .vrecept .emo { font-size:2.2rem; }
+  .vrecept b { font-size:clamp(1rem,2.3vw,1.15rem); line-height:1.3; }
+  .snabb { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+  .snabb a { text-decoration:none; text-align:center; }
+  .gron { background:var(--gron) !important; border:none !important; color:#fff !important; display:block; }
+  .orange { background:var(--orange) !important; border:none !important; color:#fff !important; display:block; }
+  #fsBtn { position:fixed; right:14px; bottom:14px; background:#243242; color:var(--dmp);
+           border:1px solid var(--kant); border-radius:12px; padding:10px 16px; font-size:.9rem;
+           cursor:pointer; font-family:inherit; z-index:5; }
+  @media (max-width:720px) { #tid { font-size:clamp(3.4rem,20vw,6rem); } }
+</style>
+</head>
+<body>
+
+<div class="rad">
+  <div id="klocka">
+    <div id="tid">--:--</div>
+    <div id="datum">&nbsp;</div>
+    <div id="vaken">💡 Skärmen hålls tänd medan sidan är öppen</div>
+  </div>
+
+  <div id="tpanel">
+    <h2>⏲️ Timers</h2>
+    <div class="tknappar">
+      <button onclick="startaTimer(1)">1 min</button>
+      <button onclick="startaTimer(3)">3 min</button>
+      <button onclick="startaTimer(5)">5 min</button>
+      <button onclick="startaTimer(10)">10 min</button>
+      <button onclick="startaTimer(15)">15 min</button>
+      <button onclick="egenTimer()">➕ Egen…</button>
+    </div>
+    <div id="eget" style="display:none;margin-top:10px;gap:8px;">
+      <input id="egetMin" type="number" min="1" max="600" inputmode="numeric" placeholder="minuter"
+        style="flex:1;background:#243242;border:1px solid var(--kant);border-radius:12px;color:var(--text);padding:14px;font-size:1.2rem;font-family:inherit;min-width:0;">
+      <button class="stor-knapp gron" style="min-height:0;padding:12px 20px;" onclick="startaEgen()">Starta</button>
+    </div>
+    <div id="tlista"></div>
+  </div>
+
+  <div id="vpanel">
+    <h2>🏅 Veckans recept</h2>
+    <div id="veckans"><span style="color:var(--dmp);">Laddar…</span></div>
+    <div class="snabb">
+      <a href="recept.html" class="stor-knapp gron">📖 Recepten</a>
+      <a href="#" id="slump" class="stor-knapp orange">🎲 Slumpa</a>
+    </div>
+  </div>
+</div>
+
+<button id="fsBtn" onclick="fullskarm()">⛶ Helskärm</button>
+
+<script>
+/* ============================================================
+   🖥️ KÖKSSKÄRM (roadmap 20) – fristående, inga beroenden:
+   klocka · timers med pip+blink · veckans recept · Wake Lock
+   ============================================================ */
+
+/* ---------- Klockan ---------- */
+function ticka() {
+  var nu = new Date();
+  document.getElementById('tid').textContent =
+    String(nu.getHours()).padStart(2, '0') + ':' + String(nu.getMinutes()).padStart(2, '0');
+  document.getElementById('datum').textContent =
+    nu.toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+ticka(); setInterval(ticka, 5000);
+
+/* ---------- Wake Lock (skärmen tänd) ---------- */
+var lock = null;
+async function vaken() {
+  try { lock = await navigator.wakeLock.request('screen'); }
+  catch (e) { document.getElementById('vaken').textContent = '💡 Tips: höj skärmens släcktid i surfplattans inställningar'; }
+}
+if ('wakeLock' in navigator) {
+  vaken();
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) vaken(); });
+}
+
+/* ---------- Timers (pip via WebAudio + blink) ---------- */
+var timers = [], tid = 0;
+function pip() {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, 0.3, 0.6].forEach(function (t) {
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 880; g.gain.value = 0.25;
+      o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + 0.2);
+    });
+  } catch (e) {}
+  try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch (e) {}
+}
+function startaTimer(min, namn) {
+  timers.push({ id: ++tid, slut: Date.now() + min * 60000, namn: namn || (min + ' min'), klar: false });
+  mala();
+}
+function egenTimer() {
+  var e = document.getElementById('eget');
+  e.style.display = e.style.display === 'flex' ? 'none' : 'flex';
+  if (e.style.display === 'flex') document.getElementById('egetMin').focus();
+}
+function startaEgen() {
+  var m = parseInt(document.getElementById('egetMin').value, 10);
+  if (m > 0) { startaTimer(m); document.getElementById('egetMin').value = ''; document.getElementById('eget').style.display = 'none'; }
+}
+function taBort(id) { timers = timers.filter(function (t) { return t.id !== id; }); mala(); }
+function mala() {
+  var el = document.getElementById('tlista');
+  el.innerHTML = timers.map(function (t) {
+    var kvar = Math.max(0, Math.ceil((t.slut - Date.now()) / 1000));
+    var mm = Math.floor(kvar / 60), ss = kvar % 60;
+    return '<div class="timer' + (t.klar ? ' klar' : '') + '">' +
+      '<b>' + mm + ':' + String(ss).padStart(2, '0') + '</b>' +
+      '<span>' + t.namn + (t.klar ? ' – KLAR!' : '') + '</span>' +
+      '<button onclick="taBort(' + t.id + ')">✕</button></div>';
+  }).join('');
+}
+setInterval(function () {
+  var nagon = false;
+  timers.forEach(function (t) {
+    if (!t.klar && Date.now() >= t.slut) { t.klar = true; nagon = true; }
+  });
+  if (nagon) pip();
+  if (timers.length) mala();
+}, 1000);
+
+/* ---------- Veckans recept (deterministiskt per vecka, som startsidan) ---------- */
+(async function () {
+  try {
+    var d = await (await fetch('json/recept-index.json', { cache: 'no-store' })).json();
+    var recept = (d.recept || []).filter(function (r) { return /\.html?$/i.test(r.fil); });
+    if (!recept.length) return;
+    var nu = new Date();
+    var vecka = Math.floor((nu - new Date(nu.getFullYear(), 0, 1)) / 604800000);
+    var ut = [];
+    for (var i = 0; i < Math.min(3, recept.length); i++) {
+      ut.push(recept[(vecka * 7 + i * 11 + nu.getFullYear()) % recept.length]);
+    }
+    var seen = {};
+    ut = ut.filter(function (r) { if (seen[r.fil]) return false; seen[r.fil] = 1; return true; });
+    document.getElementById('veckans').innerHTML = ut.map(function (r) {
+      var namn = r.fil.split('/').pop().replace(/\.html?$/i, '').replace(/[-_]+/g, ' ');
+      namn = namn.charAt(0).toUpperCase() + namn.slice(1);
+      return '<a class="vrecept" href="recept/' + r.fil.split('/').map(encodeURIComponent).join('/') + '">' +
+        '<span class="emo">🍽️</span><b>' + namn + '</b></a>';
+    }).join('');
+    document.getElementById('slump').onclick = function (e) {
+      e.preventDefault();
+      var r = recept[Math.floor(Math.random() * recept.length)];
+      location.href = 'recept/' + r.fil.split('/').map(encodeURIComponent).join('/');
+    };
+  } catch (e) {}
+})();
+
+/* ---------- Helskärm ---------- */
+function fullskarm() {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
+}
+</script>
+<script src="assets/site.js"></script>
+</body>
+</html>

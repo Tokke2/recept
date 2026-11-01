@@ -294,7 +294,7 @@ def steg6_sitemap():
     ändrats (ingen onödig commit). Pensionerade sidor (generator.html)
     och mallar tas aldrig med."""
     bas = 'https://tokke2.github.io/recept/'
-    rotsidor = ['', 'recept.html', 'matratter.html', 'maskindatabas.html',
+    rotsidor = ['', 'recept.html', 'matratter.html', 'maskindatabas.html', 'koksskarm.html',
                 'ingredienser.html', 'nytt-recept.html', 'maskin-import.html',
                 'forslag.html', 'status.html', 'stod.html']
 

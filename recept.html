@@ -224,7 +224,12 @@
         <option value="verif">🌟 Verifierade först</option>
         <option value="new">🆕 Nyast</option>
         <option value="random">🎲 Slumpa</option>
+        <option value="protein">💪 Mest protein/100 g</option>
+        <option value="kcallag">🍃 Lägst kcal/100 g</option>
       </select>
+      <!-- 💪 MAKROFILTER (roadmap 6): data ur kalkyl-läsning av recepten -->
+      <button id="fProt" onclick="makroToggle('prot')" title="Visa bara recept med minst 8 g protein per 100 g (beräknat ur ingrediensdatabasen)" style="border:1.5px solid #27ae60;background:#fff;color:#27ae60;border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85rem;">💪 Proteinrikt</button>
+      <button id="fLatt" onclick="makroToggle('latt')" title="Visa bara recept med högst 150 kcal per 100 g" style="border:1.5px solid #2980b9;background:#fff;color:#2980b9;border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85rem;">🍃 Lätt</button>
     </div>
     <div class="result-count" id="count"></div>
     <div class="grid" id="grid">
@@ -381,6 +386,24 @@ async function init() {
         taggar: get('taggar') ? get('taggar').split(',').map(t => t.trim()).filter(Boolean) : [],
         kategori: get('kategori'),   /* ✏️ manuellt vald i redigeringsläget – vinner över gissningen */
         verifierad: get('verifierad'),  /* 🌟 "ÅÅÅÅ-MM-DD" = bakat & godkänt av kocken */
+        portioner: get('portioner'),    /* 🍽️ "8 frallor" (portionsvakten) */
+        rader: (() => {                 /* 💪 ingrediensrader för makro-beräkningen */
+          const ut = [];
+          for (const c of doc.querySelectorAll('.card')) {
+            const h = c.querySelector('h2');
+            if (!h || !/ingrediens/i.test(h.textContent)) continue;
+            c.querySelectorAll('table tr').forEach(tr => {
+              const td = tr.querySelectorAll('td');
+              if (td.length < 2) return;
+              const n = td[0].textContent.trim();
+              if (!n || /^tot/i.test(n)) return;
+              const g = (td[1].textContent.match(/([\d\s.,]+)\s*g\b/i) || [])[1];
+              if (g) ut.push([n, parseFloat(g.replace(/\s/g, '').replace(',', '.'))]);
+            });
+            break;
+          }
+          return ut;
+        })(),
         maskiner,
         maskin_ids: DB.maskiner.filter(m =>
           maskiner.join(' ').toLowerCase().includes((m.modellnamn || '§').toLowerCase()) ||
@@ -424,6 +447,67 @@ async function init() {
   buildTabs();
   apply();
   loadGlobalRatings();
+  beraknaMakron();   /* 💪 makrofiltret (roadmap 6) – fyller på i bakgrunden */
+}
+
+/* ============================================================
+   💪 MAKROFILTER (roadmap 6): kcal/protein per 100 g beräknas ur
+   ingrediensdatabasen (samma matchningsanda som live-kalkylen).
+   ÄRLIGHET: visas ENDAST när ≥70 % av receptets vikt matchats –
+   annars inga siffror alls. Per styck när recept:portioner finns.
+   ============================================================ */
+const MAKRO = { prot: false, latt: false };
+function makroToggle(k) {
+  MAKRO[k] = !MAKRO[k];
+  const el = document.getElementById(k === 'prot' ? 'fProt' : 'fLatt');
+  const farg = k === 'prot' ? '#27ae60' : '#2980b9';
+  el.style.background = MAKRO[k] ? farg : '#fff';
+  el.style.color = MAKRO[k] ? '#fff' : farg;
+  apply();
+}
+async function beraknaMakron() {
+  try {
+    const db = (await (await fetch('json/ingredienser.json')).json()).ingredienser || [];
+    const poster = db.map(p => ({
+      n: [String(p.namn || '').toLowerCase()].concat((p.alias || []).map(a => String(a).toLowerCase())),
+      kcal: +p.kcal || 0, prot: +p.protein || 0
+    }));
+    const STOP = ['med', 'och', 'stor', 'liten', 'klass', 'hela', 'färsk', 'riven', 'finmalt', 'malen', 'klyftor'];
+    const hitta = namn => {
+      const ren = namn.toLowerCase().replace(/\([^)]*\)/g, '').replace(/[\u{1F300}-\u{1FAFF}💧]/gu, '').trim();
+      const ord = ren.split(/[^a-zåäö0-9%]+/).filter(w => w.length > 3 && !STOP.includes(w));
+      let bast = null, bastP = 0;
+      for (const p of poster) for (const pn of p.n) {
+        let po = 0;
+        if (pn === ren) po = 100;
+        else if (pn.includes(ren) || ren.includes(pn)) po = 60;
+        else if (ord.length) {
+          const pOrd = pn.split(/[^a-zåäö0-9%]+/);
+          const tr = ord.filter(w => pOrd.some(x => x === w || x.startsWith(w) || w.startsWith(x))).length;
+          if (tr) po = 20 + tr * 10;
+        }
+        if (po > bastP) { bastP = po; bast = p; }
+      }
+      return bastP >= 30 ? bast : null;
+    };
+    RECIPES.forEach(r => {
+      if (!r.rader || r.rader.length < 2) return;
+      let g = 0, mg = 0, kcal = 0, prot = 0;
+      r.rader.forEach(([n, gr]) => {
+        if (!(gr > 0)) return;
+        g += gr;
+        const p = hitta(n);
+        if (p) { mg += gr; kcal += gr * p.kcal / 100; prot += gr * p.prot / 100; }
+      });
+      if (g < 100 || mg / g < 0.7) return;   /* 🛡️ otillräcklig täckning → inga siffror */
+      const pm = (r.portioner || '').match(/(\d+)/);
+      r.makro = {
+        kcal100: kcal / g * 100, prot100: prot / g * 100,
+        st: (pm && +pm[1] >= 2) ? { n: +pm[1], kcal: kcal / +pm[1], prot: prot / +pm[1] } : null
+      };
+    });
+  } catch (e) {}
+  apply();
 }
 
 /* ============ Globala betyg (alla besökare, via assets/betyg.js) ============ */
@@ -495,6 +579,7 @@ function card(r) {
     <div class="body">
       <h3>${r.namn}</h3>
       <div class="desc">${r.beskrivning}</div>
+      ${r.makro ? `<div class="mline" style="color:#27ae60;font-weight:700;">🔥 ${Math.round(r.makro.kcal100)} kcal · 💪 ${r.makro.prot100.toFixed(1).replace('.', ',')} g protein /100 g${r.makro.st ? ` · ${Math.round(r.makro.st.kcal)} kcal/st` : ''}</div>` : ''}
       ${r.maskiner.slice(0,3).map(m => `<div class="mline">${m.replace(/^([^:]+):/, '<b>$1:</b>')}</div>`).join('')}
       <div class="tags">${r.taggar.slice(0,5).map(t => `<span class="tag">${t}</span>`).join('')}</div>
       <div class="cta">${r.isPdf ? '📄 Öppna PDF →' : 'Öppna receptet →'}</div>
@@ -528,11 +613,15 @@ function apply() {
   else if (sort === 'snabb') list.sort((a, b) => (tidUr(a) ?? 1e9) - (tidUr(b) ?? 1e9));
   else if (sort === 'verif') list.sort((a, b) => (b.verifierad ? 1 : 0) - (a.verifierad ? 1 : 0) || b.rating - a.rating || a.namn.localeCompare(b.namn, 'sv'));
   else if (sort === 'random') { for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; } }
+  else if (sort === 'protein') list.sort((a, b) => ((b.makro ? b.makro.prot100 : -1)) - ((a.makro ? a.makro.prot100 : -1)));
+  else if (sort === 'kcallag') list.sort((a, b) => ((a.makro ? a.makro.kcal100 : 1e9)) - ((b.makro ? b.makro.kcal100 : 1e9)));
 
   const filtered = list.filter(r => {
     const text = (r.namn + ' ' + r.beskrivning + ' ' + r.taggar.join(' ') + ' ' + r.maskiner.join(' ')).toLowerCase();
     return (!q || text.includes(q)) && (activeTab === 'all' || r.maskin_ids.includes(activeTab)) &&
-           (activeKat === 'all' || r.kat === activeKat);
+           (activeKat === 'all' || r.kat === activeKat) &&
+           (!MAKRO.prot || (r.makro && r.makro.prot100 >= 8)) &&
+           (!MAKRO.latt || (r.makro && r.makro.kcal100 <= 150));
   });
 
   /* Alla kategorier + namnsortering → GRUPPERAT med rubriker per kategori */
