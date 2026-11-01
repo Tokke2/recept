@@ -304,6 +304,28 @@
     "min": 90,
     "moment": "Tillagning (🤖 auto ur receptets meta)"
    }
+  ],
+  "majsfrallor-bakmaskin.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 90,
+    "moment": "Steg 1 (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 20,
+    "moment": "Steg 5 (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "cosori-twinfry-10l",
+    "min": 16,
+    "moment": "Steg 8 (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "ninja-af500eucp",
+    "min": 18,
+    "moment": "Steg 11 (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }

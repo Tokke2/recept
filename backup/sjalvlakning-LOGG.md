@@ -303,3 +303,9 @@
 
 | sitemap.xml | 🗺️ omgenererad (43 adresser) |
 | json/recept-index.json | 📁 omgenererad (32 recept) |
+
+**2026-11-01**
+
+| majsfrallor-bakmaskin.html | ⚡ energidata skapad: clatronic-bba3774 90 min, clatronic-bba3774 20 min, cosori-twinfry-10l 16 min, ninja-af500eucp 18 min |
+| sitemap.xml | 🗺️ omgenererad (44 adresser) |
+| json/recept-index.json | 📁 omgenererad (33 recept) |
