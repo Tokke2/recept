@@ -2469,6 +2469,23 @@ data i json/, ALDRIG per receptfil.
     vanligt, punkt 101/102). Runtime (.mk-altinfo), städas av
     buildCleanHtml.
 
+109. 📍 MASKINPLACERAREN — ✔️ KLAR (2026-11-01, användarens order
+    "utforma alla befintliga och kommande recept så"): sjalvlakning
+    steg10, körs varje körning FÖR ALLTID. Hittar klungor (≥2 ⚙️-
+    maskinrutor i rad följda av odelad <ol>) och flyttar rutorna
+    till sina steg med delad lista (start="N") – exakt nytt-recept-
+    formatet. Position härleds ALDRIG på gissning: a) ägarens
+    "Steg N"-etikett i rubriken, b) rubrikens program/nummer finns i
+    EXAKT ETT steg. Olösta rutor kvar överst; rutor utan ⚙️ (⭐-tips)
+    och redan sektionerade recept röres aldrig; idempotent.
+    SÄKERHETSNÄT: anagram-jämförelse av all text (flytt ändrar
+    ordning avsiktligt men varje tecken måste finnas kvar exakt
+    en gång) – annars avbryts filen med loggrad. Första körningen:
+    5 recept omformade (pulled kyckling, squash, gröna tomat-chips,
+    lantbrödet, snabba frallor), 32/32 teckenidentiska, pizzadeg
+    (redan sektionerad) orörd. KOMMANDE recept: nytt-recept bygger
+    redan formatet; 📋-inklistrade klungor fixas av roboten vid push.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

@@ -540,6 +540,135 @@ def steg9_receptstandard():
             rader.append('| %s | 🧹 %s (steg9 receptstandard) |' % (f, ' · '.join(atg)))
 
 
+def steg10_maskinplacering():
+    """📍 MASKINPLACERAREN (användarens order: "utforma alla befintliga
+    och kommande recept så" = standardutformningen med maskinrutor VID
+    sina steg, som nytt-recept genererar). Körs varje körning:
+    Hittar KLUNGOR (≥2 ⚙️-maskinrutor direkt efter varandra följda av
+    en odelad <ol>) och flyttar varje ruta till sitt steg – listan
+    delas med start="N" (exakt samma mönster som nytt-recept).
+    POSITION HÄRLEDS ALDRIG PÅ GISSNING – endast:
+      a) ägarens egen "Steg N"-etikett i rubriken, eller
+      b) rubrikens programnamn/programnummer återfinns i EXAKT ETT steg.
+    Olösta rutor ligger kvar överst. Rutor utan ⚙️ (t.ex. ⭐-tips) och
+    redan sektionerade recept (egna <ol> per ruta) röres aldrig.
+    Idempotent: delade listor bildar inga klungor."""
+    import re as _re
+
+    def blockslut(html, start):
+        i = start
+        djup = 0
+        while True:
+            m = _re.compile(r'<div\b|</div>').search(html, i)
+            if not m:
+                return None
+            djup += 1 if m.group(0) != '</div>' else -1
+            i = m.end()
+            if djup == 0:
+                return i
+
+    for f in sorted(glob.glob('recept/*/*.html')):
+        namn = os.path.basename(f)
+        if namn.upper().startswith('MALL'):
+            continue
+        try:
+            with open(f, encoding='utf-8') as fp:
+                html = fp.read()
+        except OSError:
+            continue
+        if 'STUB - receptet har flyttat' in html[:500]:
+            continue
+        if '<ol start=' in html:
+            continue   # redan sektionerad/delad – standardformatet finns
+
+        # --- hitta klungan: run av ⚙️-rutor + direkt följande <ol> ---
+        pos0 = html.find('<div class="machine-step">')
+        run = []
+        olst = -1
+        i = pos0
+        while i != -1:
+            slut = blockslut(html, i)
+            if slut is None:
+                break
+            block = html[i:slut]
+            if '⚙️' not in block[:250]:
+                break                      # ⭐-tips m.m. – avbryt klungan
+            run.append((i, slut, block))
+            rest = html[slut:]
+            hopp = len(rest) - len(rest.lstrip())
+            nxt = slut + hopp
+            if html.startswith('<div class="machine-step">', nxt):
+                i = nxt
+                continue
+            i = -1
+            olst = nxt if html.startswith('<ol>', nxt) else -1
+        if len(run) < 2 or olst == -1:
+            continue
+
+        olslut = html.find('</ol>', olst)
+        if olslut == -1:
+            continue
+        olinre = html[olst + 4:olslut]
+        lis = _re.findall(r'<li\b.*?</li>', olinre, _re.S)
+        if len(lis) < 2:
+            continue
+        litext = [_re.sub(r'<[^>]+>', ' ', x).lower() for x in lis]
+
+        # --- härleda position per ruta (aldrig gissning) ---
+        placerade, kvar = [], []
+        for _, _, block in run:
+            h3m = _re.search(r'<h3>(.*?)</h3>', block, _re.S)
+            h3txt = _re.sub(r'<[^>]+>', '', h3m.group(1)) if h3m else ''
+            sm = _re.search(r'Steg\s+(\d+)', h3txt)
+            pos = None
+            if sm and 1 <= int(sm.group(1)) <= len(lis):
+                pos = int(sm.group(1))
+            else:
+                seg = h3txt.split('·', 1)[1] if '·' in h3txt else ''
+                ordn = _re.findall(r'[a-zåäö]{4,}', seg.lower())
+                num = _re.search(r'(\d+)\.', seg)
+                traff = set()
+                for idx, lt in enumerate(litext):
+                    if any(w in lt for w in ordn) or (num and ('program ' + num.group(1)) in lt):
+                        traff.add(idx + 1)
+                if len(traff) == 1:
+                    pos = traff.pop()
+            (placerade if pos else kvar).append((pos, block))
+        if not placerade:
+            continue
+
+        # --- bygg om: olösta rutor först, sedan interfolierad lista ---
+        ny = ''.join(b + '\n\n  ' for _, b in kvar)
+        oppen = False
+        for k, li in enumerate(lis, 1):
+            har = [b for p, b in placerade if p == k]
+            if har:
+                if oppen:
+                    ny += '\n  </ol>\n\n  '
+                    oppen = False
+                ny += '\n\n  '.join(har) + '\n\n  '
+            if not oppen:
+                ny += '<ol' + (' start="%d"' % k if k > 1 else '') + '>\n    '
+                oppen = True
+            ny += li + '\n    '
+        if oppen:
+            ny = ny.rstrip() + '\n  </ol>'
+        nyhtml = html[:run[0][0]] + ny + html[olslut + 5:]
+
+        # --- säkerhetsnät: ingen text får försvinna/tillkomma ---
+        # (anagram-jämförelse: flytten ÄNDRAR ordningen avsiktligt,
+        #  men varenda tecken måste finnas kvar exakt en gång)
+        def badtext(s):
+            return _re.sub(r'\s+', '', _re.sub(r'<[^>]+>', '', s))
+        if sorted(badtext(nyhtml)) != sorted(badtext(html)):
+            rader.append('| %s | ⚠️ steg10 AVBRUTEN (textdiff – ingen ändring) |' % f)
+            continue
+        with open(f, 'w', encoding='utf-8') as fp:
+            fp.write(nyhtml)
+        rader.append('| %s | 📍 %d maskinrutor till sina steg, %d kvar överst (steg10) |'
+                     % (f, len(placerade), len(kvar)))
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -549,6 +678,7 @@ def main():
     steg5_matrattssidor()
     steg8_mappvakt()
     steg9_receptstandard()
+    steg10_maskinplacering()
     steg6_sitemap()
     steg7_receptindex()
 
