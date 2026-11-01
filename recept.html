@@ -209,9 +209,6 @@
   <a class="nav-card" href="nytt-recept.html" style="text-decoration:none;color:inherit;">
     <span class="icon">📝</span><h2>Nytt recept</h2><p>Klistra in text/HTML → färdig standardfil</p>
   </a>
-  <button class="nav-card" onclick="openImport()">
-    <span class="icon">📥</span><h2>Importera recept</h2><p>Kontrollera &amp; lägg till en receptfil</p>
-  </button>
 </div>
 
 <div class="wrap">
@@ -248,33 +245,6 @@
     <div class="no-hit" id="noHit"><span class="e">🤔</span>Inga recept matchade i denna flik.</div>
   </section>
 
-</div>
-
-<!-- ================= IMPORT-MODAL ================= -->
-<div class="modal-bg" id="impBg" onclick="if(event.target===this)closeImport()">
-  <div class="modal">
-    <button class="close" onclick="closeImport()">✕ Stäng</button>
-    <h2>📥 Importera recept</h2>
-    <p style="font-size:.92rem; color:var(--muted); margin-bottom:10px;">
-      Släpp en receptfil (.html eller .pdf) här – HTML kontrolleras och lagas automatiskt
-      (site.js-raden, metadata) innan du laddar upp den till sajten.</p>
-
-    <div class="drop" id="drop" onclick="document.getElementById('impFile').click()">
-      📄 Släpp .html- eller .pdf-fil här<br>eller klicka för att välja
-    </div>
-    <input type="file" id="impFile" accept=".html,.htm,.pdf" style="display:none;" onchange="handleFile(this.files[0])">
-
-    <div class="imp-result" id="impRes"></div>
-
-    <h2 style="margin-top:20px; font-size:1.05rem;">Så hamnar receptet på sajten</h2>
-    <ol>
-      <li>Kontrollera/laga filen ovan (eller hoppa över om den är gjord från mallen)</li>
-      <li>Öppna <a class="gh" href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">GitHub-uppladdningen för recept-mappen ↗</a></li>
-      <li>Dra in filen → <b>Commit changes</b></li>
-      <li>Klart! Startsidan hittar receptet automatiskt (~1 min)</li>
-      <li>Bild? Ladda upp <b>images/recept/SAMMA-NAMN.jpg</b> så visas den på kortet</li>
-    </ol>
-  </div>
 </div>
 
 <footer>Mitt Maskinkök · recepten läses direkt från recept-mappen ·
@@ -650,68 +620,6 @@ function apply() {
     filtered.length === RECIPES.length ? `${RECIPES.length} recept` : `${filtered.length} av ${RECIPES.length} recept`;
 }
 
-/* ============================================================
-   IMPORT: kontrollera & laga en receptfil innan uppladdning
-   ============================================================ */
-function openImport() { document.getElementById('impBg').style.display = 'block'; }
-function closeImport() { document.getElementById('impBg').style.display = 'none'; }
-
-const drop = document.getElementById('drop');
-['dragover','dragenter'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
-['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
-drop.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) handleFile(f); });
-
-function handleFile(file) {
-  if (!file) return;
-  if (/\.pdf$/i.test(file.name)) {
-    const res = document.getElementById('impRes');
-    res.className = 'imp-result ok';
-    res.innerHTML = '<b>✅ PDF-recept!</b> PDF:er behöver ingen kontroll – ladda upp direkt till recept-mappen så visas den automatiskt som kort på startsidan.' +
-      '<br><a class="btn sec" style="display:inline-block;text-decoration:none;margin-top:10px;" href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">📤 Öppna GitHub-uppladdning</a>';
-    return;
-  }
-  if (!/\.html?$/i.test(file.name)) { alert('Välj en .html- eller .pdf-fil.'); return; }
-  const reader = new FileReader();
-  reader.onload = () => {
-    let t = reader.result;
-    const fixes = [], warns = [];
-
-    // 1) site.js-raden
-    if (t.indexOf('assets/site.js') === -1) {
-      const snippet = '<script src="../assets/site.js"><\/script>';
-      t = t.includes('</body>') ? t.replace('</body>', snippet + '\n</body>') : t + '\n' + snippet;
-      fixes.push('La till site.js-raden (utskrift/delning/kockläge/energi)');
-    }
-    // 2) Metadata-kontroll
-    ['namn','emoji','beskrivning','taggar','maskiner'].forEach(n => {
-      if (t.indexOf('name="recept:' + n + '"') === -1) warns.push('Saknar metadata: recept:' + n);
-    });
-    // 3) PLATS-märkning
-    if (t.indexOf('PLATS:') === -1) {
-      t = t.replace('<!DOCTYPE html>', '<!DOCTYPE html>\n<!-- PLATS: /recept/' + file.name + '  (recept-mappen – läses in automatiskt) -->');
-      fixes.push('La till PLATS-märkning');
-    }
-    // 4) Kockläges-steg
-    if (!/<ol[\s>]/i.test(t)) warns.push('Inga <ol>-steg hittades – kockläget får inga steg');
-
-    const res = document.getElementById('impRes');
-    res.className = 'imp-result ' + (warns.length ? 'warn' : 'ok');
-    res.innerHTML = '<b>' + (warns.length ? '⚠️ Kontrollerad med anmärkningar' : '✅ Filen ser komplett ut!') + '</b>' +
-      (fixes.length ? '<ul>' + fixes.map(f => '<li>🔧 ' + f + '</li>').join('') + '</ul>' : '') +
-      (warns.length ? '<ul>' + warns.map(w => '<li>⚠️ ' + w + ' <span style="color:var(--muted);">(auto-fixas ej – visas utan detta på startsidan)</span></li>').join('') + '</ul>' : '') +
-      '<button class="btn" id="impDl">⬇️ Ladda ner ' + (fixes.length ? 'lagad' : 'kontrollerad') + ' fil</button> ' +
-      '<a class="btn sec" style="display:inline-block;text-decoration:none;" href="https://github.com/Tokke2/recept/upload/main/recept" target="_blank" rel="noopener">📤 Öppna GitHub-uppladdning</a>';
-
-    document.getElementById('impDl').onclick = () => {
-      const blob = new Blob([t], { type: 'text/html' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = file.name;
-      a.click();
-    };
-  };
-  reader.readAsText(file);
-}
 </script>
 <script src="assets/site.js"></script>
 </body>

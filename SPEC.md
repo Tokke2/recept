@@ -2650,6 +2650,20 @@ data i json/, ALDRIG per receptfil.
     automatiskt. Städpanelen vid aktiv radering av tabellrad är
     OFÖRÄNDRAD kvar; funktionen finns kvar bortkommenterad.
 
+123. 🐛 VERIFIERINGS-LÄSFELET + 📥 IMPORT FLYTTAD (användarens
+    felrapport "varför kan den inte läsa?" + order, 2026-11-01):
+    A) "kunde inte läsa receptfilen" vid ✅ Testad & lyckad!:
+    maskinmatch.js och verifierad.js läste recept/<BASNAMN> men
+    recepten ligger i recept/<kategorimapp>/ sedan mappflytten –
+    båda har nu redigera.js-mönstret (fsokvag ur rot-djupet via
+    __MK_ROT). verifierad.js: fname (basnamn) används fortsatt för
+    BILDNAMNET images/recept/<basnamn>.jpg. B) Importera recept
+    bor nu INUTI nytt-recept.html: knapp "📥 Har du redan en färdig
+    receptfil?" under Klistra in-rubriken → samma modal/kontroll
+    som förr (alert() ersatt med inline-varning enligt regeln);
+    kortet+modalen+JS borttagna ur recept.html (endast ETT kort
+    kvar: Nytt recept).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

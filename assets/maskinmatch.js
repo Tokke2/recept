@@ -162,9 +162,14 @@
       var out = bg.querySelector('#mt-result');
       out.textContent = '⏳ Sparar...';
       var fname = decodeURIComponent(location.pathname.split('/').pop());
+      /* 📁 BUGGFIX (punkt 123): recepten ligger i recept/<kategorimapp>/ –
+         basnamnet räcker inte ("kunde inte läsa receptfilen"). Hela
+         undervägen härleds ur rot-djupet, samma som redigera.js. */
+      var djup = ((window.__MK_ROT || '../').match(/\.\.\//g) || ['../']).length;
+      var fsokvag = location.pathname.split('/').filter(Boolean).slice(-djup).map(decodeURIComponent).join('/');
       var res = { ok: false, error: 'okänt fel' };
       try {
-        var txt = await window.__MK_SPARA.load('recept/' + fname);
+        var txt = await window.__MK_SPARA.load('recept/' + fsokvag);
         if (!txt) throw new Error('kunde inte läsa receptfilen');
         /* uppdatera/lägg till maskinens post i recept:testad-metan */
         var alla = {};
@@ -183,7 +188,7 @@
           if (ankare.test(txt)) txt = txt.replace(ankare, '$1' + rad);
           else txt = txt.replace(/(<meta\s+name="recept:namn"[^>]*>\s*\n?)/i, '$1' + rad);
         }
-        res = await window.__MK_SPARA.save('recept/' + fname, txt,
+        res = await window.__MK_SPARA.save('recept/' + fsokvag, txt,
           '✅ Testad & lyckad i ' + maskin.namn + ': ' + fname);
       } catch (e) { res = { ok: false, error: e.message }; }
       if (res.ok) {

@@ -248,6 +248,10 @@
      ============================================================ */
   async function sparaVerifiering(bg, datum, baraBild) {
     var fname = decodeURIComponent(location.pathname.split('/').pop());
+    /* 📁 BUGGFIX (punkt 123): hela undervägen (deg/x.html) för läs/spara av
+       RECEPTFILEN – fname (basnamnet) används fortsatt för BILDNAMNET. */
+    var djup = ((window.__MK_ROT || '../').match(/\.\.\//g) || ['../']).length;
+    var fsokvag = location.pathname.split('/').filter(Boolean).slice(-djup).map(decodeURIComponent).join('/');
     var out = bg.querySelector('#vf-result');
     out.innerHTML = '⏳ Sparar...';
 
@@ -279,7 +283,7 @@
     }
     var res = { ok: false, error: 'okänt fel' };
     try {
-      var txt = await window.__MK_SPARA.load('recept/' + fname);
+      var txt = await window.__MK_SPARA.load('recept/' + fsokvag);
       if (!txt) throw new Error('kunde inte läsa receptfilen');
       var metaRe = /[ \t]*<meta\s+name="recept:verifierad"[^>]*>\s*\n?/i;
       if (datum) {
@@ -295,7 +299,7 @@
       } else {
         txt = txt.replace(metaRe, '');
       }
-      res = await window.__MK_SPARA.save('recept/' + fname, txt,
+      res = await window.__MK_SPARA.save('recept/' + fsokvag, txt,
         datum ? ('Recept verifierat \u2605 ' + datum + ': ' + fname) : ('Verifiering borttagen: ' + fname));
     } catch (e) { res = { ok: false, error: e.message }; }
 
