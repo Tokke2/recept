@@ -3019,13 +3019,28 @@
   "⚙️ Steg 5: Clatronic BBA 3774 (Bakmaskin) ·": "⚙️ Schritt 5: Clatronic BBA 3774 (Backmaschine) ·",
   "⚙️ Steg 8: COSORI CAF-TF101S (Dual Blaze TwinFry) (Airfryer) ·": "⚙️ Schritt 8: COSORI CAF-TF101S (Dual Blaze TwinFry) (Airfryer) ·",
   "🌽 Majsfrallor – Bakmaskin": "🌽 Maisbrötchen – Backmaschine",
-  "🌽 Majsfrallor – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🌽 Maisbrötchen – Backmaschine – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche"
+  "🌽 Majsfrallor – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🌽 Maisbrötchen – Backmaschine – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche",
+  "10. Cake (Kaka) · 6 min": "10. Kuchen · 6 Min",
+  "Air Fry · 20 min @ 200°C (120–205°C, 1–60 min)": "Luftfrittieren · 20 Min. bei 200 °C (120–205 °C, 1–60 Min.)",
+  "Clatronic BBA 3774 · 10. Cake (Kaka)": "Clatronic BBA 3774 · 10. Kuchen",
+  "Efter EXAKT 6 minuter (innan programmet går vidare till vila/förvarning/andra knådning), tryck på Start/Stopp för att avbryta programmet helt.": "Drücken Sie nach GENAU 6 Minuten (bevor das Programm auf Ruhe/Vorwarnung/zweites Kneten geht) die Start/Stopp-Taste, um das Programm vollständig abzubrechen.",
+  "Knaprig smördeg/pajdeg som bara blandas i bakmaskinen – ingen nypning för hand. Knådas 6 min på Cake-programmets första knådfas, vila i kyl, gräddas klar i airfryer eller ugn. Till 1 pajform ca 18–20 cm.": "Knuspriger Blätterteig-/Tortenteig, der nur in der Backmaschine gemischt wird – kein Kneifen mit der Hand. In der ersten Knetphase des Kuchenprogramms 6 Minuten lang kneten, im Kühlschrank ruhen lassen und im Airfryer oder Ofen backen. Für 1 Kuchenform ca. 18–20 cm.",
+  "Margarin Mat & Bak (kallt, i tärningar)": "Margarine Food & Baking (kalt, gewürfelt)",
+  "När den ska användas: kavla ut degen på lätt mjölat bakbord till en rund skiva något större än pajformen (använd en form som passar i din airfryer, ca 18–20 cm). Klä formen, nagga bottnen med en gaffel.": "Verwendungszweck: Rollen Sie den Teig auf einem leicht bemehlten Backtisch zu einer runden Scheibe aus, die etwas größer als die Kuchenform ist (verwenden Sie eine Form, die in Ihre Heißluftfritteuse passt, ca. 18–20 cm). Form auslegen, Boden mit einer Gabel einstechen.",
+  "Pajdeg i bakmaskin": "Tortenteig in einer Backmaschine",
+  "Skär det kalla margarinet i 1 cm tärningar. Lägg margarin, kallt vatten, vetemjöl och salt i bakmaskinen i den ordningen. ⏱ 2 min": "Die kalte Margarine in 1 cm große Würfel schneiden. Geben Sie in dieser Reihenfolge Margarine, kaltes Wasser, Weizenmehl und Salz in die Backmaschine. ⏱ 2 Min",
+  "Steg 1: Clatronic BBA 3774 · 10. Cake (Kaka) 6 min | Steg 5: COSORI CAF-TF101S (Dual Blaze TwinFry) · Air Fry 20 min @ 200°C (120–205°C, 1–60 min)": "Schritt 1: Clatronic BBA 3774 · 10. Kuchen (Kuchen) 6 Min. | Schritt 5: COSORI CAF-TF101S (Dual Blaze TwinFry) · Luftfrittieren 20 Min. bei 200 °C (120–205 °C, 1–60 Min.)",
+  "Sätt på locket och starta Program 10 Cake. Ställ en klocka på 6 minuter – ha ett öga på den första knådningen.": "Setzen Sie den Deckel wieder auf und starten Sie Programm 10 Kuchen. Stellen Sie einen Timer auf 6 Minuten – behalten Sie den ersten Knetevorgang im Auge.",
+  "Ta ut degen ur formen. Platta till den till en skiva, slå in i plastfolie och lägg i kylen att vila minst ⏱ 60 minuter (helst 2 h) – vila är hemligheten bakom en knaprig pajdeg som inte drar ihop sig vid gräddning.": "Den Teig aus der Form nehmen. Formen Sie ihn flach, wickeln Sie ihn in Frischhaltefolie ein und lassen Sie ihn mindestens ⏱ 60 Minuten (vorzugsweise 2 Stunden) im Kühlschrank ruhen – Ruhe ist das Geheimnis eines knusprigen Tortenteigs, der beim Backen nicht schrumpft.",
+  "Vatten (kallt)": "Wasser (kalt)",
+  "🥧 Pajdeg i bakmaskin": "🥧 Tortenteig in einer Backmaschine",
+  "🥧 Pajdeg i bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🥧 Kuchenteig im Backautomaten – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3018,
+ "_auto_genererade": 3033,
  "_senast_robot": "2026-11-01"
 }

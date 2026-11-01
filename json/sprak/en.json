@@ -2908,7 +2908,21 @@
   "⚙️ Steg 5: Clatronic BBA 3774 (Bakmaskin) ·": "⚙️ Step 5: Clatronic BBA 3774 (Baking machine) ·",
   "⚙️ Steg 8: COSORI CAF-TF101S (Dual Blaze TwinFry) (Airfryer) ·": "⚙️ Step 8: COSORI CAF-TF101S (Dual Blaze TwinFry) (Airfryer) ·",
   "🌽 Majsfrallor – Bakmaskin": "🌽 Corn rolls - Baking machine",
-  "🌽 Majsfrallor – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🌽 Corn rolls - Baking machine - Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | My Machine Kitchen"
+  "🌽 Majsfrallor – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🌽 Corn rolls - Baking machine - Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | My Machine Kitchen",
+  "10. Cake (Kaka) · 6 min": "10. Cake · 6 min",
+  "Clatronic BBA 3774 · 10. Cake (Kaka)": "Clatronic BBA 3774 · 10. Cake",
+  "Efter EXAKT 6 minuter (innan programmet går vidare till vila/förvarning/andra knådning), tryck på Start/Stopp för att avbryta programmet helt.": "After EXACTLY 6 minutes (before the program goes to rest/pre-warning/second knead), press Start/Stop to cancel the program completely.",
+  "Knaprig smördeg/pajdeg som bara blandas i bakmaskinen – ingen nypning för hand. Knådas 6 min på Cake-programmets första knådfas, vila i kyl, gräddas klar i airfryer eller ugn. Till 1 pajform ca 18–20 cm.": "Crunchy puff pastry/pie dough that is only mixed in the baking machine - no pinching by hand. Knead for 6 min on the first kneading phase of the Cake program, rest in the fridge, ready to bake in the airfryer or oven. For 1 pie tin approx. 18–20 cm.",
+  "Margarin Mat & Bak (kallt, i tärningar)": "Margarine Food & Baking (cold, diced)",
+  "När den ska användas: kavla ut degen på lätt mjölat bakbord till en rund skiva något större än pajformen (använd en form som passar i din airfryer, ca 18–20 cm). Klä formen, nagga bottnen med en gaffel.": "When to use: roll out the dough on a lightly floured baking table into a round disc slightly larger than the pie tin (use a tin that fits in your air fryer, approx. 18-20 cm). Line the tin, prick the bottom with a fork.",
+  "Pajdeg i bakmaskin": "Pie dough in a baking machine",
+  "Skär det kalla margarinet i 1 cm tärningar. Lägg margarin, kallt vatten, vetemjöl och salt i bakmaskinen i den ordningen. ⏱ 2 min": "Cut the cold margarine into 1 cm cubes. Place margarine, cold water, wheat flour and salt in the baking machine in that order. ⏱ 2 min",
+  "Steg 1: Clatronic BBA 3774 · 10. Cake (Kaka) 6 min | Steg 5: COSORI CAF-TF101S (Dual Blaze TwinFry) · Air Fry 20 min @ 200°C (120–205°C, 1–60 min)": "Step 1: Clatronic BBA 3774 · 10. Cake (Cake) 6 min | Step 5: COSORI CAF-TF101S (Dual Blaze TwinFry) · Air Fry 20 min @ 200°C (120-205°C, 1-60 min)",
+  "Sätt på locket och starta Program 10 Cake. Ställ en klocka på 6 minuter – ha ett öga på den första knådningen.": "Replace the lid and start Program 10 Cake. Set a timer for 6 minutes - keep an eye on the first knead.",
+  "Ta ut degen ur formen. Platta till den till en skiva, slå in i plastfolie och lägg i kylen att vila minst ⏱ 60 minuter (helst 2 h) – vila är hemligheten bakom en knaprig pajdeg som inte drar ihop sig vid gräddning.": "Take the dough out of the mold. Flatten it into a disc, wrap in plastic wrap and put in the fridge to rest for at least ⏱ 60 minutes (preferably 2 hours) - rest is the secret behind a crispy pie dough that doesn't shrink when baking.",
+  "Vatten (kallt)": "water (cold)",
+  "🥧 Pajdeg i bakmaskin": "🥧 Pie dough in a baking machine",
+  "🥧 Pajdeg i bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🥧 Pie dough in baking machine - Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | My Machine Kitchen"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2918,6 +2932,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2907,
+ "_auto_genererade": 2921,
  "_senast_robot": "2026-11-01"
 }
