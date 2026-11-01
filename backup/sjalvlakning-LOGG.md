@@ -394,3 +394,7 @@
 | recept/sylt/klassisk-hamburgdressing.html | 📝 meta description ur receptets egna metadata (steg12) |
 | sitemap.xml | 🗺️ omgenererad (48 adresser) |
 | json/recept-index.json | 📁 omgenererad (36 recept) |
+
+**2026-11-01**
+
+| sitemap.xml | 🗺️ omgenererad (50 adresser) |
