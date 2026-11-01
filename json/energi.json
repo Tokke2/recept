@@ -338,6 +338,23 @@
     "min": 30,
     "moment": "Steg 5 (🤖 auto ur receptets meta)"
    }
+  ],
+  "syltfyllda-vafflor-i-airfryer.html": [
+   {
+    "maskin": "ninja-af500eucp",
+    "min": 23,
+    "moment": "Steg 1 (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "cosori-twinfry-10l",
+    "min": 12,
+    "moment": "Steg 5 (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "ninja-af500eucp",
+    "min": 12,
+    "moment": "Steg 13 (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }

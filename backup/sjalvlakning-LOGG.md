@@ -348,3 +348,10 @@
 | recept/varmratt/pulled-kycklinggryta-rotfrukter-vita-bonor.html | 🍽️ recept:portioner "8 portioner" ur receptets text (steg11) |
 | sitemap.xml | 🗺️ omgenererad (45 adresser) |
 | json/recept-index.json | 📁 omgenererad (34 recept) |
+
+**2026-11-01**
+
+| syltfyllda-vafflor-i-airfryer.html | ⚡ energidata skapad: ninja-af500eucp 23 min, cosori-twinfry-10l 12 min, ninja-af500eucp 12 min |
+| recept/sylt/syltfyllda-vafflor-i-airfryer.html | 🍽️ recept:portioner "6 våfflor" ur receptets text (steg11) |
+| sitemap.xml | 🗺️ omgenererad (46 adresser) |
+| json/recept-index.json | 📁 omgenererad (35 recept) |
