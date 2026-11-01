@@ -248,6 +248,52 @@
        "Testad med denna" en osann utfästelse). */
     var manTest = lasTestade();   /* ur recept:testad-metan */
     var receptVerifierad = !!document.querySelector('meta[name="recept:verifierad"]');
+
+    /* 🔀 ALTERNATIVGRUPPER (användarens regel 2026-11-01: "maskiner för
+       samma sak, t.ex. gräddning i olika maskiner → ska tydligt stå
+       att det funkar i dessa, men ej vara verifierat innan admin
+       verifierar"). Gruppnyckel = första betydande programordet efter
+       '·' i rubriken (bake/dough/grill...). Minst 2 rutor med OLIKA
+       maskiner på samma nyckel = alternativ för samma moment. */
+    function progNyckel(t) {
+      var efter = String(t).split('·').slice(1).join(' ').toLowerCase();
+      var m = efter.match(/[a-zåäö]{4,}/);
+      return m ? m[0] : '';
+    }
+    var TASKORD = { bake: 'Gräddningen', dough: 'Degen', grill: 'Grillningen',
+                    roast: 'Rostningen', dehydrate: 'Torkningen', fry: 'Friteringen' };
+    var egnaRutor = [];
+    document.querySelectorAll('.machine-step h3').forEach(function (h3) {
+      var txt = h3.textContent.toLowerCase();
+      for (var i = 0; i < testade.length; i++) {
+        var mod = String(testade[i].modellnamn || '').toLowerCase();
+        if (mod && txt.indexOf(mod) !== -1) {
+          egnaRutor.push({ h3: h3, m: testade[i], key: progNyckel(h3.textContent) });
+          return;
+        }
+      }
+    });
+    var grupper = {};
+    egnaRutor.forEach(function (r) { if (r.key) (grupper[r.key] = grupper[r.key] || []).push(r); });
+    var altFor = [];   /* [{h3, andra:[namn], task}] */
+    Object.keys(grupper).forEach(function (k) {
+      var g = grupper[k];
+      var olika = {};
+      g.forEach(function (r) { olika[r.m.id] = 1; });
+      if (g.length < 2 || Object.keys(olika).length < 2) return;
+      g.forEach(function (r) {
+        var andra = g.filter(function (x) { return x !== r; }).map(function (x) {
+          var n = ((x.m.varumarke || '') + ' ' + (x.m.modellnamn || '')).trim() || x.m.namn;
+          return window.__MK_MED_TYP ? window.__MK_MED_TYP(n, x.m.typ) : n;
+        });
+        altFor.push({ h3: r.h3, andra: andra, task: TASKORD[k] || 'Momentet' });
+      });
+    });
+    function altInfoFor(h3) {
+      for (var i = 0; i < altFor.length; i++) if (altFor[i].h3 === h3) return altFor[i];
+      return null;
+    }
+
     document.querySelectorAll('.machine-step h3').forEach(function (h3) {
       if (h3.querySelector('.mk-testad') || h3.querySelector('.mk-verifmask')) return;
       var txt = h3.textContent.toLowerCase();
@@ -266,6 +312,18 @@
            ✅-markering med tid (recept:testad). Ett-maskinsrecept:
            🌟 ELLER ✅ räcker (hela receptet = den maskinen). */
         var delKlar = tid || (receptVerifierad && testade.length < 2);
+        /* 🔀 alternativrutans klartext – "funkar även i dessa" alltid
+           synlig; ⏳-status tills just DENNA del är admin-verifierad */
+        var ai = altInfoFor(h3);
+        if (box && ai && !box.querySelector('.mk-altinfo')) {
+          var alt = document.createElement('div');
+          alt.className = 'mk-altinfo no-print';
+          alt.style.cssText = 'margin-top:8px;background:#f5f7f8;border:1px solid #b0bec5;border-radius:9px;' +
+            'padding:6px 12px;font-size:.78rem;color:#546e7a;line-height:1.5;';
+          alt.textContent = '🔀 ' + ai.task + ' funkar även i: ' + ai.andra.join(' · ') + ' – välj EN maskin.' +
+            (delKlar ? '' : ' ⏳ Ej verifierad av admin ännu.');
+          box.appendChild(alt);
+        }
         if (!delKlar) {
           /* overifierad DEL i flermaskinsrecept → diskret admin-knapp
              så varje del kan verifieras på plats (lösenord krävs) */

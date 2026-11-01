@@ -2457,6 +2457,18 @@ data i json/, ALDRIG per receptfil.
     per maskin – namn + typ + QR till maskinens recept på sajten.
     Klistras på maskinerna, delbart till vänner med samma modell.
 
+108. 🔀 ALTERNATIVMASKINER FÖR SAMMA MOMENT — ✔️ KLAR (2026-11-01,
+    användarens regel "maskiner för samma sak, t.ex. gräddning i
+    olika maskiner → ska tydligt stå att det funkar i dessa, men ej
+    vara verifierat innan admin verifierar"): maskinmatch grupperar
+    receptets egna maskinrutor på programordet efter '·' (bake/
+    dough/grill...). ≥2 rutor med OLIKA maskiner på samma nyckel =
+    alternativgrupp → varje ruta får klartextraden "🔀 Gräddningen
+    funkar även i: X · Y – välj EN maskin" + "⏳ Ej verifierad av
+    admin ännu" tills just DEN delen ✅-markerats (då grön bock som
+    vanligt, punkt 101/102). Runtime (.mk-altinfo), städas av
+    buildCleanHtml.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
