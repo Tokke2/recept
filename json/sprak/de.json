@@ -3034,13 +3034,31 @@
   "Ta ut degen ur formen. Platta till den till en skiva, slå in i plastfolie och lägg i kylen att vila minst ⏱ 60 minuter (helst 2 h) – vila är hemligheten bakom en knaprig pajdeg som inte drar ihop sig vid gräddning.": "Den Teig aus der Form nehmen. Formen Sie ihn flach, wickeln Sie ihn in Frischhaltefolie ein und lassen Sie ihn mindestens ⏱ 60 Minuten (vorzugsweise 2 Stunden) im Kühlschrank ruhen – Ruhe ist das Geheimnis eines knusprigen Tortenteigs, der beim Backen nicht schrumpft.",
   "Vatten (kallt)": "Wasser (kalt)",
   "🥧 Pajdeg i bakmaskin": "🥧 Tortenteig in einer Backmaschine",
-  "🥧 Pajdeg i bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🥧 Kuchenteig im Backautomaten – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche"
+  "🥧 Pajdeg i bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🥧 Kuchenteig im Backautomaten – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche",
+  "& tider per maskin": "& Zeiten pro Maschine",
+  "Ctrl+P → pappersstorlek sköts av sidan (85×55 mm, en sida per kort). Dubbelsidig skrivare: välj \"vänd längs kortsidan\". Annars: skriv ut sidorna var för sig på kortpapper.": "Strg+P → Papiergröße wird seitenweise verwaltet (85×55 mm, eine Seite pro Karte). Doppelseitiger Drucker: Wählen Sie „An der kurzen Seite umdrehen“. Ansonsten: Drucken Sie die Seiten separat auf Karton aus.",
+  "Ej verifierad av admin ännu": "Noch nicht vom Administrator bestätigt",
+  "Livekalkyl": "Live-Berechnung",
+  "Maskinkök": "Maschinenküche",
+  "Mitt": "Mein",
+  "QR-kod till tokke2.github.io/recept": "QR-Code zu tokke2.github.io/recept",
+  "Recept för maskinerna på DIN köksbänk": "Rezepte für die Maschinen auf IHRER Küchentheke",
+  "Skanna &": "Scannen &",
+  "Verifierad med": "Verifiziert mit",
+  "Verifierade program": "Verifizierte Programme",
+  "börja laga": "Fangen Sie an zu kochen",
+  "med timers & köksradio": "mit Timer & Küchenradio",
+  "tokke2.github.io/recept": "tokke2.github.io/recipes",
+  "visa thumb med länkar ovan receptet, ange att det är de maskiner som ANVÄNDS – overifierad tills man säger till": "Zeigen Sie einen Daumen mit Links über dem Rezept an und geben Sie an, dass es sich um GEBRAUCHTE Maschinen handelt – ungeprüft, bis es mitgeteilt wird",
+  "– pris & näring på allt": "- Preis und Nährwerte für alles",
+  "💳 Visitkort – Mitt Maskinkök (dubbelsidigt, 85×55 mm)": "💳 Visitenkarte – My Machine Kitchen (doppelseitig, 85×55 mm)",
+  "🖨️ Så skriver du ut:": "🖨️ So drucken Sie:"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3033,
+ "_auto_genererade": 3051,
  "_senast_robot": "2026-11-01"
 }
