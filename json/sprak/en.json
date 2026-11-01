@@ -3037,7 +3037,32 @@
   "🏠 Startsidan": "🏠 Home page",
   "🔍 Sök i receptsamlingen": "🔍 Search the recipe collection",
   "🤔 Letade du efter något av dessa?": "🤔 Were you looking for any of these?",
-  "🧭 Eller gå direkt till": "🧭 Or go directly to"
+  "🧭 Eller gå direkt till": "🧭 Or go directly to",
+  "Blanda yoghurt, majonnäs, ketchup och senap i en ren skål med en sked eller liten visp. ⏱ 1 min": "Mix yogurt, mayonnaise, ketchup and mustard in a clean bowl with a spoon or small whisk. ⏱ 1 min",
+  "Citronsyra (E330)": "Citric acid (E330)",
+  "Förbered förvaringsburken: skölj med kokande vatten (eller kör i diskmaskin på högsta program) och låt dropptorka – ren burk = längre hållbarhet.": "Prepare the storage jar: rinse with boiling water (or run in the dishwasher on the highest program) and let drip dry - clean jar = longer shelf life.",
+  "Förbered förvaringsburken: skölj med kokande vatten och låt dropptorka.": "Prepare the storage jar: rinse with boiling water and let drip dry.",
+  "Häll upp på den steriliserade burken med lock. Ställ i kylen minst ⏱ 30 minuter innan servering så smakerna gifter sig.": "Pour onto the sterilized jar with lid. Put in the fridge at least ⏱ 30 minutes before serving so the flavors marry.",
+  "Häll upp på den steriliserade burken med lock. Ställ i kylen minst ⏱ 30 minuter innan servering så smakerna sätter sig.": "Pour onto the sterilized jar with lid. Put in the fridge at least ⏱ 30 minutes before serving so the flavors settle.",
+  "Inlagd gurka / bostongurka (väl avrunnen)": "Pickled cucumber / Boston cucumber (drained well)",
+  "Klassisk hamburgdressing": "Classic hamburger dressing",
+  "Klassisk hamburgdressing. Klassisk, krämig hamburgdressing med sötma från gurka och en touch av vitlök – passar till hamburgare, pommes, dipp…": "Classic hamburger dressing. Classic, creamy hamburger dressing with sweetness from cucumber and a touch of garlic - suitable for hamburgers, fries, dips...",
+  "Klassisk, krämig hamburgdressing med sötma från gurka och en touch av vitlök – passar till hamburgare, pommes, dipp, sallader, wraps, pulled pork och det mesta annat. Konserverad med citronsyra – håller 2–3 veckor i kyl. 8 portioner à ca 41 g.": "Classic, creamy hamburger dressing with sweetness from cucumber and a touch of garlic - suitable for hamburgers, fries, dip, salads, wraps, pulled pork and most other things. Preserved with citric acid - keeps 2-3 weeks in the fridge. 8 portions of approx. 41 g.",
+  "Kör Small Chop i 5–10 sekunder – stanna när gurka och vitlök är finfördelade men dressingen fortfarande har lite textur. ⏱ 5–10 sek": "Run Small Chop for 5-10 seconds – stop when the cucumber and garlic are finely chopped but the dressing still has some texture. ⏱ 5–10 sec",
+  "Lägg den inlagda gurkan på en bit hushållspapper i 10–15 minuter så överflödig lag rinner av. ⏱ 10–15 min": "Place the pickled cucumber on a piece of kitchen paper for 10-15 minutes so that the excess layer drains off. ⏱ 10–15 min",
+  "Lägg gurkan på hushållspapper i ⏱ 10–15 minuter så överflödig lag rinner av. Finhacka den sedan och pressa vitlöksklyftorna fint.": "Place the cucumber on paper towels for ⏱ 10–15 minutes so that the excess layer drains off. Then finely chop it and press the garlic cloves finely.",
+  "Lägg yoghurt, majonnäs, ketchup, senap, den avrunna gurkan och skalade vitlöksklyftor i blendern.": "Put yogurt, mayonnaise, ketchup, mustard, the drained cucumber and peeled garlic cloves into the blender.",
+  "Majonnäs": "Mayonnaise",
+  "Paprikapulver (rosenpaprika)": "Paprika powder (rose paprika)",
+  "Senap (gul, mild)": "Mustard (yellow, mild)",
+  "Svartpeppar (mald)": "Black pepper (ground)",
+  "Tillagning: Ninja TB401EU · Small Chop (Processing Mode) auto – stannar själv": "Cooking: Ninja TB401EU · Small Chop (Processing Mode) auto - stops itself",
+  "Tillsätt gurka, vitlök, vitvinsvinäger, strösocker, citronsyra, paprikapulver, salt och peppar. Rör tills allt är jämnt blandat. ⏱ 2 min": "Add cucumber, garlic, white wine vinegar, granulated sugar, citric acid, paprika, salt and pepper. Stir until everything is evenly mixed. ⏱ 2 min",
+  "Tillsätt vitvinsvinäger, strösocker, citronsyra, paprikapulver, salt och svartpeppar.": "Add white wine vinegar, granulated sugar, citric acid, paprika powder, salt and black pepper.",
+  "Tomatketchup": "Tomato ketchup",
+  "Vitlök (pressade klyftor)": "Garlic (pressed cloves)",
+  "🍔 Klassisk hamburgdressing": "🍔 Classic hamburger dressing",
+  "🍔 Klassisk hamburgdressing – Ninja TB401EU | Mitt Maskinkök": "🍔 Classic hamburger dressing - Ninja TB401EU | My Machine Kitchen"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3047,6 +3072,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3036,
+ "_auto_genererade": 3061,
  "_senast_robot": "2026-11-01"
 }
