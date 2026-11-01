@@ -1,4 +1,4 @@
-<!-- PLATS: /RECEPT-CHATT.md (repo-roten – mall att klistra in i valfri AI-chatt: recept OCH maträtter. Synkad mot SPEC v129) -->
+<!-- PLATS: /RECEPT-CHATT.md (repo-roten – mall att klistra in i valfri AI-chatt: recept OCH maträtter. Synkad mot SPEC v179 (roadmap 97–111)) -->
 # 🤖 CHATT-MALL – beställ recept & maträtter från valfri AI
 
 **Så här används den:**
@@ -78,7 +78,7 @@ MASKINPARKEN (använd ENDAST dessa maskiner och EXAKT dessa program/tider):
 🧊 Silonn SLIM01 (ismaskin): Små kuber 6 min · Stora ca 8 min (9 kuber/körning)
 ☕ LinkChef (kvarn): Torrmalning (pulser 5–15 sek) · Våtmalning
 
-REGLER (följ ALLA 14 – sajten kontrollerar och roboten städar):
+REGLER (följ ALLA 19 – sajten kontrollerar och roboten städar):
 1. SVENSKA överallt. Gram (g) för allt – vätskor får även dl. ALDRIG
    cups/oz/pounds/sticks.
 2. Kortordning EXAKT: (ev. .warn-varning) → 🧾 Ingredienser →
@@ -117,12 +117,32 @@ REGLER (följ ALLA 14 – sajten kontrollerar och roboten städar):
     <script src="../assets/site.js"></script>
     (den laddar ALLT: kockläge, kalkyl, utskrift, portionspanel, språk...)
 13. Filnamn: små bokstäver, bindestreck, å/ä→a, ö→o (morotskaka-bakmaskin.html).
-14. SJÄLVKOLL innan du svarar (gå igenom TYST, skriv inte ut listan):
+14. STYCKEANTAL ÄR HELIGT: blir det N st (frallor/bullar/bitar...) ska
+    antalet stå BÅDE i beskrivningen ("8 kompakta frallor") OCH i
+    tabellens totalrad ("~900 g · 8 frallor à 112 g"). Sajtens
+    portionsvakt låser då per-styck-kalkylen till antalet.
+15. MASKINRUTOR VID SINA STEG (majsfrallor-formatet): rubrikformat
+    <h3>⚙️ Steg N – Moment: Maskin · <span class="prog">Program · tid</span></h3>
+    direkt FÖRE sitt steg; listan delas med <ol start="N">. SAMMA
+    maskin får förekomma FLERA gånger (Dough-ruta + Bake-ruta = två).
+16. ALTERNATIV FÖR SAMMA MOMENT (grädda i bakmaskin ELLER airfryer):
+    varje alternativ i eget .alt-block med egen maskinruta + egna steg,
+    och ett steg "välj A eller B – gör inte båda". Sajten märker själv
+    alternativen med 🔀 och ⏳-status.
+17. JÄST: skriv ALLTID "Färsk jäst" eller "Torrjäst" med gram.
+    Skriv ALDRIG egen konvertering – sajten visar "(≈ X g torrjäst)"
+    automatiskt med heltalsregeln.
+18. ALDRIG verifierings-metadata (recept:verifierad / recept:testad)
+    och ALDRIG ord som "verifierad/testad" om maskinerna i texten –
+    verifiering gör ENDAST ägaren efter verklig provlagning.
+19. SJÄLVKOLL innan du svarar (gå igenom TYST, skriv inte ut listan):
     ✓ svaret börjar med <!DOCTYPE html> och slutar med </html>?
     ✓ inga ```-block eller text runt filen? ✓ alla 5 meta-raderna?
     ✓ blötast överst? ✓ INGEN näringstabell/kcal-siffror i tabeller?
     ✓ bara riktiga program ur listan? ✓ site.js-raden sist?
-    ✓ portioner i beskrivningen? ✓ ⏱-tider i stegen?
+    ✓ portioner i beskrivningen OCH totalraden? ✓ ⏱-tider i stegen?
+    ✓ maskinrutor vid sina steg (ol start=N)? ✓ ingen egen jäst-
+    konvertering? ✓ inga verifierings-metas eller "verifierad"-ord?
     ✓ inga frågor eller kommentarer om ingrediens-matchning?
     Något ✗? Rätta INNAN du skickar.
 

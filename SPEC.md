@@ -2521,6 +2521,21 @@ data i json/, ALDRIG per receptfil.
     recept/brod/ (felvald kategori vid publicering) + kategori-meta
     rättad till brod.
 
+112. 🖨️ TRYCKSAKER I SVG + 📄 CHATT-MALL v2 — ✔️ KLAR (2026-11-01,
+    användarens order): A) "För utvecklare & AI"-rutan på startsidan
+    BORTTAGEN (SPEC/GitHub-länkarna; RECEPT-CHATT.md ligger kvar i
+    repot för ägaren). B) visitkort-fram.svg + visitkort-bak.svg
+    (85×55 mm) och flyer-a5.svg (148×210 mm) – HELT FRISTÅENDE:
+    loggan inbäddad som data-URI och QR-koden genererad som rena
+    SVG-rektanglar (inga externa anrop) → perfekta för tryckeri.
+    visitkort.html har nedladdnings-/utskriftsrad + flyer-
+    förhandsvisning. C) RECEPT-CHATT.md synkad till dagens standard
+    (v179): regler 14–18 nya – styckeantal i beskrivning+totalrad
+    (portionsvakten), maskinrutor VID sina steg med ol start=N
+    (samma maskin får förekomma flera gånger), .alt-block för
+    alternativmoment, jäst utan egen konvertering (sajten räknar),
+    ALDRIG verifierings-metas/ord; självkollen utökad.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
