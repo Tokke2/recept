@@ -3185,13 +3185,15 @@
   "Visitkort och flyer för Mitt Maskinkök – ladda ner eller skriv ut trycksakerna direkt.": "Visitenkarten und Flyer für Mitt Maskinkök – laden Sie die gedruckten Materialien direkt herunter oder drucken Sie sie aus.",
   "Omnämnda men saknas i tabellen": "Erwähnt, aber in der Tabelle nicht aufgeführt",
   "🏠 Till startsidan": "🏠 Zur Startseite",
-  "💡 Vanlig text eller HTML-kod? Stäng rutan och klistra in direkt i fältet – det är huvudvägen!": "💡 Einfacher Text oder HTML-Code? Schließen Sie das Feld und fügen Sie es direkt in das Feld ein – das ist der Hauptweg!"
+  "💡 Vanlig text eller HTML-kod? Stäng rutan och klistra in direkt i fältet – det är huvudvägen!": "💡 Einfacher Text oder HTML-Code? Schließen Sie das Feld und fügen Sie es direkt in das Feld ein – das ist der Hauptweg!",
+  "Hoppa till steg": "Zu den Schritten springen",
+  "📖 Recept med exakta maskinprogram": "📖 Rezepte mit exakten Maschinenprogrammen"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3184,
+ "_auto_genererade": 3186,
  "_senast_robot": "2026-11-01"
 }
