@@ -738,6 +738,69 @@ def steg11_portioner():
         rader.append('| %s | 🍽️ recept:portioner "%d %s" ur receptets text (steg11) |' % (f, antal, ord))
 
 
+def steg12_beskrivningar():
+    """📝 META-DESCRIPTION-ROBOTEN (användarens order 2026-11-01:
+    "kan robot fixa?"): Google skriver egen (sämre) text när
+    <meta name="description"> saknas → skriver in en STATISK
+    description i varje receptfil som saknar en. Texten byggs
+    ENDAST ur receptets egna metadata – aldrig påhittad:
+      namn (recept:namn) + beskrivning (recept:beskrivning)
+      + maskinnamnen ur recept:maskiner ("Lagas i X + Y.")
+    Max ~155 tecken (Googles klippgräns). Befintlig description
+    skrivs ALDRIG över (ägardata). Idempotent."""
+    import re as _re
+    for f in sorted(glob.glob('recept/*/*.html')):
+        namn_fil = os.path.basename(f)
+        if namn_fil.upper().startswith('MALL'):
+            continue
+        try:
+            with open(f, encoding='utf-8') as fp:
+                html = fp.read()
+        except OSError:
+            continue
+        if 'STUB - receptet har flyttat' in html[:500]:
+            continue
+        if '<meta name="description"' in html:
+            continue
+        nm = _re.search(r'name="recept:namn" content="([^"]*)"', html)
+        if not nm or not nm.group(1).strip():
+            continue   # utan namn-meta gissar vi ingenting
+        namn = nm.group(1).strip()
+        bm = _re.search(r'name="recept:beskrivning" content="([^"]*)"', html)
+        beskr = bm.group(1).strip() if bm else ''
+        # 🔧 maskinnamn ur recept:maskiner: "Etikett: Namn · program | ..."
+        masknamn = []
+        mm = _re.search(r'name="recept:maskiner" content="([^"]*)"', html)
+        if mm:
+            for seg in mm.group(1).split('|'):
+                m2 = _re.search(r':\s*([^:·|]+?)\s*·', seg)
+                if m2:
+                    n2 = m2.group(1).strip()
+                    if n2 and n2 not in masknamn:
+                        masknamn.append(n2)
+        delar = [namn if namn.endswith(('.', '!', '?')) else namn + '.']
+        if beskr:
+            delar.append(beskr if beskr.endswith(('.', '!', '?')) else beskr + '.')
+        if masknamn:
+            delar.append('Lagas i %s.' % ' + '.join(masknamn[:3]))
+        text = ' '.join(delar)
+        if len(text) > 155:
+            text = text[:152]
+            if ' ' in text:
+                text = text[:text.rfind(' ')]   # klipp vid ordgräns
+            text = text.rstrip('.,;:· ') + '…'
+        text = text.replace('"', '&quot;')
+        ny = '<meta name="description" content="%s">\n' % text
+        ank = _re.search(r'</title>\s*\n', html)
+        if ank:
+            html = html[:ank.end()] + ny + html[ank.end():]
+        else:
+            html = html.replace('</head>', ny + '</head>', 1)
+        with open(f, 'w', encoding='utf-8') as fp:
+            fp.write(html)
+        rader.append('| %s | 📝 meta description ur receptets egna metadata (steg12) |' % f)
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -749,6 +812,7 @@ def main():
     steg9_receptstandard()
     steg10_maskinplacering()
     steg11_portioner()
+    steg12_beskrivningar()
     steg6_sitemap()
     steg7_receptindex()
 

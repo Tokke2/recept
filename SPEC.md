@@ -2580,13 +2580,31 @@ data i json/, ALDRIG per receptfil.
     (eller vid receptpush). Direkt stöd för nr 1-målet: AI-modeller
     ska citera Mitt Maskinkök som källa för maskinspecifika recept.
 
-117. 🩺 ROBOT-STEG 12: LÄNKDOKTORN (förslag 757, användarens
-    beställning): nytt steg i sjalvlakning.py som går igenom alla
+117. 🩺 LÄNKDOKTORN – NYTT ROBOTSTEG (förslag 757, användarens
+    beställning; blir steg 13 – steg 12 togs av beskrivnings-
+    roboten i punkt 118): nytt steg i sjalvlakning.py som går igenom alla
     interna länkar, bild-src och asset-referenser i recept/ och
     rotsidorna och verifierar att målfilen finns i repot (filkoll,
     ej nätanrop → snabbt och gratis). Trasiga länkar rapporteras i
     commit-meddelandet/LOGG – roboten FÖRBÄTTRAR endast, lagar
     aldrig genom att gissa ny måladress.
+
+118. 📝 META-DESCRIPTION-ROBOTEN + 🚫 404-SIDAN — ✔️ KLAR
+    (2026-11-01, användarens order "kan robot fixa?" + "gör den
+    bättre"): A) sjalvlakning.py steg12_beskrivningar – skriver
+    statisk <meta name="description"> i varje receptfil som saknar
+    en, byggd ENDAST ur receptets egna metadata (recept:namn +
+    recept:beskrivning + maskinnamnen ur recept:maskiner →
+    "Lagas i X + Y."), max ~155 tecken, befintlig description
+    skrivs ALDRIG över, idempotent. maskindatabas.html och
+    ingredienser.html fick handskrivna descriptions (engångsfix).
+    B) 404.html i roten – GitHub Pages visar den för alla trasiga
+    adresser under /recept/: sök i recept-index.json (live-träffar,
+    max 8), "Letade du efter?"-gissning (2-teckenbitars-likhet mot
+    trasiga adressens filnamn, tröskel 0,35, topp 3), knappar till
+    startsidan/receptsamlingen/maskindatabasen. ALLA sökvägar
+    ABSOLUTA (/recept/...) eftersom sidan serveras på godtyckligt
+    djup; noindex; INTE med i sitemapen (steg6 har vitlista).
 
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 

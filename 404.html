@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<!-- PLATS: /404.html  (repo-roten – GitHub Pages visar denna för ALLA adresser som inte finns under /recept/) -->
+<!-- OBS: sidan kan visas på VILKET djup som helst → alla länkar/sökvägar är ABSOLUTA (/recept/...) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>404 – Sidan finns inte | Mitt Maskinkök</title>
+<link rel="icon" href="/recept/images/favicon-32.png">
+<style>
+  :root { --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:640px; margin:0 auto; }
+  header { background:linear-gradient(135deg,#c0392b,#e67e22); color:#fff; border-radius:16px; padding:30px; text-align:center; margin-bottom:18px; box-shadow:0 4px 14px rgba(0,0,0,.12); }
+  header img { width:72px; height:72px; border-radius:16px; margin-bottom:10px; }
+  header h1 { font-size:1.5rem; margin-bottom:6px; }
+  header p { opacity:.95; font-size:.95rem; }
+  .card { background:var(--card); border-radius:14px; padding:20px 22px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  .card h2 { font-size:1.05rem; margin-bottom:10px; }
+  #sok { width:100%; padding:12px 14px; font-size:16px; border:2px solid #e0d9cd; border-radius:10px; outline:none; }
+  #sok:focus { border-color:var(--accent2); }
+  #traffar a, #gissning a { display:block; padding:10px 12px; margin-top:8px; border:1px solid #eee; border-radius:10px;
+    text-decoration:none; color:var(--dark); background:#faf8f4; }
+  #traffar a:hover, #gissning a:hover { border-color:var(--accent2); background:#fff; }
+  #traffar small, #gissning small { color:var(--muted); }
+  .knappar { display:flex; flex-wrap:wrap; gap:10px; }
+  .knappar a { flex:1 1 150px; text-align:center; padding:13px 10px; border-radius:10px; text-decoration:none;
+    font-weight:600; color:#fff; background:var(--accent); }
+  .knappar a.gron { background:var(--green); }
+  .knappar a.bla { background:var(--dark); }
+  .tyst { color:var(--muted); font-size:.85rem; margin-top:8px; }
+  footer { text-align:center; color:var(--muted); font-size:.82rem; padding:16px 0 6px; }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="/recept/images/logo.png" alt="Mitt Maskinkök" onerror="this.outerHTML='<div style=&quot;font-size:3rem&quot;>🍳</div>'">
+  <h1>Hoppsan – den här sidan finns inte! 🔍</h1>
+  <p>Kanske har receptet flyttat, eller så blev länken fel skriven.</p>
+</header>
+
+<div class="card">
+  <h2>🔍 Sök i receptsamlingen</h2>
+  <input type="text" id="sok" placeholder="Skriv t.ex. frallor, pizzadeg, glass…" autocomplete="off">
+  <div id="traffar"></div>
+  <p class="tyst" id="sokstatus"></p>
+</div>
+
+<div class="card" id="gissruta" style="display:none;">
+  <h2>🤔 Letade du efter något av dessa?</h2>
+  <div id="gissning"></div>
+</div>
+
+<div class="card">
+  <h2>🧭 Eller gå direkt till</h2>
+  <div class="knappar">
+    <a href="/recept/">🏠 Startsidan</a>
+    <a class="gron" href="/recept/recept.html">📖 Receptsamlingen</a>
+    <a class="bla" href="/recept/maskindatabas.html">🔧 Maskindatabasen</a>
+  </div>
+</div>
+
+<footer>🍳 Mitt Maskinkök · verifierade recept för kökets maskiner</footer>
+
+<script>
+(function () {
+  'use strict';
+  var BAS = '/recept/';
+  var ALLA = [];                       /* [{fil, kategori, namn}] */
+  var KATEMOJI = { bakning:'🧁', brod:'🍞', deg:'🥟', efterratt:'🍮', glass:'🍦',
+                   husdjur:'🐶', ovrigt:'🍴', saft:'🧃', snacks:'🥨', sylt:'🫙', varmratt:'🍲' };
+
+  /* Filnamn → läsbart namn: "majsfrallor-bakmaskin.html" → "Majsfrallor bakmaskin" */
+  function lasbart(fil) {
+    var n = fil.split('/').pop().replace(/\.html?$/i, '').replace(/[-_]+/g, ' ').trim();
+    return n.charAt(0).toUpperCase() + n.slice(1);
+  }
+  function lank(r) {
+    var url = BAS + 'recept/' + r.fil.split('/').map(encodeURIComponent).join('/');
+    var em = KATEMOJI[r.kategori] || '🍴';
+    return '<a href="' + url + '">' + em + ' ' + r.namn +
+           ' <small>· ' + r.kategori + '</small></a>';
+  }
+
+  /* Enkel likhet: andel gemensamma 2-teckenbitar (för "letade du efter?") */
+  function bitar(s) {
+    var b = {}, i; s = s.toLowerCase();
+    for (i = 0; i < s.length - 1; i++) b[s.substr(i, 2)] = 1;
+    return b;
+  }
+  function likhet(a, b) {
+    var A = bitar(a), B = bitar(b), tr = 0, tot = 0, k;
+    for (k in A) { tot++; if (B[k]) tr++; }
+    return tot ? tr / tot : 0;
+  }
+
+  function visaTraffar() {
+    var q = (document.getElementById('sok').value || '').trim().toLowerCase();
+    var ut = document.getElementById('traffar');
+    var st = document.getElementById('sokstatus');
+    if (q.length < 2) { ut.innerHTML = ''; st.textContent = ''; return; }
+    var tr = ALLA.filter(function (r) {
+      return (r.namn + ' ' + r.kategori).toLowerCase().indexOf(q) !== -1;
+    }).slice(0, 8);
+    ut.innerHTML = tr.map(lank).join('');
+    st.textContent = tr.length ? tr.length + ' träff(ar)' :
+      'Inga träffar – prova receptsamlingens fulla sök.';
+  }
+
+  function gissa() {
+    /* Jämför trasiga adressens sista bit med alla receptfilnamn */
+    var del = decodeURIComponent(location.pathname.split('/').pop() || '')
+                .replace(/\.html?$/i, '');
+    if (del.length < 4) return;
+    var kand = ALLA.map(function (r) {
+      return { r: r, p: likhet(del, r.fil.split('/').pop()) };
+    }).filter(function (x) { return x.p >= 0.35; })
+      .sort(function (a, b) { return b.p - a.p; }).slice(0, 3);
+    if (!kand.length) return;
+    document.getElementById('gissning').innerHTML =
+      kand.map(function (x) { return lank(x.r); }).join('');
+    document.getElementById('gissruta').style.display = '';
+  }
+
+  fetch(BAS + 'json/recept-index.json')
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      ALLA = (d.recept || []).map(function (r) {
+        return { fil: r.fil, kategori: r.kategori, namn: lasbart(r.fil) };
+      });
+      gissa();
+    })
+    .catch(function () {
+      document.getElementById('sokstatus').textContent =
+        'Kunde inte ladda receptlistan – använd knapparna nedan.';
+    });
+
+  document.getElementById('sok').addEventListener('input', visaTraffar);
+})();
+</script>
+
+</body>
+</html>
