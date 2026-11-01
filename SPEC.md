@@ -2422,6 +2422,20 @@ data i json/, ALDRIG per receptfil.
     den maskinen). Knappen är runtime (.mk-verifdel) – städas av
     buildCleanHtml.
 
+103. 🔁 SAMMA MASKIN FLERA GÅNGER + 🦠 JÄST I KOCKLÄGET — ✔️ KLAR
+    (2026-10-31, användarens regler): A) HTML-analysen fångar nu
+    maskinrubrikerna som MASKINDIREKTIV med stegposition (PARSED.
+    mbox) – varje rubrik i källan blir en EGEN maskinruta med
+    explicit program; Clatronic "8 Dough" + Clatronic "12 Bake" =
+    TVÅ rutor på rätt platser (tidigare försvann Dough-steget helt:
+    "Starta Program 8 Dough" nämner ingen maskin → inget ankare).
+    Direktiven vinner; stegMaskiner fyller bara på för maskiner/
+    positioner som saknas. B) Kockläget visar jästkonverteringen:
+    ny hjälpare __MK_JAST_ALT i jast.js (heltalsregel + flingskydd)
+    används i stegchipsen ("Färsk jäst · 12 g (≈ 4 g torrjäst)"),
+    och 🧾-panelen läser tabellen FÄRSKT vid öppning så radtipsen
+    följer med.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

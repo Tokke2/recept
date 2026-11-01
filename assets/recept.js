@@ -51,6 +51,7 @@
 
   /* ================== INGREDIENSER (panel + per-steg-mängder) ================== */
   var ingHTML = '';
+  var ingTabellEl = null;   /* 🦠 elementet sparas → panelen läses FÄRSKT vid kockläges-öppning (jästtips m.m. kommer med) */
   var ingList = [];   // [{namn, mangd}] för matchning mot stegtext
   var tables = document.querySelectorAll('.card table');
   for (var ti = 0; ti < tables.length; ti++) {
@@ -58,6 +59,7 @@
     var h = card && card.querySelector('h2');
     if (h && /ingrediens/i.test(h.textContent)) {
       ingHTML = tables[ti].outerHTML;
+      ingTabellEl = tables[ti];
       var rows = tables[ti].querySelectorAll('tr');
       for (var ri = 0; ri < rows.length; ri++) {
         /* v2-tabell (ingrediens.js): data-namn/data-mangd på raden */
@@ -473,9 +475,11 @@
           if (!used.length) return '';
           return '<div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;">' +
             used.map(function (ing) {
+              /* 🦠 jästkonvertering även i kockläget (användarens regel) */
+              var jastAlt = window.__MK_JAST_ALT ? window.__MK_JAST_ALT(ing.namn, ing.mangd) : '';
               return '<span style="background:rgba(39,174,96,.25);border:1px solid rgba(39,174,96,.6);' +
                 'border-radius:999px;padding:6px 14px;font-size:.95rem;font-weight:700;">' +
-                ing.namn.replace(/\([^)]*\)/g, '').trim() + ' · ' + ing.mangd + '</span>';
+                ing.namn.replace(/\([^)]*\)/g, '').trim() + ' · ' + ing.mangd + jastAlt + '</span>';
             }).join('') + '</div>';
         })() +
       '</div>' +
@@ -496,7 +500,7 @@
       /* Ingredienspanel (dold) */
       (ingHTML ? '<div id="cmIngPanel" style="display:none;position:absolute;inset:56px 16px 16px;background:#fff;color:#2c3e50;border-radius:14px;padding:18px;overflow:auto;z-index:5;box-shadow:0 10px 40px rgba(0,0,0,.5);">' +
         '<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><b>🧾 Ingredienser</b>' +
-        '<button id="cmIngClose" style="background:#2c3e50;color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;">✕</button></div>' + ingHTML + '</div>' : '');
+        '<button id="cmIngClose" style="background:#2c3e50;color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;">✕</button></div>' + (ingTabellEl ? ingTabellEl.outerHTML : ingHTML) + '</div>' : '');
 
     /* Händelser */
     overlay.querySelector('#cmClose').onclick = close;

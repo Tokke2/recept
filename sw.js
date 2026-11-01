@@ -22,7 +22,7 @@
    ============================================================ */
 'use strict';
 
-const VERSION = 'maskinkok-v174';
+const VERSION = 'maskinkok-v175';
 const CACHE_CORE = VERSION + '-core';     // assets + startsida (förcachas)
 const CACHE_PAGES = VERSION + '-pages';   // recept & övriga sidor
 const CACHE_IMG = VERSION + '-img';       // bilder

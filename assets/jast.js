@@ -234,6 +234,23 @@
     } catch (e) {}
   }
 
+  /* 🧑‍🍳 KOCKLÄGETS JÄSTVISNING (användarens regel: "i kockläge ska
+     den visas färsk jäst/torrjäst också"): hjälpare som andra
+     moduler (recept.js) anropar för ingredienschips/paneler.
+     Returnerar ' (≈ 3 g torrjäst)' eller '' – samma heltalsregel
+     och flingskydd som allt annat. */
+  window.__MK_JAST_ALT = function (namn, mangd) {
+    namn = String(namn || ''); mangd = String(mangd || '');
+    if (!JAST_RE.test(namn) || EJ_RE.test(namn)) return '';
+    if (/torrjäst|torr jäst|färsk/i.test(mangd)) return '';   /* andra formen redan nämnd */
+    var m = mangd.match(/([\d.,]+)\s*g\b/i);
+    var g = m ? parseFloat(m[1].replace(',', '.')) : 0;
+    if (!g) return '';
+    return /torr/i.test(namn)
+      ? ' (≈ ' + fmtG(g * FAKTOR) + ' färsk jäst)'
+      : ' (≈ ' + fmtG(g / FAKTOR) + ' torrjäst)';
+  };
+
   /* tabellen kan byggas om av andra moduler – försök lugnt några gånger */
   var forsok = 0;
   var iv = setInterval(function () {
