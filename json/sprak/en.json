@@ -3070,7 +3070,8 @@
   "Lägg till en köksmaskin i maskindatabasen via produktlänk – program, tider och manual verifieras mot bruksanvisningen.": "Add a kitchen machine to the machine database via product link - programs, times and manual are verified against the user manual.",
   "Visitkort och flyer för Mitt Maskinkök – ladda ner eller skriv ut trycksakerna direkt.": "Business cards and flyers for Mitt Maskinkök - download or print the printed materials directly.",
   "Omnämnda men saknas i tabellen": "Mentioned but missing from the table",
-  "🏠 Till startsidan": "🏠 To the start page"
+  "🏠 Till startsidan": "🏠 To the start page",
+  "💡 Vanlig text eller HTML-kod? Stäng rutan och klistra in direkt i fältet – det är huvudvägen!": "💡 Plain text or HTML code? Close the box and paste directly into the field - that's the main way!"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3080,6 +3081,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3069,
+ "_auto_genererade": 3070,
  "_senast_robot": "2026-11-01"
 }
