@@ -2985,13 +2985,16 @@
   "🥖 Snabba frallor – Bakmaskin": "🥖 Schnelle Brötchen – Backmaschine",
   "🥖 Snabba frallor – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🥖 Schnelle Brötchen – Backmaschine – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche",
   "Admin har verifierat receptet": "Der Administrator hat das Rezept überprüft",
-  "Admin har verifierat receptet i denna maskin": "Der Administrator hat das Rezept in dieser Maschine überprüft"
+  "Admin har verifierat receptet i denna maskin": "Der Administrator hat das Rezept in dieser Maschine überprüft",
+  "(≈ 3 g torrjäst)": "(≈ 3 g Trockenhefe)",
+  "färsk jäst)": "frische Hefe)",
+  "torrjäst)": "Trockenhefe)"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 2984,
- "_senast_robot": "2026-10-31"
+ "_auto_genererade": 2987,
+ "_senast_robot": "2026-11-01"
 }
