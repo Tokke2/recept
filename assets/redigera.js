@@ -356,10 +356,10 @@
       '<h4>' + namn.slice(0, 30) + '</h4>' +
       (q ? '<div class="qrow">' +
         '<button class="qbtn minus" data-d="-' + step + '">−' + step + '</button>' +
-        '<input type="text" id="mk-qty-in" value="' + q.n + '"><span style="font-size:.85rem;color:#7f8c8d;">' + q.unit + '</span>' +
+        '<input type="text" id="mk-qty-in" value="' + q.n + '"><span style="font-size:.85rem;color:#5f6e70;">' + q.unit + '</span>' +
         '<button class="qbtn plus" data-d="' + step + '">+' + step + '</button></div>' +
         '<button class="qok" id="mk-qty-ok">✔ Ändra mängden</button>'
-        : '<p style="font-size:.8rem;color:#7f8c8d;margin:0 0 8px;">Ingen mängd hittades på raden.</p>') +
+        : '<p style="font-size:.8rem;color:#5f6e70;margin:0 0 8px;">Ingen mängd hittades på raden.</p>') +
       '<button class="qdel" id="mk-qty-del">🗑️ Ta bort ingrediensen</button>' +
       '<button id="mk-qty-avbryt" style="width:100%;margin-top:6px;background:#ecf0f1;color:#2c3e50;border:none;border-radius:9px;padding:8px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.82rem;">✕ Avbryt</button>';
     if (q) menu.setAttribute('data-orig', String(q.n));
@@ -977,7 +977,7 @@
       b.setAttribute('data-i', i);
       b.style.cssText = 'display:block;width:100%;text-align:left;border:none;background:none;' +
         'border-radius:8px;padding:6px 9px;cursor:pointer;font-family:inherit;font-size:.84rem;color:#2c3e50;';
-      b.innerHTML = '<b>' + ing.namn + '</b> <span style="font-size:.72rem;color:#7f8c8d;">' +
+      b.innerHTML = '<b>' + ing.namn + '</b> <span style="font-size:.72rem;color:#5f6e70;">' +
         (+ing.kcal || 0) + ' kcal · ' + (+ing.pris_kr_per_kg || 0) + ' kr/kg</span>';
       b.onmouseenter = function () { markSok(i); };
       b.onclick = function () { pickSok(ing); };
@@ -1529,7 +1529,7 @@
         '<div style="font-size:2.4rem;">\uD83D\uDDD1\uFE0F</div>' +
         '<h3 style="margin:8px 0 6px;">Ta bort hela receptet?</h3>' +
         '<p style="font-size:.92rem;margin:0 0 6px;"><b>\u201C' + rNamn + '\u201D</b></p>' +
-        '<p style="font-size:.85rem;color:#7f8c8d;margin:0 0 14px;">Raderas permanent fr\u00e5n sajten (GitHub). Detta g\u00e5r inte att \u00e5ngra h\u00e4rifr\u00e5n.</p>' +
+        '<p style="font-size:.85rem;color:#5f6e70;margin:0 0 14px;">Raderas permanent fr\u00e5n sajten (GitHub). Detta g\u00e5r inte att \u00e5ngra h\u00e4rifr\u00e5n.</p>' +
         '<label style="display:flex;align-items:center;gap:10px;background:#fdecea;border:1.5px solid #c0392b;border-radius:10px;padding:10px 14px;font-size:.88rem;cursor:pointer;text-align:left;">' +
           '<input type="checkbox" id="mk-del-chk" style="width:20px;height:20px;accent-color:#c0392b;flex-shrink:0;">' +
           'Ja, jag \u00e4r s\u00e4ker \u2013 ta bort receptet permanent</label>' +
@@ -1585,7 +1585,7 @@
           '<div style="max-width:520px;margin:15vh auto;text-align:center;font-family:Segoe UI,system-ui,sans-serif;padding:20px;">' +
           '<div style="font-size:3rem;">\uD83D\uDDD1\uFE0F</div>' +
           '<h2 style="color:#2c3e50;margin:10px 0;">Receptet \u00e4r borttaget</h2>' +
-          '<p style="color:#7f8c8d;">\u201C' + rNamn + '\u201D raderades fr\u00e5n sajten. Det f\u00f6rsvinner ur receptsamlingen om ~1 minut (gr\u00f6n bock i Actions).</p>' +
+          '<p style="color:#5f6e70;">\u201C' + rNamn + '\u201D raderades fr\u00e5n sajten. Det f\u00f6rsvinner ur receptsamlingen om ~1 minut (gr\u00f6n bock i Actions).</p>' +
           '<p style="color:#2c3e50;font-weight:700;">\uD83C\uDFE0 Du skickas till startsidan om <span id="mk-del-nedr">3</span> s\u2026</p>' +
           '<a href="' + rot + 'index.html" style="display:inline-block;margin-top:10px;background:#27ae60;color:#fff;text-decoration:none;border-radius:12px;padding:12px 26px;font-weight:700;">\uD83C\uDFE0 Till startsidan nu</a></div>';
         var kvar = 3;
@@ -1676,13 +1676,13 @@
       '<div style="background:#fff;color:#2c3e50;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.4);width:min(760px,96vw);max-height:92vh;display:flex;flex-direction:column;padding:clamp(14px,3vw,22px);gap:10px;">' +
         '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
           '<b style="font-size:clamp(1rem,2.6vw,1.15rem);">📋 Ersätt receptet med inklistrad HTML</b>' +
-          '<span style="font-size:.76rem;color:#7f8c8d;flex:1;min-width:140px;">sparas som <b>/recept/' + nuv + '</b></span>' +
+          '<span style="font-size:.76rem;color:#5f6e70;flex:1;min-width:140px;">sparas som <b>/recept/' + nuv + '</b></span>' +
         '</div>' +
-        '<div style="font-size:.8rem;color:#7f8c8d;line-height:1.5;">Klistra in HELA den nya receptfilen (från <code>&lt;!DOCTYPE html&gt;</code> till <code>&lt;/html&gt;</code>). ' +
+        '<div style="font-size:.8rem;color:#5f6e70;line-height:1.5;">Klistra in HELA den nya receptfilen (från <code>&lt;!DOCTYPE html&gt;</code> till <code>&lt;/html&gt;</code>). ' +
           'Sökvägar och PLATS-raden rättas automatiskt till rätt mapp. Gamla versionen finns kvar i GitHub-historiken.</div>' +
         '<textarea id="mk-paste-ta" spellcheck="false" placeholder="<!DOCTYPE html>&#10;<html lang=&quot;sv&quot;>&#10;..." ' +
           'style="flex:1;min-height:clamp(180px,38vh,340px);resize:vertical;border:2px solid #e8e2d8;border-radius:10px;padding:12px;font-family:ui-monospace,Consolas,monospace;font-size:.78rem;line-height:1.45;outline:none;"></textarea>' +
-        '<div id="mk-paste-info" style="font-size:.8rem;min-height:1.2em;color:#7f8c8d;">Väntar på inklistring…</div>' +
+        '<div id="mk-paste-info" style="font-size:.8rem;min-height:1.2em;color:#5f6e70;">Väntar på inklistring…</div>' +
         '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
           '<button id="mk-paste-klipp" style="background:#f0ebe3;color:#2c3e50;border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85rem;">📥 Hämta från urklipp</button>' +
           '<span style="flex:1;"></span>' +

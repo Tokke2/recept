@@ -670,8 +670,8 @@
     var box = document.createElement('div');
     box.className = 'card no-print';
     box.innerHTML = '<h2 style="font-size:1.05rem;margin-bottom:8px;">📚 Se även</h2>' +
-      (same.length ? '<div style="font-size:.8rem;color:#7f8c8d;margin:6px 0 2px;">Fler recept för samma maskin:</div>' + same.map(chip).join('') : '') +
-      (similar.length ? '<div style="font-size:.8rem;color:#7f8c8d;margin:10px 0 2px;">Liknande recept:</div>' + similar.map(chip).join('') : '');
+      (same.length ? '<div style="font-size:.8rem;color:#5f6e70;margin:6px 0 2px;">Fler recept för samma maskin:</div>' + same.map(chip).join('') : '') +
+      (similar.length ? '<div style="font-size:.8rem;color:#5f6e70;margin:10px 0 2px;">Liknande recept:</div>' + similar.map(chip).join('') : '');
     var footer = document.querySelector('footer');
     if (footer) footer.parentNode.insertBefore(box, footer);
     else document.body.appendChild(box);

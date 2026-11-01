@@ -139,7 +139,7 @@
       '<div style="background:#fff;border-radius:16px;max-width:440px;width:100%;padding:24px 26px;' +
         'font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;max-height:90vh;overflow-y:auto;">' +
         '<h3 style="margin:0 0 4px;">⚖️ Skala satsen</h3>' +
-        '<p style="font-size:.82rem;color:#7f8c8d;margin:0 0 14px;">Alla mängder räknas om på skärmen – receptfilen ändras inte.</p>' +
+        '<p style="font-size:.82rem;color:#5f6e70;margin:0 0 14px;">Alla mängder räknas om på skärmen – receptfilen ändras inte.</p>' +
 
         '<div style="display:flex;gap:8px;margin-bottom:14px;">' +
           '<button class="sk-snabb" data-f="0.5" style="flex:1;background:#f0ebe3;border:none;border-radius:10px;padding:12px;font-weight:800;font-size:1rem;cursor:pointer;font-family:inherit;">×½</button>' +
@@ -157,7 +157,7 @@
         (ings.length ? (
         '<div style="border-top:2px dashed #e8e2d8;padding-top:14px;">' +
           '<label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:4px;">🧮 Skörde-läge: utgå från det DU har</label>' +
-          '<p style="font-size:.78rem;color:#7f8c8d;margin:0 0 8px;">Välj din huvudråvara och ange hur mycket du har – hela receptet följer med.</p>' +
+          '<p style="font-size:.78rem;color:#5f6e70;margin:0 0 8px;">Välj din huvudråvara och ange hur mycket du har – hela receptet följer med.</p>' +
           '<select id="sk-ing" style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.9rem;font-family:inherit;margin-bottom:8px;">' +
             ings.map(function (x, i) {
               return '<option value="' + i + '">' + x.namn + ' (receptet: ' + x.visning + ')</option>';

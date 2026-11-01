@@ -234,7 +234,7 @@
         'background:#fff;border:2px solid #e8e2d8;border-radius:12px;padding:8px 14px;min-width:110px;text-align:center;">' +
         '<span style="font-size:1.3rem;">' + kedjeIkon(moment + ' ' + resten) + '</span>' +
         '<b style="font-size:.78rem;">' + moment + '</b>' +
-        '<span style="font-size:.7rem;color:#7f8c8d;max-width:150px;">' + resten + '</span></span>';
+        '<span style="font-size:.7rem;color:#5f6e70;max-width:150px;">' + resten + '</span></span>';
     }).join('<span style="font-size:1.3rem;color:#e67e22;font-weight:800;align-self:center;">→</span>');
 
     var rad = document.createElement('div');

@@ -221,7 +221,7 @@
       '.mk-kb-cover h1{font-size:2.3rem;margin:12px 0 6px;' +
         'background:linear-gradient(135deg,#c0392b,#e67e22);color:#fff;display:inline-block;' +
         'padding:16px 38px;border-radius:18px;}' +
-      '.mk-kb-cover p{color:#7f8c8d;font-size:1rem;margin-top:10px;}' +
+      '.mk-kb-cover p{color:#5f6e70;font-size:1rem;margin-top:10px;}' +
       '.mk-kb-toc{page-break-after:always;padding-top:20px;}' +
       '.mk-kb-toc h2{font-size:1.5rem;border-bottom:3px double #c9b99a;padding-bottom:8px;margin-bottom:16px;}' +
       '.toc-row{font-size:1.05rem;padding:8px 4px;border-bottom:1px dotted #d5cbb8;}' +

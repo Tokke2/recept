@@ -122,21 +122,21 @@
         '<div style="font-size:2.4rem;">' + (datum ? '\u2605' : '👨‍🍳') + '</div>' +
         (datum
           ? '<h3 style="margin:6px 0;color:#2c3e50;">Receptet är verifierat (' + datum + ')</h3>' +
-            '<p style="font-size:.88rem;color:#7f8c8d;margin:0 0 14px;">Vill du ta bort verifieringen (t.ex. efter en större receptändring) eller uppdatera datumet till idag?</p>' +
+            '<p style="font-size:.88rem;color:#5f6e70;margin:0 0 14px;">Vill du ta bort verifieringen (t.ex. efter en större receptändring) eller uppdatera datumet till idag?</p>' +
             '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
               '<button id="vf-idag" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-family:inherit;">\u2605 Bakat igen idag</button>' +
               '<button id="vf-bort" style="flex:1;background:#c0392b;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-family:inherit;">✖ Ta bort</button>' +
               '<button id="vf-avbryt" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-family:inherit;">Avbryt</button>' +
             '</div>'
           : '<h3 style="margin:6px 0;color:#2c3e50;">Har du bakat & godkänt receptet?</h3>' +
-            '<p style="font-size:.88rem;color:#7f8c8d;margin:0 0 14px;">Receptet märks som <b style="color:#27ae60;">\u2605 Verifierat</b> med dagens datum – den gröna stjärnan visas uppe i hörnet på receptet och på receptkortet för alla besökare.</p>' +
+            '<p style="font-size:.88rem;color:#5f6e70;margin:0 0 14px;">Receptet märks som <b style="color:#27ae60;">\u2605 Verifierat</b> med dagens datum – den gröna stjärnan visas uppe i hörnet på receptet och på receptkortet för alla besökare.</p>' +
             '<div style="display:flex;gap:10px;">' +
               '<button id="vf-ja" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-family:inherit;">\u2605 Ja – verifiera!</button>' +
               '<button id="vf-avbryt" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-family:inherit;">Avbryt</button>' +
             '</div>') +
         /* 📷 Bild på baket – frivillig, laddas upp ihop med verifieringen */
         '<div style="margin-top:14px;border-top:1.5px solid #f0ebe3;padding-top:12px;text-align:left;">' +
-          '<label style="display:block;font-size:.78rem;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">📷 Bild på baket/rätten (frivilligt)</label>' +
+          '<label style="display:block;font-size:.78rem;font-weight:700;color:#5f6e70;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">📷 Bild på baket/rätten (frivilligt)</label>' +
           /* 📱 TVÅ vägar (användarens beställning): direkt till mobilens
              KAMERA (capture) eller galleri/fil – funkar i PWA-appen. */
           '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
@@ -146,7 +146,7 @@
               '<input type="file" id="vf-bild" accept="image/*" style="display:none;"></label>' +
           '</div>' +
           '<div id="vf-bild-preview" style="margin-top:8px;"></div>' +
-          '<div style="font-size:.72rem;color:#7f8c8d;margin-top:4px;">Bilden krymps automatiskt till minsta möjliga (max 1200 px, smart JPEG-kvalitet, mål ≤ 250 kB) och blir receptets bild. Befintlig bild ersätts.</div>' +
+          '<div style="font-size:.72rem;color:#5f6e70;margin-top:4px;">Bilden krymps automatiskt till minsta möjliga (max 1200 px, smart JPEG-kvalitet, mål ≤ 250 kB) och blir receptets bild. Befintlig bild ersätts.</div>' +
         '</div>' +
         '<div id="vf-result" style="margin-top:10px;font-size:.85rem;"></div>' +
       '</div>';
@@ -265,7 +265,7 @@
       } catch (e) { bildRes = { ok: false, error: e.message }; }
       if (!bildRes.ok) {
         out.innerHTML = '<span style="color:#c0392b;">⚠️ Bilden kunde inte laddas upp: ' + bildRes.error + '</span>' +
-          (baraBild ? '' : '<br><span style="color:#7f8c8d;">Verifieringen fortsätter ändå...</span>');
+          (baraBild ? '' : '<br><span style="color:#5f6e70;">Verifieringen fortsätter ändå...</span>');
         if (baraBild) return;   /* bara bild begärd och den misslyckades → stanna */
       }
       if (!baraBild) out.innerHTML += '<br>⏳ Sparar verifieringen...';

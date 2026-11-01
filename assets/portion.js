@@ -86,7 +86,7 @@
 
     var inp = 'width:74px;padding:7px 9px;border:2px solid #e8e2d8;border-radius:9px;font-size:.95rem;' +
       'font-family:inherit;text-align:right;font-weight:700;';
-    var lbl = 'font-size:.72rem;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;';
+    var lbl = 'font-size:.72rem;font-weight:700;color:#5f6e70;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;';
     var stepBtn = 'width:34px;height:38px;border:none;border-radius:9px;background:#f0ebe3;color:#2c3e50;' +
       'font-size:1.1rem;font-weight:800;cursor:pointer;font-family:inherit;';
 
@@ -129,7 +129,7 @@
         '🍞 ' + fmt(perG.kolh * g) + ' g kolh · ' +
         '🧈 ' + fmt(perG.fett * g) + ' g fett · ' +
         '💰 ' + fmt(perG.kr * g, 2) + ' kr';
-      var rad2 = '<span style="color:#7f8c8d;font-size:.82rem;">Hela satsen' + (f !== 1 ? ' (×' + fmt(f) + ')' : '') + ': ' +
+      var rad2 = '<span style="color:#5f6e70;font-size:.82rem;">Hela satsen' + (f !== 1 ? ' (×' + fmt(f) + ')' : '') + ': ' +
         fmt(tot.g * f, 0) + ' g · ' + fmt(tot.kcal * f, 0) + ' kcal · ' + fmt(tot.kr * f, 2) + ' kr → ' +
         fmt((tot.g * f) / g, 0) + ' portioner à ' + fmt(g, 0) + ' g</span>';
       var rad3 = '';
@@ -139,7 +139,7 @@
           var skivG = tot.g * f * (tj / lg);
           rad3 = '<br>🍞 <b>Per skiva (' + String(tj).replace('.', ',') + ' cm):</b> ≈ ' + fmt(skivG, 0) + ' g · ' +
             '<b>' + fmt(perG.kcal * skivG, 0) + ' kcal</b> · ' + fmt(perG.prot * skivG) + ' g protein · ' +
-            fmt(perG.kr * skivG, 2) + ' kr <span style="color:#7f8c8d;font-size:.82rem;">(' +
+            fmt(perG.kr * skivG, 2) + ' kr <span style="color:#5f6e70;font-size:.82rem;">(' +
             fmt(lg / tj, 0) + ' skivor på limpan)</span>';
         }
       }

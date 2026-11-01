@@ -178,18 +178,18 @@
       '<div style="background:#fff;border-radius:16px;max-width:420px;width:100%;padding:24px 26px;' +
         'font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
         '<h3 style="margin:0 0 4px;">🏷️ Burketiketter</h3>' +
-        '<p style="font-size:.82rem;color:#7f8c8d;margin:0 0 14px;">Skrivs ut på A4 – klipp efter de streckade linjerna. QR-koden öppnar receptet.</p>' +
+        '<p style="font-size:.82rem;color:#5f6e70;margin:0 0 14px;">Skrivs ut på A4 – klipp efter de streckade linjerna. QR-koden öppnar receptet.</p>' +
         '<label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:4px;">Storlek</label>' +
         '<select id="et-storlek" style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.9rem;font-family:inherit;margin-bottom:12px;">' +
           Object.keys(STORLEKAR).map(function (k, i) {
             return '<option value="' + k + '"' + (k === 'mellan' ? ' selected' : '') + '>' + STORLEKAR[k].namn +
               (STORLEKAR[k].qr ? ' – med QR' : ' – utan QR') + '</option>';
           }).join('') + '</select>' +
-        '<label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:4px;">Antal etiketter <span style="font-weight:400;color:#7f8c8d;">(A4: klipps ur arket · etikettskrivare: matas en och en)</span></label>' +
+        '<label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:4px;">Antal etiketter <span style="font-weight:400;color:#5f6e70;">(A4: klipps ur arket · etikettskrivare: matas en och en)</span></label>' +
         '<input id="et-antal" type="number" min="1" max="24" value="6" style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.9rem;font-family:inherit;margin-bottom:12px;">' +
         '<label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:4px;">🍳 Tillagningsdatum</label>' +
         '<input id="et-datum" type="text" value="' + idag + '" style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.9rem;font-family:inherit;margin-bottom:12px;">' +
-        '<label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:4px;">📅 Bäst före <span style="font-weight:400;color:#7f8c8d;">(räknas ut av receptet – ändra fritt)</span></label>' +
+        '<label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:4px;">📅 Bäst före <span style="font-weight:400;color:#5f6e70;">(räknas ut av receptet – ändra fritt)</span></label>' +
         '<input id="et-bastfore" type="text" value="' + (autoBf ? autoBf.datum : '') + '" placeholder="lämna tomt för att utelämna" style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.9rem;font-family:inherit;margin-bottom:4px;">' +
         (autoBf ? '<p style="font-size:.74rem;color:#27ae60;margin:0 0 12px;">🤖 ' + autoBf.dagar + ' dagar (' + autoBf.forvaring + ') utifrån recepttypen</p>' : '<p style="margin:0 0 12px;"></p>') +
         '<label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:4px;">Extra rad (valfritt)</label>' +

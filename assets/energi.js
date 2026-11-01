@@ -155,7 +155,7 @@
         '<tr class="total"><td colspan="4">Totalt' + (incomplete ? ' (ofullständigt)' : '') +
           '</td><td>~' + totalKwh.toFixed(2) + ' kWh</td><td>~' + kr(totalKr) + '</td></tr>' +
       '</table>' +
-      '<p style="font-size:.8rem;color:#7f8c8d;margin-top:8px;">Energidata: json/energi.json · Effekt: json/maskiner/ · Elpris ' +
+      '<p style="font-size:.8rem;color:#5f6e70;margin-top:8px;">Energidata: json/energi.json · Effekt: json/maskiner/ · Elpris ' +
         String(price).replace('.', ',') + ' kr/kWh (json/maskindatabas.json) – allt centralt, inga recept behöver ändras.</p>';
 
     var anchor = document.getElementById('betyg') || document.querySelector('footer');

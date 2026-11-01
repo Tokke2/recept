@@ -156,14 +156,14 @@
           '<h3 style="margin:6px 0 10px;text-align:center;">Lägg Maskinkök på hemskärmen</h3>' +
           (arIos
             ? '<ol style="font-size:.92rem;line-height:1.8;padding-left:22px;margin:0 0 12px;">' +
-              '<li>Tryck på <b>Dela-knappen</b> <span style="border:1.5px solid #7f8c8d;border-radius:6px;padding:0 7px;">⎋</span> längst ner i Safari</li>' +
+              '<li>Tryck på <b>Dela-knappen</b> <span style="border:1.5px solid #5f6e70;border-radius:6px;padding:0 7px;">⎋</span> längst ner i Safari</li>' +
               '<li>Bläddra ner och välj <b>”Lägg till på hemskärmen”</b> ➕</li>' +
               '<li>Tryck <b>Lägg till</b> – klart! 🎉</li></ol>'
             : '<ol style="font-size:.92rem;line-height:1.8;padding-left:22px;margin:0 0 12px;">' +
               '<li>Öppna webbläsarens <b>meny</b> (⋮ eller ☰ uppe i hörnet)</li>' +
               '<li>Välj <b>”Installera app”</b> eller <b>”Lägg till på startskärmen”</b></li>' +
               '<li>Bekräfta – klart! 🎉</li></ol>') +
-          '<p style="font-size:.8rem;color:#7f8c8d;margin:0 0 12px;text-align:center;">Som app öppnas recepten i helskärm och funkar <b>offline i köket</b> – även utan täckning.</p>' +
+          '<p style="font-size:.8rem;color:#5f6e70;margin:0 0 12px;text-align:center;">Som app öppnas recepten i helskärm och funkar <b>offline i köket</b> – även utan täckning.</p>' +
           '<button id="mk-pwa-ok" style="display:block;width:100%;background:#c0392b;color:#fff;border:none;border-radius:11px;padding:13px;font-weight:700;font-size:.95rem;cursor:pointer;font-family:inherit;">Jag förstår</button>' +
         '</div>';
       document.body.appendChild(bg);

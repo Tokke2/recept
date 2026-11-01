@@ -93,7 +93,7 @@
     bg.innerHTML =
       '<div style="background:#fff;border-radius:16px;max-width:440px;width:100%;padding:22px 26px;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
         '<h3 style="margin:0 0 4px;">🔧 Funkade receptet i din maskin?</h3>' +
-        '<p style="font-size:.82rem;color:#7f8c8d;margin:0 0 12px;">Hjälp andra: rapportera att receptet fungerade i en maskin som inte står i receptet (t.ex. GreenPan Frost till glassen).</p>' +
+        '<p style="font-size:.82rem;color:#5f6e70;margin:0 0 12px;">Hjälp andra: rapportera att receptet fungerade i en maskin som inte står i receptet (t.ex. GreenPan Frost till glassen).</p>' +
         '<label style="display:block;font-size:.8rem;font-weight:700;margin-bottom:3px;">Maskin</label>' +
         '<select id="km-maskin" style="width:100%;padding:10px;border:2px solid #e8e2d8;border-radius:9px;font-family:inherit;font-size:.9rem;margin-bottom:10px;">' +
           maskiner.map(function (m) { return '<option>' + esc((m.varumarke || '') + ' ' + (m.modellnamn || m.namn || m.id)) + '</option>'; }).join('') +
@@ -153,7 +153,7 @@
     pill.className = 'no-print';
     pill.style.cssText = 'display:inline-flex;align-items:center;gap:5px;background:#fff;' +
       'border:1.5px solid ' + (antal ? '#c0392b' : '#e8e2d8') + ';border-radius:999px;padding:5px 13px;' +
-      'font-size:.82rem;font-weight:700;color:' + (antal ? '#c0392b' : '#7f8c8d') + ';text-decoration:none;white-space:nowrap;';
+      'font-size:.82rem;font-weight:700;color:' + (antal ? '#c0392b' : '#5f6e70') + ';text-decoration:none;white-space:nowrap;';
     pill.textContent = '💬 ' + antal + ' kommentar' + (antal === 1 ? '' : 'er');
     pill.title = antal ? 'Klicka för att läsa kommentarerna' : 'Bli först att kommentera!';
     pill.addEventListener('click', function (e) {
@@ -181,11 +181,11 @@
     kort.innerHTML =
       '<div style="display:flex;gap:0;border-bottom:2px solid #e8e2d8;margin-bottom:14px;">' +
         '<button id="mkfl-recept" class="mkfl" style="background:none;border:none;border-bottom:3px solid transparent;' +
-          'padding:9px 18px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;color:#7f8c8d;">📖 Om receptet</button>' +
+          'padding:9px 18px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;color:#5f6e70;">📖 Om receptet</button>' +
         '<button id="mkfl-komm" class="mkfl" style="background:none;border:none;border-bottom:3px solid #c0392b;' +
           'padding:9px 18px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;color:#c0392b;">💬 Kommentarer (' + antal + ')</button>' +
       '</div>' +
-      '<div id="mkfl-innehall-recept" style="display:none;font-size:.88rem;color:#7f8c8d;line-height:1.6;"></div>' +
+      '<div id="mkfl-innehall-recept" style="display:none;font-size:.88rem;color:#5f6e70;line-height:1.6;"></div>' +
       '<div id="mkfl-innehall-komm"></div>';
 
     var footer = document.querySelector('footer');
@@ -212,7 +212,7 @@
           '<div style="font-size:.86rem;line-height:1.55;">' + md(k.body || '') + '</div></div>';
       }).join('');
     } else {
-      kh += '<p style="font-size:.85rem;color:#7f8c8d;">Inga kommentarer än – bli först att berätta hur det gick! 👨‍🍳</p>';
+      kh += '<p style="font-size:.85rem;color:#5f6e70;">Inga kommentarer än – bli först att berätta hur det gick! 👨‍🍳</p>';
     }
     kh += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">' +
       '<button id="mk-komm-skriv" style="background:#c0392b;color:#fff;border:none;border-radius:10px;padding:10px 18px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.88rem;">💬 Skriv kommentar</button>' +
@@ -229,9 +229,9 @@
       kort.querySelector('#mkfl-innehall-recept').style.display = ar ? 'none' : '';
       var fk = kort.querySelector('#mkfl-komm'), fr = kort.querySelector('#mkfl-recept');
       fk.style.borderBottomColor = ar ? '#c0392b' : 'transparent';
-      fk.style.color = ar ? '#c0392b' : '#7f8c8d';
+      fk.style.color = ar ? '#c0392b' : '#5f6e70';
       fr.style.borderBottomColor = ar ? 'transparent' : '#c0392b';
-      fr.style.color = ar ? '#7f8c8d' : '#c0392b';
+      fr.style.color = ar ? '#5f6e70' : '#c0392b';
     }
     kort.querySelector('#mkfl-komm').onclick = function () { oppnaFlik('komm'); };
     kort.querySelector('#mkfl-recept').onclick = function () { oppnaFlik('recept'); };

@@ -117,7 +117,7 @@
     box.style.cssText = 'margin-top:10px;padding:12px 16px;background:linear-gradient(135deg,#eef7fb,#f4fbf6);' +
       'border:1.5px solid #cfe5ef;border-radius:12px;font-size:.88rem;';
     box.innerHTML =
-      '<b>💧 Välj hydrering</b> <span style="color:#7f8c8d;font-size:.8rem;">(receptets: ' + Math.round(origHydr * 100) + '% – vattnet räknas om, inget annat ändras)</span>' +
+      '<b>💧 Välj hydrering</b> <span style="color:#5f6e70;font-size:.8rem;">(receptets: ' + Math.round(origHydr * 100) + '% – vattnet räknas om, inget annat ändras)</span>' +
       '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;">' +
         '<input type="range" id="mk-hydr-sl" min="45" max="80" step="1" value="' + Math.round(origHydr * 100) + '"' +
           ' style="flex:1;min-width:140px;accent-color:#2980b9;">' +
@@ -125,7 +125,7 @@
         '<button type="button" id="mk-hydr-reset" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:9px;' +
           'padding:7px 14px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.8rem;">↩️ Recept</button>' +
       '</div>' +
-      '<div id="mk-hydr-info" style="margin-top:6px;font-size:.8rem;color:#7f8c8d;"></div>';
+      '<div id="mk-hydr-info" style="margin-top:6px;font-size:.8rem;color:#5f6e70;"></div>';
     card.appendChild(box);
 
     var sl = box.querySelector('#mk-hydr-sl');

@@ -138,7 +138,7 @@
       var l = document.createElement('link');
       l.rel = 'icon';
       l.type = 'image/svg+xml';
-      l.href = root + 'images/logo.png';
+      l.href = root + 'images/favicon-32.png';
       document.head.appendChild(l);
       /* 🍎 Safari stödjer INTE SVG-favicon → PNG-reserv */
       var p = document.createElement('link');
@@ -243,7 +243,7 @@
         var el = document.createElement('div');
         el.id = 'mk-donation';
         el.className = 'no-print';
-        el.style.cssText = 'text-align:center;padding:10px 16px 18px;font-size:.8rem;color:#7f8c8d;font-family:Segoe UI,system-ui,sans-serif;';
+        el.style.cssText = 'text-align:center;padding:10px 16px 18px;font-size:.8rem;color:#5f6e70;font-family:Segoe UI,system-ui,sans-serif;';
         btns += '<a href="' + root + 'stod.html" style="' + pill +
           'border:1.5px solid #e67e22;color:#e67e22;">\uD83D\uDC96 St\u00f6dsidan</a>';
         el.innerHTML = msg + ' &nbsp;' + btns;
@@ -269,8 +269,8 @@
           bg.innerHTML =
             '<div style="background:#fff;border-radius:18px;padding:26px 30px;text-align:center;max-width:320px;font-family:Segoe UI,system-ui,sans-serif;">' +
               '<h3 style="margin:0 0 4px;color:#2c3e50;">\uD83D\uDC9A Swisha en slant</h3>' +
-              '<p style="font-size:.85rem;color:#7f8c8d;margin:0 0 14px;">Skanna med Swish-appen i mobilen</p>' +
-              '<div id="mk-swish-qr-box" style="min-height:220px;display:flex;align-items:center;justify-content:center;color:#7f8c8d;font-size:.85rem;">Laddar QR-kod...</div>' +
+              '<p style="font-size:.85rem;color:#5f6e70;margin:0 0 14px;">Skanna med Swish-appen i mobilen</p>' +
+              '<div id="mk-swish-qr-box" style="min-height:220px;display:flex;align-items:center;justify-content:center;color:#5f6e70;font-size:.85rem;">Laddar QR-kod...</div>' +
               '<button id="mk-swish-qr-close" style="margin-top:14px;background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:10px 22px;font-weight:700;cursor:pointer;font-family:inherit;">Stang</button>' +
             '</div>';
           document.body.appendChild(bg);

@@ -137,8 +137,8 @@
     bg.innerHTML =
       '<div style="background:#fff;border-radius:16px;max-width:440px;width:100%;padding:24px 26px;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
         '<h3 style="margin:0 0 4px;">✅ Testat receptet i ' + maskin.namn + '?</h3>' +
-        '<p style="font-size:.85rem;color:#7f8c8d;margin:0 0 12px;">Ange program och tid som funkade i just DENNA maskin (kan skilja sig från receptets) – visas grönt för alla besökare.</p>' +
-        '<label style="display:block;font-size:.75rem;font-weight:700;color:#7f8c8d;text-transform:uppercase;margin-bottom:4px;">Program &amp; tid som lyckades</label>' +
+        '<p style="font-size:.85rem;color:#5f6e70;margin:0 0 12px;">Ange program och tid som funkade i just DENNA maskin (kan skilja sig från receptets) – visas grönt för alla besökare.</p>' +
+        '<label style="display:block;font-size:.75rem;font-weight:700;color:#5f6e70;text-transform:uppercase;margin-bottom:4px;">Program &amp; tid som lyckades</label>' +
         '<input id="mt-prog" type="text" style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.92rem;font-family:inherit;" ' +
           'placeholder="t.ex. Kakbakning (Cake), 45 min" value="' + String(maskin.forslag || '').replace(/"/g, '&quot;') + '">' +
         '<div style="display:flex;gap:8px;margin-top:14px;">' +
@@ -372,7 +372,7 @@
             vb.className = 'mk-verifdel no-print';
             vb.textContent = '✅ Verifiera denna maskindel';
             vb.title = 'Admin: har du lagat/bakat momentet i denna maskin med lyckat resultat? Klicka och ange program & tid (lösenord krävs).';
-            vb.style.cssText = 'display:inline-block;margin-top:8px;background:transparent;color:#7f8c8d;' +
+            vb.style.cssText = 'display:inline-block;margin-top:8px;background:transparent;color:#5f6e70;' +
               'border:1.5px dashed #b0bec5;border-radius:999px;padding:4px 12px;font-size:.74rem;' +
               'font-weight:700;cursor:pointer;font-family:inherit;';
             (function (mm2, h32) {
@@ -459,7 +459,7 @@
         'style="width:44px;height:44px;object-fit:contain;border-radius:8px;background:#fff;flex-shrink:0;" ' +
         'onerror="this.remove()">' : '';
       var tid = h.p.standardtid ? ' · ' + h.p.standardtid : '';
-      var beskr = h.p.beskrivning ? '<div style="color:#7f8c8d;font-size:.82rem;margin-top:2px;">' + h.p.beskrivning + '</div>' : '';
+      var beskr = h.p.beskrivning ? '<div style="color:#5f6e70;font-size:.82rem;margin-top:2px;">' + h.p.beskrivning + '</div>' : '';
       var badge = '', progHtml;
       if (h.lyckad) {
         /* ✅ GRÖN: testad & lyckad i denna maskin – visa den LYCKADE tiden */
@@ -498,7 +498,7 @@
     box.id = 'mk-maskinmatch';
     box.innerHTML =
       '<h2>🔧 Fler av dina maskiner som klarar receptet</h2>' +
-      '<p style="color:#7f8c8d;font-size:.83rem;margin-bottom:6px;">Matchas automatiskt mot maskindatabasen – ' +
+      '<p style="color:#5f6e70;font-size:.83rem;margin-bottom:6px;">Matchas automatiskt mot maskindatabasen – ' +
       'lägger du till en ny maskin dyker den upp här av sig själv.</p>' + rows;
     box.querySelector('div:last-child') && (box.querySelector('div:last-child').style.borderBottom = 'none');
 

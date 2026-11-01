@@ -173,20 +173,20 @@
       '<div class="card">' +
         '<h2>🍽️ Delar på tallriken</h2>' +
         '<table style="width:100%;border-collapse:collapse;font-size:.9rem;">' +
-          '<tr><th style="text-align:left;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;">Del</th>' +
-          '<th class="num" style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;">Mängd</th>' +
-          '<th class="num" style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;">Kcal</th>' +
-          '<th class="num" style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;">Protein</th>' +
-          '<th class="num" style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;">Kolh.</th>' +
-          '<th class="num" style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;">Fett</th>' +
-          '<th class="num" style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;">Pris</th></tr>' +
+          '<tr><th style="text-align:left;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#5f6e70;">Del</th>' +
+          '<th class="num" style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#5f6e70;">Mängd</th>' +
+          '<th class="num" style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#5f6e70;">Kcal</th>' +
+          '<th class="num" style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#5f6e70;">Protein</th>' +
+          '<th class="num" style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#5f6e70;">Kolh.</th>' +
+          '<th class="num" style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#5f6e70;">Fett</th>' +
+          '<th class="num" style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#5f6e70;">Pris</th></tr>' +
           rows +
           '<tr style="font-weight:700;background:#faf7f2;"><td>🍽️ Hela tallriken</td>' +
           '<td class="num">' + fmt(tot.g, 0) + ' g</td><td class="num">' + fmt(tot.kcal, 0) + '</td>' +
           '<td class="num">' + fmt(tot.prot) + ' g</td><td class="num">' + fmt(tot.kolh) + ' g</td>' +
           '<td class="num">' + fmt(tot.fett) + ' g</td><td class="num">' + fmt(tot.kr, 2) + ' kr</td></tr>' +
         '</table>' +
-        '<p style="font-size:.78rem;color:#7f8c8d;margin-top:8px;">🧮 Räknas live ur recepten & ingrediensdatabasen – alltid dagens priser & näring.</p>' +
+        '<p style="font-size:.78rem;color:#5f6e70;margin-top:8px;">🧮 Räknas live ur recepten & ingrediensdatabasen – alltid dagens priser & näring.</p>' +
       '</div>' +
       /* 🍽️ PORTIONSPANEL (användarens regel): rätten byggs som STOR
          SATS – här anger besökaren sin portionsstorlek så räknas
@@ -213,7 +213,7 @@
       '</div>' +
       '<div class="card no-print">' +
         '<h2>✏️ Ändra maträtten</h2>' +
-        '<p style="font-size:.88rem;color:#7f8c8d;">Delar och mängder redigeras på <a href="' + root + 'matratter.html" style="color:#c0392b;">🍽️ Maträtter-sidan</a> (spara med samma namn så uppdateras denna sida).</p>' +
+        '<p style="font-size:.88rem;color:#5f6e70;">Delar och mängder redigeras på <a href="' + root + 'matratter.html" style="color:#c0392b;">🍽️ Maträtter-sidan</a> (spara med samma namn så uppdateras denna sida).</p>' +
       '</div>';
 
     /* dela totalen med etikett/portionsmoduler om de laddas i framtiden */
@@ -223,7 +223,7 @@
     kopplaPortion(tot, rader);
   }
 
-  var LBL = 'font-size:.72rem;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;';
+  var LBL = 'font-size:.72rem;font-weight:700;color:#5f6e70;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:3px;';
   var INP = 'width:84px;padding:7px 9px;border:2px solid #e8e2d8;border-radius:9px;font-size:.95rem;font-family:inherit;text-align:right;font-weight:700;';
 
   function portKey() { return 'mk-rport:' + decodeURIComponent(location.pathname.split('/').pop()); }
@@ -267,7 +267,7 @@
         '🍞 ' + fmt(perG.kolh * g) + ' g kolh · ' +
         '🧈 ' + fmt(perG.fett * g) + ' g fett · ' +
         '💰 ' + fmt(perG.kr * g, 2) + ' kr' +
-        '<br><span style="color:#7f8c8d;font-size:.82rem;">Hela satsen (' + fmt(tot.g, 0) + ' g) räcker till ' +
+        '<br><span style="color:#5f6e70;font-size:.82rem;">Hela satsen (' + fmt(tot.g, 0) + ' g) räcker till ' +
         '<b>' + fmt(tot.g / g, 1) + ' portioner</b> à ' + fmt(g, 0) + ' g</span>';
       try { localStorage.setItem(portKey(), String(Math.round(g))); } catch (e) {}
     }
@@ -286,7 +286,7 @@
            per låda; näringen blir ungefärlig (snitt av blandningen). */
         inre = '<b>🥘 Blandat & delat i ' + n + ' lådor:</b>' +
           '<div style="font-size:1.3rem;font-weight:800;margin:8px 0;">⚖️ Väg upp ' + fmt(tot.g / n, 0) + ' g per låda</div>' +
-          '<div style="font-size:.78rem;color:#7f8c8d;">Näringen per låda är ett GENOMSNITT av blandningen – ' +
+          '<div style="font-size:.78rem;color:#5f6e70;">Näringen per låda är ett GENOMSNITT av blandningen – ' +
           'exakt fördelning varierar med hur väl det blandats (~±10 %).</div>';
       } else {
         var perLada = rader.filter(function (r) { return !r.saknas; }).map(function (r) {
@@ -297,7 +297,7 @@
           '<table style="width:100%;border-collapse:collapse;font-size:.88rem;margin-top:6px;">' + perLada +
           '<tr style="font-weight:700;background:#faf7f2;"><td>Totalt per låda</td>' +
           '<td style="text-align:right;">' + fmt(tot.g / n, 0) + ' g</td></tr></table>' +
-          '<div style="margin-top:4px;font-size:.78rem;color:#7f8c8d;">💡 Väg upp med våg för exakthet – eller ögonmåtta: dela varje del i ' + n + ' lika högar.</div>';
+          '<div style="margin-top:4px;font-size:.78rem;color:#5f6e70;">💡 Väg upp med våg för exakthet – eller ögonmåtta: dela varje del i ' + n + ' lika högar.</div>';
       }
       ladorEl.innerHTML =
         '<div style="border:1.5px dashed #e67e22;border-radius:10px;padding:12px 14px;background:#fffdf9;">' +
@@ -340,7 +340,7 @@
           var perSkiva = r.g / antal;
           utEl.innerHTML = '≈ <b>' + fmt(perSkiva, 0) + ' g/skiva</b> · ' +
             '🔥 ' + fmt(r.perG.kcal * perSkiva, 0) + ' kcal · 💪 ' + fmt(r.perG.prot * perSkiva) + ' g protein per skiva' +
-            '<br><span style="color:#7f8c8d;font-size:.8rem;">2 skivor = ' + fmt(r.perG.kcal * perSkiva * 2, 0) + ' kcal · ' +
+            '<br><span style="color:#5f6e70;font-size:.8rem;">2 skivor = ' + fmt(r.perG.kcal * perSkiva * 2, 0) + ' kcal · ' +
             '3 skivor = ' + fmt(r.perG.kcal * perSkiva * 3, 0) + ' kcal</span>';
         });
       });

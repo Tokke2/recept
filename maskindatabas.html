@@ -5,6 +5,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Maskindatabas – Matlagningsmaskiner</title>
+<link rel="canonical" href="https://tokke2.github.io/recept/maskindatabas.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mitt Maskinkök">
+<meta property="og:locale" content="sv_SE">
+<meta property="og:title" content="Maskindatabas – Matlagningsmaskiner">
+<meta property="og:description" content="Kökets alla maskiner med program, tider, effekt och officiella manualer – bakmaskin, airfryer, riskokare, glassmaskin m.fl. Verifierat mot bruksanvisningarna.">
+<meta property="og:url" content="https://tokke2.github.io/recept/maskindatabas.html">
+<meta property="og:image" content="https://tokke2.github.io/recept/images/logo.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta name="twitter:card" content="summary">
 <meta name="description" content="Kökets alla maskiner med program, tider, effekt och officiella manualer – bakmaskin, airfryer, riskokare, glassmaskin m.fl. Verifierat mot bruksanvisningarna.">
 <style>
   :root {
@@ -13,7 +24,7 @@
     --accent: #c0392b;
     --accent2: #e67e22;
     --dark: #2c3e50;
-    --muted: #7f8c8d;
+    --muted: #5f6e70;
     --green: #27ae60;
     --blue: #2980b9;
     --purple: #8e44ad;
@@ -323,7 +334,7 @@ const TYPTEMA = [
   { re: /blender|mixer/i,         farg: '#27ae60', emoji: '🥤', kort: 'Blender' }
 ];
 function temaFor(typ) {
-  return TYPTEMA.find(t => t.re.test(typ || '')) || { farg: '#7f8c8d', emoji: '🔧', kort: (typ || 'Övrigt').split('/')[0].trim() };
+  return TYPTEMA.find(t => t.re.test(typ || '')) || { farg: '#5f6e70', emoji: '🔧', kort: (typ || 'Övrigt').split('/')[0].trim() };
 }
 
 init();
@@ -469,10 +480,10 @@ function renderGalleri() {
       '<span class="gtyp">' + m.tema.emoji + ' ' + m.tema.kort + '</span>' +
       '<div class="gprog">🎛️ ' + m.programs.length + ' program</div>' +
     '</div>').join('') +
-    '<a class="gkort-add no-print" href="maskin-import.html"><span class="plus">➕</span>Lägg till maskin<span style="font-weight:400;font-size:.72rem;color:#7f8c8d;">Klistra in produktlänk</span></a>';
+    '<a class="gkort-add no-print" href="maskin-import.html"><span class="plus">➕</span>Lägg till maskin<span style="font-weight:400;font-size:.72rem;color:#5f6e70;">Klistra in produktlänk</span></a>';
   if (!synliga.length) {
     el.insertAdjacentHTML('afterbegin',
-      '<div style="grid-column:1/-1;text-align:center;color:#7f8c8d;padding:18px;">Ingen maskin matchar 🤔 – prova ett annat sökord eller filter.</div>');
+      '<div style="grid-column:1/-1;text-align:center;color:#5f6e70;padding:18px;">Ingen maskin matchar 🤔 – prova ett annat sökord eller filter.</div>');
   }
   el.querySelectorAll('.gkort').forEach(g => {
     g.onclick = () => visaMaskin(g.dataset.id);
@@ -578,7 +589,7 @@ document.addEventListener('click', async (e) => {
       style="width:100%;padding:9px 12px;border:2px solid #e8e2d8;border-radius:9px;font-size:.9rem;font-family:inherit;box-sizing:border-box;">`;
   bg.innerHTML = `<div style="background:#fff;border-radius:16px;max-width:480px;width:100%;padding:22px 26px;max-height:90vh;overflow-y:auto;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">
     <h3 style="margin:0;">✏️ ${m.namn || id}</h3>
-    <p style="font-size:.78rem;color:#7f8c8d;margin:4px 0 6px;">Programlistan redigeras på GitHub (✏️ på filen) – här ändras kortets uppgifter.</p>
+    <p style="font-size:.78rem;color:#5f6e70;margin:4px 0 6px;">Programlistan redigeras på GitHub (✏️ på filen) – här ändras kortets uppgifter.</p>
     ${f('Namn', 'me-namn', m.namn)}
     ${f('Effekt (W)', 'me-watt', m.effekt_w)}
     ${f('Kapacitet', 'me-kap', m.kapacitet, 't.ex. 5 L')}
@@ -586,7 +597,7 @@ document.addEventListener('click', async (e) => {
     <textarea id="me-fritext" placeholder="t.ex. Köpt aug 2026 på Amazon. Står i köksskåpet till vänster. Bäst för stora satser."
       style="width:100%;min-height:70px;padding:9px 12px;border:2px solid #e8e2d8;border-radius:9px;font-size:.9rem;font-family:inherit;box-sizing:border-box;resize:vertical;">${(m.fritext || '')}</textarea>
     ${f('🛒 Köplänk (Amazon/huvudbutik)', 'me-kop', (m.lankar || {}).kop)}
-    <label style="display:block;font-size:.8rem;font-weight:700;margin:10px 0 3px;">🏬 Exakta butikslänkar <span style="font-weight:400;color:#7f8c8d;">(en per rad: butik: https://... – visas ENDAST för aktiva partners)</span></label>
+    <label style="display:block;font-size:.8rem;font-weight:700;margin:10px 0 3px;">🏬 Exakta butikslänkar <span style="font-weight:400;color:#5f6e70;">(en per rad: butik: https://... – visas ENDAST för aktiva partners)</span></label>
     <textarea id="me-butiker" placeholder="netonnet: https://www.netonnet.se/art/...\nkomplett: https://www.komplett.se/product/..."
       style="width:100%;min-height:54px;padding:9px 12px;border:2px solid #e8e2d8;border-radius:9px;font-size:.82rem;font-family:ui-monospace,monospace;box-sizing:border-box;resize:vertical;">${Object.entries(m.butiker || {}).map(([k, v]) => k + ': ' + v).join('\n')}</textarea>
     ${f('📖 Bruksanvisning', 'me-manual', (m.lankar || {}).bruksanvisning)}

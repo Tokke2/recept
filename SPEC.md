@@ -2625,6 +2625,20 @@ data i json/, ALDRIG per receptfil.
     timer (aldrig vid sidladdning), tyst reserv = dagens
     WebAudio-pip + vibration + blink i koksskarm.html behålls.
 
+121. 📣 DELNINGSKORT + 🖼️ LÄTT LOGGA + ♿ KONTRAST — ✔️ KLAR
+    (2026-11-01, användarens beställning "bygg A+B"):
+    A) Statiska og:-taggar (type/site_name/locale/title/description/
+    url/image 512) + canonical + twitter:card på ALLA 12 rotsidor –
+    Facebook/WhatsApp-skrapare kör aldrig JS, så seo.js räckte inte;
+    6 sidor som saknade meta description fick en (nytt-recept,
+    maskin-import, forslag, status, koksskarm, visitkort).
+    B) images/logo-nav.png (64 px) i nav+footer och logo-192.png i
+    hero/stod – och site.js-favicon bytt från 220 kB-loggan till
+    favicon-32.png (≈2 kB) på ALLA sidor. Kontrast: --muted
+    #7f8c8d → #5f6e70 (≈5,3:1, klarar WCAG AA 4,5:1) i rotsidor,
+    design.css, moduler och alla receptfiler (assets/logo.svg är
+    grafik och rördes avsiktligt INTE).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

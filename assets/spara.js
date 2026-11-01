@@ -70,7 +70,7 @@
         '<div id="mkSpPw" style="background:#fff;border-radius:16px;max-width:380px;width:100%;padding:26px 28px;text-align:center;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
           '<div style="font-size:2rem;">🔒</div>' +
           '<h3 style="margin:6px 0 4px;">Uppladdning är låst</h3>' +
-          '<p style="font-size:.88rem;color:#7f8c8d;margin:0 0 14px;">Ange lösenordet (samma som för ✏️ redigering – ligger i json/las.json)</p>' +
+          '<p style="font-size:.88rem;color:#5f6e70;margin:0 0 14px;">Ange lösenordet (samma som för ✏️ redigering – ligger i json/las.json)</p>' +
           '<div style="position:relative;">' +
             '<input type="password" id="mkSpIn" placeholder="Lösenord" autocomplete="off" style="width:100%;padding:12px 44px 12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1rem;box-sizing:border-box;">' +
             '<button type="button" id="mkSpEye" title="Visa/dölj lösenordet" aria-label="Visa lösenordet" ' +
@@ -154,7 +154,7 @@
       bg.innerHTML =
         '<div style="background:#fff;border-radius:16px;max-width:560px;width:100%;max-height:90vh;overflow:auto;padding:26px 28px;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
           '<h3 style="margin:0 0 6px;">🔑 Engångsinställning: GitHub-nyckel</h3>' +
-          '<p style="font-size:.9rem;color:#7f8c8d;margin:0 0 14px;">För att spara direkt på sajten behövs en personlig nyckel. Tar 2 minuter – görs EN gång, sparas bara i din webbläsare.</p>' +
+          '<p style="font-size:.9rem;color:#5f6e70;margin:0 0 14px;">För att spara direkt på sajten behövs en personlig nyckel. Tar 2 minuter – görs EN gång, sparas bara i din webbläsare.</p>' +
           '<ol style="font-size:.9rem;line-height:1.7;padding-left:20px;margin:0 0 14px;">' +
             '<li>Öppna <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener" style="color:#c0392b;font-weight:700;">github.com/settings/personal-access-tokens/new</a></li>' +
             '<li><b>Token name:</b> Mitt Maskinkök · <b>Expiration:</b> Custom → 1 år</li>' +
@@ -172,7 +172,7 @@
             '<button id="mkGhOk" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;font-size:.95rem;cursor:pointer;">💾 Spara nyckeln</button>' +
             '<button id="mkGhAvbryt" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;font-size:.95rem;cursor:pointer;">Avbryt</button>' +
           '</div>' +
-          '<p style="font-size:.78rem;color:#7f8c8d;margin:12px 0 0;">🔒 Nyckeln lagras endast i DIN webbläsare (localStorage) och skickas bara till api.github.com. Den kan bara ändra just detta repo.</p>' +
+          '<p style="font-size:.78rem;color:#5f6e70;margin:12px 0 0;">🔒 Nyckeln lagras endast i DIN webbläsare (localStorage) och skickas bara till api.github.com. Den kan bara ändra just detta repo.</p>' +
         '</div>';
       document.body.appendChild(bg);
       /* 👁️ Visa/dölj nyckeln */
@@ -323,7 +323,7 @@
         '<div style="text-align:center;max-width:380px;">' +
           '<div style="font-size:3rem;">🔒</div>' +
           '<h2 style="color:#2c3e50;margin:10px 0 6px;">Ägarsida</h2>' +
-          '<p style="color:#7f8c8d;font-size:.9rem;margin:0 0 18px;">Att lägga till recept och maskiner kräver lösenord.</p>' +
+          '<p style="color:#5f6e70;font-size:.9rem;margin:0 0 18px;">Att lägga till recept och maskiner kräver lösenord.</p>' +
           '<button id="mk-sidlas-open" style="background:#c0392b;color:#fff;border:none;border-radius:12px;' +
             'padding:13px 30px;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit;">🔓 Lås upp</button>' +
           '<div style="margin-top:14px;"><a href="' + (window.__MK_ROOT || './') + 'index.html" ' +

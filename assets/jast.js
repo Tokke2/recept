@@ -154,7 +154,7 @@
       var s = document.createElement('span');
       s.className = 'mk-jastalt';
       s.textContent = ' (≈ ' + alt + ')';
-      s.style.cssText = 'color:#7f8c8d;font-weight:400;font-size:.88em;white-space:nowrap;';
+      s.style.cssText = 'color:#5f6e70;font-weight:400;font-size:.88em;white-space:nowrap;';
       qc.appendChild(s);
     });
   }
@@ -183,7 +183,7 @@
         ? { form: 'farsk', text: '🧊 ' + fmtG(g * FAKTOR) + ' färsk jäst', knapp: '🔄 Byt till färsk jäst i tabellen' }
         : { form: 'torr', text: '🥄 ' + fmtG(g / FAKTOR) + ' torrjäst', knapp: '🔄 Byt till torrjäst i tabellen' };
       box.innerHTML =
-        '<b>🦠 Jästomvandlaren</b> <span style="color:#7f8c8d;font-size:.8rem;">(torrjäst = 1/3 av färsk vikt)</span>' +
+        '<b>🦠 Jästomvandlaren</b> <span style="color:#5f6e70;font-size:.8rem;">(torrjäst = 1/3 av färsk vikt)</span>' +
         '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;">' +
           '<span>Receptet just nu: <b>' + fmtG(g) + ' ' + (form === 'torr' ? 'torrjäst' : 'färsk jäst') + '</b> ≈ <b style="color:#27ae60;">' + andra.text + '</b></span>' +
         '</div>' +

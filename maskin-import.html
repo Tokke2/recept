@@ -5,10 +5,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🔗 Lägg till maskin via länk – Mitt Maskinkök</title>
+<meta name="description" content="Lägg till en köksmaskin i maskindatabasen via produktlänk – program, tider och manual verifieras mot bruksanvisningen.">
+<link rel="canonical" href="https://tokke2.github.io/recept/maskin-import.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mitt Maskinkök">
+<meta property="og:locale" content="sv_SE">
+<meta property="og:title" content="🔗 Lägg till maskin via länk – Mitt Maskinkök">
+<meta property="og:description" content="Lägg till en köksmaskin i maskindatabasen via produktlänk – program, tider och manual verifieras mot bruksanvisningen.">
+<meta property="og:url" content="https://tokke2.github.io/recept/maskin-import.html">
+<meta property="og:image" content="https://tokke2.github.io/recept/images/logo.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta name="twitter:card" content="summary">
 <style>
   :root {
     --bg:#f6f3ee; --card:#fff; --accent:#c0392b; --accent2:#e67e22;
-    --dark:#2c3e50; --muted:#7f8c8d; --green:#27ae60; --purple:#8e44ad; --blue:#2980b9;
+    --dark:#2c3e50; --muted:#5f6e70; --green:#27ae60; --purple:#8e44ad; --blue:#2980b9;
   }
   * { box-sizing:border-box; margin:0; padding:0; }
   body {
@@ -164,7 +176,7 @@
   <div id="asinbox">
     ✅ <b>Amazon-produkt hittad!</b>
     <div style="margin-top:4px;">ASIN: <b id="asinval" style="font-family:monospace;background:#fff;border-radius:6px;padding:1px 8px;"></b> · <span id="asinmarket"></span></div>
-    <div style="font-size:.8rem;color:#7f8c8d;margin-top:4px;">Länken normaliseras till ren produktlänk (amazon.se/dp/ASIN). Affiliate-taggen läggs på automatiskt av sajten när <code>json/affiliate.json</code> har din Associates-tag – den sparas ALDRIG i maskinfilen.</div>
+    <div style="font-size:.8rem;color:#5f6e70;margin-top:4px;">Länken normaliseras till ren produktlänk (amazon.se/dp/ASIN). Affiliate-taggen läggs på automatiskt av sajten när <code>json/affiliate.json</code> har din Associates-tag – den sparas ALDRIG i maskinfilen.</div>
   </div>
 
   <label style="margin-top:14px;font-weight:700;">🏭 Tillverkarens produktsida <span style="font-weight:400;">(valfritt – ger 🖼️ bild + 📖 manual + bättre namn!)</span></label>
@@ -253,7 +265,7 @@ var TYPER = [
   { v:'Pizzaugn',                          e:'🍕', n:'Pizzaugn',     f:'#c0392b' },
   { v:'Blender / Mixer',                   e:'🥤', n:'Blender',      f:'#27ae60' },
   { v:'Sous vide',                         e:'🌡️', n:'Sous vide',   f:'#16a085' },
-  { v:'Annan köksmaskin',                  e:'🔧', n:'Annan',        f:'#7f8c8d' }
+  { v:'Annan köksmaskin',                  e:'🔧', n:'Annan',        f:'#5f6e70' }
 ];
 function typRita() {
   var g = document.getElementById('typgrid');

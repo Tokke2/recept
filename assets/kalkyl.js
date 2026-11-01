@@ -113,7 +113,7 @@
     bg.innerHTML =
       '<div style="background:#fff;border-radius:16px;max-width:480px;width:100%;padding:24px 26px;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
         '<h3 style="margin:0 0 4px;">🔗 Matcha ingrediensen</h3>' +
-        '<p style="font-size:.85rem;color:#7f8c8d;margin:0 0 12px;">Receptet skriver <b>"' + radNamn + '"</b> – vilken vara i databasen är det? ' +
+        '<p style="font-size:.85rem;color:#5f6e70;margin:0 0 12px;">Receptet skriver <b>"' + radNamn + '"</b> – vilken vara i databasen är det? ' +
         'Kopplingen sparas som alias: alla recept med samma formulering matchar sedan automatiskt.</p>' +
         '<input id="mk-match-sok" type="text" placeholder="🔍 Sök vara..." style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.92rem;font-family:inherit;margin-bottom:8px;">' +
         '<div id="mk-match-lista" style="max-height:260px;overflow:auto;border:1.5px solid #f0ebe3;border-radius:10px;"></div>' +
@@ -135,7 +135,7 @@
           (d.egenodlad ? '🌱 ' : d.recept ? '🫙 ' : '🛒 ') + d.namn +
           ' <span style="color:#a5967e;font-size:.75rem;">' + fmt(+d.kcal || 0, 0) + ' kcal · ' +
           ((+d.pris_kr_per_kg || 0) > 0 ? fmt(+d.pris_kr_per_kg, 0) + ' kr/kg' : '0 kr') + '</span></button>';
-      }).join('') || '<p style="padding:12px;font-size:.85rem;color:#7f8c8d;">Ingen träff.</p>';
+      }).join('') || '<p style="padding:12px;font-size:.85rem;color:#5f6e70;">Ingen träff.</p>';
       lista.querySelectorAll('.mk-match-val').forEach(function (b) {
         b.onclick = function () { sparaAlias(bg, radNamn, b.getAttribute('data-id')); };
       });
@@ -419,7 +419,7 @@
             sub.className = 'mk-ingsub';
             var td = document.createElement('td');
             td.colSpan = cols;
-            td.style.cssText = 'padding:2px 8px 2px 26px;font-size:.8rem;color:#7f8c8d;border:none;background:rgba(230,126,34,.05);';
+            td.style.cssText = 'padding:2px 8px 2px 26px;font-size:.8rem;color:#5f6e70;border:none;background:rgba(230,126,34,.05);';
             var kcalTxt;
             if (g !== null) {
               /* kcal för receptets mängd: 30 g × 210/100 = 63 kcal */
@@ -683,7 +683,7 @@
       var n = document.createElement('p');
       n.id = 'mk-byt-notis';
       n.innerHTML = '♻️ <b>Ingredienserna går att byta ut</b> mot liknande varor från annan affär – men då kan närings- och prisberäkningen skilja sig från det som visas.';
-      n.style.cssText = 'font-size:.8rem;color:#7f8c8d;background:#faf7f2;border-left:3px solid #d5cbb8;border-radius:8px;padding:8px 12px;margin-top:10px;';
+      n.style.cssText = 'font-size:.8rem;color:#5f6e70;background:#faf7f2;border-left:3px solid #d5cbb8;border-radius:8px;padding:8px 12px;margin-top:10px;';
       ingCard0.appendChild(n);
     })();
 
@@ -778,11 +778,11 @@
     box.className = 'card';
     box.id = 'mk-kalkyl';
     box.innerHTML =
-      '<h2>🧮 Live-kalkyl <span style="font-weight:400;font-size:.76rem;color:#7f8c8d;">– räknas ur ingrediensdatabasen just nu (' + matched + ' av ' + rows.length + ' ingredienser matchade)</span></h2>' +
+      '<h2>🧮 Live-kalkyl <span style="font-weight:400;font-size:.76rem;color:#5f6e70;">– räknas ur ingrediensdatabasen just nu (' + matched + ' av ' + rows.length + ' ingredienser matchade)</span></h2>' +
       '<table style="' + css + '">' +
-      '<tr><th style="text-align:left;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;"></th>' +
-      '<th style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;">Totalt (~' + fmt(tot.g, 0) + ' g)</th>' +
-      (port ? '<th style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#7f8c8d;">' + pinfo.rubrik + '</th>' : '') + '</tr>' +
+      '<tr><th style="text-align:left;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#5f6e70;"></th>' +
+      '<th style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#5f6e70;">Totalt (~' + fmt(tot.g, 0) + ' g)</th>' +
+      (port ? '<th style="text-align:right;padding:6px 8px;background:#f0ebe3;font-size:.72rem;text-transform:uppercase;color:#5f6e70;">' + pinfo.rubrik + '</th>' : '') + '</tr>' +
       rad('💰 Kostnad', fmt(tot.kr, 2) + ' kr', fmt(tot.kr / pdel, 2) + ' kr') +
       rad('🔥 Kcal', fmt(tot.kcal, 0), fmt(tot.kcal / pdel, 0)) +
       rad('💪 Protein', fmt(tot.prot) + ' g', fmt(tot.prot / pdel) + ' g') +
@@ -790,7 +790,7 @@
       rad('🧈 Fett', fmt(tot.fett) + ' g', fmt(tot.fett / pdel) + ' g') +
       rad('🌾 Fiber', fmt(tot.fiber) + ' g', fmt(tot.fiber / pdel) + ' g') +
       '</table>' +
-      (pinfo && pinfo.typ === 'vikt' ? '<p style="font-size:.74rem;color:#7f8c8d;margin-top:6px;">🍽️ Portionsstorlek ' + pinfo.g + ' g hittad i receptet (~' + pinfo.n + ' portioner av totalen).</p>' : '') +
+      (pinfo && pinfo.typ === 'vikt' ? '<p style="font-size:.74rem;color:#5f6e70;margin-top:6px;">🍽️ Portionsstorlek ' + pinfo.g + ' g hittad i receptet (~' + pinfo.n + ' portioner av totalen).</p>' : '') +
       (hyd.mjol >= 50 ? (function () {
         var pct = Math.round(hyd.vatska / hyd.mjol * 100);
         var beskr = pct < 50 ? 'fast deg (bagels, kex)' :
@@ -798,7 +798,7 @@
                     pct < 70 ? 'mjuk deg (pizza, focaccia)' :
                     pct < 85 ? 'lös deg (ciabatta, lantbröd)' : 'smet (våfflor, pannkakor)';
         return '<div id="mk-hydrering" style="margin-top:10px;padding:9px 12px;background:#eef7fb;border-left:3px solid #3498db;border-radius:8px;font-size:.85rem;">' +
-          '💧 <b>Hydrering: ' + pct + '%</b> <span style="color:#7f8c8d;">(' +
+          '💧 <b>Hydrering: ' + pct + '%</b> <span style="color:#5f6e70;">(' +
           fmt(hyd.vatska, 0) + ' g vätska / ' + fmt(hyd.mjol, 0) + ' g mjöl & gryn – ' + beskr + ')</span></div>';
       })() : '') +
       (missed.length ? '<p style="font-size:.78rem;color:#a5967e;margin-top:8px;">⚠️ Ej i databasen (räknas inte med): ' +

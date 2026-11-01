@@ -151,7 +151,7 @@
       '<span style="font-size:2.6rem;flex-shrink:0;">' + r.emoji + '</span>' +
       '<span><b style="font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:' + farg + ';">' + rubrik + '</b>' +
       '<br><b style="font-size:1.05rem;">' + r.namn + '</b>' +
-      '<br><span style="font-size:.82rem;color:#7f8c8d;">' + motivering + '</span></span></a>';
+      '<br><span style="font-size:.82rem;color:#5f6e70;">' + motivering + '</span></span></a>';
   }
 
   async function byggSektion() {

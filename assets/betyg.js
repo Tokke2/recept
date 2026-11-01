@@ -125,7 +125,7 @@
     '#mk-betyg .bstars span{color:#d8d2c6;transition:color .1s, transform .1s;display:inline-block;}' +
     '#mk-betyg .bstars span.on{color:#f1c40f;}' +
     '#mk-betyg .bstars:not(.done) span:hover{transform:scale(1.18);}' +
-    '#mk-betyg .bsub{font-size:.9rem;color:#7f8c8d;margin-top:4px;}' +
+    '#mk-betyg .bsub{font-size:.9rem;color:#5f6e70;margin-top:4px;}' +
     '@media print{#mk-betyg{display:none!important;}}';
   document.head.appendChild(css);
 
