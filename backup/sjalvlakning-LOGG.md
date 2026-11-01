@@ -387,3 +387,10 @@
 | recept/sylt/syltfyllda-vafflor-i-airfryer.html | 📝 meta description ur receptets egna metadata (steg12) |
 | recept/varmratt/frysbar-tomatsas-pa-egna-tomater-squash-lok-vitlok.html | 📝 meta description ur receptets egna metadata (steg12) |
 | recept/varmratt/pulled-kycklinggryta-rotfrukter-vita-bonor.html | 📝 meta description ur receptets egna metadata (steg12) |
+
+**2026-11-01**
+
+| recept/sylt/klassisk-hamburgdressing.html | 🍽️ recept:portioner "8 portioner" ur receptets text (steg11) |
+| recept/sylt/klassisk-hamburgdressing.html | 📝 meta description ur receptets egna metadata (steg12) |
+| sitemap.xml | 🗺️ omgenererad (48 adresser) |
+| json/recept-index.json | 📁 omgenererad (36 recept) |
