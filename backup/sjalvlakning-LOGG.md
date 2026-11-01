@@ -309,3 +309,11 @@
 | majsfrallor-bakmaskin.html | ⚡ energidata skapad: clatronic-bba3774 90 min, clatronic-bba3774 20 min, cosori-twinfry-10l 16 min, ninja-af500eucp 18 min |
 | sitemap.xml | 🗺️ omgenererad (44 adresser) |
 | json/recept-index.json | 📁 omgenererad (33 recept) |
+
+**2026-11-01**
+
+| recept/brod/krispigt-grekiskt-lantbrod-bakmaskin.html | 📍 1 maskinrutor till sina steg, 1 kvar överst (steg10) |
+| recept/deg/snabba-frallor-bakmaskin.html | 📍 1 maskinrutor till sina steg, 2 kvar överst (steg10) |
+| recept/efterratt/squash-chips-i-torkautomat.html | 📍 2 maskinrutor till sina steg, 0 kvar överst (steg10) |
+| recept/snacks/grona-tomat-chips.html | 📍 2 maskinrutor till sina steg, 0 kvar överst (steg10) |
+| recept/varmratt/pulled-kycklinggryta-rotfrukter-vita-bonor.html | 📍 2 maskinrutor till sina steg, 0 kvar överst (steg10) |
