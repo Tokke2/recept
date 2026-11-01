@@ -30,6 +30,10 @@
    "kategori": "brod"
   },
   {
+   "fil": "brod/majsfrallor-bakmaskin.html",
+   "kategori": "brod"
+  },
+  {
    "fil": "brod/mjukt-protein-ostbrod-med-turkisk-yoghurt.html",
    "kategori": "brod"
   },
@@ -112,10 +116,6 @@
   {
    "fil": "snacks/stekta-grona-tomater-air-fryer.html",
    "kategori": "snacks"
-  },
-  {
-   "fil": "sylt/majsfrallor-bakmaskin.html",
-   "kategori": "sylt"
   },
   {
    "fil": "sylt/svartvinbarssylt-klassiskt-recept.html",

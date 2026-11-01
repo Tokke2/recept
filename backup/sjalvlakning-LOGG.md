@@ -323,3 +323,28 @@
 | pajdeg-i-bakmaskin.html | ⚡ energidata skapad: clatronic-bba3774 6 min, cosori-twinfry-10l 30 min |
 | sitemap.xml | 🗺️ omgenererad (45 adresser) |
 | json/recept-index.json | 📁 omgenererad (34 recept) |
+
+**2026-11-01**
+
+| recept/bakning/ananaskaka-med-svartvinbarssylt-i-riskokare.html | 🍽️ recept:portioner "10 bitar" ur receptets text (steg11) |
+| recept/brod/brod-med-rivet-apple-bakmaskin.html | 🍽️ recept:portioner "12 skivor" ur receptets text (steg11) |
+| recept/brod/majsfrallor-bakmaskin.html | 🍽️ recept:portioner "8 frallor" ur receptets text (steg11) |
+| recept/brod/recept_pitabrod_airfryer.html | 🍽️ recept:portioner "5 st" ur receptets text (steg11) |
+| recept/deg/pizzadeg-bakmaskin-4x250g.html | 🍽️ recept:portioner "4 bollar" ur receptets text (steg11) |
+| recept/deg/pizzadeg-i-bakmaskin-4-250-g-utan-protein.html | 🍽️ recept:portioner "4 st" ur receptets text (steg11) |
+| recept/deg/proteinrik-biscoff-smuldeg-for-pizza-bakmaskinsanpassad.html | 🍽️ recept:portioner "12 portioner" ur receptets text (steg11) |
+| recept/deg/snabba-frallor-bakmaskin.html | 🍽️ recept:portioner "8 frallor" ur receptets text (steg11) |
+| recept/efterratt/squash-chips-i-torkautomat.html | 🍽️ recept:portioner "2 portioner" ur receptets text (steg11) |
+| recept/glass/Mjukglass MAX.html | 🍽️ recept:portioner "9 portioner" ur receptets text (steg11) |
+| recept/husdjur/annanasglas_hund.html | 🍽️ recept:portioner "4 hundportioner" ur receptets text (steg11) |
+| recept/ovrigt/gron-tomatketchup.html | 🍽️ recept:portioner "8 portioner" ur receptets text (steg11) |
+| recept/ovrigt/squashraggmunk-med-protein.html | 🍽️ recept:portioner "2 portioner" ur receptets text (steg11) |
+| recept/saft/Ananas_Rom_Yoghurt_Slush.html | 🍽️ recept:portioner "6 portioner" ur receptets text (steg11) |
+| recept/saft/recept_proteinshake_saft.html | 🍽️ recept:portioner "2 portioner" ur receptets text (steg11) |
+| recept/snacks/a4-makaronichips-airfryer-salt--peppar.html | 🍽️ recept:portioner "4 portioner" ur receptets text (steg11) |
+| recept/snacks/grona-tomat-chips.html | 🍽️ recept:portioner "2 portioner" ur receptets text (steg11) |
+| recept/snacks/stekta-grona-tomater-air-fryer.html | 🍽️ recept:portioner "4 portioner" ur receptets text (steg11) |
+| recept/varmratt/helstekt-flaskytterfil-i-airfryer-800-g-kallskuren-med-kottslicer.html | 🍽️ recept:portioner "8 portioner" ur receptets text (steg11) |
+| recept/varmratt/pulled-kycklinggryta-rotfrukter-vita-bonor.html | 🍽️ recept:portioner "8 portioner" ur receptets text (steg11) |
+| sitemap.xml | 🗺️ omgenererad (45 adresser) |
+| json/recept-index.json | 📁 omgenererad (34 recept) |
