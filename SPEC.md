@@ -2606,6 +2606,25 @@ data i json/, ALDRIG per receptfil.
     ABSOLUTA (/recept/...) eftersom sidan serveras på godtyckligt
     djup; noindex; INTE med i sitemapen (steg6 har vitlista).
 
+119. 🌾 ALLERGIFLAGGOR (autoförslag 762, användarens beställning):
+    nya fält i json/ingredienser.json (allergener: gluten, laktos,
+    nötter, ägg, soja m.fl. – fylls ENDAST ur verifierade källor/
+    förpackningsuppgifter, aldrig gissade) → receptsamlingen får
+    filter "visa glutenfritt/laktosfritt" som räknar ut flaggorna
+    ur receptets ingredienslista (samma matchningsmotor som
+    makrofiltret). Recept med omatchade ingredienser flaggas
+    "⚠️ okänt innehåll" i stället för att påstå fritt-från
+    (ärlighetsprincipen – aldrig lova fel vid allergi).
+
+120. 💤 JÄSNOTIS – RIKTIG PUSH-NOTIS (autoförslag 765, användarens
+    beställning): när en timer (jäsning m.m.) är klar skickas en
+    riktig systemnotis via service workern (Notification API +
+    sw.js showNotification) – fungerar även med skärmen släckt
+    eller annan flik öppen, i installerad PWA även på Android.
+    Behörighet frågas FÖRST när användaren startar sin första
+    timer (aldrig vid sidladdning), tyst reserv = dagens
+    WebAudio-pip + vibration + blink i koksskarm.html behålls.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
