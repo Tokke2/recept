@@ -2940,7 +2940,9 @@
   "visa thumb med länkar ovan receptet, ange att det är de maskiner som ANVÄNDS – overifierad tills man säger till": "show thumb with links above the recipe, state that these are the machines USED - unverified until told",
   "– pris & näring på allt": "- price & nutrition on everything",
   "💳 Visitkort – Mitt Maskinkök (dubbelsidigt, 85×55 mm)": "💳 Business card - My Machine Kitchen (double-sided, 85×55 mm)",
-  "🖨️ Så skriver du ut:": "🖨️ This is how you print:"
+  "🖨️ Så skriver du ut:": "🖨️ This is how you print:",
+  "4 hundportioner": "4 dog portions",
+  "Per styck (1 av": "Per piece (1 of"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -2950,6 +2952,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 2939,
+ "_auto_genererade": 2941,
  "_senast_robot": "2026-11-01"
 }

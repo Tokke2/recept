@@ -3052,13 +3052,15 @@
   "visa thumb med länkar ovan receptet, ange att det är de maskiner som ANVÄNDS – overifierad tills man säger till": "Zeigen Sie einen Daumen mit Links über dem Rezept an und geben Sie an, dass es sich um GEBRAUCHTE Maschinen handelt – ungeprüft, bis es mitgeteilt wird",
   "– pris & näring på allt": "- Preis und Nährwerte für alles",
   "💳 Visitkort – Mitt Maskinkök (dubbelsidigt, 85×55 mm)": "💳 Visitenkarte – My Machine Kitchen (doppelseitig, 85×55 mm)",
-  "🖨️ Så skriver du ut:": "🖨️ So drucken Sie:"
+  "🖨️ Så skriver du ut:": "🖨️ So drucken Sie:",
+  "4 hundportioner": "4 Hundeportionen",
+  "Per styck (1 av": "Pro Stück (1 von"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3051,
+ "_auto_genererade": 3053,
  "_senast_robot": "2026-11-01"
 }
