@@ -3176,13 +3176,19 @@
   "Tomatketchup": "Tomatenketchup",
   "Vitlök (pressade klyftor)": "Knoblauch (gepresste Nelken)",
   "🍔 Klassisk hamburgdressing": "🍔 Klassisches Hamburger-Dressing",
-  "🍔 Klassisk hamburgdressing – Ninja TB401EU | Mitt Maskinkök": "🍔 Klassisches Hamburger-Dressing – Ninja TB401EU | Meine Maschinenküche"
+  "🍔 Klassisk hamburgdressing – Ninja TB401EU | Mitt Maskinkök": "🍔 Klassisches Hamburger-Dressing – Ninja TB401EU | Meine Maschinenküche",
+  "Föreslå nya funktioner och rösta i förslagslådan – var med och forma Mitt Maskinkök.": "Schlagen Sie neue Funktionen vor und stimmen Sie im Vorschlagsfeld ab – gestalten Sie Mitt Maskinkök mit.",
+  "Hälsokontrollen testar hela sajten live – sidor, databaser och robotar.": "Der Health Checker testet die gesamte Website live – Seiten, Datenbanken und Robots.",
+  "Klistra in ett recept som text eller HTML och få en färdig standardsida kopplad till maskindatabasen i Mitt Maskinkök.": "Fügen Sie ein Rezept als Text oder HTML ein und erhalten Sie eine vorgefertigte Standardseite, die mit der Maschinendatenbank in My Machine Kitchen verbunden ist.",
+  "Köksskärmen för surfplattan på bänken – klocka, timers och veckans recept i Mitt Maskinkök.": "Der Küchenbildschirm für das Tablet auf der Bank – Uhr, Timer und das Rezept der Woche in Mitt Maskinkök.",
+  "Lägg till en köksmaskin i maskindatabasen via produktlänk – program, tider och manual verifieras mot bruksanvisningen.": "Fügen Sie eine Küchenmaschine per Produktlink zur Maschinendatenbank hinzu – Programme, Zeiten und Bedienungsanleitung werden mit der Bedienungsanleitung abgeglichen.",
+  "Visitkort och flyer för Mitt Maskinkök – ladda ner eller skriv ut trycksakerna direkt.": "Visitenkarten und Flyer für Mitt Maskinkök – laden Sie die gedruckten Materialien direkt herunter oder drucken Sie sie aus."
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3175,
+ "_auto_genererade": 3181,
  "_senast_robot": "2026-11-01"
 }

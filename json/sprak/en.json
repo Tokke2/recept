@@ -3062,7 +3062,13 @@
   "Tomatketchup": "Tomato ketchup",
   "Vitlök (pressade klyftor)": "Garlic (pressed cloves)",
   "🍔 Klassisk hamburgdressing": "🍔 Classic hamburger dressing",
-  "🍔 Klassisk hamburgdressing – Ninja TB401EU | Mitt Maskinkök": "🍔 Classic hamburger dressing - Ninja TB401EU | My Machine Kitchen"
+  "🍔 Klassisk hamburgdressing – Ninja TB401EU | Mitt Maskinkök": "🍔 Classic hamburger dressing - Ninja TB401EU | My Machine Kitchen",
+  "Föreslå nya funktioner och rösta i förslagslådan – var med och forma Mitt Maskinkök.": "Suggest new functions and vote in the suggestion box - help shape Mitt Maskinkök.",
+  "Hälsokontrollen testar hela sajten live – sidor, databaser och robotar.": "The health checker tests the entire site live – pages, databases and robots.",
+  "Klistra in ett recept som text eller HTML och få en färdig standardsida kopplad till maskindatabasen i Mitt Maskinkök.": "Paste a recipe as text or HTML and get a ready-made standard page connected to the machine database in My Machine Kitchen.",
+  "Köksskärmen för surfplattan på bänken – klocka, timers och veckans recept i Mitt Maskinkök.": "The kitchen screen for the tablet on the bench - clock, timers and the recipe of the week in Mitt Maskinkök.",
+  "Lägg till en köksmaskin i maskindatabasen via produktlänk – program, tider och manual verifieras mot bruksanvisningen.": "Add a kitchen machine to the machine database via product link - programs, times and manual are verified against the user manual.",
+  "Visitkort och flyer för Mitt Maskinkök – ladda ner eller skriv ut trycksakerna direkt.": "Business cards and flyers for Mitt Maskinkök - download or print the printed materials directly."
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3072,6 +3078,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3061,
+ "_auto_genererade": 3067,
  "_senast_robot": "2026-11-01"
 }
