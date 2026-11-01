@@ -2502,6 +2502,25 @@ data i json/, ALDRIG per receptfil.
     verifierad, annars ⏳ (= "overifierad tills man säger till").
     Runtime – städas av buildCleanHtml.
 
+111. 🍽️ PORTIONSVAKTEN — ✔️ KLAR (2026-11-01, användarens order
+    "står det st i receptet är portionsstorleken st och LÅST;
+    kalkylen visar kcal/makro för HELA och PER STYCK; annars väljer
+    man själv – in i roboten, alla befintliga och kommande"):
+    A) sjalvlakning steg11 (för alltid): extraherar antalet ur
+    ÄGARENS text – total-raden ("· 8 frallor à 110 g") →
+    beskrivningen ("8 kompakta frallor") → titeln ("4×250 g") –
+    och skriver <meta name="recept:portioner" content="8 frallor">.
+    Aldrig gissning (explicita mönster, 2–48), aldrig överskrivning.
+    Första körningen: 20 recept fick metan (8 frallor, 4 bollar,
+    12 skivor, 5 st pita...). B) kalkyl.js portionsInfo läser METAN
+    FÖRST (last:true = låst, rubrik "Per styck (1 av 8 frallor)") –
+    kalkylen visar redan båda kolumnerna (hela + per styck);
+    reserv-regexen utökad (frallor/bollar/skivor/st m.fl. saknades –
+    majsfrallorna missades). Utan antal → fri portionering som förut.
+    SAMMA RUNDA: majsfrallor-bakmaskin.html flyttad recept/sylt/ →
+    recept/brod/ (felvald kategori vid publicering) + kategori-meta
+    rättad till brod.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

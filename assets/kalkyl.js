@@ -283,9 +283,21 @@
         "portionsstorlek 500 g" → per portion = totalen × 500/totG
         (viktbaserat är oberoende av omatchade ingredienser). */
   function portionsInfo(totG) {
+    /* 🍽️ 1) recept:portioner-METAN FÖRST (användarens regel: står
+       antalet i receptet är portionsstorleken LÅST till det – metan
+       skrivs av portionsvakten/roboten ur ägarens egen text, t.ex.
+       "8 frallor"). Kalkylen visar då alltid HELA + PER STYCK. */
+    var pmeta = (document.querySelector('meta[name="recept:portioner"]') || {}).content || '';
+    var mm = pmeta.match(/(\d+)\s*([a-zåäö]*)/i);
+    if (mm && +mm[1] >= 2) {
+      return { typ: 'antal', n: +mm[1], last: true,
+               rubrik: 'Per styck (1 av ' + mm[1] + (mm[2] ? ' ' + mm[2] : '') + ')' };
+    }
+    /* 2) beskrivningen (reserv – utökad ordlista: frallor/bollar/
+       skivor/st m.fl. saknades tidigare → majsfrallorna missades) */
     var beskr = (document.querySelector('meta[name="recept:beskrivning"]') || {}).content || '';
-    var pm = beskr.match(/(\d+)\s*(portioner|port\b|bitar|hundportioner|klickar|glas|bullar|pizzor|b[äa]gare|burkar|tumblers?)/i);
-    if (pm) return { typ: 'antal', n: +pm[1], rubrik: 'Per portion (' + pm[1] + ' st)' };
+    var pm = beskr.match(/(\d+)\s*(?:kompakta\s+|små\s+|stora\s+)?(portioner|port\b|bitar|hundportioner|klickar|glas|bullar|bollar|frallor|skivor|kakor|muffins|pannkakor|våfflor|limpor|pizzor|b[äa]gare|burkar|tumblers?|st\b)/i);
+    if (pm) return { typ: 'antal', n: +pm[1], rubrik: 'Per styck (1 av ' + pm[1] + ' ' + pm[2] + ')' };
     var body = document.body ? document.body.textContent : '';
     var vm = body.match(/[Pp]er\s+(?:b[äa]gare|portion|burk|glas|tumbler)\s*\(\s*(\d{2,4})\s*g\s*\)/) ||
              body.match(/(\d{2,4})\s*g\s+(?:smet\s+)?i\s+varje/i) ||

@@ -669,6 +669,75 @@ def steg10_maskinplacering():
                      % (f, len(placerade), len(kvar)))
 
 
+def steg11_portioner():
+    """🍽️ PORTIONSVAKTEN (användarens order: "alla befintliga och
+    kommande recept redigeras enligt denna – står det st/frallor i
+    receptet är portionsstorleken DEN, låst; live-kalkylen visar
+    både hela satsen och per styck"). Körs varje körning:
+    Saknar receptet recept:portioner-metan hämtas antalet ur
+    ÄGARENS EGNA text – aldrig gissning, endast explicita mönster:
+      a) total-raden ("880 g · 8 frallor à 110 g")
+      b) beskrivnings-metan ("8 kompakta frallor")
+      c) titeln ("4×250 g" → 4 st)
+    → <meta name="recept:portioner" content="8 frallor"> skrivs in.
+    Befintlig meta skrivs ALDRIG över (ägardata)."""
+    import re as _re
+    ORD = (r'(frallor|bullar|bollar|bitar|portioner|skivor|kakor|muffins|'
+           r'pizzor|glas|burkar|klickar|v[åa]fflor|pannkakor|limpor|'
+           r'hundportioner|b[äa]gare|tumblers?|st)')
+
+    for f in sorted(glob.glob('recept/*/*.html')):
+        namn = os.path.basename(f)
+        if namn.upper().startswith('MALL'):
+            continue
+        try:
+            with open(f, encoding='utf-8') as fp:
+                html = fp.read()
+        except OSError:
+            continue
+        if 'STUB - receptet har flyttat' in html[:500]:
+            continue
+        if 'name="recept:portioner"' in html:
+            continue
+
+        fynd = None
+        # a) total-raden
+        tm = _re.search(r'class="total">.*?</tr>', html, _re.S)
+        if tm:
+            m = _re.search(r'(\d{1,2})\s*' + ORD + r'\b', _re.sub(r'<[^>]+>', ' ', tm.group(0)), _re.I)
+            if m:
+                fynd = (m.group(1), m.group(2))
+        # b) beskrivningen
+        if not fynd:
+            bm = _re.search(r'name="recept:beskrivning" content="([^"]*)"', html)
+            if bm:
+                m = _re.search(r'(\d{1,2})\s*(?:kompakta\s+|sm[åa]\s+|stora\s+)?' + ORD + r'\b', bm.group(1), _re.I)
+                if m:
+                    fynd = (m.group(1), m.group(2))
+        # c) titeln: "4×250 g" / "4 x 250 g" → 4 st
+        if not fynd:
+            tt = _re.search(r'<title>([^<]*)</title>', html)
+            if tt:
+                m = _re.search(r'(\d{1,2})\s*[x×]\s*\d{2,4}\s*g', tt.group(1), _re.I)
+                if m:
+                    fynd = (m.group(1), 'st')
+        if not fynd:
+            continue
+        antal, ord = int(fynd[0]), fynd[1].lower()
+        if antal < 2 or antal > 48:
+            continue   # 1 st/orimligt → ingen portionsuppdelning
+
+        ny_meta = '<meta name="recept:portioner" content="%d %s">\n' % (antal, ord)
+        ank = _re.search(r'<meta name="recept:namn"[^>]*>\n?', html)
+        if ank:
+            html = html[:ank.end()] + ny_meta + html[ank.end():]
+        else:
+            html = html.replace('</head>', ny_meta + '</head>', 1)
+        with open(f, 'w', encoding='utf-8') as fp:
+            fp.write(html)
+        rader.append('| %s | 🍽️ recept:portioner "%d %s" ur receptets text (steg11) |' % (f, antal, ord))
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -679,6 +748,7 @@ def main():
     steg8_mappvakt()
     steg9_receptstandard()
     steg10_maskinplacering()
+    steg11_portioner()
     steg6_sitemap()
     steg7_receptindex()
 
