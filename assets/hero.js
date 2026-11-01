@@ -135,13 +135,34 @@
     return '\uD83C\uDF7D\uFE0F';
   }
 
-  function fixa(img) {
-    if (img.getAttribute('data-mk-auto')) return;
-    img.setAttribute('data-mk-auto', '1');
+  function svgFixa(img) {
     img.classList.add('mk-hero-auto');
     img.src = heroSvg(namnet(), emojin());
     img.style.display = '';           /* onerror kan ha gömt den */
     img.style.objectFit = 'cover';
+  }
+  function fixa(img) {
+    if (img.getAttribute('data-mk-auto')) return;
+    img.setAttribute('data-mk-auto', '1');
+    /* 📸 AI-reserv (roadmap 43): finns images/recept-ai/<fil>.jpg används
+       den FÖRE SVG-reserven – riktiga foton vinner ALLTID (de laddar
+       utan fel och når aldrig hit). Märks diskret under bilden. */
+    var fil = decodeURIComponent(location.pathname.split('/').pop()).replace(/\.html?$/i, '');
+    var prov = new Image();
+    prov.onload = function () {
+      img.classList.add('mk-hero-auto');
+      img.src = prov.src;
+      img.style.display = ''; img.style.objectFit = 'cover';
+      if (!document.getElementById('mk-ai-tag')) {
+        var t = document.createElement('div');
+        t.id = 'mk-ai-tag'; t.className = 'no-print';
+        t.textContent = '🪄 AI-genererad illustration – byts mot riktigt foto när receptet fotats';
+        t.style.cssText = 'font-size:.72rem;color:#5f6e70;margin:-10px 0 14px;text-align:right;';
+        img.insertAdjacentElement('afterend', t);
+      }
+    };
+    prov.onerror = function () { svgFixa(img); };
+    prov.src = (window.__MK_ROT || '../') + 'images/recept-ai/' + encodeURIComponent(fil) + '.jpg';
   }
 
   function koll() {

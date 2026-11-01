@@ -296,7 +296,7 @@ def steg6_sitemap():
     bas = 'https://tokke2.github.io/recept/'
     rotsidor = ['', 'recept.html', 'matratter.html', 'maskindatabas.html', 'koksskarm.html',
                 'ingredienser.html', 'nytt-recept.html', 'maskin-import.html',
-                'forslag.html', 'status.html', 'stod.html']
+                'forslag.html', 'status.html', 'stod.html', 'kopguide.html', 'printables.html']
 
     def gitdatum(path):
         try:

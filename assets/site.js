@@ -456,6 +456,28 @@
   if (/(nytt-recept|generator|maskin-import|ingredienser|maskindatabas|forslag|matratter)\.html$/i.test(location.pathname)) scripts.push('spara.js');
   if (/(index\.html$|\/recept\/?$)/i.test(location.pathname)) scripts.push('hem.js');   /* 🏠 Startsidan 2.0 */
 
+  /* 🧲 TILL TOPPEN-KNAPPEN (roadmap 126): endast långa listsidor –
+     aldrig på receptsidor (mk-rnav äger botten där). Vänster hörn
+     (höger hörn har +-FAB på receptsamlingen). */
+  (function () {
+    if (!/(recept\.html|maskindatabas\.html|ingredienser\.html|matratter\.html)$/i.test(location.pathname)) return;
+    var b = document.createElement('button');
+    b.id = 'mk-topp';
+    b.className = 'no-print';
+    b.setAttribute('aria-label', 'Till toppen av sidan');
+    b.textContent = '⬆️';
+    b.style.cssText = 'position:fixed;left:14px;bottom:14px;z-index:90;display:none;width:46px;height:46px;' +
+      'border-radius:50%;border:none;background:#2c3e50;color:#fff;font-size:1.15rem;cursor:pointer;' +
+      'box-shadow:0 4px 14px rgba(0,0,0,.25);';
+    b.onclick = function () { try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); } };
+    document.body.appendChild(b);
+    var synlig = false;
+    window.addEventListener('scroll', function () {
+      var vis = window.scrollY > window.innerHeight;
+      if (vis !== synlig) { synlig = vis; b.style.display = vis ? 'block' : 'none'; }
+    }, { passive: true });
+  })();
+
   Promise.all(scripts.map(function (f) { return loadScript(f); }))
     .then(function () { printReport(checkMeta()); });
 })();

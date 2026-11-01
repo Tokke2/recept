@@ -250,6 +250,29 @@
 <footer>Mitt Maskinkök · recepten läses direkt från recept-mappen ·
   <a href="json/maskindatabas.json" download style="color:var(--accent);">databas (JSON)</a> · <a href="status.html" style="color:var(--accent);">🩺 status</a></footer>
 
+<script src="assets/ampel.js"></script>
+<script>
+/* 📸 AI-BILDSRESERV (roadmap 43): riktigt foto → AI-illustration →
+   SVG-reserv. AI-bilderna genereras av agenten på admins beställning
+   (ingen AI i runtime) och bor i images/recept-ai/. Märks på kortet. */
+window.__MK_AIBILD = function (img) {
+  if (!img.dataset.aiprov) {
+    img.dataset.aiprov = '1';
+    img.onload = function () {
+      var t = document.createElement('span');
+      t.textContent = 'AI-illustration';
+      t.title = 'AI-genererad symbolbild – byts mot riktigt foto när receptet fotats';
+      t.style.cssText = 'position:absolute;bottom:6px;right:8px;background:rgba(44,62,80,.78);color:#fff;font-size:.6rem;padding:2px 7px;border-radius:99px;letter-spacing:.03em;';
+      if (img.parentElement) { img.parentElement.style.position = 'relative'; img.parentElement.appendChild(t); }
+      img.onload = null;
+    };
+    img.src = img.src.replace('/images/recept/', '/images/recept-ai/');
+  } else if (window.__MK_HERO_SVG) {
+    img.onerror = null; img.onload = null;
+    img.src = window.__MK_HERO_SVG(img.dataset.namn, img.dataset.emoji, 600, 320);
+  } else { img.remove(); }
+};
+</script>
 <script>
 /* ============================================================
    Recept läses ENBART från main/recept/*.html
@@ -448,7 +471,7 @@ async function beraknaMakron() {
     const db = (await (await fetch('json/ingredienser.json')).json()).ingredienser || [];
     const poster = db.map(p => ({
       n: [String(p.namn || '').toLowerCase()].concat((p.alias || []).map(a => String(a).toLowerCase())),
-      kcal: +p.kcal || 0, prot: +p.protein || 0
+      kcal: +p.kcal || 0, prot: +p.protein || 0, fett: +p.fett || 0
     }));
     const STOP = ['med', 'och', 'stor', 'liten', 'klass', 'hela', 'färsk', 'riven', 'finmalt', 'malen', 'klyftor'];
     const hitta = namn => {
@@ -470,14 +493,22 @@ async function beraknaMakron() {
     };
     RECIPES.forEach(r => {
       if (!r.rader || r.rader.length < 2) return;
-      let g = 0, mg = 0, kcal = 0, prot = 0;
+      let g = 0, mg = 0, kcal = 0, prot = 0, fett = 0, saltG = 0, sockerG = 0;
       r.rader.forEach(([n, gr]) => {
         if (!(gr > 0)) return;
         g += gr;
+        const ln = n.toLowerCase();
+        /* 🚦 Näringsampel (roadmap 22): salt & TILLSATT socker EXAKT ur raderna */
+        if (/(^|[^a-zåäö])salt($|[^a-zåäö])/.test(ln)) saltG += gr;
+        if (/socker|sirap|honung/.test(ln)) sockerG += gr;
         const p = hitta(n);
-        if (p) { mg += gr; kcal += gr * p.kcal / 100; prot += gr * p.prot / 100; }
+        if (p) { mg += gr; kcal += gr * p.kcal / 100; prot += gr * p.prot / 100; fett += gr * p.fett / 100; }
       });
-      if (g < 100 || mg / g < 0.7) return;   /* 🛡️ otillräcklig täckning → inga siffror */
+      if (g < 100) return;
+      const tackning = mg / g >= 0.7;
+      /* ampeln: salt/socker alltid (exakta), fett endast vid ≥70 % täckning */
+      r.ampel = { salt: saltG / g * 100, socker: sockerG / g * 100, fett: tackning ? fett / g * 100 : null };
+      if (!tackning) return;   /* 🛡️ otillräcklig täckning → inga kcal/protein-siffror */
       const pm = (r.portioner || '').match(/(\d+)/);
       r.makro = {
         kcal100: kcal / g * 100, prot100: prot / g * 100,
@@ -553,11 +584,12 @@ function card(r) {
     : '';
   return `<a class="rcard" href="${r.file}"${r.isPdf ? ' target="_blank" rel="noopener"' : ''}${r.arRatt ? ' style="border:2px solid #e6a817;"' : ''}>
     <div class="media"><span class="big-emoji">${r.emoji}</span>${verif}${r.arRatt ? '<span style="position:absolute;top:10px;left:10px;background:#e6a817;color:#fff;border-radius:999px;padding:3px 12px;font-size:.72rem;font-weight:700;">🍽️ Maträtt</span>' : ''}
-      <img src="${r.bild}" alt="" loading="lazy" data-namn="${(r.namn || '').replace(/"/g, '&quot;')}" data-emoji="${r.emoji || ''}" onerror="window.__MK_HERO_SVG ? (this.onerror=null, this.src=window.__MK_HERO_SVG(this.dataset.namn, this.dataset.emoji, 600, 320)) : this.remove()">${stars}</div>
+      <img src="${r.bild}" alt="" loading="lazy" data-namn="${(r.namn || '').replace(/"/g, '&quot;')}" data-emoji="${r.emoji || ''}" onerror="window.__MK_AIBILD ? __MK_AIBILD(this) : this.remove()">${stars}</div>
     <div class="body">
       <h3>${r.namn}</h3>
       <div class="desc">${r.beskrivning}</div>
       ${r.makro ? `<div class="mline" style="color:#27ae60;font-weight:700;">🔥 ${Math.round(r.makro.kcal100)} kcal · 💪 ${r.makro.prot100.toFixed(1).replace('.', ',')} g protein /100 g${r.makro.st ? ` · ${Math.round(r.makro.st.kcal)} kcal/st` : ''}</div>` : ''}
+      ${r.ampel && window.__MK_AMPEL ? __MK_AMPEL.kortHtml(r.ampel) : ''}
       ${r.maskiner.slice(0,3).map(m => `<div class="mline">${m.replace(/^([^:]+):/, '<b>$1:</b>')}</div>`).join('')}
       <div class="tags">${r.taggar.slice(0,5).map(t => `<span class="tag">${t}</span>`).join('')}</div>
       <div class="cta">${r.isPdf ? '📄 Öppna PDF →' : 'Öppna receptet →'}</div>

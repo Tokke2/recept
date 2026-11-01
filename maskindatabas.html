@@ -288,6 +288,7 @@
   <div class="sok-wrap no-print"><input type="text" id="mSok" placeholder="Sök maskin..."></div>
 </div>
 <div class="typfilter no-print" id="typfilter"></div>
+<div class="typfilter no-print" id="markefilter" aria-label="Filtrera per varumärke"></div>
 <div class="galleri" id="galleri"></div>
 
 <!-- Detaljkortet för vald maskin -->
@@ -392,6 +393,7 @@ async function init() {
   MACHINES = machines.map(m => ({
     id: m.id,
     name: m.namn,
+    varumarke: m.varumarke || '',
     /* 🏷️ typ i namnet – "Clatronic BBA 3774 (Bakmaskin)" (användarens regel) */
     shortName: (window.__MK_MED_TYP || function (n) { return n; })((m.varumarke + ' ' + (m.modellnamn || '')).trim(), m.typ),
     typ: m.typ || '',
@@ -440,6 +442,29 @@ function renderStats() {
 }
 
 /* ============ 🎨 Typfilter-knappar ============ */
+let AKTIV_MARKE = '';
+/* 🏭 TILLVERKAR-SEKTIONEN (roadmap 18): chips per varumärke ur
+   maskinernas varumarke-fält – "dina 2 Ninja-maskiner" med ett klick */
+function renderMarken() {
+  const el = document.getElementById('markefilter');
+  if (!el) return;
+  const marken = [];
+  MACHINES.forEach(m => {
+    if (!m.varumarke) return;
+    const hit = marken.find(x => x.n === m.varumarke);
+    if (hit) hit.antal++; else marken.push({ n: m.varumarke, antal: 1 });
+  });
+  marken.sort((a, b) => b.antal - a.antal || a.n.localeCompare(b.n, 'sv'));
+  el.innerHTML =
+    '<button class="tf' + (AKTIV_MARKE === '' ? ' on' : '') + '" data-marke="" style="' + (AKTIV_MARKE === '' ? 'background:#2c3e50;border-color:#2c3e50;' : '') + '">🏭 Alla märken</button>' +
+    marken.map(x =>
+      '<button class="tf' + (AKTIV_MARKE === x.n ? ' on' : '') + '" data-marke="' + x.n.replace(/"/g, '&quot;') + '" style="' +
+      (AKTIV_MARKE === x.n ? 'background:#8e6e53;border-color:#8e6e53;' : 'border-color:#8e6e5340;') +
+      '">' + x.n + ' <span style="opacity:.7;">(' + x.antal + ')</span></button>').join('');
+  el.querySelectorAll('.tf').forEach(b => {
+    b.onclick = () => { AKTIV_MARKE = b.dataset.marke; renderMarken(); renderGalleri(); };
+  });
+}
 function renderFilter() {
   const typer = [];
   MACHINES.forEach(m => {
@@ -461,6 +486,7 @@ function renderFilter() {
 function synligaMaskiner() {
   return MACHINES.filter(m => {
     if (AKTIV_TYP && m.tema.kort !== AKTIV_TYP) return false;
+    if (AKTIV_MARKE && m.varumarke !== AKTIV_MARKE) return false;
     if (SOKTEXT) {
       const hay = (m.name + ' ' + m.shortName + ' ' + m.typ + ' ' + (m.alias || []).join(' ')).toLowerCase();
       if (!hay.includes(SOKTEXT)) return false;
@@ -505,6 +531,7 @@ document.getElementById('mSok').addEventListener('input', function () {
 function renderAll() {
   renderStats();
   renderFilter();
+  renderMarken();
   renderGalleri();
   const cardsEl = document.getElementById("machineCards");
   cardsEl.innerHTML = "";

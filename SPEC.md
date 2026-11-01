@@ -1690,7 +1690,7 @@ data i json/, ALDRIG per receptfil.
     (webbläsare avbryter efter tystnad). Saknas API-stödet
     (Brave/Firefox) visas ingen knapp alls. Nekad mikrofon →
     "🚫 Mikrofon nekad" och läget stängs av.
-13. 🧾 "VILKEN MASKIN SKA JAG KÖPA?"-GUIDEN: 4 frågor (Vad lagar du
+13. 🧾 "VILKEN MASKIN SKA JAG KÖPA?"-GUIDEN — ✔️ KLAR (2026-11-01, kopguide.html: 4 frågor → öppen poängsättning ur json/maskiner/ (typ 40p/kapacitet/program/effekt/bänkyta), topp 3 med motivering + 📖 receptantal ur energi.json + 🔧 maskindatabas-länk + 🛒 Amazon via asin (affiliate.js taggar); budgetfrågan ersatt med bänkyta+prioritet – prisdata saknas i databasen och gissas aldrig). URSPRUNGSBESKRIVNING: 4 frågor (Vad lagar du
     mest? Hur många i hushållet? Budget? Bänkyta?) → sajten
     rekommenderar maskin ur json/maskiner/ (matchning mot typ/
     program/kapacitet) + 🛒 köpknapp (affiliate). Visar även antal
@@ -1724,7 +1724,7 @@ data i json/, ALDRIG per receptfil.
     matchningslogik som kalkyl.js (norm/matchAll återanvänds –
     exponeras som window.__MK_MATCH ur kalkyl.js eller kopieras).
     Antal-badge i tabellen + expanderbar receptlista per rad.
-18. 🏭 TILLVERKAR-SIDOR: gruppera maskiner per varumärke ("dina 2
+18. 🏭 TILLVERKAR-SIDOR — ✔️ KLAR (2026-11-01, sektionsvarianten ur specen: märkeschips-rad på maskindatabas.html ur varumarke-fältet med antal, filtrerar galleriet; sitemap-poster per märke väntar tills egna märkessidor ev. byggs). URSPRUNGSBESKRIVNING: gruppera maskiner per varumärke ("dina 2
     Ninja-maskiner") – flik/sektion per märke på maskindatabas.html
     (eller marke.html?m=ninja): märkesfakta (ur TILLVERKARE-kartan +
     maskinernas gemensamma data), alla maskiner + ALLA tillhörande
@@ -1749,7 +1749,7 @@ data i json/, ALDRIG per receptfil.
     vad den hör till ("Pasta – spisen", "Jäsning – bunken på
     bänken"). Pip + vibration + titelblink. Funkar offline (läggs
     i sw.js CORE). Delar timerkod med kockläget/multitimern (rp 3).
-22. 🚦 NÄRINGSAMPEL: grön/gul/röd märkning per recept för fett/
+22. 🚦 NÄRINGSAMPEL — ✔️ KLAR v1 (2026-11-01, assets/ampel.js äger FSA-gränserna (webbverifierade: fett 3/17,5 · socker 5/22,5 · salt 0,3/1,5 per 100 g); 🚦-rad på receptkorten med värden i tooltip; salt & TILLSATT socker räknas EXAKT ur receptraderna, fett kräver ≥70 % databasteckning; MÄTTAT FETT visas EJ – fältet saknas i ingredienser.json, läggs till när datan finns). URSPRUNGSBESKRIVNING: grön/gul/röd märkning per recept för fett/
     mättat fett/socker/salt per 100 g enligt Livsmedelsverkets/
     brittiska trafikljusgränser – liten ampel på receptkorten +
     detaljer vid kalkylen. Data finns redan (live-kalkylen);
@@ -1802,7 +1802,7 @@ data i json/, ALDRIG per receptfil.
     för PWA:n (beforeinstallprompt + iOS-instruktion) – "Få Mitt
     Maskinkök som app – gratis, funkar offline". Visas diskret
     efter 2:a besöket (localStorage-räknare), aldrig tjatig.
-33. 🖨️ GRATIS PRINTABLES: nedladdningsbara PDF:er med sajtens URL –
+33. 🖨️ GRATIS PRINTABLES — ✔️ KLAR (2026-11-01, printables.html + printable-matt.html (krm/tsk/msk/dl-definitioner + jäst ⅓-regeln) + printable-airfryer.html (tidskarta UR EGNA recept via energi.json, 16 rader, datummärkt) – alla med QR + URL, @page A4; ugns→airfryer-omräknaren UTELÄMNAD tills tumregeln webbverifierats ordentligt). URSPRUNGSBESKRIVNING: nedladdningsbara PDF:er med sajtens URL –
     konverteringstabell (dl/msk/g), airfryer-tidskarta för kyl-
     skåpsdörren, ugns→airfryer-omräknare. Byggs som print-sidor
     (skriv ut till PDF) + nedladdningssida printables.html.
@@ -1877,7 +1877,7 @@ data i json/, ALDRIG per receptfil.
     ikoner på receptkorten. Central ordlista i assets/allergi.js
     eller json/allergener.json. Recepten röres aldrig.
 
-43. 📸 AI-BILDER VID BEHOV: recept utan egna foton kan (frivilligt,
+43. 📸 AI-BILDER VID BEHOV — ✔️ KLAR (2026-11-01, AVVIKELSE från ursprungsidén: INGEN API-nyckel i klienten – AGENTEN genererar på admins beställning i byggtid (= plattformsmålet "ingen AI i runtime") → images/recept-ai/<fil>.jpg. Bildkedjan överallt: riktigt foto → AI-illustration (märkt "AI-illustration" på kort, "🪄 AI-genererad illustration" på receptsidan, #mk-ai-tag städas av redigera.js) → SVG-reserv. Första 6 genererade: majsfrallor, snabba frallor, pizzadeg 4×250, grekiskt lantbröd, toastbröd, CREAMi-glass. Fler: säg vilka recept!). URSPRUNGSBESKRIVNING: recept utan egna foton kan (frivilligt,
     lösenordsskyddat, admin väljer per recept) generera en AI-bild
     av slutresultatet via bildgenererings-API → sparas i
     images/recept/<fil>.jpg precis som riktiga foton (📷-flödet).
@@ -2672,7 +2672,7 @@ data i json/, ALDRIG per receptfil.
     beställning): A−/A⁺-knappar på själva receptsidan (kockläget
     har redan egna) – köksavstånd & äldre ögon; sparas per besökare.
 
-126. 🧲 "TILL TOPPEN"-KNAPP (förslag 790, användarens beställning):
+126. 🧲 "TILL TOPPEN"-KNAPP — ✔️ KLAR (2026-11-01, i site.js: endast recept-/maskindatabas-/ingredienser-/matratter-sidorna, vänstra hörnet (FAB:en äger högra), visas efter en skärmlängd, aria-label, smooth scroll). URSPRUNGSBESKRIVNING (förslag 790):
     flytande ⬆️-knapp på långa sidor (receptsamlingen, maskin-
     databasen, ingredienser) – visas först efter en skärmlängds
     skroll, aldrig i vägen för receptens verktygsrad.
