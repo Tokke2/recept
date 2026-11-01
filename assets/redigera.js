@@ -1101,9 +1101,14 @@
     if (window.__MK_STEGMARK_RESET) window.__MK_STEGMARK_RESET();
     if (window.__MK_MASKLANK_RESET) window.__MK_MASKLANK_RESET();
 
-    /* 🧹 hitta föräldralösa ingrediensord (borttagna ur tabellen men
-       kvar i stegen) – gamla synder städas med samma panel */
-    setTimeout(function () { skannaForaldralosa()['catch'](function () {}); }, 600);
+    /* 🧹 Föräldralösa-skannern AVSTÄNGD (användarens order 2026-11-01,
+       SPEC punkt 122): den gav falsklarm – flaggade "socke" och ville
+       radera hela instruktionssteg/infotexter på snabba-frallor.
+       Dialogen "Omnämnda men saknas i tabellen" ska EJ visas automatiskt.
+       Städpanelen vid AKTIV radering av en tabellrad är kvar som vanligt.
+       (Funktionen skannaForaldralosa behålls i koden för historiken.)
+    setTimeout(function () { skannaForaldralosa()['catch'](function () {}); }, 600); */
+    void skannaForaldralosa;   /* markerad som avsiktligt oanvänd */
 
     /* Gör innehåll redigerbart */
     // Rubrik + beskrivning

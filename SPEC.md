@@ -2639,6 +2639,17 @@ data i json/, ALDRIG per receptfil.
     design.css, moduler och alla receptfiler (assets/logo.svg är
     grafik och rördes avsiktligt INTE).
 
+122. 🐛 TRE UI-FIXAR (användarens felrapport med skärmbilder,
+    2026-11-01): A) recept.html hade TVÅ "Nytt recept"-kort (båda
+    → nytt-recept.html) – dubbletten borttagen, kvar: ett Nytt
+    recept-kort + Importera recept. B) visitkort.html fick
+    "🏠 Till startsidan"-knapp överst (no-print). C) Föräldralösa-
+    skannern i redigera.js (dialogen "🧹 Omnämnda men saknas i
+    tabellen") AVSTÄNGD – gav falsklarm ("socke") och föreslog
+    radering av hela instruktionssteg och infotexter. Ska EJ visas
+    automatiskt. Städpanelen vid aktiv radering av tabellrad är
+    OFÖRÄNDRAD kvar; funktionen finns kvar bortkommenterad.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
