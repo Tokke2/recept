@@ -2692,6 +2692,25 @@ data i json/, ALDRIG per receptfil.
     (wake lock, svep, piltangenter, A−/A⁺, timers+beep, uppläsning,
     röststyrning, radio, 🧾-panel, position sparas) orört.
 
+128. 🧊 FRYS-QR MED DATUM (autoförslag 808, användarens beställning):
+    etikettvariant där QR-koden öppnar receptet OCH bär med sig
+    infrysningsdatumet (t.ex. ?fryst=2026-11-01) → receptsidan
+    visar "🧊 Infryst för X veckor sedan" vid skanning. Byggs ihop
+    med frysetiketterna (93)/Etikett 2.0 – samma utskriftsflöde.
+
+129. 🥛 INGREDIENSBYTEN (autoförslag 810, användarens beställning):
+    recepten kan visa byten av typen "Ingen turkisk yoghurt hemma?
+    Kvarg 10% funkar" – ENDAST ägarens EGNA testade byten (skrivs
+    in via ✏️-redigering eller egen liten admin-dialog), ALDRIG
+    gissade ersättningar. Lagras i receptfilen (recept:byten-meta
+    eller .alt-block), visas diskret vid ingrediensraden.
+
+130. 📲 KÖKSSKÄRM→MOBIL-QR (autoförslag 821, användarens
+    beställning): liten QR i köksskärmens hörn som pekar på
+    sajten/veckans recept → skanna med mobilen och fortsätt där.
+    Ingen server behövs – koksskarm.html genererar QR-adressen
+    lokalt (api.qrserver som övriga QR-koder).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
