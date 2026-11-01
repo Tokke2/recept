@@ -355,3 +355,7 @@
 | recept/sylt/syltfyllda-vafflor-i-airfryer.html | 🍽️ recept:portioner "6 våfflor" ur receptets text (steg11) |
 | sitemap.xml | 🗺️ omgenererad (46 adresser) |
 | json/recept-index.json | 📁 omgenererad (35 recept) |
+
+**2026-11-01**
+
+| sitemap.xml | 🗺️ omgenererad (47 adresser) |
