@@ -359,3 +359,31 @@
 **2026-11-01**
 
 | sitemap.xml | 🗺️ omgenererad (47 adresser) |
+
+**2026-11-01**
+
+| recept/bakning/applekaka-i-riskokare.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/bakning/pajdeg-i-bakmaskin.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/brod/brod-med-rivet-apple-bakmaskin.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/brod/krispigt-grekiskt-lantbrod-bakmaskin.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/brod/lokbrod-i-bakmaskin.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/brod/majsbrod-saftig-print.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/brod/majsfrallor-bakmaskin.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/brod/recept_pitabrod_airfryer.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/brod/rostbrod-for-smorgasgrill-bakmaskin.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/deg/klassisk-havresmuldeg-lagom-sot.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/deg/pizzadeg-bakmaskin-4x250g.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/deg/pizzadeg-i-bakmaskin-4-250-g-utan-protein.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/deg/proteinrik-biscoff-smuldeg-for-pizza-bakmaskinsanpassad.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/deg/snabba-frallor-bakmaskin.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/glass/Mjukglass MAX.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/husdjur/annanasglas_hund.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/ovrigt/gron-tomatketchup.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/ovrigt/squashraggmunk-med-protein.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/saft/recept_proteinshake_saft.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/snacks/a4-makaronichips-airfryer-salt--peppar.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/snacks/grona-tomat-chips.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/snacks/stekta-grona-tomater-air-fryer.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/sylt/syltfyllda-vafflor-i-airfryer.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/varmratt/frysbar-tomatsas-pa-egna-tomater-squash-lok-vitlok.html | 📝 meta description ur receptets egna metadata (steg12) |
+| recept/varmratt/pulled-kycklinggryta-rotfrukter-vita-bonor.html | 📝 meta description ur receptets egna metadata (steg12) |
