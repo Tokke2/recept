@@ -3113,13 +3113,15 @@
   "💪 Proteinrikt": "💪 Proteinreich",
   "📖 Recepten": "📖 Die Rezepte",
   "🖥️ Köksskärm – Mitt Maskinkök": "🖥️ Küchenbildschirm – My Machine Kitchen",
-  "🖥️ Köksskärmen": "🖥️ Der Küchenbildschirm"
+  "🖥️ Köksskärmen": "🖥️ Der Küchenbildschirm",
+  "skriv ut eller ladda ner trycksakerna": "Drucken Sie die Ausdrucke aus oder laden Sie sie herunter",
+  "🪪 Visitkort & flyer": "🪪 Visitenkarte & Flyer"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3112,
+ "_auto_genererade": 3114,
  "_senast_robot": "2026-11-01"
 }
