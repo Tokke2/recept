@@ -1075,20 +1075,52 @@ async function saveDirect() {
   btn.disabled = false; btn.textContent = '💾 Spara direkt på sajten';
   if (res.ok) {
     const direkt = await cachaDirekt(fil, html);
-    out.innerHTML = '<div class="hint" style="border-left-color:#27ae60;background:#eaf7ef;">🎉 <b>Sparat!</b> ' +
+    const msg = '<div class="hint" style="border-left-color:#27ae60;background:#eaf7ef;">🎉 <b>Sparat!</b> ' +
       (direkt
         ? '⚡ Receptet kan öppnas <b>DIREKT</b> (lokalt cachad kopia – nätet tar över inom ~1 min när Pages byggt om).'
         : 'Receptet dyker upp i <a href="recept.html">receptsamlingen</a> inom ~1 minut (GitHub Pages bygger om).') +
       '<br>📄 <a href="recept/' + valdKat() + '/' + encodeURIComponent(fil) + '" target="_blank" rel="noopener"><b>Öppna receptet nu</b></a>' +
-      (res.url ? ' · <a href="' + res.url + '" target="_blank" rel="noopener">Visa på GitHub</a>' : '') + '</div>';
+      (res.url ? ' · <a href="' + res.url + '" target="_blank" rel="noopener">Visa på GitHub</a>' : '') +
+      '<br>🧹 <b>Formuläret är tömt</b> – klistra in nästa recept direkt!</div>';
     if (direkt) {
       /* öppna receptet automatiskt i ny flik */
       try { window.open('recept/' + valdKat() + '/' + encodeURIComponent(fil), '_blank'); } catch (e) {}
     }
+    /* 🧹 TÖM FORMULÄRET för nästa recept (användarens regel 2026-11-01)
+       – bekräftelsen flyttas upp till inklistringsrutan så den syns. */
+    tomFormular(msg);
   } else {
     out.innerHTML = '<div class="hint" style="border-left-color:#c0392b;background:#fdecea;">⚠️ <b>Kunde inte spara:</b> ' +
       res.error + '<br>Prova igen, eller använd ⬇️ Ladda ner + 📤 GitHub-uppladdning som reserv.</div>';
   }
+}
+
+/* 🧹 Nollställ hela skapa-flödet efter lyckad sparning – redo för
+   nästa recept. Bekräftelsebannern (med länk till det sparade
+   receptet) visas ovanför inklistringsrutan. */
+function tomFormular(bannerHtml) {
+  ['src', 'fNamn', 'fEmoji', 'fBeskr', 'fFil'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  const k = document.getElementById('fKat'); if (k) k.value = '';
+  PARSED = null; SUGGESTED = []; EXTRA = [];
+  ['mList', 'stats', 'prev', 'exList', 'saveResult'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.innerHTML = '';
+  });
+  const rb = document.getElementById('resBox');
+  if (rb) rb.classList.remove('visad');
+  doljFel();
+  let banner = document.getElementById('nyttKlar');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'nyttKlar';
+    const src = document.getElementById('src');
+    if (src && src.parentNode) src.parentNode.insertBefore(banner, src);
+    else document.body.insertBefore(banner, document.body.firstChild);
+  }
+  banner.innerHTML = bannerHtml || '';
+  try { document.getElementById('src').focus(); } catch (e) {}
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
 <script src="assets/site.js"></script>

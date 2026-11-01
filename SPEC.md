@@ -2536,6 +2536,18 @@ data i json/, ALDRIG per receptfil.
     alternativmoment, jäst utan egen konvertering (sajten räknar),
     ALDRIG verifierings-metas/ord; självkollen utökad.
 
+113. 🧹 FORMULÄRTÖMNING + 📱 PWA-IKONER UR NYA LOGGAN — ✔️ KLAR
+    (2026-11-01, användarens order + fråga): A) nytt-recept:
+    efter lyckad "💾 Spara direkt på sajten" töms HELA flödet
+    (tomFormular: textarea, namn/emoji/beskrivning/filnamn/kategori,
+    PARSED/SUGGESTED/EXTRA, förslagslistor, resultatkortet döljs) –
+    bekräftelsebannern med länk till sparade receptet flyttas UPP
+    till inklistringsrutan + "Formuläret är tömt – klistra in nästa!".
+    B) Svar på frågan: PWA-ikonerna var INTE nya loggan → nu
+    genererade ur images/logo.png: icon-192/512 (10 % marginal →
+    säkra som maskable), apple-touch-icon 180, favicon-32. Samma
+    filnamn → manifest.json orörd. (= autoförslag 728.)
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
