@@ -398,3 +398,7 @@
 **2026-11-01**
 
 | sitemap.xml | 🗺️ omgenererad (50 adresser) |
+
+**2026-11-02**
+
+| sitemap.xml | 🗺️ omgenererad (50 adresser) |
