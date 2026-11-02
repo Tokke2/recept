@@ -58,3 +58,4 @@
 
 | ninja-af500eucp.json | 🔗 död tillverkarlänk ersatt |
 | 2026-10-26 | ✅ allt friskt – inga åtgärder |
+| 2026-11-02 | ✅ allt friskt – inga åtgärder |
