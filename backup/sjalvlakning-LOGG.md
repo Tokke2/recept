@@ -414,3 +414,7 @@
 **2026-11-05**
 
 | sitemap.xml | 🗺️ omgenererad (50 adresser) |
+
+**2026-11-06**
+
+| sitemap.xml | 🗺️ omgenererad (50 adresser) |
