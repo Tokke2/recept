@@ -3154,7 +3154,18 @@
   "🦠 Färsk jäst → torrjäst (⅓-regeln)": "🦠 Fresh yeast → dry yeast (the ⅓ rule)",
   "🧾 Vilken maskin ska jag köpa?": "🧾 Which machine should I buy?",
   "🧾 Vilken maskin ska jag köpa? – Mitt Maskinkök": "🧾 Which machine should I buy? - My Machine Kitchen",
-  "🪄 AI-genererad illustration – byts mot riktigt foto när receptet fotats": "🪄 AI-generated illustration – is replaced with a real photo when the recipe is photographed"
+  "🪄 AI-genererad illustration – byts mot riktigt foto när receptet fotats": "🪄 AI-generated illustration – is replaced with a real photo when the recipe is photographed",
+  "Hela satsen": "The whole batch",
+  "Kopierar AI-felrapporten till urklipp – klistra in direkt i chatten": "Copies the AI bug report to clipboard - paste directly into chat",
+  "Sammanställer ALLA fel AI-vänligt och sparar som log.md i GitHub-repot (lösenord krävs)": "Compiles ALL errors AI-friendly and saves as log.md in GitHub repo (password required)",
+  "Ställ fram allt": "Set everything out",
+  "ovanför receptet ska man kunna välja dubbelt eller halvt": "above the recipe you should be able to choose double or half",
+  "på alla brödrecept räknas portionsstorlek per skivor och skivbredd – om det inte står att det är en fralla": "on all bread recipes, portion size is calculated per slices and slice width - unless it says it's a roll",
+  "| Skärm |": "| Screen |",
+  "| Webbläsare |": "| Browser |",
+  "⚖️ Satsstorlek – skalar ingredienserna (×½ → ×1 → ×2)": "⚖️ Batch size – scales the ingredients (×½ → ×1 → ×2)",
+  "⚠️ Gick ej": "⚠️ Did not go",
+  "⚠️ Misslyckades": "⚠️ Failed"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3164,6 +3175,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3153,
- "_senast_robot": "2026-11-06"
+ "_auto_genererade": 3164,
+ "_senast_robot": "2026-11-07"
 }
