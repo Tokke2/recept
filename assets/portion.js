@@ -45,12 +45,21 @@
     return n.toLocaleString('sv-SE', { minimumFractionDigits: 0, maximumFractionDigits: dec === undefined ? 1 : dec });
   }
 
-  /* Är receptet ett bröd? (namn/taggar/titel) */
+  /* 🍞 LIMPA eller FRALLA? (användarens regel 2026-11-07, punkt 134:
+     "på alla brödrecept räknas portionsstorlek per skivor och
+     skivbredd – om det inte står att det är en fralla").
+     Limpa = brödord i namn/taggar/titel UTAN fralla/bulle-ord. */
+  function typText() {
+    return ((document.querySelector('meta[name="recept:namn"]') || {}).content || '') + ' ' +
+           ((document.querySelector('meta[name="recept:taggar"]') || {}).content || '') + ' ' +
+           ((document.querySelector('meta[name="recept:portioner"]') || {}).content || '') + ' ' +
+           document.title;
+  }
   function arBrod() {
-    var t = ((document.querySelector('meta[name="recept:namn"]') || {}).content || '') + ' ' +
-            ((document.querySelector('meta[name="recept:taggar"]') || {}).content || '') + ' ' +
-            document.title;
-    return /br[öo]d|limpa|toast|baguette|fralla/i.test(t) && !/br[öo]dkrutong/i.test(t);
+    return /br[öo]d|limpa|toast|baguette|fralla/i.test(typText()) && !/br[öo]dkrutong/i.test(typText());
+  }
+  function arFralla() {
+    return /frall|bull|boll|muffin|scones?/i.test(typText());
   }
 
   /* ---------- Vänta in kalkylen, bygg sedan panelen ---------- */
@@ -68,7 +77,7 @@
 
     var pi = window.__MK_KALKYL_PORT || null;
     var s = sparat();
-    var brod = arBrod();
+    var limpa = arBrod() && !arFralla();   /* skivläge = PRIMÄRT på limpor */
 
     /* Startvärden: sparade val → kalkylens portionsinfo → hela satsen */
     var basN = (pi && pi.n) || 1;                                  /* receptets antal portioner */
@@ -92,8 +101,21 @@
     var stepBtn = 'width:34px;height:38px;border:none;border-radius:9px;background:#f0ebe3;color:#2c3e50;' +
       'font-size:1.1rem;font-weight:800;cursor:pointer;font-family:inherit;';
 
+    var lasInp = inp + 'background:#f6f3ee;color:#5f6e70;';
     box.innerHTML =
       '<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;">' +
+        (limpa ?
+        /* 🍞 LIMPA: skivan ÄR portionen – vikt & antal räknas ur skivbredden */
+        '<div><span style="' + lbl + '">🍞 Skivtjocklek · limpans längd</span>' +
+          '<span style="white-space:nowrap;"><input id="mp-tj" type="text" inputmode="decimal" style="' + inp + 'width:56px;" value="' + String(tjocklek).replace('.', ',') + '"> cm av ' +
+          '<input id="mp-lg" type="text" inputmode="numeric" style="' + inp + 'width:56px;" value="' + langd + '"> cm</span></div>' +
+        '<div><span style="' + lbl + '">🍽️ Skivans vikt (auto)</span>' +
+          '<span style="white-space:nowrap;"><input id="mp-g" type="text" readonly style="' + lasInp + '"> <b style="font-size:.9rem;">g</b></span></div>' +
+        '<div><span style="' + lbl + '">🔪 Skivor på limpan (auto)</span>' +
+          '<input id="mp-n" type="text" readonly style="' + lasInp + 'width:52px;text-align:center;"></div>' +
+        '<div><span style="' + lbl + '">🔥 Önskad kcal/skiva</span>' +
+          '<span style="white-space:nowrap;"><input id="mp-kcal" type="text" inputmode="numeric" style="' + inp + '" placeholder="t.ex. 120"> <b style="font-size:.9rem;">kcal</b></span></div>'
+        :
         '<div><span style="' + lbl + '">🍽️ Portionsstorlek</span>' +
           '<span style="white-space:nowrap;"><input id="mp-g" type="text" inputmode="numeric" style="' + inp + '" value="' + Math.round(portG) + '"> <b style="font-size:.9rem;">g</b></span></div>' +
         '<div><span style="' + lbl + '">👥 Portioner (endast beräkning)</span>' +
@@ -102,11 +124,7 @@
           '<input id="mp-n" type="text" inputmode="numeric" style="' + inp + 'width:52px;text-align:center;" value="' + antalN + '">' +
           '<button id="mp-plus" style="' + stepBtn + '">+</button></span></div>' +
         '<div><span style="' + lbl + '">🔥 Önskad kcal/portion</span>' +
-          '<span style="white-space:nowrap;"><input id="mp-kcal" type="text" inputmode="numeric" style="' + inp + '" placeholder="t.ex. 300"> <b style="font-size:.9rem;">kcal</b></span></div>' +
-        (brod ?
-        '<div><span style="' + lbl + '">🍞 Skivtjocklek · limpans längd</span>' +
-          '<span style="white-space:nowrap;"><input id="mp-tj" type="text" inputmode="decimal" style="' + inp + 'width:56px;" value="' + String(tjocklek).replace('.', ',') + '"> cm av ' +
-          '<input id="mp-lg" type="text" inputmode="numeric" style="' + inp + 'width:56px;" value="' + langd + '"> cm</span></div>' : '') +
+          '<span style="white-space:nowrap;"><input id="mp-kcal" type="text" inputmode="numeric" style="' + inp + '" placeholder="t.ex. 300"> <b style="font-size:.9rem;">kcal</b></span></div>') +
       '</div>' +
       '<div id="mp-ut" style="margin-top:10px;padding:9px 12px;background:#fdf6ee;border-radius:9px;font-size:.9rem;line-height:1.6;"></div>';
 
@@ -122,6 +140,27 @@
     }
 
     function visa() {
+      var bf0 = window.__MK_SKALA_F || 1;
+      if (limpa) {
+        /* 🍞 skivan är portionen: vikt = satsvikt × (tjocklek/längd) */
+        var tj0 = tal(tjEl, tjocklek), lg0 = tal(lgEl, langd);
+        if (tj0 > 0 && lg0 >= tj0) {
+          var skivG0 = tot.g * bf0 * (tj0 / lg0);
+          gEl.value = Math.round(skivG0);
+          nEl.value = Math.round(lg0 / tj0);
+          utEl.innerHTML = '<b>Per skiva (' + String(tj0).replace('.', ',') + ' cm ≈ ' + fmt(skivG0, 0) + ' g):</b> ' +
+            '🔥 <b>' + fmt(perG.kcal * skivG0, 0) + ' kcal</b> · ' +
+            '💪 ' + fmt(perG.prot * skivG0) + ' g protein · ' +
+            '🍞 ' + fmt(perG.kolh * skivG0) + ' g kolh · ' +
+            '🧈 ' + fmt(perG.fett * skivG0) + ' g fett · ' +
+            '💰 ' + fmt(perG.kr * skivG0, 2) + ' kr<br>' +
+            '<span style="color:#5f6e70;font-size:.82rem;">Hela limpan' + (bf0 !== 1 ? ' (×' + fmt(bf0) + '-sats)' : '') + ': ' +
+            fmt(tot.g * bf0, 0) + ' g · ' + fmt(tot.kcal * bf0, 0) + ' kcal → ' +
+            fmt(lg0 / tj0, 0) + ' skivor à ' + String(tj0).replace('.', ',') + ' cm</span>';
+          spara({ tj: tj0, lg: lg0 });
+        }
+        return;
+      }
       var g = tal(gEl, portG);
       var n = Math.round(tal(nEl, antalN));
       var rad1 = '<b>Per portion (' + fmt(g, 0) + ' g):</b> ' +
@@ -135,30 +174,28 @@
       var rad2 = '<span style="color:#5f6e70;font-size:.82rem;">Hela satsen' + (bf !== 1 ? ' (×' + fmt(bf) + '-sats)' : '') + ': ' +
         fmt(tot.g * bf, 0) + ' g · ' + fmt(tot.kcal * bf, 0) + ' kcal · ' + fmt(tot.kr * bf, 2) + ' kr → ' +
         fmt((tot.g * bf) / g, 0) + ' portioner à ' + fmt(g, 0) + ' g</span>';
-      var rad3 = '';
-      if (brod) {
-        var tj = tal(tjEl, tjocklek), lg = tal(lgEl, langd);
-        if (tj > 0 && lg >= tj) {
-          var skivG = tot.g * f * (tj / lg);
-          rad3 = '<br>🍞 <b>Per skiva (' + String(tj).replace('.', ',') + ' cm):</b> ≈ ' + fmt(skivG, 0) + ' g · ' +
-            '<b>' + fmt(perG.kcal * skivG, 0) + ' kcal</b> · ' + fmt(perG.prot * skivG) + ' g protein · ' +
-            fmt(perG.kr * skivG, 2) + ' kr <span style="color:#5f6e70;font-size:.82rem;">(' +
-            fmt(lg / tj, 0) + ' skivor på limpan)</span>';
-        }
-      }
-      utEl.innerHTML = rad1 + '<br>' + rad2 + rad3;
+      utEl.innerHTML = rad1 + '<br>' + rad2;
       spara({ g: g, n: n, tj: tjEl ? tal(tjEl, tjocklek) : undefined, lg: lgEl ? tal(lgEl, langd) : undefined });
     }
 
-    /* 🔥 Omvänd: önskad kcal → portionsstorlek i gram */
+    /* 🔥 Omvänd: önskad kcal → gram (vanligt) eller SKIVTJOCKLEK (limpa) */
     kcEl.addEventListener('input', function () {
       var vill = tal(kcEl, 0);
-      if (vill > 0 && perG.kcal > 0) {
-        gEl.value = Math.round(vill / perG.kcal);
-        visa();
+      if (!(vill > 0 && perG.kcal > 0)) return;
+      if (limpa) {
+        var bf1 = window.__MK_SKALA_F || 1;
+        var lg1 = tal(lgEl, langd);
+        var tj1 = (vill / perG.kcal) / (tot.g * bf1) * lg1;   /* g → cm */
+        if (tj1 > 0.2 && tj1 <= lg1) {
+          tjEl.value = String(Math.round(tj1 * 10) / 10).replace('.', ',');
+          visa();
+        }
+        return;
       }
+      gEl.value = Math.round(vill / perG.kcal);
+      visa();
     });
-    gEl.addEventListener('input', function () { kcEl.value = ''; visa(); });
+    if (!limpa) gEl.addEventListener('input', function () { kcEl.value = ''; visa(); });
     if (tjEl) tjEl.addEventListener('input', visa);
     if (lgEl) lgEl.addEventListener('input', visa);
 
@@ -168,9 +205,11 @@
       nEl.value = n;
       visa();
     }
-    box.querySelector('#mp-min').onclick = function () { sattN(tal(nEl, antalN) - 1); };
-    box.querySelector('#mp-plus').onclick = function () { sattN(tal(nEl, antalN) + 1); };
-    nEl.addEventListener('change', function () { sattN(tal(nEl, antalN)); });
+    if (!limpa) {
+      box.querySelector('#mp-min').onclick = function () { sattN(tal(nEl, antalN) - 1); };
+      box.querySelector('#mp-plus').onclick = function () { sattN(tal(nEl, antalN) + 1); };
+      nEl.addEventListener('change', function () { sattN(tal(nEl, antalN)); });
+    }
 
     visa();
     /* 🔄 satsväljaren/Skala ändrades → räkna om "Hela satsen"-raden */

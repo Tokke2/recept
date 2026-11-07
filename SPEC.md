@@ -2763,6 +2763,19 @@ data i json/, ALDRIG per receptfil.
     lådan"): ?logg=1 i adressen eller tryck L 5 ggr → panel med
     live-logg + ⬇️ Export (mk-logg.json → klistra in i chatten).
 
+134. 🍞 SKIVLÄGE = PRIMÄR PORTION PÅ LIMPOR — ✔️ KLAR (2026-11-07,
+    användarens order "på alla brödrecept ska portionsstorlek
+    räknas per skivor och skivbredd, om det inte står att det är
+    en fralla"): portion.js skiljer nu LIMPA (brödord utan
+    fralla/bulle/boll/muffin/scones i namn/taggar/portioner-meta/
+    titel) från FRALLA. Limpa-läget: skivtjocklek + limpans längd
+    är HUVUDKONTROLLERNA; skivans vikt och antal skivor är
+    automatiska (readonly) – "Per skiva (1,5 cm ≈ 62 g): kcal,
+    protein, kolh, fett, kr" + "Hela limpan → X skivor"; 🔥 Önskad
+    kcal/SKIVA räknar baklänges till skivtjockleken. Frallor/
+    styckrecept behåller gram/portioner-läget som förr. Satsvaktorn
+    (×½/×2) räknas in i skivvikten.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
