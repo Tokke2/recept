@@ -2744,6 +2744,25 @@ data i json/, ALDRIG per receptfil.
     HEL LIMPA (användarens rättelse: bakmaskinsgräddning ger limpa,
     inte frallor). #mk-satsval i redigera.js-städlistan.
 
+133. ⚖️ SATS I KOCKLÄGET + 📅 VERIFIERINGSDATUM + 🌟 ÄRLIG KNAPP +
+    📱 IKON-V2 — ✔️ KLAR (2026-11-07, användarens order):
+    A) ⚖️-knapp i kocklägets topprad (visar ×1/×2/½, klick cyklar)
+    – samma skalmotor och samma sparade per-recept-val som
+    satsväljaren på sidan; "Ställ fram allt"-steget byggs om direkt
+    (uppdateraIngSteg()). Finns på ALLA recept (skala.js laddas
+    överallt). B) markeraTestad sparar nu datum i recept:testad:
+    "8. Dough, 1:30 h (verifierad 2026-11-07)" → syns i gröna
+    bocktexten automatiskt. C) Kontroll på användarens fråga: INGA
+    verifierings-metas fanns i något recept (datan var redan ren) –
+    det som såg ut som ett påstående var 🌟-knappens etikett
+    "Verifierat"; den heter nu "Verifiera" tills receptet faktiskt
+    är verifierat. D) manifest-ikonerna fick ?v=2 så Android byter
+    hemskärmsikon vid nästa manifestkoll; iOS kräver fortfarande
+    ominstallation (ta bort från hemskärmen → Dela → Lägg till).
+    E) Svar: smarta loggningen FINNS (assets/logg.js "Svarta
+    lådan"): ?logg=1 i adressen eller tryck L 5 ggr → panel med
+    live-logg + ⬇️ Export (mk-logg.json → klistra in i chatten).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

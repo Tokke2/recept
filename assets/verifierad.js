@@ -89,7 +89,7 @@
     btn.title = getDatum()
       ? 'Verifierat ' + getDatum() + ' – klicka för att ändra (lösenord krävs)'
       : 'Markera som bakat & verifierat (lösenord krävs)';
-    btn.innerHTML = '<span class="ic" style="' + (getDatum() ? 'filter:none;' : 'filter:grayscale(1);opacity:.75;') + '">🌟</span><span class="lb">Verifierat</span>';
+    btn.innerHTML = '<span class="ic" style="' + (getDatum() ? 'filter:none;' : 'filter:grayscale(1);opacity:.75;') + '">🌟</span><span class="lb">' + (getDatum() ? 'Verifierat' : 'Verifiera') + '</span>';
     rnav.appendChild(btn);
     btn.addEventListener('click', oppnaDialog);
     return true;

@@ -179,7 +179,8 @@
           var i = del.indexOf(':');
           if (i > 0) alla[del.slice(0, i).trim()] = del.slice(i + 1).trim();
         });
-        alla[maskin.id] = prog;
+        /* 📅 datum följer med (användarens order 2026-11-07, punkt 133) */
+        alla[maskin.id] = prog + ' (verifierad ' + new Date().toISOString().slice(0, 10) + ')';
         var inneh = Object.keys(alla).map(function (k) { return k + ': ' + alla[k]; }).join(' | ');
         var rad = '<meta name="recept:testad" content="' + inneh.replace(/"/g, '&quot;') + '">\n';
         if (metaRe.test(txt)) txt = txt.replace(metaRe, rad);

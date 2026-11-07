@@ -148,29 +148,32 @@
 
   /* ================== ÖPPNA/STÄNG ================== */
   var ingStepAdded = false;
+  /* 🔄 Läser tabellen färskt och bygger/uppdaterar "Ställ fram allt"-steget
+     (punkt 132/133) – anropas vid öppning OCH när ⚖️-satsen byts i kockläget */
+  function uppdateraIngSteg() {
+    lasIngredienser();
+    if (!ingList.length) return;
+    var listHtml = '<div style="font-size:.75em;opacity:.85;margin-bottom:10px;">Ställ fram allt innan du börjar:</div>' +
+      '<ul style="list-style:none;padding:0;font-size:.85em;line-height:1.8;">' +
+      ingList.map(function (ing) {
+        return '<li style="display:flex;justify-content:space-between;gap:14px;border-bottom:1px dashed rgba(255,255,255,.25);padding:2px 0;">' +
+          '<span>' + ing.namn + '</span><b style="white-space:nowrap;">' + ing.mangd + '</b></li>';
+      }).join('') + '</ul>';
+    var listPlain = 'Ingredienser: ' + ingList.map(function(i){return i.namn + ' ' + i.mangd;}).join(', ');
+    if (!ingStepAdded) {
+      steps.unshift({ text: listHtml, plain: listPlain,
+                      section: '🧾 Ingredienser', done: false, isIngredients: true });
+      ingStepAdded = true;
+    } else if (steps[0] && steps[0].isIngredients) {
+      steps[0].text = listHtml;
+      steps[0].plain = listPlain;
+    }
+  }
   function open() {
     /* 🔄 FÄRSKLÄSNING (punkt 132): mängderna läses om ur tabellen vid
        VARJE öppning – satsväljarens ×½/×2 syns i "Ställ fram allt"
        och stegchipsen (förr lästes de bara en gång vid sidladdning). */
-    lasIngredienser();
-    // Första steget = komplett ingredienslista (uppdateras vid varje öppning)
-    if (ingList.length) {
-      var listHtml = '<div style="font-size:.75em;opacity:.85;margin-bottom:10px;">Ställ fram allt innan du börjar:</div>' +
-        '<ul style="list-style:none;padding:0;font-size:.85em;line-height:1.8;">' +
-        ingList.map(function (ing) {
-          return '<li style="display:flex;justify-content:space-between;gap:14px;border-bottom:1px dashed rgba(255,255,255,.25);padding:2px 0;">' +
-            '<span>' + ing.namn + '</span><b style="white-space:nowrap;">' + ing.mangd + '</b></li>';
-        }).join('') + '</ul>';
-      var listPlain = 'Ingredienser: ' + ingList.map(function(i){return i.namn + ' ' + i.mangd;}).join(', ');
-      if (!ingStepAdded) {
-        steps.unshift({ text: listHtml, plain: listPlain,
-                        section: '🧾 Ingredienser', done: false, isIngredients: true });
-        ingStepAdded = true;
-      } else if (steps[0] && steps[0].isIngredients) {
-        steps[0].text = listHtml;
-        steps[0].plain = listPlain;
-      }
-    }
+    uppdateraIngSteg();
     // Fortsätt där du var? (egen fråga i overlayn – confirm() blockeras av Brave!)
     idx = 0;
     var fragaFortsatt = (saved.idx > 0 && saved.idx < steps.length);
@@ -460,6 +463,8 @@
         '<div style="display:flex;gap:6px;flex-shrink:0;">' +
           '<button id="cmFontM" title="Mindre text (' + Math.round(fontScale * 100) + '%)" style="' + miniBtn() + '">A−</button>' +
           '<button id="cmFontP" title="Större text (' + Math.round(fontScale * 100) + '%)" style="' + miniBtn() + '">A+</button>' +
+          (window.__MK_SKALA_APPLY ? '<button id="cmSats" title="⚖️ Satsstorlek – skalar ingredienserna (×½ → ×1 → ×2)" style="' + miniBtn() + '">⚖️' +
+            ((window.__MK_SKALA_F === 0.5) ? '½' : (window.__MK_SKALA_F === 2 ? '×2' : '×1')) + '</button>' : '') +
           (RostAPI ? '<button id="cmRost" style="' + miniBtn() + '">🎙️</button>' : '') +
           (window.__MK_RADIO ? '<button id="cmRadio" title="📻 Köksradio – bakgrundsmusik" style="' + miniBtn() + '">📻</button>' : '') +
           (ingHTML ? '<button id="cmIng" style="' + miniBtn() + '">🧾</button>' : '') +
@@ -537,6 +542,20 @@
     if (radioBtn && window.__MK_RADIO) radioBtn.onclick = function () { window.__MK_RADIO.vaxla(overlay); };
     if (window.__MK_RADIO) window.__MK_RADIO.mala(overlay);
     overlay.querySelector('#cmPrev').onclick = prev;
+    /* ⚖️ Satsväxling INNE i kockläget (punkt 133): ×1 → ×2 → ×½ → ×1,
+       samma motor + samma sparade val som satsväljaren på sidan */
+    var satsBtn = overlay.querySelector('#cmSats');
+    if (satsBtn) satsBtn.onclick = function () {
+      var f = window.__MK_SKALA_F || 1;
+      var nf = (f === 1) ? 2 : (f === 2 ? 0.5 : 1);
+      window.__MK_SKALA_APPLY(nf);
+      try {
+        var k = 'mk-sats:' + decodeURIComponent(location.pathname.split('/').pop());
+        if (nf === 1) localStorage.removeItem(k); else localStorage.setItem(k, String(nf));
+      } catch (e2) {}
+      uppdateraIngSteg();
+      render();
+    };
     /* 🔘 stegprickarna – hoppa direkt */
     overlay.querySelectorAll('.cmDot').forEach(function (b) {
       b.onclick = function () { idx = parseInt(b.getAttribute('data-i'), 10); save(); render(); };
