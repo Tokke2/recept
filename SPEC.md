@@ -2722,6 +2722,28 @@ data i json/, ALDRIG per receptfil.
     förklarar båda gesterna. Efter lyckad verifiering byggs raden
     om direkt (⏳ → ✅). Tidsgränsen styrbar via __MK_HALL_MS (test).
 
+132. ⚖️ SKALNING SKILD FRÅN KALKYLEN + 🔄 FÄRSKT KOCKLÄGE +
+    🍞 LIMPA-BILD — ✔️ KLAR (2026-11-07, användarens order
+    "portionsvalen är endast för att räkna kcal i livekalkylatorn –
+    ovanför receptet ska man välja dubbel eller halv sats" +
+    "varför visar kockläget annorlunda?"):
+    A) portion.js-panelen (portionsstorlek/portioner/önskad kcal)
+    skalar ALDRIG ingredienserna längre – ren beräkningspanel
+    (gamla ±-skalningen var källan till zombie-×0,13 som sparades
+    och gjorde att tabell ≠ kockläge). B) NY SATSVÄLJARE
+    (#mk-satsval i skala.js) ovanför receptet: ×½ / ×1 / ×2 via
+    samma motor som Skala-verktyget, sparas per recept
+    (mk-sats:<fil>), lila aktiv-markering, badge+Återställ som
+    förr; skala.js exponerar __MK_SKALA_F + "mk-skala"-händelsen
+    (portion.js räknar om "Hela satsen"-raden live). C) Kockläget
+    läser ingredienstabellen FÄRSKT vid varje öppning
+    (lasIngredienser() + "Ställ fram allt"-steget byggs om) →
+    alltid samma mängder som sidan. Stegtexternas egna inbakade
+    tal skalas av skala.js i .card/.machine-step som förr.
+    D) images/recept-ai/snabba-frallor-bakmaskin.jpg omgjord till
+    HEL LIMPA (användarens rättelse: bakmaskinsgräddning ger limpa,
+    inte frallor). #mk-satsval i redigera.js-städlistan.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

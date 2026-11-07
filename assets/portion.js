@@ -8,9 +8,11 @@
 
    1. 🍽️ PORTIONSSTORLEK (gram): ändra → kcal/protein/kolh/fett/
       pris per portion räknas om direkt.
-   2. 👥 ANTAL PORTIONER (±): ändra → INGREDIENSERNA skalas om
-      på skärmen (via __MK_SKALA_APPLY ur skala.js) och kalkylen
-      följer med. Basantal ur kalkylens portionsinfo.
+   2. 👥 ANTAL PORTIONER (±): ändra → beräkningen nedan uppdateras.
+      OBS (användarens regel 2026-11-07, punkt 132): panelen skalar
+      ALDRIG ingredienserna – den är ENDAST för kcal-beräkningen.
+      Dubbel/halv sats väljs i satsväljaren ovanför receptet
+      (skala.js #mk-satsval).
    3. 🔥 ÖNSKAD KCAL/PORTION (omvänt): "jag vill ha 300 kcal"
       → portionsstorleken i gram räknas ut och fylls i.
    4. 🍞 BRÖD: recept som är bröd/limpa/toast får skivläge –
@@ -94,7 +96,7 @@
       '<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;">' +
         '<div><span style="' + lbl + '">🍽️ Portionsstorlek</span>' +
           '<span style="white-space:nowrap;"><input id="mp-g" type="text" inputmode="numeric" style="' + inp + '" value="' + Math.round(portG) + '"> <b style="font-size:.9rem;">g</b></span></div>' +
-        '<div><span style="' + lbl + '">👥 Portioner (skalar ingredienser)</span>' +
+        '<div><span style="' + lbl + '">👥 Portioner (endast beräkning)</span>' +
           '<span style="white-space:nowrap;display:inline-flex;gap:5px;align-items:center;">' +
           '<button id="mp-min" style="' + stepBtn + '">−</button>' +
           '<input id="mp-n" type="text" inputmode="numeric" style="' + inp + 'width:52px;text-align:center;" value="' + antalN + '">' +
@@ -122,16 +124,17 @@
     function visa() {
       var g = tal(gEl, portG);
       var n = Math.round(tal(nEl, antalN));
-      var f = n / basN;   /* ingrediensfaktor */
       var rad1 = '<b>Per portion (' + fmt(g, 0) + ' g):</b> ' +
         '🔥 <b>' + fmt(perG.kcal * g, 0) + ' kcal</b> · ' +
         '💪 ' + fmt(perG.prot * g) + ' g protein · ' +
         '🍞 ' + fmt(perG.kolh * g) + ' g kolh · ' +
         '🧈 ' + fmt(perG.fett * g) + ' g fett · ' +
         '💰 ' + fmt(perG.kr * g, 2) + ' kr';
-      var rad2 = '<span style="color:#5f6e70;font-size:.82rem;">Hela satsen' + (f !== 1 ? ' (×' + fmt(f) + ')' : '') + ': ' +
-        fmt(tot.g * f, 0) + ' g · ' + fmt(tot.kcal * f, 0) + ' kcal · ' + fmt(tot.kr * f, 2) + ' kr → ' +
-        fmt((tot.g * f) / g, 0) + ' portioner à ' + fmt(g, 0) + ' g</span>';
+      /* satsfaktorn kommer ENDAST från satsväljaren/Skala-verktyget */
+      var bf = window.__MK_SKALA_F || 1;
+      var rad2 = '<span style="color:#5f6e70;font-size:.82rem;">Hela satsen' + (bf !== 1 ? ' (×' + fmt(bf) + '-sats)' : '') + ': ' +
+        fmt(tot.g * bf, 0) + ' g · ' + fmt(tot.kcal * bf, 0) + ' kcal · ' + fmt(tot.kr * bf, 2) + ' kr → ' +
+        fmt((tot.g * bf) / g, 0) + ' portioner à ' + fmt(g, 0) + ' g</span>';
       var rad3 = '';
       if (brod) {
         var tj = tal(tjEl, tjocklek), lg = tal(lgEl, langd);
@@ -159,14 +162,10 @@
     if (tjEl) tjEl.addEventListener('input', visa);
     if (lgEl) lgEl.addEventListener('input', visa);
 
-    /* 👥 Antal portioner: ± skalar INGREDIENSERNA på skärmen */
+    /* 👥 Antal portioner: ENDAST beräkningen (skalar ALDRIG tabellen) */
     function sattN(n) {
       n = Math.max(1, Math.round(n));
       nEl.value = n;
-      var f = n / basN;
-      if (window.__MK_SKALA_APPLY) {
-        window.__MK_SKALA_APPLY(f);   /* egen faktor 1 = återställ */
-      }
       visa();
     }
     box.querySelector('#mp-min').onclick = function () { sattN(tal(nEl, antalN) - 1); };
@@ -174,9 +173,7 @@
     nEl.addEventListener('change', function () { sattN(tal(nEl, antalN)); });
 
     visa();
-    /* Sparat portionsantal ≠ bas → applicera skalningen direkt */
-    if (antalN !== basN && window.__MK_SKALA_APPLY) {
-      window.__MK_SKALA_APPLY(antalN / basN);
-    }
+    /* 🔄 satsväljaren/Skala ändrades → räkna om "Hela satsen"-raden */
+    document.addEventListener('mk-skala', visa);
   }
 })();

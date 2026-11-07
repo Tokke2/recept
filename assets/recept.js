@@ -53,6 +53,27 @@
   var ingHTML = '';
   var ingTabellEl = null;   /* 🦠 elementet sparas → panelen läses FÄRSKT vid kockläges-öppning (jästtips m.m. kommer med) */
   var ingList = [];   // [{namn, mangd}] för matchning mot stegtext
+  /* 🔄 FÄRSKLÄSNING (punkt 132): mängderna läses ur tabellen både vid
+     laddning OCH varje gång kockläget öppnas – satsväljarens ×½/×2
+     (skala.js) ska synas i "Ställ fram allt"-steget och stegchipsen.
+     OBS: textContent läses så mk-skala-spannens SKALADE värden följer med. */
+  function lasIngredienser() {
+    ingList = [];
+    if (!ingTabellEl) return;
+    var rows = ingTabellEl.querySelectorAll('tr');
+    for (var ri = 0; ri < rows.length; ri++) {
+      var tds = rows[ri].querySelectorAll('td');
+      if (tds.length >= 2) {
+        var namn = tds[0].textContent.trim();
+        var mangd = tds[1].textContent.trim();
+        if (namn && mangd && !/^total/i.test(namn)) ingList.push({ namn: namn, mangd: mangd });
+        continue;
+      }
+      /* v2-tabell (ingrediens.js): data-namn/data-mangd (reserv om kolumnerna saknas) */
+      var dn = rows[ri].getAttribute('data-namn');
+      if (dn && !/^total/i.test(dn)) ingList.push({ namn: dn, mangd: rows[ri].getAttribute('data-mangd') || '' });
+    }
+  }
   var tables = document.querySelectorAll('.card table');
   for (var ti = 0; ti < tables.length; ti++) {
     var card = tables[ti].closest('.card');
@@ -60,25 +81,7 @@
     if (h && /ingrediens/i.test(h.textContent)) {
       ingHTML = tables[ti].outerHTML;
       ingTabellEl = tables[ti];
-      var rows = tables[ti].querySelectorAll('tr');
-      for (var ri = 0; ri < rows.length; ri++) {
-        /* v2-tabell (ingrediens.js): data-namn/data-mangd på raden */
-        var dn = rows[ri].getAttribute('data-namn');
-        if (dn) {
-          var dm = rows[ri].getAttribute('data-mangd') || '';
-          if (!/^total/i.test(dn)) ingList.push({ namn: dn, mangd: dm });
-          continue;
-        }
-        /* klassisk tabell: kol 1 = namn, kol 2 = mängd */
-        var tds = rows[ri].querySelectorAll('td');
-        if (tds.length >= 2) {
-          var namn = tds[0].textContent.trim();
-          var mangd = tds[1].textContent.trim();
-          if (namn && mangd && !/^total/i.test(namn)) {
-            ingList.push({ namn: namn, mangd: mangd });
-          }
-        }
-      }
+      lasIngredienser();
       break;
     }
   }
@@ -146,17 +149,27 @@
   /* ================== ÖPPNA/STÄNG ================== */
   var ingStepAdded = false;
   function open() {
-    // Första steget = komplett ingredienslista (läggs till en gång)
-    if (!ingStepAdded && ingList.length) {
+    /* 🔄 FÄRSKLÄSNING (punkt 132): mängderna läses om ur tabellen vid
+       VARJE öppning – satsväljarens ×½/×2 syns i "Ställ fram allt"
+       och stegchipsen (förr lästes de bara en gång vid sidladdning). */
+    lasIngredienser();
+    // Första steget = komplett ingredienslista (uppdateras vid varje öppning)
+    if (ingList.length) {
       var listHtml = '<div style="font-size:.75em;opacity:.85;margin-bottom:10px;">Ställ fram allt innan du börjar:</div>' +
         '<ul style="list-style:none;padding:0;font-size:.85em;line-height:1.8;">' +
         ingList.map(function (ing) {
           return '<li style="display:flex;justify-content:space-between;gap:14px;border-bottom:1px dashed rgba(255,255,255,.25);padding:2px 0;">' +
             '<span>' + ing.namn + '</span><b style="white-space:nowrap;">' + ing.mangd + '</b></li>';
         }).join('') + '</ul>';
-      steps.unshift({ text: listHtml, plain: 'Ingredienser: ' + ingList.map(function(i){return i.namn + ' ' + i.mangd;}).join(', '),
-                      section: '🧾 Ingredienser', done: false, isIngredients: true });
-      ingStepAdded = true;
+      var listPlain = 'Ingredienser: ' + ingList.map(function(i){return i.namn + ' ' + i.mangd;}).join(', ');
+      if (!ingStepAdded) {
+        steps.unshift({ text: listHtml, plain: listPlain,
+                        section: '🧾 Ingredienser', done: false, isIngredients: true });
+        ingStepAdded = true;
+      } else if (steps[0] && steps[0].isIngredients) {
+        steps[0].text = listHtml;
+        steps[0].plain = listPlain;
+      }
     }
     // Fortsätt där du var? (egen fråga i overlayn – confirm() blockeras av Brave!)
     idx = 0;

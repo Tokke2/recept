@@ -107,6 +107,8 @@
   }
 
   function efterAndring() {
+    window.__MK_SKALA_F = faktor;   /* 🍞 satsfaktorn läsbar för portion.js m.fl. */
+    try { document.dispatchEvent(new CustomEvent('mk-skala', { detail: faktor })); } catch (e) {}
     if (window.__MK_KALKYL_REFRESH) window.__MK_KALKYL_REFRESH();
   }
 
@@ -231,5 +233,59 @@
     var print = document.getElementById('rnPrint');
     bar.insertBefore(b, enh || print || null);
     b.addEventListener('click', oppna);
+  })();
+  /* ============================================================
+     🍞 SATSVÄLJAREN (användarens order 2026-11-07, punkt 132):
+     "ovanför receptet ska man kunna välja dubbelt eller halvt" –
+     tre knappar ×½ / ×1 / ×2 som skalar INGREDIENSERNA via samma
+     motor som Skala-verktyget. Kalkylpanelen (portion.js) rör
+     ALDRIG tabellen längre. Valet sparas per recept och
+     appliceras igen vid nästa besök (efter att tabellmodulerna
+     byggt klart). Städas ur sparad HTML (#mk-satsval, redigera.js).
+     ============================================================ */
+  (function satsval() {
+    if (!isRecipePage) return;
+    var SKEY = 'mk-sats:' + decodeURIComponent(location.pathname.split('/').pop());
+    function bygg() {
+      if (document.getElementById('mk-satsval')) return;
+      var header = document.querySelector('body header');
+      if (!header) return;
+      var rad = document.createElement('div');
+      rad.id = 'mk-satsval';
+      rad.className = 'no-print';
+      rad.style.cssText = 'display:flex;gap:8px;align-items:center;margin:14px 0;' +
+        'font-family:Segoe UI,system-ui,sans-serif;flex-wrap:wrap;';
+      rad.innerHTML = '<span style="font-size:.78rem;font-weight:700;color:#5f6e70;' +
+        'text-transform:uppercase;letter-spacing:.06em;">⚖️ Satsstorlek:</span>' +
+        [[0.5, '×½ halv'], [1, '×1 recept'], [2, '×2 dubbel']].map(function (p) {
+          return '<button type="button" data-f="' + p[0] + '" style="border:2px solid #8e44ad;' +
+            'background:#fff;color:#8e44ad;border-radius:999px;padding:8px 16px;font-weight:700;' +
+            'cursor:pointer;font-family:inherit;font-size:.88rem;">' + p[1] + '</button>';
+        }).join('');
+      header.parentNode.insertBefore(rad, header.nextSibling);
+      function mala() {
+        var f = window.__MK_SKALA_F || 1;
+        rad.querySelectorAll('button').forEach(function (b) {
+          var on = Math.abs(parseFloat(b.getAttribute('data-f')) - f) < 0.001;
+          b.style.background = on ? '#8e44ad' : '#fff';
+          b.style.color = on ? '#fff' : '#8e44ad';
+        });
+      }
+      rad.querySelectorAll('button').forEach(function (b) {
+        b.onclick = function () {
+          var f = parseFloat(b.getAttribute('data-f'));
+          applicera(f);
+          try { if (f === 1) localStorage.removeItem(SKEY); else localStorage.setItem(SKEY, String(f)); } catch (e) {}
+        };
+      });
+      document.addEventListener('mk-skala', mala);
+      mala();
+      /* sparat val → applicera när tabellmodulerna hunnit bygga klart */
+      var sparad = 1;
+      try { sparad = parseFloat(localStorage.getItem(SKEY)) || 1; } catch (e) {}
+      if (sparad !== 1) setTimeout(function () { applicera(sparad); }, 1600);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bygg);
+    else bygg();
   })();
 })();
