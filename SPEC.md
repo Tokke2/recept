@@ -2797,6 +2797,14 @@ data i json/, ALDRIG per receptfil.
     med i stället. navigator.clipboard med execCommand-reserv;
     kvittens "✅ Kopierad!". Klistra in direkt i AI-chatten.
 
+137. 📰 "NYTT PÅ SAJTEN" (autoförslag 854, användarens beställning):
+    ruta på startsidan med de senaste tillskotten/ändringarna –
+    byggs ur ÄKTA data (git-datum via robot som skriver
+    json/nytt.json vid varje push, t.ex. "🍞 Majsfrallor – nytt
+    recept 2026-11-05" / "🔧 Ninja AF500 uppdaterad"), aldrig
+    handskrivna nyheter. Max 5 rader, länkade, med datum.
+    Robotdelen i sjalvlakning.py (nytt steg), rutan i index.html.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
