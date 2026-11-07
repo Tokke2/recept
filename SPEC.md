@@ -2776,6 +2776,20 @@ data i json/, ALDRIG per receptfil.
     styckrecept behåller gram/portioner-läget som förr. Satsvaktorn
     (×½/×2) räknas in i skivvikten.
 
+135. 🤖 LOG.MD-RAPPORTEN + 🔪 SKIVANTAL UTAN LÄNGD — ✔️ KLAR
+    (2026-11-07, användarens order): A) Svarta lådan-panelen har ny
+    knapp "🤖 log.md → repot": sammanställer ALLA fel (FEL/
+    FEL-promise/konsol-error/fetch-FEL/fetch-KRASCH) 100 % AI-vänligt
+    (markdown: miljötabell + numrerade fel med data + 15 kontext-
+    händelser före första felet) och APPENDAR till /log.md i repot
+    via __MK_SPARA (adminlösen; spara.js efterladdas vid behov;
+    tak ~140 kB → äldsta rapporter rensas). Basfilen /log.md
+    skapad. B) Skivläget (134) förenklat på användarens order
+    "limpans längd behövs inte": ANTAL SKIVOR är nu enda kontrollen
+    (±-knappar; förval ur recept:portioner-metan, annars 20) →
+    skivvikt = satsvikt/antal; önskad kcal/skiva räknar antalet
+    baklänges. Inga cm-fält kvar.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

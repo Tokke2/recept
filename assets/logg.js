@@ -166,6 +166,75 @@
     };
   }
 
+  /* ============================================================
+     🤖 LOG.MD → REPOT (användarens order 2026-11-07, punkt 135):
+     sammanslagen, 100 % AI-vänlig felrapport – ALLA fel ur
+     bufferten + kontexthändelserna närmast före första felet –
+     sparas/appendas som /log.md i GitHub-repot via __MK_SPARA
+     (adminlösenordet). Klistra sedan in filen (eller länka den)
+     i chatten så ser AI:n exakt vad som hänt.
+     ============================================================ */
+  var FELTYP = /^(FEL|FEL-promise|konsol-error|fetch-FEL|fetch-KRASCH)$/;
+  function byggFelMd() {
+    var alla = buffert.slice();
+    var fel = alla.filter(function (p) { return FELTYP.test(p.typ); });
+    var md = '\n---\n\n## 🤖 Felrapport ' + nu() + '\n\n' +
+      '| Fält | Värde |\n|---|---|\n' +
+      '| Sida | ' + location.href + ' |\n' +
+      '| Webbläsare | ' + navigator.userAgent.slice(0, 140) + ' |\n' +
+      '| Skärm | ' + screen.width + '×' + screen.height + ' · online: ' + navigator.onLine + ' |\n' +
+      '| Loggposter | ' + alla.length + ' totalt · **' + fel.length + ' fel** |\n\n';
+    if (!fel.length) {
+      md += '✅ Inga fel i bufferten vid rapporttillfället.\n';
+      return md;
+    }
+    md += '### 💥 Alla fel (' + fel.length + ')\n\n';
+    fel.forEach(function (p, i) {
+      md += (i + 1) + '. **[' + p.t + '] ' + p.typ + '** på `' + p.sida + '`\n' +
+        '   ```\n   ' + JSON.stringify(p.d).replace(/\n/g, ' ').slice(0, 500) + '\n   ```\n';
+    });
+    /* kontext: händelserna närmast FÖRE första felet */
+    var fi = alla.indexOf(fel[0]);
+    var ctx = alla.slice(Math.max(0, fi - 15), fi);
+    if (ctx.length) {
+      md += '\n### 🧭 Händelserna närmast före första felet\n\n';
+      ctx.forEach(function (p) {
+        md += '- [' + p.t + '] ' + p.typ + ' · ' + JSON.stringify(p.d).slice(0, 140) + '\n';
+      });
+    }
+    return md;
+  }
+  async function sparaLogMd(btn) {
+    var ur = btn.textContent;
+    btn.textContent = '⏳...';
+    try {
+      /* spara.js laddas vid behov (finns inte på alla sidor) */
+      if (!window.__MK_SPARA) {
+        await new Promise(function (ok, fail) {
+          var sc = document.createElement('script');
+          sc.src = (window.__MK_ROT || '') + 'assets/spara.js';
+          sc.onload = ok; sc.onerror = fail;
+          document.head.appendChild(sc);
+        });
+      }
+      if (!window.__MK_SPARA || !(await window.__MK_SPARA.unlock())) { btn.textContent = ur; return; }
+      var bas = await window.__MK_SPARA.load('log.md');
+      if (!bas) {
+        bas = '<!-- PLATS: /log.md (AI-vanlig felsokningslogg - skrivs fran Svarta ladan-panelen, aldrig for hand) -->\n' +
+              '# 🤖 Mitt Maskinkök – felsökningslogg\n\nKlistra in senaste rapporten i AI-chatten vid felsökning.\n';
+      }
+      var ny = bas + byggFelMd();
+      /* taket: behåll huvudet + de senaste ~100 kB rapporterna */
+      if (ny.length > 140000) {
+        var huv = ny.slice(0, ny.indexOf('\n---\n'));
+        ny = huv + '\n\n*(äldre rapporter rensade ' + nu() + ')*\n' + ny.slice(-100000);
+      }
+      var res = await window.__MK_SPARA.save('log.md', ny, '🤖 log.md: felrapport ' + nu());
+      btn.textContent = res && res.ok ? '✅ Sparad!' : '⚠️ Misslyckades';
+    } catch (e) { btn.textContent = '⚠️ ' + String(e.message || e).slice(0, 30); }
+    setTimeout(function () { btn.textContent = ur; }, 3000);
+  }
+
   /* Publikt API för andra moduler: __MK_LOGG.notera('spara', {...}) */
   window.__MK_LOGG = {
     notera: function (typ, data) { logga(typ, data || {}); },
@@ -228,6 +297,7 @@
           '<option value="klick">👆 Klick</option><option value="input">⌨️ Inmatning</option>' +
           '<option value="fetch-FEL">🌐 Nätfel</option><option value="sida">🧭 Sidor</option></select>' +
         '<button id="mklg-export" style="background:#27ae60;color:#fff;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font:inherit;font-weight:700;">⬇️ Exportera</button>' +
+        '<button id="mklg-repo" title="Sammanställer ALLA fel AI-vänligt och sparar som log.md i GitHub-repot (lösenord krävs)" style="background:#8e44ad;color:#fff;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font:inherit;font-weight:700;">🤖 log.md → repot</button>' +
         '<button id="mklg-rensa" style="background:#e74c3c;color:#fff;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font:inherit;font-weight:700;">🗑️ Rensa</button>' +
         '<button id="mklg-stang" style="background:#3d4d5c;color:#fff;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font:inherit;margin-left:auto;">✕</button>' +
       '</div>' +
@@ -236,6 +306,7 @@
     document.body.appendChild(panelEl);
     panelEl.querySelector('#mklg-filter').addEventListener('change', ritaPanel);
     panelEl.querySelector('#mklg-export').addEventListener('click', exportera);
+    panelEl.querySelector('#mklg-repo').addEventListener('click', function () { sparaLogMd(this); });
     panelEl.querySelector('#mklg-rensa').addEventListener('click', function () { window.__MK_LOGG.rensa(); });
     panelEl.querySelector('#mklg-stang').addEventListener('click', visaPanel);
     ritaPanel();

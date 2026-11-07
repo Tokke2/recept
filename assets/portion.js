@@ -83,8 +83,7 @@
     var basN = (pi && pi.n) || 1;                                  /* receptets antal portioner */
     var portG = s.g || (pi ? (pi.typ === 'vikt' ? pi.g : Math.round(tot.g / pi.n)) : Math.round(tot.g));
     var antalN = s.n || basN;
-    var tjocklek = s.tj || 1.5;                                    /* cm */
-    var langd = s.lg || 30;                                        /* cm limpa */
+    var basSkivor = s.sk || (pi && pi.typ === 'antal' ? pi.n : 0) || 20;   /* 🔪 antal skivor (längd behövs inte – användarens order) */
 
     var perG = { kcal: tot.kcal / tot.g, prot: tot.prot / tot.g, kolh: tot.kolh / tot.g,
                  fett: tot.fett / tot.g, kr: tot.kr / tot.g };
@@ -105,14 +104,14 @@
     box.innerHTML =
       '<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;">' +
         (limpa ?
-        /* 🍞 LIMPA: skivan ÄR portionen – vikt & antal räknas ur skivbredden */
-        '<div><span style="' + lbl + '">🍞 Skivtjocklek · limpans längd</span>' +
-          '<span style="white-space:nowrap;"><input id="mp-tj" type="text" inputmode="decimal" style="' + inp + 'width:56px;" value="' + String(tjocklek).replace('.', ',') + '"> cm av ' +
-          '<input id="mp-lg" type="text" inputmode="numeric" style="' + inp + 'width:56px;" value="' + langd + '"> cm</span></div>' +
+        /* 🍞 LIMPA: skivan ÄR portionen – ANTAL SKIVOR styr (ingen längd behövs) */
+        '<div><span style="' + lbl + '">🔪 Antal skivor på limpan</span>' +
+          '<span style="white-space:nowrap;display:inline-flex;gap:5px;align-items:center;">' +
+          '<button id="mp-smin" style="' + stepBtn + '">−</button>' +
+          '<input id="mp-skiv" type="text" inputmode="numeric" style="' + inp + 'width:56px;text-align:center;" value="' + basSkivor + '">' +
+          '<button id="mp-splus" style="' + stepBtn + '">+</button></span></div>' +
         '<div><span style="' + lbl + '">🍽️ Skivans vikt (auto)</span>' +
           '<span style="white-space:nowrap;"><input id="mp-g" type="text" readonly style="' + lasInp + '"> <b style="font-size:.9rem;">g</b></span></div>' +
-        '<div><span style="' + lbl + '">🔪 Skivor på limpan (auto)</span>' +
-          '<input id="mp-n" type="text" readonly style="' + lasInp + 'width:52px;text-align:center;"></div>' +
         '<div><span style="' + lbl + '">🔥 Önskad kcal/skiva</span>' +
           '<span style="white-space:nowrap;"><input id="mp-kcal" type="text" inputmode="numeric" style="' + inp + '" placeholder="t.ex. 120"> <b style="font-size:.9rem;">kcal</b></span></div>'
         :
@@ -132,7 +131,7 @@
 
     var gEl = box.querySelector('#mp-g'), nEl = box.querySelector('#mp-n'),
         kcEl = box.querySelector('#mp-kcal'), utEl = box.querySelector('#mp-ut'),
-        tjEl = box.querySelector('#mp-tj'), lgEl = box.querySelector('#mp-lg');
+        skEl = box.querySelector('#mp-skiv');
 
     function tal(el, fallback) {
       var v = parseFloat(String(el && el.value || '').replace(',', '.').replace(/[^\d.]/g, ''));
@@ -142,23 +141,19 @@
     function visa() {
       var bf0 = window.__MK_SKALA_F || 1;
       if (limpa) {
-        /* 🍞 skivan är portionen: vikt = satsvikt × (tjocklek/längd) */
-        var tj0 = tal(tjEl, tjocklek), lg0 = tal(lgEl, langd);
-        if (tj0 > 0 && lg0 >= tj0) {
-          var skivG0 = tot.g * bf0 * (tj0 / lg0);
-          gEl.value = Math.round(skivG0);
-          nEl.value = Math.round(lg0 / tj0);
-          utEl.innerHTML = '<b>Per skiva (' + String(tj0).replace('.', ',') + ' cm ≈ ' + fmt(skivG0, 0) + ' g):</b> ' +
-            '🔥 <b>' + fmt(perG.kcal * skivG0, 0) + ' kcal</b> · ' +
-            '💪 ' + fmt(perG.prot * skivG0) + ' g protein · ' +
-            '🍞 ' + fmt(perG.kolh * skivG0) + ' g kolh · ' +
-            '🧈 ' + fmt(perG.fett * skivG0) + ' g fett · ' +
-            '💰 ' + fmt(perG.kr * skivG0, 2) + ' kr<br>' +
-            '<span style="color:#5f6e70;font-size:.82rem;">Hela limpan' + (bf0 !== 1 ? ' (×' + fmt(bf0) + '-sats)' : '') + ': ' +
-            fmt(tot.g * bf0, 0) + ' g · ' + fmt(tot.kcal * bf0, 0) + ' kcal → ' +
-            fmt(lg0 / tj0, 0) + ' skivor à ' + String(tj0).replace('.', ',') + ' cm</span>';
-          spara({ tj: tj0, lg: lg0 });
-        }
+        /* 🍞 skivan är portionen: vikt = satsvikt / antal skivor */
+        var N0 = Math.max(1, Math.round(tal(skEl, basSkivor)));
+        var skivG0 = tot.g * bf0 / N0;
+        gEl.value = Math.round(skivG0);
+        utEl.innerHTML = '<b>Per skiva (1 av ' + N0 + ' ≈ ' + fmt(skivG0, 0) + ' g):</b> ' +
+          '🔥 <b>' + fmt(perG.kcal * skivG0, 0) + ' kcal</b> · ' +
+          '💪 ' + fmt(perG.prot * skivG0) + ' g protein · ' +
+          '🍞 ' + fmt(perG.kolh * skivG0) + ' g kolh · ' +
+          '🧈 ' + fmt(perG.fett * skivG0) + ' g fett · ' +
+          '💰 ' + fmt(perG.kr * skivG0, 2) + ' kr<br>' +
+          '<span style="color:#5f6e70;font-size:.82rem;">Hela limpan' + (bf0 !== 1 ? ' (×' + fmt(bf0) + '-sats)' : '') + ': ' +
+          fmt(tot.g * bf0, 0) + ' g · ' + fmt(tot.kcal * bf0, 0) + ' kcal → ' + N0 + ' skivor</span>';
+        spara({ sk: N0 });
         return;
       }
       var g = tal(gEl, portG);
@@ -175,7 +170,7 @@
         fmt(tot.g * bf, 0) + ' g · ' + fmt(tot.kcal * bf, 0) + ' kcal · ' + fmt(tot.kr * bf, 2) + ' kr → ' +
         fmt((tot.g * bf) / g, 0) + ' portioner à ' + fmt(g, 0) + ' g</span>';
       utEl.innerHTML = rad1 + '<br>' + rad2;
-      spara({ g: g, n: n, tj: tjEl ? tal(tjEl, tjocklek) : undefined, lg: lgEl ? tal(lgEl, langd) : undefined });
+      spara({ g: g, n: n });
     }
 
     /* 🔥 Omvänd: önskad kcal → gram (vanligt) eller SKIVTJOCKLEK (limpa) */
@@ -183,21 +178,21 @@
       var vill = tal(kcEl, 0);
       if (!(vill > 0 && perG.kcal > 0)) return;
       if (limpa) {
+        /* önskad kcal/skiva → ANTAL skivor baklänges */
         var bf1 = window.__MK_SKALA_F || 1;
-        var lg1 = tal(lgEl, langd);
-        var tj1 = (vill / perG.kcal) / (tot.g * bf1) * lg1;   /* g → cm */
-        if (tj1 > 0.2 && tj1 <= lg1) {
-          tjEl.value = String(Math.round(tj1 * 10) / 10).replace('.', ',');
-          visa();
-        }
+        var N1 = Math.round((tot.kcal * bf1) / vill);
+        if (N1 >= 1 && N1 <= 200) { skEl.value = N1; visa(); }
         return;
       }
       gEl.value = Math.round(vill / perG.kcal);
       visa();
     });
     if (!limpa) gEl.addEventListener('input', function () { kcEl.value = ''; visa(); });
-    if (tjEl) tjEl.addEventListener('input', visa);
-    if (lgEl) lgEl.addEventListener('input', visa);
+    if (limpa) {
+      skEl.addEventListener('input', function () { kcEl.value = ''; visa(); });
+      box.querySelector('#mp-smin').onclick = function () { skEl.value = Math.max(1, Math.round(tal(skEl, basSkivor)) - 1); kcEl.value = ''; visa(); };
+      box.querySelector('#mp-splus').onclick = function () { skEl.value = Math.round(tal(skEl, basSkivor)) + 1; kcEl.value = ''; visa(); };
+    }
 
     /* 👥 Antal portioner: ENDAST beräkningen (skalar ALDRIG tabellen) */
     function sattN(n) {
