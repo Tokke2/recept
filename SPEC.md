@@ -2805,6 +2805,27 @@ data i json/, ALDRIG per receptfil.
     handskrivna nyheter. Max 5 rader, länkade, med datum.
     Robotdelen i sjalvlakning.py (nytt steg), rutan i index.html.
 
+138. 🔄 BAKGRUNDSSYNK AV BETYG (autoförslag 857, användarens
+    beställning): röstar/betygsätter besökaren OFFLINE (stugan!)
+    köas handlingen lokalt och skickas automatiskt när nätet
+    kommer tillbaka – Background Sync API i sw.js där det stöds,
+    annars online-händelsen som reserv. Gäller betyg.js (Abacus)
+    och ev. kommentarer. Aldrig dubbelskick (kö med id:n).
+
+139. 🖼️ iOS-SPLASHSKÄRMAR (autoförslag 858, användarens
+    beställning): apple-touch-startup-image-länkar med genererade
+    laddbilder (loggan på varm gradient) för de vanligaste
+    iPhone-/iPad-storlekarna → appen startar snyggt i stället för
+    vit ruta. Bilderna genereras ur images/logo.png (samma
+    PIL-flöde som PWA-ikonerna), läggs i images/splash/.
+
+140. 💚 DISKRET STÖD-NUDGE I KOCKLÄGET (autoförslag 859,
+    användarens beställning): var 5:e "✅ Klart!" (saved.cooked-
+    räknaren finns redan) visas en liten vänlig rad i stängnings-
+    ögonblicket: "Gillar du sajten? ☕ Swish/Ko-fi" med länk till
+    stod.html – ALDRIG modal/blockerande, lätt att vifta bort,
+    visas aldrig två lagningar i rad.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
