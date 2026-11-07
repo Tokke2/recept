@@ -204,6 +204,9 @@
         bg.remove();
         var gammal = document.getElementById('mk-maskinmatch');
         if (gammal) gammal.remove();
+        /* 🔄 maskinraden överst byggs om så ⏳ → ✅ syns direkt */
+        var topp = document.getElementById('mk-maskintop');
+        if (topp) topp.remove();
         run();
       } else {
         out.innerHTML = '<span style="color:#c0392b;">⚠️ ' + res.error + '</span>';
@@ -283,14 +286,59 @@
             'style="width:34px;height:34px;object-fit:contain;border-radius:8px;background:#f6f3ee;flex-shrink:0;">'
           : '';
         return '<a href="' + rot + 'maskindatabas.html#' + encodeURIComponent(m.id) + '" ' +
+          'data-mk-mid="' + m.id + '" data-mk-namn="' + n.replace(/"/g, '&quot;') + '" ' +
           'style="display:inline-flex;align-items:center;gap:8px;background:#f6f3ee;border:1px solid #eee2d2;' +
           'border-radius:999px;padding:5px 14px 5px 6px;text-decoration:none;color:#2c3e50;' +
-          'font-size:.84rem;font-weight:700;margin:3px 6px 3px 0;">' +
+          'font-size:.84rem;font-weight:700;margin:3px 6px 3px 0;' +
+          '-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;">' +
           bild + '<span>' + n + '</span>' + status + '</a>';
       }).join('');
       rad.innerHTML = '<span style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;' +
         'color:#a5967e;display:block;margin-bottom:6px;">🔧 Maskiner som används i receptet ' +
-        '<span style="text-transform:none;letter-spacing:0;">(⏳ = ej verifierad av admin ännu)</span></span>' + chips;
+        '<span style="text-transform:none;letter-spacing:0;">(⏳ = ej verifierad · klick = maskinsidan · håll inne 3 sek = ✅ verifiera)</span></span>' + chips;
+
+      /* ✅ HÅLL-INNE-VERIFIERING (användarens order 2026-11-01, punkt 131):
+         vanligt klick går till maskindatabasen som förr – håll inne
+         chipen i 3 sekunder → verifieringsdialogen (lösenordslåset i
+         markeraTestad gäller som vanligt). Programförslaget förifylls
+         ur recept:maskiner-metan när maskinen hittas där. */
+      function forslagFor(id) {
+        var mEl2 = document.querySelector('meta[name="recept:maskiner"]');
+        var m2 = testade.filter(function (x) { return x.id === id; })[0];
+        if (!mEl2 || !m2) return '';
+        var nycklar = [String(m2.varumarke || ''), String(m2.modellnamn || '').split(/\s+/)[0]]
+          .map(function (x) { return x.toLowerCase(); }).filter(function (x) { return x.length >= 3; });
+        var delar = String(mEl2.getAttribute('content') || '').split('|');
+        for (var i = 0; i < delar.length; i++) {
+          var ix = delar[i].indexOf('·');
+          if (ix === -1) continue;
+          var fore = delar[i].slice(0, ix).toLowerCase();
+          if (nycklar.some(function (k) { return fore.indexOf(k) !== -1; })) return delar[i].slice(ix + 1).trim();
+        }
+        return '';
+      }
+      var HALL_MS = window.__MK_HALL_MS || 3000;
+      rad.querySelectorAll('a[data-mk-mid]').forEach(function (a) {
+        var tmr = null, fired = false;
+        function starta() {
+          fired = false;
+          tmr = setTimeout(function () {
+            fired = true;
+            try { if (navigator.vibrate) navigator.vibrate(60); } catch (e2) {}
+            markeraTestad({ id: a.getAttribute('data-mk-mid'),
+                            namn: a.getAttribute('data-mk-namn'),
+                            forslag: forslagFor(a.getAttribute('data-mk-mid')) });
+          }, HALL_MS);
+        }
+        function avbryt() { if (tmr) { clearTimeout(tmr); tmr = null; } }
+        a.addEventListener('touchstart', starta, { passive: true });
+        ['touchend', 'touchcancel'].forEach(function (ev) { a.addEventListener(ev, avbryt); });
+        a.addEventListener('touchmove', avbryt, { passive: true });
+        a.addEventListener('mousedown', starta);
+        ['mouseup', 'mouseleave'].forEach(function (ev) { a.addEventListener(ev, avbryt); });
+        a.addEventListener('contextmenu', function (e) { if (fired || tmr) e.preventDefault(); });
+        a.addEventListener('click', function (e) { avbryt(); if (fired) { e.preventDefault(); fired = false; } });
+      });
       header.parentNode.insertBefore(rad, header.nextSibling);
     })();
 

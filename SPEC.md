@@ -2711,6 +2711,17 @@ data i json/, ALDRIG per receptfil.
     Ingen server behövs – koksskarm.html genererar QR-adressen
     lokalt (api.qrserver som övriga QR-koder).
 
+131. ✅ HÅLL-INNE-VERIFIERING PÅ MASKINRADEN — ✔️ KLAR (2026-11-01,
+    användarens order "klick tar en bara till maskinen – håll 3 sek
+    ska verifiera, men behöver lösen då"): chipsen i #mk-maskintop
+    behåller klick = maskindatabasen, men HÅLL INNE 3 sekunder
+    (touch eller mus) → markeraTestad-dialogen med lösenordslåset
+    som vanligt + vibration som kvittens. Programförslaget förifylls
+    ur recept:maskiner-metan (matchning på varumärke/modellord).
+    iOS-callout/textmarkering avstängd på chipsen; rubriken
+    förklarar båda gesterna. Efter lyckad verifiering byggs raden
+    om direkt (⏳ → ✅). Tidsgränsen styrbar via __MK_HALL_MS (test).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
