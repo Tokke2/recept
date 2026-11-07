@@ -204,6 +204,38 @@
     }
     return md;
   }
+  /* 📋 KOPIERA (användarens order 2026-11-07, punkt 136): samma
+     AI-vänliga rapport som log.md rakt in i urklippet – inga fel i
+     bufferten? då följer de 50 senaste händelserna med i stället. */
+  function kopieraLogg(btn) {
+    var text = byggFelMd();
+    if (!buffert.some(function (p) { return FELTYP.test(p.typ); })) {
+      text += '\n### 🧭 Senaste 50 händelserna\n\n' + buffert.slice(-50).map(function (p) {
+        return '- [' + p.t + '] ' + p.typ + ' · ' + JSON.stringify(p.d).slice(0, 140);
+      }).join('\n') + '\n';
+    }
+    var ur = btn.textContent;
+    function klar(ok) {
+      btn.textContent = ok ? '✅ Kopierad!' : '⚠️ Gick ej';
+      setTimeout(function () { btn.textContent = ur; }, 2500);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { klar(true); }, function () { reserv(); });
+    } else { reserv(); }
+    function reserv() {   /* äldre webbläsare/HTTP: markera+execCommand */
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;left:-9999px;';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = document.execCommand('copy');
+        ta.remove();
+        klar(ok);
+      } catch (e) { klar(false); }
+    }
+  }
+
   async function sparaLogMd(btn) {
     var ur = btn.textContent;
     btn.textContent = '⏳...';
@@ -297,6 +329,7 @@
           '<option value="klick">👆 Klick</option><option value="input">⌨️ Inmatning</option>' +
           '<option value="fetch-FEL">🌐 Nätfel</option><option value="sida">🧭 Sidor</option></select>' +
         '<button id="mklg-export" style="background:#27ae60;color:#fff;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font:inherit;font-weight:700;">⬇️ Exportera</button>' +
+        '<button id="mklg-kopiera" title="Kopierar AI-felrapporten till urklipp – klistra in direkt i chatten" style="background:#2980b9;color:#fff;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font:inherit;font-weight:700;">📋 Kopiera</button>' +
         '<button id="mklg-repo" title="Sammanställer ALLA fel AI-vänligt och sparar som log.md i GitHub-repot (lösenord krävs)" style="background:#8e44ad;color:#fff;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font:inherit;font-weight:700;">🤖 log.md → repot</button>' +
         '<button id="mklg-rensa" style="background:#e74c3c;color:#fff;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font:inherit;font-weight:700;">🗑️ Rensa</button>' +
         '<button id="mklg-stang" style="background:#3d4d5c;color:#fff;border:none;border-radius:6px;padding:4px 12px;cursor:pointer;font:inherit;margin-left:auto;">✕</button>' +
@@ -306,6 +339,7 @@
     document.body.appendChild(panelEl);
     panelEl.querySelector('#mklg-filter').addEventListener('change', ritaPanel);
     panelEl.querySelector('#mklg-export').addEventListener('click', exportera);
+    panelEl.querySelector('#mklg-kopiera').addEventListener('click', function () { kopieraLogg(this); });
     panelEl.querySelector('#mklg-repo').addEventListener('click', function () { sparaLogMd(this); });
     panelEl.querySelector('#mklg-rensa').addEventListener('click', function () { window.__MK_LOGG.rensa(); });
     panelEl.querySelector('#mklg-stang').addEventListener('click', visaPanel);

@@ -2790,6 +2790,13 @@ data i json/, ALDRIG per receptfil.
     skivvikt = satsvikt/antal; önskad kcal/skiva räknar antalet
     baklänges. Inga cm-fält kvar.
 
+136. 📋 KOPIERA FRÅN LOGGEN — ✔️ KLAR (2026-11-07, användarens
+    order "kunna kopiera från loggen"): ny knapp i Svarta lådan-
+    panelen som lägger AI-felrapporten (samma som log.md-sektionen)
+    i urklippet – finns inga fel följer de 50 senaste händelserna
+    med i stället. navigator.clipboard med execCommand-reserv;
+    kvittens "✅ Kopierad!". Klistra in direkt i AI-chatten.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
