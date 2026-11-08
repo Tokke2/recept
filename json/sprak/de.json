@@ -3314,13 +3314,18 @@
   "🔒 Panelen är låst": "🔒 Das Panel ist gesperrt",
   "🔓 Öppna panelen": "🔓 Öffnen Sie das Panel",
   "🔢 Byt PIN": "🔢 PIN ändern",
-  "🔢 PIN uppdaterad via adminflödet": "🔢 PIN über den Admin-Feed aktualisiert"
+  "🔢 PIN uppdaterad via adminflödet": "🔢 PIN über den Admin-Feed aktualisiert",
+  "PIN, e-post & AF-tillbehör – kräver PIN": "PIN-, E-Mail- und AF-Zubehör – PIN erforderlich",
+  "Per airfryer – visas på maskinens kort i maskindatabasen.": "Pro Airfryer – erscheint auf der Karte der Maschine in der Maschinendatenbank.",
+  "t.ex. Grillgaller, bakplåtspapper med hål...": "z.B. Grillrost, Backpapier mit Löchern...",
+  "🍟 AF-tillbehör (det du faktiskt använder)": "🍟 AF-Zubehör (was Sie tatsächlich verwenden)",
+  "🔐 Adminpanelen": "🔐 Das Admin-Panel"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3313,
+ "_auto_genererade": 3318,
  "_senast_robot": "2026-11-08"
 }

@@ -3192,7 +3192,12 @@
   "🔒 Panelen är låst": "🔒 The panel is locked",
   "🔓 Öppna panelen": "🔓 Open the panel",
   "🔢 Byt PIN": "🔢 Change PIN",
-  "🔢 PIN uppdaterad via adminflödet": "🔢 PIN updated via the admin feed"
+  "🔢 PIN uppdaterad via adminflödet": "🔢 PIN updated via the admin feed",
+  "PIN, e-post & AF-tillbehör – kräver PIN": "PIN, Email & AF Accessories - requires PIN",
+  "Per airfryer – visas på maskinens kort i maskindatabasen.": "Per airfryer – appears on the machine's card in the machine database.",
+  "t.ex. Grillgaller, bakplåtspapper med hål...": "e.g. Grill rack, baking paper with holes...",
+  "🍟 AF-tillbehör (det du faktiskt använder)": "🍟 AF accessory (what you actually use)",
+  "🔐 Adminpanelen": "🔐 The admin panel"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3202,6 +3207,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3191,
+ "_auto_genererade": 3196,
  "_senast_robot": "2026-11-08"
 }
