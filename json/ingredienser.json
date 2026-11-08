@@ -729,7 +729,14 @@
     },
     {
       "id": "grona-tomater",
-      "namn": "Gröna Tomater (hemmaodlade)",
+      "namn": "Gröna Tomater (hemmaodlade) hemodlad",
+      "pris_kr_per_kg": 0,
+      "kcal": 21,
+      "protein": 0.9,
+      "kolhydrat": 3.9,
+      "fett": 0.2,
+      "fiber": 1.4,
+      "kalla": "ägaren 2026-10-31: hemmaodlade (pris 0 kr) – näring som röd tomat (Livsmedelsverkets ca-värden per 100 g) · redigerad 2026-11-08",
       "alias": [
         "gröna tomater",
         "grön tomat",
@@ -737,13 +744,9 @@
         "egna tomater",
         "tomater egna"
       ],
-      "pris_kr_per_kg": 0,
-      "kcal": 21,
-      "protein": 0.9,
-      "kolhydrat": 3.9,
-      "fett": 0.2,
-      "fiber": 1.4,
-      "kalla": "ägaren 2026-10-31: hemmaodlade (pris 0 kr) – näring som röd tomat (Livsmedelsverkets ca-värden per 100 g)"
+      "lank_onodig": true,
+      "egenodlad": true,
+      "noll_ok": true
     }
   ]
 }
