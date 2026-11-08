@@ -2912,10 +2912,11 @@ data i json/, ALDRIG per receptfil.
 
 148. 🎨 DESIGNRUNDA HÖG: SNABBVAL + GLOBALT SÖK + MASKINVÄLJARE —
     ✔️ KLAR (2026-11-07, användarens prioriterade designlista):
-    A) Startsidan: tre STORA snabbvalsknappar direkt under heron –
-    "🍽️ Vad ska jag laga?" (recept), "🔧 Mina maskiner"
-    (maskindatabas), "📝 Skapa recept" (nytt-recept) – 1 kolumn på
-    mobil. B) 🔍 GLOBALT SÖK (assets/sok.js, laddas överallt av
+    A) Snabbvalsknappar byggdes – men TOGS BORT 2026-11-08 på
+    användarens feedback ("bara repetition"): startsidans
+    befintliga stora kort (Receptsamlingen/Maskindatabasen/
+    Nytt recept) VAR redan de tre knapparna. Lärdomen: inventera
+    befintlig UI innan nya element läggs till. B) 🔍 GLOBALT SÖK (assets/sok.js, laddas överallt av
     site.js): 🔍-knapp i navet på ALLA sidor → overlay som söker
     recept + maskiner + ingredienser samtidigt (grupperade
     träffar, Esc stänger, %2F-säkra länkar, maskinparken
@@ -2963,6 +2964,14 @@ data i json/, ALDRIG per receptfil.
     träff → admin ser "vad letar folk efter som saknas" =
     receptidéer ur verkligheten. Endast frasen räknas, aldrig
     något om besökaren; visas på status.html för admin.
+
+158. 💚 STÖDRAD PÅ RECEPTSIDORNA (användarens beställning
+    2026-11-08, ur stödanalysen): diskret rad under receptet:
+    "Hjälpte receptet dig? [Swisha 20 kr] [50 kr] [☕ Ko-fi]" –
+    Swish-knapparna öppnar C-format-QR/länk med FÖRIFYLLT belopp
+    (befintliga stod-modulens motor), aldrig modal/blockerande.
+    Byggs ihop med 150 (stöd synligare) och respekterar 140-
+    regeln: aldrig mitt i kockläget.
 
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
