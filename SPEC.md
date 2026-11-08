@@ -2572,7 +2572,10 @@ data i json/, ALDRIG per receptfil.
     kapacitetsfält (max_deg_g e.d.) i maskinjson – fylls ENDAST ur
     officiella manualer, aldrig gissat.
 
-116. 🤖 LLMS.TXT – MODELL-SEO (förslag 752, användarens beställning):
+116. 🤖 LLMS.TXT – MODELL-SEO (förslag 752, användarens beställning;
+    ⬆️ PRIORITERAD 2026-11-07 efter forskningsrundan: Ahrefs-studien
+    visar att teknisk AI-tillgänglighet (llms.txt/robots) väger
+    tyngre än mer schema markup för AI-citeringar):
     fil i roten (llms.txt) som beskriver sajten för AI-crawlers
     enligt llmstxt-standarden: vad sajten är (verifierade
     maskinrecept), maskinlistan, länkar till recept-index.json och
@@ -2897,6 +2900,15 @@ data i json/, ALDRIG per receptfil.
     (affiliate.js taggar som vanligt). Hanteras i adminpanelens
     maskinsektion i stil med AF-tillbehören. Endast delar ägaren
     själv lagt in – inga autogissade produkter.
+
+147. 📚 SYNLIGA MANUALCITAT (forskningsdrag 5, användarens
+    beställning 2026-11-07): maskinsidorna och maskinrutorna ska
+    citera bruksanvisningen SYNLIGT med namn + länk i brödtexten
+    ("Program 8. Dough, 1:30 h – Clatronic BBA 3774 bruksanvisning,
+    sid X") – inte bara som länk i länklistan. Forskningsstöd:
+    sidor som själva citerar källor med namn+URL belönas i
+    AI-citeringsurvalet (ChatGPT-studien 2026). Sidhänvisning
+    endast där den faktiskt är känd – aldrig påhittade sidnummer.
 
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
