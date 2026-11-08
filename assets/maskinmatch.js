@@ -122,12 +122,19 @@
     return ut;
   }
 
+  var PARK = [];   /* fylls i run() – markeraTestad slår upp typ/modellnamn här */
+  function parkInfo(id) {
+    for (var i = 0; i < PARK.length; i++) if (PARK[i].id === id) return PARK[i];
+    return null;
+  }
   async function markeraTestad(maskin) {
     if (!window.__MK_SPARA) {
       if (window.__MK_TOAST) window.__MK_TOAST('⚠️ Spara-modulen kunde inte laddas – ladda om sidan.');
       return;
     }
     if (!(await window.__MK_SPARA.unlock())) return;   /* 🔒 lösenord först */
+    var mInfo = parkInfo(maskin.id) || {};
+    var arAF = /airfryer/i.test(String(mInfo.typ || ''));
     var old = document.getElementById('mk-testad-bg');
     if (old) old.remove();
     var bg = document.createElement('div');
@@ -141,6 +148,16 @@
         '<label style="display:block;font-size:.75rem;font-weight:700;color:#5f6e70;text-transform:uppercase;margin-bottom:4px;">Program &amp; tid som lyckades</label>' +
         '<input id="mt-prog" type="text" style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.92rem;font-family:inherit;" ' +
           'placeholder="t.ex. Kakbakning (Cake), 45 min" value="' + String(maskin.forslag || '').replace(/"/g, '&quot;') + '">' +
+        /* 🍟 AIRFRYER-EXTRA (användarens order 2026-11-07, punkt 141):
+           registrera faktisk tid + om maten ska vändas – skrivs AUTOMATISKT
+           in i instruktionerna vid maskinens ⚙️-ruta, med maskinnamnet */
+        (arAF ?
+        '<div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;align-items:center;">' +
+          '<span style="white-space:nowrap;"><label style="font-size:.75rem;font-weight:700;color:#5f6e70;text-transform:uppercase;display:block;margin-bottom:4px;">⏱️ Faktisk tid (min)</label>' +
+          '<input id="mt-tid" type="text" inputmode="numeric" style="width:90px;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.92rem;font-family:inherit;" placeholder="t.ex. 12"></span>' +
+          '<label style="font-size:.9rem;font-weight:700;display:flex;align-items:center;gap:7px;cursor:pointer;margin-top:18px;">' +
+          '<input id="mt-vand" type="checkbox" style="width:20px;height:20px;accent-color:#27ae60;"> 🔄 Vänd/skaka halvvägs</label>' +
+        '</div>' : '') +
         '<div style="display:flex;gap:8px;margin-top:14px;">' +
           '<button id="mt-spara" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-family:inherit;">✅ Testad &amp; lyckad!</button>' +
           '<button id="mt-avbryt" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-family:inherit;">Avbryt</button>' +
@@ -179,8 +196,14 @@
           var i = del.indexOf(':');
           if (i > 0) alla[del.slice(0, i).trim()] = del.slice(i + 1).trim();
         });
-        /* 📅 datum följer med (användarens order 2026-11-07, punkt 133) */
-        alla[maskin.id] = prog + ' (verifierad ' + new Date().toISOString().slice(0, 10) + ')';
+        /* 📅 datum följer med (punkt 133) + 🔄 vändning (punkt 141) */
+        var idag = new Date().toISOString().slice(0, 10);
+        var tidMin = '', vand = false;
+        if (arAF) {
+          tidMin = String((bg.querySelector('#mt-tid') || {}).value || '').replace(/[^\d]/g, '');
+          vand = !!(bg.querySelector('#mt-vand') || {}).checked;
+        }
+        alla[maskin.id] = prog + (vand ? ' · vänd halvvägs' : '') + ' (verifierad ' + idag + ')';
         var inneh = Object.keys(alla).map(function (k) { return k + ': ' + alla[k]; }).join(' | ');
         var rad = '<meta name="recept:testad" content="' + inneh.replace(/"/g, '&quot;') + '">\n';
         if (metaRe.test(txt)) txt = txt.replace(metaRe, rad);
@@ -188,6 +211,40 @@
           var ankare = /(<meta\s+name="recept:maskiner"[^>]*>\s*\n?)/i;
           if (ankare.test(txt)) txt = txt.replace(ankare, '$1' + rad);
           else txt = txt.replace(/(<meta\s+name="recept:namn"[^>]*>\s*\n?)/i, '$1' + rad);
+        }
+        /* 🍟 AF: skriv ⏱️-raden i INSTRUKTIONERNA vid maskinens ⚙️-ruta (punkt 141) */
+        if (arAF && (tidMin || vand)) {
+          var radTxt = '⏱️ <b>' + maskin.namn + ':</b> ' + (tidMin ? tidMin + ' min' : prog) +
+            (vand ? ' · 🔄 vänd/skaka halvvägs' : '') +
+            ' <span style="color:#5f6e70;font-size:.85em;">(verifierad ' + idag + ')</span>';
+          var divNy = '<div class="mk-aftid" data-mid="' + maskin.id + '" ' +
+            'style="margin-top:8px;padding:8px 12px;background:#eafaf1;border:1.5px solid #27ae60;' +
+            'border-radius:9px;font-size:.9rem;">' + radTxt + '</div>';
+          /* bort med ev. gammal rad för samma maskin */
+          txt = txt.replace(new RegExp('\\n?<div class="mk-aftid" data-mid="' + maskin.id + '"[\\s\\S]*?</div>', 'g'), '');
+          /* in efter maskinens ⚙️-rubrik (h3 som innehåller modellord/varumärke) */
+          var nycklar = [String(mInfo.varumarke || ''), String(mInfo.modellnamn || '').split(/\s+/)[0]]
+            .filter(function (x) { return x.length >= 3; });
+          var traff = -1;
+          var h3Re = /<h3>[^<]*/g, m3;
+          while ((m3 = h3Re.exec(txt))) {
+            var rubrik = m3[0].toLowerCase();
+            if (nycklar.some(function (k) { return rubrik.indexOf(k.toLowerCase()) !== -1; })) {
+              traff = txt.indexOf('</h3>', m3.index);
+              break;
+            }
+          }
+          if (traff !== -1) {
+            traff += '</h3>'.length;
+            txt = txt.slice(0, traff) + '\n' + divNy + txt.slice(traff);
+          } else {
+            /* reserv: direkt efter "Gör så här"-rubriken */
+            var gsIx = txt.search(/Gör så här<\/h2>/);
+            if (gsIx !== -1) {
+              gsIx = txt.indexOf('</h2>', gsIx) + '</h2>'.length;
+              txt = txt.slice(0, gsIx) + '\n' + divNy + txt.slice(gsIx);
+            }
+          }
         }
         res = await window.__MK_SPARA.save('recept/' + fsokvag, txt,
           '✅ Testad & lyckad i ' + maskin.namn + ': ' + fname);
@@ -238,6 +295,7 @@
       return (m.varumarke && known.indexOf(String(m.varumarke).toLowerCase()) !== -1) ||
              (m.modellnamn && known.indexOf(String(m.modellnamn).toLowerCase()) !== -1);
     }
+    PARK = machines;
     var testade = machines.filter(arKand);
     var testadeTyper = {};
     testade.forEach(function (m) { var t = typKey(m); if (t) testadeTyper[t] = m; });

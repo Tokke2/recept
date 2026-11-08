@@ -2826,6 +2826,20 @@ data i json/, ALDRIG per receptfil.
     stod.html – ALDRIG modal/blockerande, lätt att vifta bort,
     visas aldrig två lagningar i rad.
 
+141. 🍟 AF-TID & VÄNDNING I VERIFIERINGEN — ✔️ KLAR (2026-11-07,
+    användarens order "alla recept som använder AF: registrera tid
+    och om man ska vända – ska automatiskt hamna i instruktionerna
+    och stå vilken maskin"): verifieringsdialogen får på AIRFRYER-
+    maskiner (typ-fältet) två extrafält: ⏱️ Faktisk tid (min) +
+    🔄 Vänd/skaka halvvägs. Vid sparning: A) vändningen följer med
+    i recept:testad-metan ("· vänd halvvägs"), B) en grön
+    .mk-aftid-rad skrivs PERMANENT in i receptfilen direkt efter
+    maskinens ⚙️-rubrik (h3-matchning på varumärke/modellord;
+    reserv: efter "Gör så här"-rubriken): "⏱️ COSORI …: 12 min ·
+    🔄 vänd/skaka halvvägs (verifierad datum)" – syns för ALLA
+    besökare, gammal rad för samma maskin ersätts (data-mid).
+    Gäller automatiskt alla nuvarande och kommande AF-recept.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
