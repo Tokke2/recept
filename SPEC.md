@@ -3102,6 +3102,20 @@ data i json/, ALDRIG per receptfil.
     uppdateras, gamla raderas enligt ren mapp-policyn). One-off:
     squash-chips efterratt→snacks, hamburgdressing sylt→ovrigt.
     Länkdoktorn (117) blir steg 15.
+    UPPDATERING (batch 2): +10 AI-bilder (pizzadeg u. protein,
+    biscoff-smuldeg, squashchips, mjukglass, hundglass,
+    tomatketchup, raggmunk, slush, proteinshake, makaronichips)
+    → 26 av 35 täckta, 9 ÅTERSTÅR (en "fortsätt"-tur till).
+
+171. 🥣 KATEGORIN "SÅS & DRESSING" — ✔️ KLAR (2026-11-08,
+    användarens order "egen kategori, sås/dressing"): nytt id
+    "sas" (🥣, färg #b03a2e) registrerat i ALLA sex kategorilistor:
+    recept.html (KATEGORIER + chips-färg + ordgissning),
+    hero.js (kortfärger + ordlista), redigera.js (✏️-väljaren),
+    nytt-recept.html (väljare + gissning), 404.html (emoji),
+    sjalvlakning.py (steg8-ordlistan "dressing/ketchup/majonnäs/
+    aioli" + steg13-GILTIGA). Flyttade via metan+kategorivakten:
+    klassisk-hamburgdressing + grön tomatketchup → recept/sas/.
 
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
