@@ -3197,7 +3197,21 @@
   "Per airfryer – visas på maskinens kort i maskindatabasen.": "Per airfryer – appears on the machine's card in the machine database.",
   "t.ex. Grillgaller, bakplåtspapper med hål...": "e.g. Grill rack, baking paper with holes...",
   "🍟 AF-tillbehör (det du faktiskt använder)": "🍟 AF accessory (what you actually use)",
-  "🔐 Adminpanelen": "🔐 The admin panel"
+  "🔐 Adminpanelen": "🔐 The admin panel",
+  "Klistra in → färdig receptsida": "Paste → finished recipe page",
+  "Mina maskiner": "My machines",
+  "Program, tider & manualer": "Programmes, times & manuals",
+  "Skapa recept": "Create recipes",
+  "Snabbval": "Quick dial",
+  "Stäng sökningen": "Close the search",
+  "Sök & bläddra bland alla recept": "Search & browse all recipes",
+  "Sök på hela sajten": "Search the entire site",
+  "Sök recept, maskiner & ingredienser": "Search recipes, machines & ingredients",
+  "Vad ska jag laga?": "What should I cook?",
+  "global sök högst upp – recept, maskiner och ingredienser": "global search at the top - recipes, machines and ingredients",
+  "🔍 Sök recept, maskiner & ingredienser...": "🔍 Search recipes, machines & ingredients...",
+  "🔧 Maskiner": "🔧 Machines",
+  "🥫 Ingredienser": "🥫 Ingredients"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3207,6 +3221,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3196,
+ "_auto_genererade": 3210,
  "_senast_robot": "2026-11-08"
 }
