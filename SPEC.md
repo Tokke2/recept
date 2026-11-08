@@ -2973,6 +2973,27 @@ data i json/, ALDRIG per receptfil.
     Byggs ihop med 150 (stöd synligare) och respekterar 140-
     regeln: aldrig mitt i kockläget.
 
+159. 🌶️ STYRKEPROFIL (autoförslag 906, användarens beställning):
+    mild/medel/het-badge per recept, härledd ENDAST ur receptets
+    egna ingrediensrader (chili/cayenne/peppar-mängder) – aldrig
+    smakgissningar. Visas på kort + receptsida.
+
+160. ⚖️ ×3/×4 I SATSVÄLJAREN (autoförslag 923, användarens
+    beställning): storbakslägen i #mk-satsval – kräver att
+    maxkapacitetsvarningen (115, maskinjsonens kapacitetsfält)
+    byggs först eller samtidigt så ingen dubblar sönder maskinen.
+
+161. 💤 KÖKSSKÄRMENS NATTVILA (autoförslag 915, användarens
+    beställning): koksskarm.html släcker/dimmar skärmen kl 00–05
+    (klockan kvar svagt synlig), väcks direkt vid touch – skonar
+    surfplattans panel. Tiderna justerbara i en liten kugghjuls-
+    inställning, sparas lokalt.
+
+162. 🔔 PIN-PÅMINNELSEBANNER (autoförslag 913, användarens
+    beställning): adminpanelen + första upplåsningen visar en
+    vänlig banner när ≤3 dagar återstår till 20-dagarsgränsen
+    ("byt nu och slipp tvånget mitt i baket").
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
