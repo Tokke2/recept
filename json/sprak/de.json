@@ -3337,13 +3337,14 @@
   "Jasminris": "Jasminreis",
   "Kyckling Filé Fryst": "Hähnchenfilet gefroren",
   "Små Vita Bönor": "Kleine weiße Bohnen",
-  "Vispgrädde Färsk 40%": "Schlagsahne frisch 40 %"
+  "Vispgrädde Färsk 40%": "Schlagsahne frisch 40 %",
+  "Fler verktyg": "Weitere Werkzeuge"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3336,
+ "_auto_genererade": 3337,
  "_senast_robot": "2026-11-08"
 }

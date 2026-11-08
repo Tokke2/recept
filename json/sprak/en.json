@@ -3215,7 +3215,8 @@
   "Jasminris": "Jasmine rice",
   "Kyckling Filé Fryst": "Chicken Fillet Frozen",
   "Små Vita Bönor": "Small White Beans",
-  "Vispgrädde Färsk 40%": "Whipped cream Fresh 40%"
+  "Vispgrädde Färsk 40%": "Whipped cream Fresh 40%",
+  "Fler verktyg": "More tools"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3225,6 +3226,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3214,
+ "_auto_genererade": 3215,
  "_senast_robot": "2026-11-08"
 }
