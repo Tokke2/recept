@@ -148,10 +148,14 @@
     <button class="btn orange" style="margin:0;padding:6px 16px;font-size:.82rem;" onclick="document.getElementById('lank').scrollIntoView({behavior:'smooth'});document.getElementById('lank').focus();">🛒 Importera vara via butikslänk</button>
   </h2>
   <input type="text" id="q" placeholder="🔍 Sök ingrediens..." oninput="renderList()">
+  <!-- 🏷️ FILTERCHIPS (punkt 164): snabbfilter – bl.a. allt som saknar butikslänk -->
+  <div id="chips" class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 2px;"></div>
   <div class="count" id="count"></div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px;" class="no-print">
     <button class="btn" id="delBtn" style="background:#c0392b;margin:0;padding:8px 16px;font-size:.85rem;display:none;" onclick="deleteChecked()">🗑️ Ta bort markerade</button>
     <button class="btn" id="updBtn" style="background:#2c3e50;margin:0;padding:8px 16px;font-size:.85rem;" onclick="updatePrices()">🔄 Uppdatera priser via länkarna</button>
+    <button class="btn" style="background:#27ae60;margin:0;padding:8px 16px;font-size:.85rem;" onclick="exportDb('json')" title="Hela databasen som JSON – perfekt egen backup innan du jobbar i den">⬇️ Export JSON</button>
+    <button class="btn" style="background:#8e6e53;margin:0;padding:8px 16px;font-size:.85rem;" onclick="exportDb('csv')" title="Kalkylarksvänlig CSV (semikolon, svensk Excel)">⬇️ Export CSV</button>
     <span id="updInfo" style="font-size:.78rem;color:var(--muted);"></span>
   </div>
   <div id="actionResult"></div>
@@ -179,7 +183,7 @@
      (ingrediens-import.py) hämtar pris + näring → ingredienser.json
    · Manuellt → skrivs direkt in i json/ingredienser.json
    ============================================================ */
-let ING = [], sortKey = 'namn', sortAsc = true;
+let ING = [], sortKey = 'namn', sortAsc = true, FILTER = 'alla';
 
 async function loadDb() {
   ING = [];
@@ -208,9 +212,47 @@ function setSort(k) {
   renderList();
 }
 
+/* 🏷️ FILTERCHIPS (punkt 164): "Saknar länk" = ingen butikslänk OCH inte
+   hemgjord (🫙 recept-poster behöver ingen länk) */
+function saknarLank(i) { return !i.lank && !i.recept; }
+function saknarData(i) { return (!+i.pris_kr_per_kg || !+i.kcal) && !i.noll_ok && !i.recept; }
+function sattFilter(f) { FILTER = f; renderList(); }
+function renderChips() {
+  const el = document.getElementById('chips');
+  if (!el) return;
+  const c = [['alla', '📦 Alla', ING.length],
+             ['lank', '✖ Saknar länk', ING.filter(saknarLank).length],
+             ['data', '⚠️ Saknar pris/kcal', ING.filter(saknarData).length]];
+  el.innerHTML = c.map(([id, txt, n]) =>
+    `<button onclick="sattFilter('${id}')" style="border:2px solid ${id === 'lank' ? '#c0392b' : id === 'data' ? '#e67e22' : '#2c3e50'};` +
+    `background:${FILTER === id ? (id === 'lank' ? '#c0392b' : id === 'data' ? '#e67e22' : '#2c3e50') : '#fff'};` +
+    `color:${FILTER === id ? '#fff' : (id === 'lank' ? '#c0392b' : id === 'data' ? '#e67e22' : '#2c3e50')};` +
+    `border-radius:999px;padding:7px 14px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.82rem;">${txt} (${n})</button>`).join('');
+}
+/* ⬇️ EXPORT (punkt 164): hela databasen ut – inget kan försvinna när man jobbar */
+function exportDb(typ) {
+  let inneh, mime, fil;
+  const datum = new Date().toISOString().slice(0, 10);
+  if (typ === 'json') {
+    inneh = JSON.stringify({ exporterad: datum, antal: ING.length, ingredienser: ING }, null, 1);
+    mime = 'application/json'; fil = `ingredienser-backup-${datum}.json`;
+  } else {
+    const esc = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+    inneh = 'id;namn;varumarke;pris_kr_per_kg;kcal;protein;kolhydrat;fett;fiber;lank;uppdaterad\n' +
+      ING.map(i => [i.id, i.namn, i.varumarke, i.pris_kr_per_kg, i.kcal, i.protein, i.kolhydrat, i.fett, i.fiber, i.lank, i.uppdaterad].map(esc).join(';')).join('\n');
+    mime = 'text/csv;charset=utf-8'; fil = `ingredienser-backup-${datum}.csv`;
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\ufeff' + inneh], { type: mime }));
+  a.download = fil;
+  a.click();
+}
 function renderList() {
+  renderChips();
   const q = (document.getElementById('q').value || '').trim().toLowerCase();
   let list = ING.filter(i => !q || (i.namn + ' ' + (i.varumarke || '')).toLowerCase().includes(q));
+  if (FILTER === 'lank') list = list.filter(saknarLank);
+  if (FILTER === 'data') list = list.filter(saknarData);
   list.sort((a, b) => {
     const va = a[sortKey], vb = b[sortKey];
     if (typeof va === 'number' && typeof vb === 'number') return sortAsc ? va - vb : vb - va;
@@ -218,7 +260,16 @@ function renderList() {
   });
   document.getElementById('count').textContent = list.length === ING.length
     ? ING.length + ' ingredienser' : list.length + ' av ' + ING.length + ' ingredienser';
-  document.getElementById('rows').innerHTML = list.map(i => `<tr style="background:${i.recept ? 'rgba(230,168,23,.14)' : i.lank ? 'rgba(39,174,96,.06)' : 'rgba(192,57,43,.05)'};${i.recept ? 'border-left:4px solid #e6a817;' : ''}">
+  /* 🔤 BOKSTAVSGRUPPER (punkt 164): namn-sortering utan sök/filter → sektioner */
+  let senasteBokstav = '';
+  const grupprad = i => {
+    if (sortKey !== 'namn' || q || FILTER !== 'alla') return '';
+    const b = (i.namn || '').charAt(0).toUpperCase();
+    if (b === senasteBokstav) return '';
+    senasteBokstav = b;
+    return `<tr class="grupprad"><td colspan="8" style="background:#f0ebe3;font-weight:800;font-size:.8rem;letter-spacing:.12em;color:#8e6e53;padding:6px 12px;">${b}</td></tr>`;
+  };
+  document.getElementById('rows').innerHTML = list.map(i => grupprad(i) + `<tr style="background:${i.recept ? 'rgba(230,168,23,.14)' : i.lank ? 'rgba(39,174,96,.06)' : 'rgba(192,57,43,.05)'};${i.recept ? 'border-left:4px solid #e6a817;' : ''}">
     <td><input type="checkbox" class="rowChk" data-id="${i.id}" onclick="chkChanged()"></td>
     <td>
       <button class="editIng no-print" data-id="${i.id}" onclick="openEdit('${i.id}')" title="Redigera ingrediensen (ändra värden eller klistra in butikslänk)"

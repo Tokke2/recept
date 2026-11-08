@@ -3010,6 +3010,28 @@ data i json/, ALDRIG per receptfil.
     Pages-CDN:n. Fix: optimistisk statusvisning efter byte,
     cache-buster i getLock, feltoast i första-gången-flödet.
 
+164. 🥫 INGREDIENSSIDAN 2.0 + 🧩 RUTORDNINGEN — ✔️ KLAR
+    (2026-11-08, användarens order): A) ingredienser.html:
+    ⬇️ EXPORT-knappar (JSON med allt + CSV för kalkylark, BOM för
+    svensk Excel) – "inget ska kunna försvinna när vi jobbar";
+    🏷️ FILTERCHIPS "📦 Alla / ✖ Saknar länk / ⚠️ Saknar pris-kcal"
+    med antal (hemgjorda 🫙 räknas aldrig som länklösa);
+    🔤 BOKSTAVSGRUPPER i tabellen vid namnsortering (A/B/C-rader).
+    B) snabba-frallor: maskinrutorna omsorterade till logisk
+    ordning – 8. Dough FÖRE steg 1, de två gräddningsrutorna
+    (Clatronic 12. Bake + COSORI Bake, 🔀-alternativ) EFTER
+    formningssteget – rutor i den ordning man använder dem.
+
+165. 🛒 BULKIMPORT AV BUTIKSLÄNKAR (användarens fråga "kan robot
+    skanna willys.se?", 2026-11-08): HELA butikssajten skannas
+    ALDRIG (tusentals irrelevanta varor, tungt mot butikens
+    villkor – samma anda som Amazon-regeln). I stället: A) klistra
+    FLERA produktlänkar på en gång (en per rad) → ingrediens-
+    importroboten köar och lägger alla; B) "Saknar länk"-filtret
+    får en 🔍-knapp per rad som öppnar butikens söksida med
+    varunamnet ifyllt → hitta+kopiera+klistra på sekunder.
+    Halvautomatiskt, ärligt och butiksvänligt.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
