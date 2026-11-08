@@ -3040,6 +3040,21 @@ data i json/, ALDRIG per receptfil.
     stället för röd varning, grön radbakgrund. Avbockning rensar
     flaggan (post byggs färsk vid varje sparning).
 
+167. 🏛️ NÄRINGSROBOT VIA LIVSMEDELSVERKET (användarens fråga
+    2026-11-08 "finns andra alternativ att få näringen?"):
+    färskvaror (banan m.fl.) saknar näringsdata hos butikerna
+    (lagkravet gäller endast förpackat – verifierat mot Willys
+    API: nutritionsFactList=None). Lösning: Livsmedelsverkets
+    Livsmedelsdatabas – öppet myndighets-API (dataportal.
+    livsmedelsverket.se, CC BY 4.0, 2300+ livsmedel, per 100 g
+    ätbar del). Flöde: för varor med kcal=0 utan noll_ok föreslår
+    roboten/sidan SLV-träffar på namnet → ADMIN BEKRÄFTAR
+    matchningen i UI:t (aldrig automatisk gissning: "Banan Klass 1"
+    ↔ SLV "Banan rå") → näring skrivs in med kalla
+    "Livsmedelsverket (CC BY 4.0)" + synlig attribution.
+    OBS SLV-noten: vissa D-vitaminfält kan saknas – saknade
+    värden får ALDRIG skrivas som 0.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
