@@ -3032,6 +3032,14 @@ data i json/, ALDRIG per receptfil.
     varunamnet ifyllt → hitta+kopiera+klistra på sekunder.
     Halvautomatiskt, ärligt och butiksvänligt.
 
+166. 🚰 "BEHÖVER INGEN LÄNK"-MARKERING — ✔️ KLAR (2026-11-08,
+    användarens order "en del ingredienser saknar länk, t.ex.
+    vatten – ska kunna markera det i ingrediensen"): ny kryssruta
+    i ✏️-dialogen → lank_onodig i json/ingredienser.json. Effekt:
+    räknas INTE i "Saknar länk"-filtret, grå lugn 🚰-badge i
+    stället för röd varning, grön radbakgrund. Avbockning rensar
+    flaggan (post byggs färsk vid varje sparning).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
