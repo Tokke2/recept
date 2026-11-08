@@ -159,6 +159,7 @@
     <span id="updInfo" style="font-size:.78rem;color:var(--muted);"></span>
   </div>
   <div id="actionResult"></div>
+  <p style="font-size:.72rem;color:var(--muted);margin-top:8px;">🏛️ Näringsdata för råvaror kan komma från <a href="https://www.livsmedelsverket.se/livsmedel-och-innehall/naringsamne/livsmedelsdatabasen" target="_blank" rel="noopener" style="color:var(--muted);">Livsmedelsverkets Livsmedelsdatabas</a> (CC BY 4.0) – källan anges per vara.</p>
   <div style="max-height:60vh;overflow:auto;border-radius:10px;">
     <table>
       <thead><tr>
@@ -312,7 +313,69 @@ function renderList() {
    Saknas länk kan den klistras in här (kopplas till varan).
    Sparas lösenordsskyddat till json/ingredienser.json.
    ============================================================ */
+/* ============================================================
+   🏛️ NÄRING FRÅN LIVSMEDELSVERKET (punkt 167): öppet myndighets-API
+   med öppen CORS → hämtas DIREKT i webbläsaren. 2 600+ livsmedel,
+   per 100 g ätbar del, CC BY 4.0. ADMIN BEKRÄFTAR alltid matchningen
+   (väljer träff + granskar + sparar) – aldrig automatik. Endast fält
+   som FINNS i svaret fylls i (saknade värden skrivs ALDRIG som 0).
+   ============================================================ */
+const SLV_BAS = 'https://dataportal.livsmedelsverket.se/livsmedel/api/v1';
+async function slvLista() {
+  try {
+    const c = JSON.parse(sessionStorage.getItem('mk-slv-lista'));
+    if (c && c.length) return c;
+  } catch (e) {}
+  const d = await (await fetch(SLV_BAS + '/livsmedel?offset=0&limit=3000&sprak=1', { headers: { Accept: 'application/json' } })).json();
+  const lista = (d.livsmedel || []).map(p => ({ n: p.nummer, t: p.namn }));
+  try { sessionStorage.setItem('mk-slv-lista', JSON.stringify(lista)); } catch (e) {}
+  return lista;
+}
+async function slvNaring(nummer) {
+  const d = await (await fetch(SLV_BAS + '/livsmedel/' + nummer + '/naringsvarden?sprak=1', { headers: { Accept: 'application/json' } })).json();
+  const poster = Array.isArray(d) ? d : (d.naringsvarden || []);
+  const hitta = namn => { const p = poster.find(x => String(x.namn).toLowerCase() === namn); return p ? +p.varde : null; };
+  return {
+    kcal: hitta('energi (kcal)'),
+    protein: hitta('protein'),
+    kolhydrat: hitta('kolhydrater, tillgängliga'),
+    fett: hitta('fett, totalt'),
+    fiber: hitta('fiber')
+  };
+}
+async function slvSok(bg, i) {
+  const ut = bg.querySelector('#ei-slvres');
+  ut.innerHTML = '⏳ Hämtar Livsmedelsverkets lista (2 600+ livsmedel, cachas)...';
+  let lista;
+  try { lista = await slvLista(); }
+  catch (e) { ut.innerHTML = '<span style="color:#c0392b;">⚠️ Kunde inte nå Livsmedelsverket just nu.</span>'; return; }
+  const sokord = (i.namn || '').split(/\s+/)[0].toLowerCase();
+  ut.innerHTML = `<input type="text" id="ei-slvq" value="${sokord.replace(/"/g, '&quot;')}" placeholder="Sök i Livsmedelsverkets databas..." style="width:100%;margin-bottom:6px;">
+    <div id="ei-slvtraff"></div>
+    <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">Välj rätt livsmedel – värdena fylls i fälten ovan (per 100 g ätbar del). Granska och spara. Källa: Livsmedelsverket (CC BY 4.0).</div>`;
+  const rita = () => {
+    const q = bg.querySelector('#ei-slvq').value.trim().toLowerCase();
+    const tr = q.length < 2 ? [] : lista.filter(p => p.t.toLowerCase().includes(q)).slice(0, 10);
+    bg.querySelector('#ei-slvtraff').innerHTML = tr.map(p =>
+      `<button type="button" data-slv="${p.n}" data-slvnamn="${p.t.replace(/"/g, '&quot;')}" style="display:block;width:100%;text-align:left;background:#f6f3ee;border:1px solid #e0d9cd;border-radius:8px;padding:8px 12px;margin-bottom:4px;cursor:pointer;font-family:inherit;font-size:.86rem;">🏛️ ${p.t}</button>`).join('') ||
+      (q.length >= 2 ? '<span style="color:var(--muted);font-size:.82rem;">Ingen träff – prova annat ord.</span>' : '');
+    bg.querySelectorAll('[data-slv]').forEach(b => b.onclick = async () => {
+      b.textContent = '⏳ Hämtar näringsvärden...';
+      try {
+        const nv = await slvNaring(b.getAttribute('data-slv'));
+        const satt = (fid, v) => { if (v !== null && !isNaN(v)) bg.querySelector('#' + fid).value = v; };
+        satt('ei-kcal', nv.kcal); satt('ei-prot', nv.protein); satt('ei-kolh', nv.kolhydrat);
+        satt('ei-fett', nv.fett); satt('ei-fiber', nv.fiber);
+        window.__ei_slv = b.getAttribute('data-slvnamn');
+        ut.innerHTML = `<span style="color:#27ae60;font-weight:700;">✅ Ifyllt från Livsmedelsverket: "${window.__ei_slv}" (per 100 g ätbar del). Granska värdena och tryck 💾 Spara.</span>`;
+      } catch (e) { b.textContent = '⚠️ Kunde inte hämta – prova igen'; }
+    });
+  };
+  bg.querySelector('#ei-slvq').addEventListener('input', rita);
+  rita();
+}
 function openEdit(id) {
+  window.__ei_slv = null;   /* 🏛️ nollställ SLV-markören per dialog */
   const i = ING.find(x => x.id === id);
   if (!i) return;
   const old = document.getElementById('mk-ing-edit-bg');
@@ -330,6 +393,10 @@ function openEdit(id) {
       <div class="row">${f('Namn *', 'ei-namn', i.namn)}${f('Varumärke', 'ei-marke', i.varumarke || '')}</div>
       <div class="row">${f('Pris kr/kg *', 'ei-pris', i.pris_kr_per_kg, '0.01')}${f('Kcal /100 g *', 'ei-kcal', i.kcal, '0.1')}</div>
       <div class="row">${f('Protein g', 'ei-prot', i.protein || 0, '0.1')}${f('Kolhydrat g', 'ei-kolh', i.kolhydrat || 0, '0.1')}${f('Fett g', 'ei-fett', i.fett || 0, '0.1')}${f('Fiber g', 'ei-fiber', i.fiber || 0, '0.1')}</div>
+      <div class="row"><div style="flex:1;">
+        <button type="button" id="ei-slv" style="background:#2c3e50;color:#fff;border:none;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85rem;">🏛️ Hämta näring från Livsmedelsverket</button>
+        <div id="ei-slvres" style="margin-top:8px;font-size:.85rem;"></div>
+      </div></div>
       <div class="row"><div style="flex:1;"><label>📦 Grupp (valfri – t.ex. "hemgjord sylt": alla i samma grupp kan skiftas i recepten)</label>
         <input type="text" id="ei-grupp" list="ei-grupplista" value="${(i.grupp || '').replace(/"/g, '&quot;')}" placeholder="t.ex. hemgjord sylt · proteinpulver · müsli">
         <datalist id="ei-grupplista">${[...new Set(ING.map(x => x.grupp).filter(Boolean))].map(g => '<option value="' + String(g).replace(/"/g, '&quot;') + '">').join('')}</datalist></div></div>
@@ -360,6 +427,7 @@ function openEdit(id) {
     .map(id => document.getElementById(id).value).join('|') + '|' + document.getElementById('ei-nollok').checked +
     '|' + document.getElementById('ei-egen').checked + '|' + document.getElementById('ei-mat').checked +
     '|' + document.getElementById('ei-lankej').checked;
+  bg.querySelector('#ei-slv').onclick = () => slvSok(bg, i);   /* 🏛️ punkt 167 */
   /* 🌱 Kryssas Egenodlad i: priset nollas + namnet får "hemodlad" direkt i fälten */
   document.getElementById('ei-egen').addEventListener('change', function () {
     const nf = document.getElementById('ei-namn'), pf = document.getElementById('ei-pris');
@@ -413,7 +481,8 @@ function openEdit(id) {
       pris_kr_per_kg: pris, kcal: kcal,
       protein: +g('ei-prot') || 0, kolhydrat: +g('ei-kolh') || 0,
       fett: +g('ei-fett') || 0, fiber: +g('ei-fiber') || 0,
-      kalla: (i.kalla ? i.kalla + ' · ' : '') + 'redigerad ' + new Date().toISOString().slice(0, 10)
+      kalla: (i.kalla ? i.kalla + ' · ' : '') + 'redigerad ' + new Date().toISOString().slice(0, 10) +
+        (window.__ei_slv ? ' · näring: Livsmedelsverket "' + window.__ei_slv + '" (CC BY 4.0)' : '')
     };
     if (g('ei-marke')) post.varumarke = g('ei-marke');
     if (lank) { post.lank = lank; post.uppdaterad = i.uppdaterad || ''; }

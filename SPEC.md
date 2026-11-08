@@ -3040,8 +3040,18 @@ data i json/, ALDRIG per receptfil.
     stället för röd varning, grön radbakgrund. Avbockning rensar
     flaggan (post byggs färsk vid varje sparning).
 
-167. 🏛️ NÄRINGSROBOT VIA LIVSMEDELSVERKET (användarens fråga
-    2026-11-08 "finns andra alternativ att få näringen?"):
+167. 🏛️ NÄRING FRÅN LIVSMEDELSVERKET — ✔️ KLAR (2026-11-08, "bygg
+    167"): INGEN robot behövdes – SLV:s API har ÖPPEN CORS mot
+    tokke2.github.io → hämtas direkt i webbläsaren! ✏️-dialogen
+    har knappen "🏛️ Hämta näring från Livsmedelsverket": sök bland
+    2 606 livsmedel (listan cachas per session), välj träff →
+    kcal/protein/kolhydrat("tillgängliga")/fett("totalt")/fiber
+    fylls i (per 100 g ätbar del), ADMIN granskar och sparar =
+    bekräftelsen. Endast fält som FINNS i svaret fylls (aldrig
+    0-skrivning av saknade). Källan loggas per vara ("näring:
+    Livsmedelsverket \"Banan\" (CC BY 4.0)") + synlig attribution
+    under tabellen. Verifierat live: Banan #553 = 95 kcal/1,1 p/
+    21,3 k/0,1 f/1,4 fiber. URSPRUNGSPLAN (robotvarianten):
     färskvaror (banan m.fl.) saknar näringsdata hos butikerna
     (lagkravet gäller endast förpackat – verifierat mot Willys
     API: nutritionsFactList=None). Lösning: Livsmedelsverkets
