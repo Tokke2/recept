@@ -42,7 +42,7 @@
     var paths = [(window.__MK_ROT || '') + 'json/las.json', 'json/las.json', '../json/las.json', '../../json/las.json'];
     for (var i = 0; i < paths.length; i++) {
       try {
-        var d = await (await fetch(paths[i], { cache: 'no-store' })).json();
+        var d = await (await fetch(paths[i] + '?v=' + Date.now(), { cache: 'no-store' })).json();
         return {
           pw: String(d.losenord || ''),
           hash: String(d.losenord_hash || '').toLowerCase().trim(),
@@ -259,7 +259,10 @@
     if (!(await askPassword(lock))) return false;   /* sätter UNLOCK_KEY vid rätt svar */
     var pin1 = await askNyPin('🆕 Skapa din PIN',
       'Första inloggningen med nya låset: välj en PIN (4–12 siffror). Den ersätter lösenordet HELT och byts var ' + PIN_DAGAR + ':e dag.');
-    if (pin1) await sparaLas(pin1, lock.epost);   /* avbryt → frågan kommer igen nästa pass */
+    if (pin1) {
+      var okSpar = await sparaLas(pin1, lock.epost);
+      if (!okSpar && window.__MK_TOAST) window.__MK_TOAST('⚠️ PIN-koden kunde inte sparas – prova i adminpanelen (losenord.html).');
+    }   /* avbryt → frågan kommer igen nästa pass */
     return true;
   }
 

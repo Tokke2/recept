@@ -165,9 +165,16 @@
     if (a !== b) { m.textContent = '⚠️ PIN-koderna skiljer sig åt'; m.style.color = '#c0392b'; return; }
     m.textContent = '⏳ Sparar...'; m.style.color = '#5f6e70';
     var ok = await window.__MK_SPARA.pinByt(a, EPOST_NU);
-    m.textContent = ok ? '✅ Ny PIN sparad! Gäller från nästa upplåsning.' : '⚠️ Kunde inte spara – kolla nyckeln/nätet.';
+    m.textContent = ok ? '✅ Ny PIN sparad! (Statusraden nedan läser live-filen – den hinner ikapp inom ~1 min.)' : '⚠️ Kunde inte spara – kolla nyckeln/nätet.';
     m.style.color = ok ? '#27ae60' : '#c0392b';
-    if (ok) { el('pin1').value = ''; el('pin2').value = ''; visaStatus(); }
+    if (ok) {
+      el('pin1').value = ''; el('pin2').value = '';
+      /* 🔧 PIN-statusfixen (2026-11-08): optimistisk visning direkt –
+         CDN-fördröjningen fick statusen att ljuga "ej satt ännu" */
+      el('stDatum').textContent = new Date().toISOString().slice(0, 10);
+      el('stKvar').textContent = '20 dagar';
+      el('stKvar').style.color = '#27ae60';
+    }
   };
 
   el('bytEpost').onclick = async function () {

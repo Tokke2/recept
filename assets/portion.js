@@ -127,7 +127,63 @@
       '</div>' +
       '<div id="mp-ut" style="margin-top:10px;padding:9px 12px;background:#fdf6ee;border-radius:9px;font-size:.9rem;line-height:1.6;"></div>';
 
-    header.parentNode.insertBefore(box, header.nextSibling);
+    /* 📦 KOMPAKTLÄGE (punkt 163, designorder A): panelen + satsväljaren
+       göms bakom EN smal rad → ingredienserna hamnar på första skärmen.
+       Expanderat läge minns per session. */
+    var wrap = document.createElement('div');
+    wrap.id = 'mk-panelwrap';
+    wrap.className = 'no-print';
+    var kompakt = document.createElement('button');
+    kompakt.id = 'mk-vrad';
+    kompakt.type = 'button';
+    kompakt.setAttribute('aria-expanded', 'false');
+    kompakt.style.cssText = 'display:block;width:100%;text-align:left;background:#fff;border:2px solid #e67e22;' +
+      'border-radius:12px;padding:11px 16px;margin:14px 0;font-family:inherit;font-size:.95rem;font-weight:700;' +
+      'color:#2c3e50;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.06);';
+    var exp = document.createElement('div');
+    exp.id = 'mk-panelexp';
+    exp.style.display = 'none';
+    wrap.appendChild(kompakt);
+    wrap.appendChild(exp);
+    exp.appendChild(box);
+    box.style.margin = '0 0 10px';
+    header.parentNode.insertBefore(wrap, header.nextSibling);
+    function fangaSatsval() {
+      var sv = document.getElementById('mk-satsval');
+      if (sv && sv.parentNode !== exp) { exp.insertBefore(sv, box); sv.style.margin = '10px 0'; }
+    }
+    fangaSatsval();
+    var fs = setInterval(fangaSatsval, 800);
+    setTimeout(function () { clearInterval(fs); }, 8000);
+    function visaKompakt() {
+      var bf = window.__MK_SKALA_F || 1;
+      var fTxt = bf === 0.5 ? '×½' : '×' + String(bf).replace('.', ',');
+      var txt;
+      if (limpa) {
+        var N = Math.max(1, Math.round(tal(skEl, basSkivor)));
+        txt = '⚖️ ' + fTxt + ' · 🍞 ' + N + ' skivor à ' + Math.round(tot.g * bf / N) + ' g · 🔥 ' +
+          Math.round(perG.kcal * tot.g * bf / N) + ' kcal/skiva';
+      } else {
+        var gK = tal(gEl, portG);
+        txt = '⚖️ ' + fTxt + ' · 🍽️ ' + Math.round(tal(nEl, antalN)) + ' port à ' + Math.round(gK) + ' g · 🔥 ' +
+          Math.round(perG.kcal * gK) + ' kcal/port';
+      }
+      var oppen = exp.style.display !== 'none';
+      kompakt.innerHTML = txt + ' <span style="float:right;color:#e67e22;">' + (oppen ? '▴ Stäng' : '▾ Ändra') + '</span>';
+    }
+    kompakt.onclick = function () {
+      var oppen = exp.style.display !== 'none';
+      exp.style.display = oppen ? 'none' : '';
+      kompakt.setAttribute('aria-expanded', String(!oppen));
+      fangaSatsval();
+      visaKompakt();
+      try { sessionStorage.setItem('mk-vrad-open', oppen ? '' : '1'); } catch (e) {}
+    };
+    try { if (sessionStorage.getItem('mk-vrad-open') === '1') { exp.style.display = ''; kompakt.setAttribute('aria-expanded', 'true'); } } catch (e) {}
+    document.addEventListener('mk-skala', visaKompakt);
+    var gamlaVisa = visa;
+    visa = function () { gamlaVisa(); visaKompakt(); };
+    visaKompakt();
 
     var gEl = box.querySelector('#mp-g'), nEl = box.querySelector('#mp-n'),
         kcEl = box.querySelector('#mp-kcal'), utEl = box.querySelector('#mp-ut'),

@@ -71,6 +71,11 @@
     '@media (max-width:480px){#mk-rnav .rb{padding:7px 9px;min-width:48px;}' +
       '#mk-rnav .rb.cook{padding:7px 16px;margin:0 4px;}}' +
     '@media print{#mk-rnav{display:none!important;}body{padding-bottom:0!important;}}';
+  css.textContent +=
+    '#mk-rnav{flex-wrap:wrap;}' +
+    '#mk-rnav-mer{display:none;flex-basis:100%;order:-1;flex-wrap:wrap;justify-content:center;' +
+      'gap:2px;padding:6px 4px;border-bottom:1px solid rgba(255,255,255,.12);}' +
+    '#mk-rnav-mer .rb{flex:0 1 86px;}';
   document.head.appendChild(css);
 
   /* ============================================================
@@ -89,11 +94,33 @@
       '<span class="ic">👨‍🍳</span><span class="lb">Kockläge</span></button>' +
     '<button class="rb arr off" id="rnNext" title="Nästa recept">' +
       '<span class="ic">→</span><span class="lb">Nästa</span></button>' +
-    '<button class="rb" id="rnPrint" title="Skriv ut (A4)">' +
-      '<span class="ic">🖨️</span><span class="lb">Skriv ut</span></button>' +
     '<button class="rb" id="rnShare" title="Dela receptet">' +
-      '<span class="ic">📤</span><span class="lb">Dela</span></button>';
+      '<span class="ic">📤</span><span class="lb">Dela</span></button>' +
+    /* ⋯ MER (punkt 163, användarens designorder C): verktygsraden
+       bantad till 6 primära – resten bor i en tray som fälls upp */
+    '<div id="mk-rnav-mer" role="group" aria-label="Fler verktyg"></div>' +
+    '<button class="rb" id="rnMer" title="Fler verktyg" aria-expanded="false">' +
+      '<span class="ic">⋯</span><span class="lb">Mer</span></button>' +
+    '<button class="rb" id="rnPrint" title="Skriv ut (A4)">' +
+      '<span class="ic">🖨️</span><span class="lb">Skriv ut</span></button>';
   document.body.appendChild(bar);
+
+  /* trayen + autosortering: ALLT som moduler lägger i raden efter de
+     primära flyttas automatiskt in i Mer (knapparnas lyssnare följer med) */
+  var merTray = bar.querySelector('#mk-rnav-mer');
+  var merBtn = bar.querySelector('#rnMer');
+  var PRIMARA = { rnHome: 1, rnPrev: 1, rnCook: 1, rnNext: 1, rnShare: 1, rnMer: 1 };
+  function tillMer(el) { if (el && el.classList && el.classList.contains('rb') && !PRIMARA[el.id]) merTray.appendChild(el); }
+  tillMer(bar.querySelector('#rnPrint'));
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) { Array.prototype.forEach.call(m.addedNodes, tillMer); });
+  }).observe(bar, { childList: true });
+  merBtn.addEventListener('click', function () {
+    var open = merTray.style.display === 'flex';
+    merTray.style.display = open ? 'none' : 'flex';
+    merBtn.setAttribute('aria-expanded', String(!open));
+    merBtn.querySelector('.ic').textContent = open ? '⋯' : '✕';
+  });
 
   /* ---------- Kockläge ---------- */
   document.getElementById('rnCook').addEventListener('click', function () {

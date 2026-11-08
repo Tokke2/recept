@@ -2994,6 +2994,22 @@ data i json/, ALDRIG per receptfil.
     vänlig banner när ≤3 dagar återstår till 20-dagarsgränsen
     ("byt nu och slipp tvånget mitt i baket").
 
+163. 📦 KOMPAKTA VERKTYGSPANELER + ⋯ MER-TRAY + 🔧 PIN-STATUSFIX —
+    ✔️ KLAR (2026-11-08, användarens order "A + C" + PIN-buggrapport):
+    A) portion.js: portionspanelen + satsväljaren bor nu bakom EN
+    smal rad ("⚖️ ×1 · 🍽️ 8 port à 110 g · 🔥 246 kcal/port ▾
+    Ändra") → ingredienserna syns på första skärmen. Expanderat
+    läge minns per session; raden liveuppdateras vid skalning/
+    portionsändring; #mk-satsval flyttas in i expandern (lyssnare
+    följer med). C) receptnav.js: 6 primära knappar (🏠 ← 👨‍🍳 → 📤 ⋯)
+    – ALLT annat (Skriv ut/Skala/°C·dl/Etiketter/Redigera/Verifiera)
+    flyttas AUTOMATISKT till Mer-trayen via MutationObserver, så
+    framtida moduler sorteras rätt utan egna ändringar. Trayen
+    fälls upp ovanför raden (⋯→✕). PIN-BUGGEN: sparningen funkade
+    hela tiden (commit 0e254ed) – statusrutan läste gamla filen ur
+    Pages-CDN:n. Fix: optimistisk statusvisning efter byte,
+    cache-buster i getLock, feltoast i första-gången-flödet.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
