@@ -58,11 +58,17 @@
 
   .tabbar { display:flex; gap:6px; flex-wrap:wrap; border-bottom:3px solid #e5ddd0; margin-bottom:4px; }
   .katbar { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 4px; }
-  .kat { background:#f0ebe3; border:2px solid transparent; border-radius:999px; padding:5px 14px;
-         font-size:.85rem; font-weight:600; cursor:pointer; font-family:inherit; color:var(--dark); }
-  .kat:hover { border-color:var(--accent2); }
-  .kat.active { background:var(--accent); color:#fff; }
-  .kat .n { opacity:.7; font-size:.78rem; }
+  /* 🏷️ TYDLIGARE KATEGORIER (punkt 169): kategorifärg per chip,
+     större tryckytor, vit antal-badge, omisskännlig aktiv-markering */
+  .kat { background:#fff; border:2px solid var(--kf,#8e6e53); color:var(--kf,#8e6e53);
+         border-radius:999px; padding:9px 16px; font-size:.92rem; font-weight:700;
+         cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:7px;
+         transition:transform .08s; }
+  .kat:hover { transform:translateY(-1px); box-shadow:0 2px 8px rgba(0,0,0,.12); }
+  .kat.active { background:var(--kf,#8e6e53); color:#fff; box-shadow:0 3px 10px rgba(0,0,0,.2); }
+  .kat .em { font-size:1.15rem; line-height:1; }
+  .kat .n { background:rgba(0,0,0,.08); border-radius:999px; padding:1px 8px; font-size:.78rem; font-weight:800; }
+  .kat.active .n { background:rgba(255,255,255,.25); }
   .kat-rubrik { grid-column:1/-1; font-family:Georgia,serif; font-size:1.15rem; color:var(--dark);
                 border-bottom:2px solid #e5ddd0; padding:14px 2px 6px; display:flex; align-items:baseline; gap:8px; }
   .kat-rubrik small { color:var(--muted); font-size:.78rem; font-family:'Segoe UI',sans-serif; }
@@ -557,12 +563,17 @@ function setTabSel(id) { activeTab = id; apply(); }
 function setTab(id) { setTabSel(id); const sel = document.getElementById('maskinVal'); if (sel) sel.value = id; }
 
 /* ============ Kategoripiller ============ */
+/* 🏷️ Kategorifärgerna – samma palett som hero.js kortbilder */
+const KAT_FARG = { matratt:'#e6a817', husdjur:'#8e6e53', sylt:'#8e2f4f', saft:'#d35400',
+  glass:'#2980b9', snacks:'#b7950b', brod:'#a0622d', deg:'#9c7b4f', bakning:'#c2185b',
+  efterratt:'#7d3c98', varmratt:'#286e46', ovrigt:'#c0392b' };
 function buildKats() {
-  let h = `<button class="kat active" data-k="all" onclick="setKat('all',this)">🍽️ Alla kategorier</button>`;
+  let h = `<span style="font-weight:700;font-size:.95rem;align-self:center;margin-right:2px;">🏷️ Kategori:</span>` +
+    `<button class="kat active" data-k="all" style="--kf:#2c3e50;" onclick="setKat('all',this)"><span class="em">🍽️</span> Alla <span class="n">${RECIPES.length}</span></button>`;
   KATEGORIER.forEach(k => {
     const n = RECIPES.filter(r => r.kat === k.id).length;
     if (!n) return;
-    h += `<button class="kat" data-k="${k.id}" onclick="setKat('${k.id}',this)">${k.emoji} ${k.namn} <span class="n">(${n})</span></button>`;
+    h += `<button class="kat" data-k="${k.id}" style="--kf:${KAT_FARG[k.id] || '#8e6e53'};" onclick="setKat('${k.id}',this)"><span class="em">${k.emoji}</span> ${k.namn} <span class="n">${n}</span></button>`;
   });
   document.getElementById('katbar').innerHTML = h;
 }

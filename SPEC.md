@@ -3071,6 +3071,16 @@ data i json/, ALDRIG per receptfil.
     kopiera-länk-reserv på dator. Samma mönster som receptens
     📤 Dela. Lyfter sajtens öppna data = förtroende + spridning.
 
+169. 🏷️ TYDLIGARE KATEGORIRAD — ✔️ KLAR (2026-11-08, användarens
+    order "tydligare" om kategoripillren i receptsamlingen):
+    varje chip har nu SIN kategorifärg (samma palett som hero.js
+    kortbilder: bröd=brun, glass=blå, sylt=vinröd...), större
+    tryckytor (9px padding, 0.92rem), emoji förstorad, antalet i
+    vit rund badge i stället för "(3)", aktiv chip = HELFYLLD i
+    sin färg med skugga, "🏷️ Kategori:"-etikett framför raden
+    (symmetri med 🔧 Maskin:). Hover-lyft. Ingen logikändring –
+    setKat/filtrering orörda.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
