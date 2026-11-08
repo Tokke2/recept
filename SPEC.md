@@ -3065,6 +3065,12 @@ data i json/, ALDRIG per receptfil.
     OBS SLV-noten: vissa D-vitaminfält kan saknas – saknade
     värden får ALDRIG skrivas som 0.
 
+168. 📱 DELA-KNAPP PÅ INGREDIENSSIDAN (autoförslag 935, användarens
+    beställning): delningsknapp ("kolla vår öppna ingrediensdatabas
+    – priser & näring med källor") via Web Share API på mobil,
+    kopiera-länk-reserv på dator. Samma mönster som receptens
+    📤 Dela. Lyfter sajtens öppna data = förtroende + spridning.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
