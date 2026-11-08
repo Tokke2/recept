@@ -2859,6 +2859,20 @@ data i json/, ALDRIG per receptfil.
     publik → grinden stoppar nyfikna; riktiga skyddet är GitHub-
     nyckeln i adminens webbläsare. API: __MK_SPARA.pinByt/lasInfo.
 
+143. 🔐 PANEL-LÄNK + 🍟 AF-TILLBEHÖR + 🔑 BITWARDEN-AUTOFYLL —
+    ✔️ KLAR (2026-11-07, användarens order): A) "🔐 Adminpanelen"
+    ligger nu LÄNGST NER i Verktyg & data-rutan på startsidan.
+    B) Panelen har ny sektion 🍟 AF-tillbehör: välj airfryer →
+    chips-lista med ✕, ➕-fält – sparas i maskinens json
+    (tillbehor: [...]) och visas automatiskt som 🧺-rader på
+    maskinens kort i maskindatabasen. C) BITWARDEN: riktig
+    Bitwarden-/passkey-INLOGGNING kräver server (statisk sajt har
+    ingen) – MEN PIN-dialogen är nu autofyll-vänlig (dolt
+    username-fält "maskinkok-admin" + autocomplete=current-password,
+    nya PIN-fält = new-password) → Bitwarden/iOS/Chrome ERBJUDER
+    att spara och autofylla PIN:en. Passkey-grind (WebAuthn,
+    klientside) kan byggas som framtida roadmap-punkt om så önskas.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

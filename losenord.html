@@ -64,6 +64,18 @@
     <div class="msg" id="epostMsg"></div>
   </div>
 
+  <div class="card">
+    <h2>🍟 AF-tillbehör (det du faktiskt använder)</h2>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">Per airfryer – visas på maskinens kort i maskindatabasen.</p>
+    <select id="afMaskin" style="width:100%;padding:11px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.95rem;font-family:inherit;margin-bottom:8px;"></select>
+    <div id="afLista" style="margin-bottom:8px;"></div>
+    <div style="display:flex;gap:8px;">
+      <input type="text" id="afNytt" placeholder="t.ex. Grillgaller, bakplåtspapper med hål..." style="margin-bottom:0;">
+      <button class="btn" id="afLagg" style="white-space:nowrap;">➕ Lägg till</button>
+    </div>
+    <div class="msg" id="afMsg"></div>
+  </div>
+
   <div class="info">🛡️ <b>Ärligt om skyddet:</b> PIN-hashen ligger i publika <code>json/las.json</code> –
     grinden stoppar nyfikna besökare. Det RIKTIGA skyddet är din personliga GitHub-nyckel som bara
     finns i din webbläsare. PIN-byte tvingas automatiskt var 20:e dag.</div>
@@ -95,7 +107,57 @@
     document.getElementById('lasRuta').style.display = 'none';
     document.getElementById('panel').style.display = '';
     visaStatus();
+    laddaAF();
   };
+
+  /* ===== 🍟 AF-TILLBEHÖR (punkt 143): per airfryer-maskin, sparas i
+     maskinens json-fil (tillbehor: [...]) → syns i maskindatabasen ===== */
+  var AF = [];
+  async function laddaAF() {
+    try {
+      var ix = await (await fetch('json/maskiner-index.json', { cache: 'no-store' })).json();
+      var alla = await Promise.all(ix.map(async function (f) {
+        try { var m = await (await fetch('json/maskiner/' + f, { cache: 'no-store' })).json(); m._fil = f; return m; }
+        catch (e) { return null; }
+      }));
+      AF = alla.filter(function (m) { return m && /airfryer/i.test(String(m.typ || '')); })
+        .map(function (m) { return { id: m.id, fil: m._fil, namn: ((m.varumarke || '') + ' ' + (m.modellnamn || '')).trim() || m.namn, tillbehor: m.tillbehor || [] }; });
+      el('afMaskin').innerHTML = AF.map(function (m, i) { return '<option value="' + i + '">' + m.namn + '</option>'; }).join('') ||
+        '<option>Inga airfryers i maskinparken</option>';
+      ritaAF();
+    } catch (e) { el('afMsg').textContent = '⚠️ Kunde inte läsa maskinparken.'; }
+  }
+  function ritaAF() {
+    var m = AF[+el('afMaskin').value || 0];
+    el('afLista').innerHTML = !m ? '' : (m.tillbehor.length ? m.tillbehor.map(function (t, i) {
+      return '<span style="display:inline-flex;align-items:center;gap:6px;background:#f6f3ee;border:1px solid #e8e2d8;border-radius:999px;padding:6px 8px 6px 14px;margin:0 6px 6px 0;font-size:.88rem;">🧺 ' +
+        t.replace(/</g, '&lt;') + '<button data-i="' + i + '" style="background:#c0392b;color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;line-height:1;font-size:.7rem;">✕</button></span>';
+    }).join('') : '<span style="color:var(--muted);font-size:.86rem;">Inga tillbehör inlagda ännu.</span>');
+    el('afLista').querySelectorAll('button[data-i]').forEach(function (b) {
+      b.onclick = function () { m.tillbehor.splice(+b.getAttribute('data-i'), 1); ritaAF(); sparaAF(m); };
+    });
+  }
+  async function sparaAF(m) {
+    el('afMsg').textContent = '⏳ Sparar...'; el('afMsg').style.color = '#5f6e70';
+    try {
+      var txt = await window.__MK_SPARA.load('json/maskiner/' + m.fil);
+      var d = JSON.parse(txt);
+      d.tillbehor = m.tillbehor;
+      var res = await window.__MK_SPARA.save('json/maskiner/' + m.fil, JSON.stringify(d, null, 1) + '\n',
+        '🧺 AF-tillbehör uppdaterade: ' + m.namn);
+      el('afMsg').textContent = res && res.ok ? '✅ Sparat – syns i maskindatabasen om ~1 min.' : '⚠️ Kunde inte spara.';
+      el('afMsg').style.color = res && res.ok ? '#27ae60' : '#c0392b';
+    } catch (e) { el('afMsg').textContent = '⚠️ ' + e.message; el('afMsg').style.color = '#c0392b'; }
+  }
+  el('afLagg').onclick = function () {
+    var m = AF[+el('afMaskin').value || 0];
+    var v = el('afNytt').value.trim();
+    if (!m || !v) return;
+    if (m.tillbehor.indexOf(v) === -1) m.tillbehor.push(v);
+    el('afNytt').value = '';
+    ritaAF(); sparaAF(m);
+  };
+  document.addEventListener('change', function (e) { if (e.target && e.target.id === 'afMaskin') ritaAF(); });
 
   el('bytPin').onclick = async function () {
     var a = el('pin1').value.trim(), b = el('pin2').value.trim(), m = el('pinMsg');

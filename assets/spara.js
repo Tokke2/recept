@@ -153,7 +153,8 @@
           '<div style="font-size:2rem;">🔢</div>' +
           '<h3 style="margin:6px 0 4px;">Ange din PIN</h3>' +
           '<p style="font-size:.85rem;color:#5f6e70;margin:0 0 12px;">Adminlåset för redigering &amp; sparning</p>' +
-          '<input type="password" inputmode="numeric" autocomplete="off" id="mkPinIn" placeholder="••••" ' +
+          '<input type="text" name="username" value="maskinkok-admin" autocomplete="username" style="position:absolute;left:-9999px;" tabindex="-1" aria-hidden="true">' +
+          '<input type="password" inputmode="numeric" autocomplete="current-password" name="password" id="mkPinIn" placeholder="••••" ' +
             'style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1.3rem;text-align:center;letter-spacing:.4em;box-sizing:border-box;">' +
           '<div id="mkPinMsg" style="color:#c0392b;font-size:.82rem;min-height:18px;margin-top:6px;"></div>' +
           '<div style="display:flex;gap:10px;margin-top:10px;">' +
@@ -195,7 +196,7 @@
         '<div style="background:#fff;border-radius:16px;max-width:380px;width:100%;padding:26px 28px;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
           '<h3 style="margin:0 0 6px;">' + rubrik + '</h3>' +
           '<p style="font-size:.85rem;color:#5f6e70;margin:0 0 12px;">' + intro + '</p>' +
-          '<input type="password" inputmode="numeric" autocomplete="off" id="mkNp1" placeholder="Ny PIN (4–12 siffror)" style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1.1rem;text-align:center;box-sizing:border-box;margin-bottom:8px;">' +
+          '<input type="password" inputmode="numeric" autocomplete="new-password" name="new-password" id="mkNp1" placeholder="Ny PIN (4–12 siffror)" style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1.1rem;text-align:center;box-sizing:border-box;margin-bottom:8px;">' +
           '<input type="password" inputmode="numeric" autocomplete="off" id="mkNp2" placeholder="Upprepa PIN" style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1.1rem;text-align:center;box-sizing:border-box;">' +
           '<div id="mkNpMsg" style="color:#c0392b;font-size:.82rem;min-height:18px;margin-top:6px;"></div>' +
           '<div style="display:flex;gap:10px;margin-top:8px;">' +

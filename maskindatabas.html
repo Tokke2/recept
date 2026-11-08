@@ -404,7 +404,8 @@ async function init() {
     specs: [
       ...(m.effekt_w ? ['⚡ ' + (m.effekt_w >= 1000 ? (m.effekt_w / 1000).toLocaleString('sv-SE') + ' kW' : m.effekt_w + ' W')] : []),
       ...((m.kapacitet && !/FYLL I/i.test(m.kapacitet)) ? ['🥛 ' + m.kapacitet] : []),
-      ...(m.egenskaper || [])
+      ...(m.egenskaper || []),
+      ...((m.tillbehor || []).map(t => '🧺 ' + t))   /* 🍟 AF-tillbehör (punkt 143, hanteras i adminpanelen) */
     ].filter((v, i, a) => a.indexOf(v) === i),
     links: byggLankar(m),
     butiker: m.butiker || {},
