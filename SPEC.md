@@ -2941,6 +2941,29 @@ data i json/, ALDRIG per receptfil.
     "Senast lagade" (lokalt) · "Populära just nu" (äkta räknare) ·
     "I säsong" – byggs ihop med 137 Nytt på sajten.
 
+153. ⌨️ SÖKGENVÄG "/" (autoförslag 891, användarens beställning):
+    tryck / på tangentbord (utanför inmatningsfält) → globala
+    sök-overlayn öppnas, som på GitHub. Desktop/köksdator-vinst.
+
+154. 📱 APP-GENVÄGAR I MANIFESTET (autoförslag 895, användarens
+    beställning): manifest.json shortcuts – långtryck på PWA-ikonen
+    ger "Vad ska jag laga?/Mina maskiner/Skapa recept" direkt
+    (samma tre som startsidans snabbval).
+
+155. ⌨️ PILTANGENTER I SÖKET (autoförslag 897, användarens
+    beställning): ↑/↓ vandrar i träfflistan, Enter öppnar – utan
+    att röra musen.
+
+156. 🎤 RÖSTSÖK (autoförslag 898, användarens beställning):
+    🎤-knapp i sökfältet (Web Speech, sv-SE – samma motor som
+    kocklägets röststyrning); visas endast där API:t stöds.
+
+157. 📊 SÖKSTATISTIK (autoförslag 899, användarens beställning):
+    anonyma räknare (Abacus, samma som betygen) på sökfraser UTAN
+    träff → admin ser "vad letar folk efter som saknas" =
+    receptidéer ur verkligheten. Endast frasen räknas, aldrig
+    något om besökaren; visas på status.html för admin.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
