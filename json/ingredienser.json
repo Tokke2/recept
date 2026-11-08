@@ -133,17 +133,15 @@
     },
     {
       "id": "torrjast",
-      "namn": "Torrjäst Matbröd",
+      "namn": "Jäst Söt Deg Färsk / torrjäst (Kronjäst)",
       "pris_kr_per_kg": 66.2,
-      "kcal": 360,
-      "protein": 37,
-      "kolhydrat": 48.1,
-      "fett": 1.6,
-      "fiber": 0,
-      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-11-08 · näring: Livsmedelsverket \"Jäst torkad\" (CC BY 4.0)",
+      "kcal": 108,
+      "protein": 13,
+      "kolhydrat": 6,
+      "fett": 1.7,
+      "fiber": 8.1,
       "varumarke": "Kronjäst",
-      "lank": "https://www.willys.se/produkt/Torrjast-Matbrod-101249135_ST",
-      "uppdaterad": "",
+      "kalla": "import ingredienser.json v5.1.1",
       "alias": [
         "Torrjäst (Kronjäst)2 g",
         "Torrjäst (Kronjäst)"
@@ -313,7 +311,10 @@
       "protein": 2,
       "kolhydrat": 17,
       "fett": 0.1,
-      "fiber": 1.8
+      "fiber": 1.8,
+      "kalla": "redigerad 2026-11-08",
+      "lank": "https://www.willys.se/produkt/Potatis-Fast-Klass-1-100150587_KG",
+      "uppdaterad": ""
     },
     {
       "id": "morot",
