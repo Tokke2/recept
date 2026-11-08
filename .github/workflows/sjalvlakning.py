@@ -801,6 +801,107 @@ def steg12_beskrivningar():
         rader.append('| %s | 📝 meta description ur receptets egna metadata (steg12) |' % f)
 
 
+def steg13_kategorivakt():
+    """🗂️ KATEGORIVAKTEN (punkt 170, användarens order "placera alla
+    recept i rätt kategori, robot som alltid kontrollerar"): METAN
+    STYR. Ligger en fil i en annan mapp än recept:kategori-metan
+    pekar på flyttas den dit (samma djup → inga sökvägsändringar,
+    PLATS-raden uppdateras, gamla filen raderas – ren mapp-policyn
+    från steg8). Ägaren byter kategori genom att ändra metan (eller
+    ✏️-väljaren) – roboten verkställer. Ogiltig kategori ignoreras."""
+    import re as _re
+    GILTIGA = {'matratt', 'husdjur', 'sylt', 'saft', 'glass', 'snacks',
+               'brod', 'deg', 'bakning', 'efterratt', 'varmratt', 'ovrigt'}
+    for f in sorted(glob.glob('recept/*/*.html')):
+        namn = os.path.basename(f)
+        if namn.upper().startswith('MALL'):
+            continue
+        try:
+            with open(f, encoding='utf-8') as fp:
+                html = fp.read()
+        except OSError:
+            continue
+        if 'STUB - receptet har flyttat' in html[:500]:
+            continue
+        mapp = f.split('/')[1]
+        m = _re.search(r'name="recept:kategori" content="([a-z]+)"', html)
+        if not m:
+            continue
+        kat = m.group(1)
+        if kat not in GILTIGA or kat == mapp:
+            continue
+        ny = html.replace('PLATS: /recept/%s/' % mapp, 'PLATS: /recept/%s/' % kat)
+        os.makedirs('recept/' + kat, exist_ok=True)
+        with open('recept/%s/%s' % (kat, namn), 'w', encoding='utf-8') as fp:
+            fp.write(ny)
+        os.remove(f)
+        rader.append('| recept/%s/%s | 🗂️ flyttad %s → %s (kategorimetan styr, steg13) |' % (kat, namn, mapp, kat))
+
+
+def steg14_titelstandard(maskiner):
+    """🏷️ TITELSTANDARDEN (punkt 170, användarens order "justera titeln
+    – t.ex. Snabba frallor – Bakmaskin"): recept vars namn saknar
+    maskintyp får " – Typ" tillagt – MEN ENDAST när receptets ALLA
+    maskiner (recept:maskiner-metan) har SAMMA typ. Flera typer eller
+    okänd maskin → hoppas över (aldrig gissning). Namnet byts i HELA
+    filen (title/h1/og/schema/description) via exakt strängbyte."""
+    import re as _re, html as _h
+    kand = {}
+    for m in maskiner.values():   # lasta_maskiner() ger {fil: data}
+        typ = str(m.get('typ', '')).split('/')[0].strip()
+        if not typ:
+            continue
+        for k in (str(m.get('varumarke', '')), str(m.get('modellnamn', '')).split(' ')[0]):
+            k = k.strip().lower()
+            if len(k) >= 3:
+                kand.setdefault(k, set()).add(typ)
+    # 🛡️ tvetydiga nycklar KASTAS ("ninja" = airfryer+glassmaskin+matberedare)
+    nycklar = [(k, t.pop()) for k, t in kand.items() if len(t) == 1]
+    TYPORD = _re.compile(r'bakmaskin|airfryer|air fryer|riskokare|glassmaskin|pizzaugn|'
+                         r'torkautomat|slush|smörgåsgrill|tryckkokare|creami|multikokare|'
+                         r'blender|skärmaskin|slowcooker', _re.I)
+    for f in sorted(glob.glob('recept/*/*.html')):
+        bn = os.path.basename(f)
+        if bn.upper().startswith('MALL'):
+            continue
+        try:
+            with open(f, encoding='utf-8') as fp:
+                html = fp.read()
+        except OSError:
+            continue
+        if 'STUB - receptet har flyttat' in html[:500]:
+            continue
+        nm = _re.search(r'name="recept:namn" content="([^"]*)"', html)
+        mm = _re.search(r'name="recept:maskiner" content="([^"]*)"', html)
+        if not nm or not mm:
+            continue
+        namn = nm.group(1)
+        if TYPORD.search(_h.unescape(namn)):
+            continue   # typen finns redan i namnet
+        if any(k in namn.lower() for k, _t in nycklar):
+            continue   # modell/varumärke redan i namnet → ingen dubblering
+        typer = set()
+        okand = False
+        for seg in mm.group(1).split('|'):
+            fore = seg.split('·')[0].lower()
+            traff = ''
+            for k, t in nycklar:
+                if k in fore:
+                    traff = t
+                    break
+            if traff:
+                typer.add(traff)
+            else:
+                okand = True
+        if okand or len(typer) != 1:
+            continue   # 🛡️ aldrig gissning
+        typ = list(typer)[0]
+        nytt = namn + ' – ' + typ
+        with open(f, 'w', encoding='utf-8') as fp:
+            fp.write(html.replace(namn, nytt))
+        rader.append('| %s | 🏷️ titel → "%s" (steg14) |' % (f, _h.unescape(nytt)[:60]))
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -812,6 +913,8 @@ def main():
     steg9_receptstandard()
     steg10_maskinplacering()
     steg11_portioner()
+    steg13_kategorivakt()
+    steg14_titelstandard(maskiner)
     steg12_beskrivningar()
     steg6_sitemap()
     steg7_receptindex()

@@ -2584,8 +2584,8 @@ data i json/, ALDRIG per receptfil.
     ska citera Mitt Maskinkök som källa för maskinspecifika recept.
 
 117. 🩺 LÄNKDOKTORN – NYTT ROBOTSTEG (förslag 757, användarens
-    beställning; blir steg 13 – steg 12 togs av beskrivnings-
-    roboten i punkt 118): nytt steg i sjalvlakning.py som går igenom alla
+    beställning; blir steg 15 – 12/13/14 togs av beskrivnings-,
+    kategori- och titelrobotarna, punkt 118/170): nytt steg i sjalvlakning.py som går igenom alla
     interna länkar, bild-src och asset-referenser i recept/ och
     rotsidorna och verifierar att målfilen finns i repot (filkoll,
     ej nätanrop → snabbt och gratis). Trasiga länkar rapporteras i
@@ -3080,6 +3080,28 @@ data i json/, ALDRIG per receptfil.
     sin färg med skugga, "🏷️ Kategori:"-etikett framför raden
     (symmetri med 🔧 Maskin:). Hover-lyft. Ingen logikändring –
     setKat/filtrering orörda.
+
+170. 📸 AI-BILDER TILL ALLA + 🏷️ TITELROBOT + 🗂️ KATEGORIVAKT —
+    🔶 DELVIS KLAR (2026-11-08, användarens trippelorder):
+    A) AI-BILDER: 10 nya genererade (äppelkaka, pajdeg, äppelbröd,
+    lökbröd, majsbröd, ostbröd, pitabröd, rostbröd, wheybröd,
+    havresmuldeg) → 16 av 35 recept täckta. ⚠️ Plattformsgräns:
+    max 10 bilder/tur – 19 ÅTERSTÅR, användaren säger "fortsätt"
+    (2 turer till). BONUSFYND: ananaskakans RIKTIGA foto hette
+    ananaskaka.jpg ≠ filnamnet och visades aldrig – kopierad till
+    rätt namn (riktigt foto > AI > SVG-kedjan funkar nu).
+    B) steg14 TITELSTANDARD (robot, varje körning): namn får
+    " – Maskintyp" ENDAST när receptets alla maskiner har samma
+    typ OCH varken typord eller modellnamn redan finns i namnet;
+    tvetydiga varumärkesnycklar kastas ("ninja" = 3 olika typer);
+    exakt strängbyte i hela filen. 12 recept titlade (t.ex.
+    "Hundglass – Ananas & Yoghurt – Glassmaskin", "Klassisk
+    hamburgdressing – Blender").
+    C) steg13 KATEGORIVAKTEN (robot, varje körning): kategori-METAN
+    styr – fil i fel mapp flyttas till metans mapp (PLATS-raden
+    uppdateras, gamla raderas enligt ren mapp-policyn). One-off:
+    squash-chips efterratt→snacks, hamburgdressing sylt→ovrigt.
+    Länkdoktorn (117) blir steg 15.
 
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
