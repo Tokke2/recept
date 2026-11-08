@@ -2840,6 +2840,25 @@ data i json/, ALDRIG per receptfil.
     besökare, gammal rad för samma maskin ersätts (data-mid).
     Gäller automatiskt alla nuvarande och kommande AF-recept.
 
+142. 🔢 PIN-LÅSET + 🔐 ADMINPANELEN — ✔️ KLAR (2026-11-07,
+    användarens order "byt hela lösen till en pinkod som admin
+    anger vid första inloggningen, ny efter 20 dagar, adminpanel
+    för pin och epost bakom samma pin"):
+    A) spara.js: FÖRSTA upplåsningen = gamla lösenordet en sista
+    gång → "Skapa din PIN" (4–12 siffror, ×2) → json/las.json
+    skrivs om med pin_hash (saltad SHA-256) + pin_datum + epost –
+    legacy-lösenfälten försvinner HELT. Därefter frågar alla lås
+    PIN (numerisk dialog, 3 fel → startsidan som förr).
+    B) 20-DAGARSREGELN: är PIN:en äldre än 20 dagar tvingas nytt
+    val direkt efter lyckad upplåsning (avbryt = förblir låst).
+    C) losenord.html OMBYGGD till ADMINPANEL bakom samma PIN:
+    status (satt-datum, dagar till tvingat byte, e-post), byt PIN,
+    byt admin-e-post – allt sparas direkt till las.json via
+    GitHub-flödet (inga manuella klistringar längre).
+    D) ÄRLIGHETEN dokumenterad i både fil och panel: hashen är
+    publik → grinden stoppar nyfikna; riktiga skyddet är GitHub-
+    nyckeln i adminens webbläsare. API: __MK_SPARA.pinByt/lasInfo.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

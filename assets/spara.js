@@ -46,11 +46,14 @@
         return {
           pw: String(d.losenord || ''),
           hash: String(d.losenord_hash || '').toLowerCase().trim(),
+          pinHash: String(d.pin_hash || '').toLowerCase().trim(),
+          pinDatum: String(d.pin_datum || ''),
+          epost: String(d.epost || ''),
           on: d.las_redigering !== false
         };
       } catch (e) {}
     }
-    return { pw: '', hash: '', on: false };  // ingen låsfil = inget lås
+    return { pw: '', hash: '', pinHash: '', pinDatum: '', epost: '', on: false };  // ingen låsfil = inget lås
   }
 
   async function checkPassword(input, lock) {
@@ -121,13 +124,142 @@
     });
   }
 
+  /* ============================================================
+     🔢 PIN-LÅSET (användarens order 2026-11-07, punkt 142):
+     · PIN ersätter lösenordet helt – väljs av admin vid FÖRSTA
+       upplåsningen (gamla lösenordet krävs en sista gång)
+     · Efter 20 dagar tvingas nytt PIN-val vid nästa upplåsning
+     · Adminpanelen (losenord.html) byter PIN & e-post – bakom samma PIN
+     ÄRLIGHET: hashen ligger i publika json/las.json → PIN-grinden
+     stoppar nyfikna, det RIKTIGA skyddet är din personliga
+     GitHub-nyckel som bara finns i din webbläsare.
+     ============================================================ */
+  var PINSALT = 'mitt-maskinkok:';
+  var PIN_DAGAR = 20;
+  function pinHashOf(pin) { return sha256(PINSALT + pin); }
+  function dagarSedan(d) {
+    var t = Date.parse(d);
+    return isNaN(t) ? 9999 : Math.floor((Date.now() - t) / 86400000);
+  }
+  function pinOk(p) { return /^\d{4,12}$/.test(p); }
+
+  function askPin(lock) {
+    return new Promise(function (resolve) {
+      var bg = document.createElement('div');
+      bg.className = 'no-print';
+      bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:450;display:flex;align-items:center;justify-content:center;padding:16px;';
+      bg.innerHTML =
+        '<div style="background:#fff;border-radius:16px;max-width:360px;width:100%;padding:26px 28px;text-align:center;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
+          '<div style="font-size:2rem;">🔢</div>' +
+          '<h3 style="margin:6px 0 4px;">Ange din PIN</h3>' +
+          '<p style="font-size:.85rem;color:#5f6e70;margin:0 0 12px;">Adminlåset för redigering &amp; sparning</p>' +
+          '<input type="password" inputmode="numeric" autocomplete="off" id="mkPinIn" placeholder="••••" ' +
+            'style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1.3rem;text-align:center;letter-spacing:.4em;box-sizing:border-box;">' +
+          '<div id="mkPinMsg" style="color:#c0392b;font-size:.82rem;min-height:18px;margin-top:6px;"></div>' +
+          '<div style="display:flex;gap:10px;margin-top:10px;">' +
+            '<button id="mkPinOk" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;">🔓 Lås upp</button>' +
+            '<button id="mkPinNej" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;">Avbryt</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(bg);
+      var input = bg.querySelector('#mkPinIn');
+      setTimeout(function () { input.focus(); }, 120);
+      var fel = 0;
+      async function attempt() {
+        if ((await pinHashOf(input.value.trim())) === lock.pinHash) {
+          bg.remove(); resolve(true);
+        } else {
+          fel++;
+          if (fel >= 3) {   /* 🚪 3 fel = startsidan (användarens regel) */
+            bg.querySelector('#mkPinMsg').textContent = '❌ 3 felaktiga försök – skickas till startsidan...';
+            input.disabled = true; bg.querySelector('#mkPinOk').disabled = true;
+            setTimeout(function () { location.href = (window.__MK_ROOT || './') + 'index.html'; }, 1400);
+            return;
+          }
+          bg.querySelector('#mkPinMsg').textContent = 'Fel PIN – försök ' + fel + ' av 3';
+          input.select();
+        }
+      }
+      bg.querySelector('#mkPinOk').onclick = attempt;
+      bg.querySelector('#mkPinNej').onclick = function () { bg.remove(); resolve(false); };
+      input.addEventListener('keydown', function (e) { if (e.key === 'Enter') attempt(); });
+    });
+  }
+
+  function askNyPin(rubrik, intro) {
+    return new Promise(function (resolve) {
+      var bg = document.createElement('div');
+      bg.className = 'no-print';
+      bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:460;display:flex;align-items:center;justify-content:center;padding:16px;';
+      bg.innerHTML =
+        '<div style="background:#fff;border-radius:16px;max-width:380px;width:100%;padding:26px 28px;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
+          '<h3 style="margin:0 0 6px;">' + rubrik + '</h3>' +
+          '<p style="font-size:.85rem;color:#5f6e70;margin:0 0 12px;">' + intro + '</p>' +
+          '<input type="password" inputmode="numeric" autocomplete="off" id="mkNp1" placeholder="Ny PIN (4–12 siffror)" style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1.1rem;text-align:center;box-sizing:border-box;margin-bottom:8px;">' +
+          '<input type="password" inputmode="numeric" autocomplete="off" id="mkNp2" placeholder="Upprepa PIN" style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1.1rem;text-align:center;box-sizing:border-box;">' +
+          '<div id="mkNpMsg" style="color:#c0392b;font-size:.82rem;min-height:18px;margin-top:6px;"></div>' +
+          '<div style="display:flex;gap:10px;margin-top:8px;">' +
+            '<button id="mkNpOk" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;">💾 Spara PIN</button>' +
+            '<button id="mkNpNej" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;">Avbryt</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(bg);
+      setTimeout(function () { bg.querySelector('#mkNp1').focus(); }, 120);
+      bg.querySelector('#mkNpOk').onclick = function () {
+        var a = bg.querySelector('#mkNp1').value.trim(), b = bg.querySelector('#mkNp2').value.trim();
+        if (!pinOk(a)) { bg.querySelector('#mkNpMsg').textContent = 'PIN = 4–12 siffror'; return; }
+        if (a !== b) { bg.querySelector('#mkNpMsg').textContent = 'PIN-koderna skiljer sig åt'; return; }
+        bg.remove(); resolve(a);
+      };
+      bg.querySelector('#mkNpNej').onclick = function () { bg.remove(); resolve(null); };
+    });
+  }
+
+  /* skriver nya las.json (legacy-lösenfälten försvinner för alltid) */
+  async function sparaLas(nyPin, epost) {
+    var hash = await pinHashOf(nyPin);
+    var inneh = {
+      _plats: '/json/las.json  (central laasfil - PIN-skyddet. Byts via adminpanelen losenord.html, aldrig for hand)',
+      kommentar: 'PIN lagras som saltad SHA-256. Filen ar publikt lasbar - PIN-grinden stoppar nyfikna, det riktiga skyddet ar din personliga GitHub-nyckel i webblasaren. Nytt PIN-val tvingas var ' + PIN_DAGAR + ':e dag.',
+      pin_hash: hash,
+      pin_datum: new Date().toISOString().slice(0, 10),
+      epost: String(epost || ''),
+      las_redigering: true
+    };
+    /* via window-objektet → testbart; sessionStorage är redan upplåst här */
+    var fn = (window.__MK_SPARA && window.__MK_SPARA.save) || save;
+    var res = await fn('json/las.json', JSON.stringify(inneh, null, 1) + '\n', '🔢 PIN uppdaterad via adminflödet');
+    return !!(res && res.ok);
+  }
+
   async function requireUnlock() {
     var unlocked = false;
     try { unlocked = sessionStorage.getItem(UNLOCK_KEY) === '1'; } catch (e) {}
     if (unlocked) return true;
     var lock = await getLock();
-    if (!lock.on || (!lock.pw && !lock.hash)) return true;  // lås avstängt
-    return askPassword(lock);
+    if (!lock.on || (!lock.pinHash && !lock.pw && !lock.hash)) return true;  // lås avstängt
+
+    /* 🔢 PIN-läget (normalfallet) */
+    if (lock.pinHash) {
+      if (!(await askPin(lock))) return false;
+      try { sessionStorage.setItem(UNLOCK_KEY, '1'); } catch (e) {}
+      /* ⏳ 20-dagarsregeln: tvinga nytt val */
+      var alder = dagarSedan(lock.pinDatum);
+      if (alder > PIN_DAGAR) {
+        var ny = await askNyPin('⏳ Dags för ny PIN',
+          'Din PIN är ' + alder + ' dagar gammal (gränsen är ' + PIN_DAGAR + ') – välj en ny för att fortsätta.');
+        if (!ny) { try { sessionStorage.removeItem(UNLOCK_KEY); } catch (e) {} return false; }
+        await sparaLas(ny, lock.epost);
+      }
+      return true;
+    }
+
+    /* 🆕 FÖRSTA GÅNGEN: gamla lösenordet en sista gång → skapa PIN */
+    if (!(await askPassword(lock))) return false;   /* sätter UNLOCK_KEY vid rätt svar */
+    var pin1 = await askNyPin('🆕 Skapa din PIN',
+      'Första inloggningen med nya låset: välj en PIN (4–12 siffror). Den ersätter lösenordet HELT och byts var ' + PIN_DAGAR + ':e dag.');
+    if (pin1) await sparaLas(pin1, lock.epost);   /* avbryt → frågan kommer igen nästa pass */
+    return true;
   }
 
   function getToken() {
@@ -297,6 +429,8 @@
     load: load,
     remove: remove,
     unlock: requireUnlock,   /* 🔒 sidlås: nytt-recept/maskin-import låser hela sidan */
+    pinByt: sparaLas,        /* 🔢 adminpanelen: (nyPin, epost) – kräver unlock först */
+    lasInfo: getLock,        /* 🔢 adminpanelen: pin_datum/epost (read-only) */
     hasToken: function () { return !!getToken(); },
     clearToken: clearToken
   };
