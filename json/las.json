@@ -1,7 +1,8 @@
 {
- "_plats": "/json/las.json  (central låsfil för redigering & uppladdning – ändras ENDAST här på GitHub)",
- "kommentar": "Skriv ditt lösenord i 'losenord' nedan – gäller både ✏️ redigering och 💾 uppladdning på sajten. OBS: filen är publikt läsbar, välj ett lösenord du inte använder någon annanstans. Vill du dölja det senare: fyll i 'losenord_hash' med SHA-256 av lösenordet och töm 'losenord' (hash har företräde). Sätt las_redigering till false för att stänga av skyddet helt.",
- "losenord": "HulkenAdmin",
- "losenord_hash": "",
+ "_plats": "/json/las.json  (central laasfil - PIN-skyddet. Byts via adminpanelen losenord.html, aldrig for hand)",
+ "kommentar": "PIN lagras som saltad SHA-256. Filen ar publikt lasbar - PIN-grinden stoppar nyfikna, det riktiga skyddet ar din personliga GitHub-nyckel i webblasaren. Nytt PIN-val tvingas var 20:e dag.",
+ "pin_hash": "8cea63f4b70968075c7055b88d30e9dfb8a34cbe76054b6fa88bfe743bb64caf",
+ "pin_datum": "2026-11-08",
+ "epost": "",
  "las_redigering": true
 }
