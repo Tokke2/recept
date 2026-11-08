@@ -2910,6 +2910,37 @@ data i json/, ALDRIG per receptfil.
     AI-citeringsurvalet (ChatGPT-studien 2026). Sidhänvisning
     endast där den faktiskt är känd – aldrig påhittade sidnummer.
 
+148. 🎨 DESIGNRUNDA HÖG: SNABBVAL + GLOBALT SÖK + MASKINVÄLJARE —
+    ✔️ KLAR (2026-11-07, användarens prioriterade designlista):
+    A) Startsidan: tre STORA snabbvalsknappar direkt under heron –
+    "🍽️ Vad ska jag laga?" (recept), "🔧 Mina maskiner"
+    (maskindatabas), "📝 Skapa recept" (nytt-recept) – 1 kolumn på
+    mobil. B) 🔍 GLOBALT SÖK (assets/sok.js, laddas överallt av
+    site.js): 🔍-knapp i navet på ALLA sidor → overlay som söker
+    recept + maskiner + ingredienser samtidigt (grupperade
+    träffar, Esc stänger, %2F-säkra länkar, maskinparken
+    sessionStorage-cachas). C) recept.html: maskinFLIKARNA ersatta
+    med kompakt 🔧-väljare ("Alla recept" standard) – skalar
+    obegränsat och löser även mobilflik-problemet (designlistans
+    Låg-punkt). setTab finns kvar som bakåtkompatibelt alias.
+
+149. 🎯 "VAD SKA DU LAGA?"-FRAMTRÄDANDE (designlistan Medel,
+    användarens beställning): köpguide/laga-flödet lyfts på
+    startsidan och i receptvyn – matchar hur folk tänker.
+
+150. 💚 STÖD SAJTEN SYNLIGARE (designlistan Medel, användarens
+    beställning): hjärtknapp i headern + tydlig footer-placering
+    (utan att vara påträngande – aldrig modal).
+
+151. 📂 "MER"-MENY FÖR VERKTYGEN (designlistan Medel, användarens
+    beställning): Hälsokontroll/Förslagslåda/Printables/Köksskärm/
+    Visitkort samlas under en "Mer"-punkt i navigeringen →
+    mindre rörigt huvudnav.
+
+152. 🏠 STARTSIDERADER (designlistan Låg, användarens beställning):
+    "Senast lagade" (lokalt) · "Populära just nu" (äkta räknare) ·
+    "I säsong" – byggs ihop med 137 Nytt på sajten.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

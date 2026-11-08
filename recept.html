@@ -534,27 +534,27 @@ async function loadGlobalRatings() {
 }
 
 /* ============ Flikar: Alla + per maskin ============ */
+/* 🔧 MASKINVÄLJAREN (punkt 148, användarens designorder): flikraden
+   ersatt med filter – "Alla recept" är standard, skalar hur många
+   maskiner som helst och tar en rad på mobilen. */
 function buildTabs() {
   RECIPES.forEach(r => { r.kat = (r.kategori && KATEGORIER.some(k => k.id === r.kategori)) ? r.kategori : kategoriFor(r); });
   buildKats();
   const used = new Set();
   RECIPES.forEach(r => r.maskin_ids.forEach(id => used.add(id)));
-  let h = `<button class="tab active" data-id="all" onclick="setTab('all',this)">🍽️ Alla recept <span class="n">(${RECIPES.length})</span></button>`;
-  DB.maskiner.forEach(m => {
-    if (!used.has(m.id)) return;
-    const n = RECIPES.filter(r => r.maskin_ids.includes(m.id)).length;
-    h += `<button class="tab" data-id="${m.id}" onclick="setTab('${m.id}',this)">` +
-         (m.bild ? `<img src="${m.bild}" alt="">` : '🔧 ') +
-         `${m.varumarke} ${m.modellnamn || ''} <span class="n">(${n})</span></button>`;
-  });
+  let h = `<label style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem;flex-wrap:wrap;">🔧 Maskin:
+    <select id="maskinVal" onchange="setTabSel(this.value)" style="padding:10px 14px;border:2px solid #e0d9cd;border-radius:10px;font-size:1rem;font-family:inherit;max-width:100%;background:#fff;cursor:pointer;">
+    <option value="all">🍽️ Alla recept (${RECIPES.length})</option>` +
+    DB.maskiner.filter(m => used.has(m.id)).map(m => {
+      const n = RECIPES.filter(r => r.maskin_ids.includes(m.id)).length;
+      return `<option value="${m.id}">${m.varumarke} ${m.modellnamn || ''} (${n})</option>`;
+    }).join('') + `</select></label>`;
   document.getElementById('tabbar').innerHTML = h;
+  const sel = document.getElementById('maskinVal');
+  if (sel && activeTab !== 'all' && [...sel.options].some(o => o.value === activeTab)) sel.value = activeTab;
 }
-function setTab(id, el) {
-  activeTab = id;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  apply();
-}
+function setTabSel(id) { activeTab = id; apply(); }
+function setTab(id) { setTabSel(id); const sel = document.getElementById('maskinVal'); if (sel) sel.value = id; }
 
 /* ============ Kategoripiller ============ */
 function buildKats() {
