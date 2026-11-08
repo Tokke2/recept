@@ -2873,6 +2873,31 @@ data i json/, ALDRIG per receptfil.
     att spara och autofylla PIN:en. Passkey-grind (WebAuthn,
     klientside) kan byggas som framtida roadmap-punkt om så önskas.
 
+144. 🔁 PROGRAMÖVERSÄTTAREN (förslag 871, användarens beställning):
+    central tabell över programsynonymer mellan maskiner ("8. Dough
+    på Clatronic ≈ Knåddeg/Pizza Dough på andra bakmaskiner") –
+    byggs ENDAST ur maskinernas manualverifierade programlistor
+    (json/maskiner/), visas i maskindatabasen + som hjälp i 🔀-
+    alternativrutorna på recepten. Data i json/, aldrig gissade
+    kopplingar – okänd motsvarighet visas som "ingen direkt
+    motsvarighet".
+
+145. 💶 KOSTNAD PER KÖRNING + 📊 PER ANVÄNDNING (förslag 870+874,
+    användarens beställning): A) maskinkortet visar kostnad per
+    körning = effekt_w × programtid × elpris (elpriset ur energi-
+    modulens befintliga källa). B) Nya ägarfält i maskinjson:
+    kopt_ar och pris_kr (fylls av ägaren via maskindatabasens
+    ✏️-dialog) → "har kostat X kr per användning hittills"
+    (pris / antal loggade körningar ur energi/lagningsdata).
+    Utan ifyllda fält visas inget – aldrig gissade priser.
+
+146. 📦 RESERVDELSLÄNKAR (förslag 873, användarens beställning):
+    valfritt reservdelar-fält per maskin (paddel, packning, korg,
+    filter...) med namn + amazon-asin → 🛒-länkar på maskinkortet
+    (affiliate.js taggar som vanligt). Hanteras i adminpanelens
+    maskinsektion i stil med AF-tillbehören. Endast delar ägaren
+    själv lagt in – inga autogissade produkter.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
