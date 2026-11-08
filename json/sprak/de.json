@@ -3287,13 +3287,40 @@
   "| Webbläsare |": "| Browser |",
   "⚖️ Satsstorlek – skalar ingredienserna (×½ → ×1 → ×2)": "⚖️ Chargengröße – skaliert die Zutaten (×½ → ×1 → ×2)",
   "⚠️ Gick ej": "⚠️Ging nicht",
-  "⚠️ Misslyckades": "⚠️ Fehlgeschlagen"
+  "⚠️ Misslyckades": "⚠️ Fehlgeschlagen",
+  ") – välj en ny för att fortsätta.": ") – Wählen Sie ein neues aus, um fortzufahren.",
+  "Admin-e-post": "Admin-E-Mail",
+  "Ange din PIN för att öppna. (Första gången? Då frågas gamla lösenordet och du väljer PIN direkt.)": "Geben Sie zum Öffnen Ihre PIN ein. (Das erste Mal? Dann wird das alte Passwort abgefragt und Sie wählen direkt die PIN.)",
+  "Din PIN är": "Ihre PIN ist",
+  "Fel PIN – försök": "Falsche PIN – versuchen Sie es erneut",
+  "Första inloggningen med nya låset: välj en PIN (4–12 siffror). Den ersätter lösenordet HELT och byts var": "Erster Login mit dem neuen Schloss: Wählen Sie eine PIN (4-12 Ziffern). Es ersetzt das Passwort VOLLSTÄNDIG und wird jedes Mal geändert",
+  "Ny PIN (4–12 siffror)": "Neue PIN (4-12 Ziffern)",
+  "PIN senast satt": "Zuletzt eingestellte PIN",
+  "PIN-hashen ligger i publika": "Der PIN-Hash ist öffentlich",
+  "PIN-koderna skiljer sig åt": "Die PIN-Codes sind unterschiedlich",
+  "Skyddad av din PIN. Härifrån byter du PIN och admin-e-post – allt sparas direkt i låsfilen på GitHub.": "Geschützt durch Ihre PIN. Von hier aus ändern Sie die PIN und die Admin-E-Mail – alles wird direkt in der Sperrdatei auf GitHub gespeichert.",
+  "Tvingat byte om": "Zwangsersatz",
+  "Upprepa PIN": "PIN wiederholen",
+  "dagar gammal (gränsen är": "Tage alt (die Grenze beträgt",
+  "· vänd halvvägs": "· Nach der Hälfte der Fahrt umdrehen",
+  "Ärligt om skyddet:": "Ehrlich zum Schutz:",
+  "– grinden stoppar nyfikna besökare. Det RIKTIGA skyddet är din personliga GitHub-nyckel som bara finns i din webbläsare. PIN-byte tvingas automatiskt var 20:e dag.": "- Das Tor hält neugierige Besucher ab. Der WIRKLICHE Schutz ist Ihr persönlicher GitHub-Schlüssel, der nur in Ihrem Browser vorhanden ist. Die PIN-Änderung wird automatisch alle 20 Tage erzwungen.",
+  "⏳ Dags för ny PIN": "⏳ Zeit für eine neue PIN",
+  "💾 Spara e-post": "💾 E-Mail speichern",
+  "💾 Spara ny PIN": "💾 Neue PIN speichern",
+  "📧 Admin-e-post": "📧 Admin-E-Mail",
+  "🔐 Adminpanel – PIN & e-post": "🔐 Admin-Panel – PIN und E-Mail",
+  "🔐 Adminpanel – PIN & e-post | Mitt Maskinkök": "🔐 Admin-Panel – PIN und E-Mail | Meine Maschinenküche",
+  "🔒 Panelen är låst": "🔒 Das Panel ist gesperrt",
+  "🔓 Öppna panelen": "🔓 Öffnen Sie das Panel",
+  "🔢 Byt PIN": "🔢 PIN ändern",
+  "🔢 PIN uppdaterad via adminflödet": "🔢 PIN über den Admin-Feed aktualisiert"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3286,
- "_senast_robot": "2026-11-07"
+ "_auto_genererade": 3313,
+ "_senast_robot": "2026-11-08"
 }

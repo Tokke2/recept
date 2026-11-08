@@ -3165,7 +3165,34 @@
   "| Webbläsare |": "| Browser |",
   "⚖️ Satsstorlek – skalar ingredienserna (×½ → ×1 → ×2)": "⚖️ Batch size – scales the ingredients (×½ → ×1 → ×2)",
   "⚠️ Gick ej": "⚠️ Did not go",
-  "⚠️ Misslyckades": "⚠️ Failed"
+  "⚠️ Misslyckades": "⚠️ Failed",
+  ") – välj en ny för att fortsätta.": ") – select a new one to continue.",
+  "Admin-e-post": "Admin email",
+  "Ange din PIN för att öppna. (Första gången? Då frågas gamla lösenordet och du väljer PIN direkt.)": "Enter your PIN to open. (The first time? Then the old password is asked and you choose the PIN directly.)",
+  "Din PIN är": "Your PIN is",
+  "Fel PIN – försök": "Incorrect PIN - try again",
+  "Första inloggningen med nya låset: välj en PIN (4–12 siffror). Den ersätter lösenordet HELT och byts var": "First login with the new lock: choose a PIN (4-12 digits). It COMPLETELY replaces the password and is changed every time",
+  "Ny PIN (4–12 siffror)": "New PIN (4-12 digits)",
+  "PIN senast satt": "PIN last set",
+  "PIN-hashen ligger i publika": "The PIN hash is in public",
+  "PIN-koderna skiljer sig åt": "The PIN codes differ",
+  "Skyddad av din PIN. Härifrån byter du PIN och admin-e-post – allt sparas direkt i låsfilen på GitHub.": "Protected by your PIN. From here you change the PIN and admin email - everything is saved directly to the lock file on GitHub.",
+  "Tvingat byte om": "Forced replacement",
+  "Upprepa PIN": "Repeat PIN",
+  "dagar gammal (gränsen är": "days old (the limit is",
+  "· vänd halvvägs": "· turn halfway through",
+  "Ärligt om skyddet:": "Honest about the protection:",
+  "– grinden stoppar nyfikna besökare. Det RIKTIGA skyddet är din personliga GitHub-nyckel som bara finns i din webbläsare. PIN-byte tvingas automatiskt var 20:e dag.": "- the gate stops curious visitors. The REAL protection is your personal GitHub key that only exists in your browser. PIN change is automatically forced every 20 days.",
+  "⏳ Dags för ny PIN": "⏳ Time for a new PIN",
+  "💾 Spara e-post": "💾 Save email",
+  "💾 Spara ny PIN": "💾 Save new PIN",
+  "📧 Admin-e-post": "📧 Admin email",
+  "🔐 Adminpanel – PIN & e-post": "🔐 Admin panel – PIN & email",
+  "🔐 Adminpanel – PIN & e-post | Mitt Maskinkök": "🔐 Admin Panel – PIN & Email | My Machine Kitchen",
+  "🔒 Panelen är låst": "🔒 The panel is locked",
+  "🔓 Öppna panelen": "🔓 Open the panel",
+  "🔢 Byt PIN": "🔢 Change PIN",
+  "🔢 PIN uppdaterad via adminflödet": "🔢 PIN updated via the admin feed"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3175,6 +3202,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3164,
- "_senast_robot": "2026-11-07"
+ "_auto_genererade": 3191,
+ "_senast_robot": "2026-11-08"
 }
