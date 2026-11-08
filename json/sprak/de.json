@@ -3347,13 +3347,14 @@
   "Livsmedelsverkets Livsmedelsdatabas": "Die Lebensmitteldatenbank der schwedischen Lebensmittelbehörde",
   "🏛️ Näringsdata för råvaror kan komma från": "🏛️ Nährwertangaben für Rohstoffe können stammen aus",
   "Gröna Tomater (hemmaodlade) hemodlad": "Grüne Tomaten (selbst angebaut) selbst angebaut",
-  "Torrjäst Matbröd": "Trockenhefebrot"
+  "Torrjäst Matbröd": "Trockenhefebrot",
+  "Potatis Fast Klass 1": "Kartoffelfirma Klasse 1"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3346,
+ "_auto_genererade": 3347,
  "_senast_robot": "2026-11-08"
 }

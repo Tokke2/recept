@@ -3223,7 +3223,8 @@
   "Livsmedelsverkets Livsmedelsdatabas": "The Swedish Food Agency's Food Database",
   "🏛️ Näringsdata för råvaror kan komma från": "🏛️ Nutritional data for raw materials can come from",
   "Gröna Tomater (hemmaodlade) hemodlad": "Green Tomatoes (home grown) home grown",
-  "Torrjäst Matbröd": "Dry yeast bread"
+  "Torrjäst Matbröd": "Dry yeast bread",
+  "Potatis Fast Klass 1": "Potato Firm Class 1"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3233,6 +3234,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3222,
+ "_auto_genererade": 3223,
  "_senast_robot": "2026-11-08"
 }
