@@ -426,3 +426,8 @@
 **2026-11-08**
 
 | sitemap.xml | 🗺️ omgenererad (50 adresser) |
+
+**2026-11-08**
+
+| sitemap.xml | 🗺️ omgenererad (50 adresser) |
+| json/recept-index.json | 📁 omgenererad (36 recept) |

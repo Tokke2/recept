@@ -74,10 +74,6 @@
    "kategori": "deg"
   },
   {
-   "fil": "efterratt/squash-chips-i-torkautomat.html",
-   "kategori": "efterratt"
-  },
-  {
    "fil": "glass/Mjukglass MAX.html",
    "kategori": "glass"
   },
@@ -91,6 +87,10 @@
   },
   {
    "fil": "ovrigt/gron-tomatketchup.html",
+   "kategori": "ovrigt"
+  },
+  {
+   "fil": "ovrigt/klassisk-hamburgdressing.html",
    "kategori": "ovrigt"
   },
   {
@@ -114,12 +114,12 @@
    "kategori": "snacks"
   },
   {
-   "fil": "snacks/stekta-grona-tomater-air-fryer.html",
+   "fil": "snacks/squash-chips-i-torkautomat.html",
    "kategori": "snacks"
   },
   {
-   "fil": "sylt/klassisk-hamburgdressing.html",
-   "kategori": "sylt"
+   "fil": "snacks/stekta-grona-tomater-air-fryer.html",
+   "kategori": "snacks"
   },
   {
    "fil": "sylt/svartvinbarssylt-klassiskt-recept.html",
