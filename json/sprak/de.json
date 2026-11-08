@@ -3345,13 +3345,14 @@
   "⬇️ Export JSON": "⬇️ JSON exportieren",
   "(CC BY 4.0) – källan anges per vara.": "(CC BY 4.0) – Quelle wird pro Artikel angegeben.",
   "Livsmedelsverkets Livsmedelsdatabas": "Die Lebensmitteldatenbank der schwedischen Lebensmittelbehörde",
-  "🏛️ Näringsdata för råvaror kan komma från": "🏛️ Nährwertangaben für Rohstoffe können stammen aus"
+  "🏛️ Näringsdata för råvaror kan komma från": "🏛️ Nährwertangaben für Rohstoffe können stammen aus",
+  "Gröna Tomater (hemmaodlade) hemodlad": "Grüne Tomaten (selbst angebaut) selbst angebaut"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3344,
+ "_auto_genererade": 3345,
  "_senast_robot": "2026-11-08"
 }
