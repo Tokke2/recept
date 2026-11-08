@@ -3082,7 +3082,7 @@ data i json/, ALDRIG per receptfil.
     setKat/filtrering orörda.
 
 170. 📸 AI-BILDER TILL ALLA + 🏷️ TITELROBOT + 🗂️ KATEGORIVAKT —
-    🔶 DELVIS KLAR (2026-11-08, användarens trippelorder):
+    ✔️ KLAR (2026-11-08, användarens trippelorder):
     A) AI-BILDER: 10 nya genererade (äppelkaka, pajdeg, äppelbröd,
     lökbröd, majsbröd, ostbröd, pitabröd, rostbröd, wheybröd,
     havresmuldeg) → 16 av 35 recept täckta. ⚠️ Plattformsgräns:
@@ -3105,7 +3105,11 @@ data i json/, ALDRIG per receptfil.
     UPPDATERING (batch 2): +10 AI-bilder (pizzadeg u. protein,
     biscoff-smuldeg, squashchips, mjukglass, hundglass,
     tomatketchup, raggmunk, slush, proteinshake, makaronichips)
-    → 26 av 35 täckta, 9 ÅTERSTÅR (en "fortsätt"-tur till).
+    → 26 av 35 täckta. SLUTBATCH 3 (2026-11-08): +9 (tomat-chips,
+    stekta gröna tomater, dressing, svartvinbärssylt, våfflor,
+    tomatsås, fläskytterfilé, ris, kycklinggryta) → 🏁 100 %
+    BILDTÄCKNING: alla 35 recept har foto eller märkt AI-bild.
+    Punkt 170 därmed HELT KLAR ✔️.
 
 171. 🥣 KATEGORIN "SÅS & DRESSING" — ✔️ KLAR (2026-11-08,
     användarens order "egen kategori, sås/dressing"): nytt id
