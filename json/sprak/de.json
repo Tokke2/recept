@@ -3342,13 +3342,16 @@
   "Hela databasen som JSON – perfekt egen backup innan du jobbar i den": "Die gesamte Datenbank als JSON – perfektes eigenes Backup vor der Arbeit darin",
   "Kalkylarksvänlig CSV (semikolon, svensk Excel)": "Tabellenkalkulationsfreundliches CSV (Semikolon, schwedisches Excel)",
   "⬇️ Export CSV": "⬇️ CSV exportieren",
-  "⬇️ Export JSON": "⬇️ JSON exportieren"
+  "⬇️ Export JSON": "⬇️ JSON exportieren",
+  "(CC BY 4.0) – källan anges per vara.": "(CC BY 4.0) – Quelle wird pro Artikel angegeben.",
+  "Livsmedelsverkets Livsmedelsdatabas": "Die Lebensmitteldatenbank der schwedischen Lebensmittelbehörde",
+  "🏛️ Näringsdata för råvaror kan komma från": "🏛️ Nährwertangaben für Rohstoffe können stammen aus"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3341,
+ "_auto_genererade": 3344,
  "_senast_robot": "2026-11-08"
 }
