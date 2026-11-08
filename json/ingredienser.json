@@ -48,7 +48,9 @@
       "kolhydrat": 100,
       "fett": 0,
       "fiber": 0,
-      "kalla": "import ingredienser.json v5.1.1",
+      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-11-08",
+      "lank": "https://www.willys.se/produkt/Strosocker-101553903_ST",
+      "uppdaterad": "",
       "alias": [
         "Honung/socker"
       ]
@@ -729,14 +731,7 @@
     },
     {
       "id": "grona-tomater",
-      "namn": "Gröna Tomater (hemmaodlade) hemodlad",
-      "pris_kr_per_kg": 0,
-      "kcal": 21,
-      "protein": 0.9,
-      "kolhydrat": 3.9,
-      "fett": 0.2,
-      "fiber": 1.4,
-      "kalla": "ägaren 2026-10-31: hemmaodlade (pris 0 kr) – näring som röd tomat (Livsmedelsverkets ca-värden per 100 g) · redigerad 2026-11-08",
+      "namn": "Gröna Tomater (hemmaodlade)",
       "alias": [
         "gröna tomater",
         "grön tomat",
@@ -744,9 +739,13 @@
         "egna tomater",
         "tomater egna"
       ],
-      "lank_onodig": true,
-      "egenodlad": true,
-      "noll_ok": true
+      "pris_kr_per_kg": 0,
+      "kcal": 21,
+      "protein": 0.9,
+      "kolhydrat": 3.9,
+      "fett": 0.2,
+      "fiber": 1.4,
+      "kalla": "ägaren 2026-10-31: hemmaodlade (pris 0 kr) – näring som röd tomat (Livsmedelsverkets ca-värden per 100 g)"
     }
   ]
 }
