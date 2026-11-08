@@ -88,9 +88,7 @@
       "kolhydrat": 5.1,
       "fett": 10,
       "fiber": 0,
-      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-11-08",
-      "lank": "https://www.willys.se/produkt/Turkisk-Yoghurt-10procent-100486886_ST",
-      "uppdaterad": "",
+      "kalla": "import ingredienser.json v5.1.1",
       "alias": [
         "Matyoghurt 10%"
       ]
@@ -191,8 +189,9 @@
       "kolhydrat": 0,
       "fett": 0,
       "fiber": 0,
-      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-16 · redigerad 2026-08-31",
-      "noll_ok": true
+      "kalla": "import ingredienser.json v5.1.1 · redigerad 2026-08-16 · redigerad 2026-08-31 · redigerad 2026-11-08",
+      "noll_ok": true,
+      "lank_onodig": true
     },
     {
       "id": "mjolk",
