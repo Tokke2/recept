@@ -24,6 +24,7 @@
   /* ---------- Kategorifärger (samma anda som sajtens palett) ---------- */
   var KAT_FARG = {
     husdjur:   ['#8e6e53', '#b5936f'],
+    sas:       ['#b03a2e', '#e07b63'],
     sylt:      ['#8e2f4f', '#c0392b'],
     saft:      ['#d35400', '#f39c12'],
     glass:     ['#2980b9', '#7fd3f7'],
@@ -38,6 +39,7 @@
   /* Prioriterad ordlista – SAMMA logik som recept.html (först vinner) */
   var KAT_ORD = [
     ['hund', 'husdjur'], ['husdjur', 'husdjur'], ['katt', 'husdjur'],
+    ['dressing', 'sas'], ['ketchup', 'sas'], ['majonnäs', 'sas'], ['aioli', 'sas'],
     ['sylt', 'sylt'], ['marmelad', 'sylt'], ['chutney', 'sylt'], ['inlagd', 'sylt'],
     ['smulpaj', 'bakning'], ['smuldeg', 'bakning'], ['paj', 'bakning'],
     ['glass', 'glass'], ['sorbet', 'glass'], ['frozen', 'glass'],

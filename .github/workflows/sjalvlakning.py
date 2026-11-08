@@ -383,6 +383,7 @@ def steg7_receptindex():
 
 KAT_ORD = [
     ('hund', 'husdjur'), ('husdjur', 'husdjur'),
+    ('dressing', 'sas'), ('ketchup', 'sas'), ('majonnäs', 'sas'), ('aioli', 'sas'),
     ('sylt', 'sylt'), ('marmelad', 'sylt'),
     ('smulpaj', 'bakning'), ('paj', 'bakning'),
     ('glass', 'glass'), ('sorbet', 'glass'),
@@ -810,7 +811,7 @@ def steg13_kategorivakt():
     från steg8). Ägaren byter kategori genom att ändra metan (eller
     ✏️-väljaren) – roboten verkställer. Ogiltig kategori ignoreras."""
     import re as _re
-    GILTIGA = {'matratt', 'husdjur', 'sylt', 'saft', 'glass', 'snacks',
+    GILTIGA = {'matratt', 'husdjur', 'sas', 'sylt', 'saft', 'glass', 'snacks',
                'brod', 'deg', 'bakning', 'efterratt', 'varmratt', 'ovrigt'}
     for f in sorted(glob.glob('recept/*/*.html')):
         namn = os.path.basename(f)

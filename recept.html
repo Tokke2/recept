@@ -291,6 +291,7 @@ let DB = { maskiner: [] }, RECIPES = [], activeTab = 'all', activeKat = 'all';
 const KATEGORIER = [
   { id:'matratt',   namn:'Maträtter',       emoji:'🍽️' },
   { id:'husdjur',   namn:'Husdjur',         emoji:'🐶' },
+  { id:'sas',       namn:'Sås & dressing',  emoji:'🥣' },
   { id:'sylt',      namn:'Sylt & marmelad', emoji:'🫙' },
   { id:'saft',      namn:'Saft & dryck',    emoji:'🧃' },
   { id:'glass',     namn:'Glass & fryst',   emoji:'🍦' },
@@ -306,6 +307,7 @@ const KATEGORIER = [
    Specifikt före generellt: smulpaj→bakning FÖRE deg, pizzadeg→deg FÖRE pizza→varmrätt. */
 const KAT_ORD = [
   ['hund','husdjur'],['husdjur','husdjur'],['katt','husdjur'],
+  ['dressing','sas'],['ketchup','sas'],['majonnäs','sas'],['aioli','sas'],
   ['sylt','sylt'],['marmelad','sylt'],['chutney','sylt'],['inlagd','sylt'],
   ['smulpaj','bakning'],['smuldeg','bakning'],['paj','bakning'],
   ['glass','glass'],['sorbet','glass'],['frozen','glass'],
@@ -564,7 +566,7 @@ function setTab(id) { setTabSel(id); const sel = document.getElementById('maskin
 
 /* ============ Kategoripiller ============ */
 /* 🏷️ Kategorifärgerna – samma palett som hero.js kortbilder */
-const KAT_FARG = { matratt:'#e6a817', husdjur:'#8e6e53', sylt:'#8e2f4f', saft:'#d35400',
+const KAT_FARG = { matratt:'#e6a817', husdjur:'#8e6e53', sas:'#b03a2e', sylt:'#8e2f4f', saft:'#d35400',
   glass:'#2980b9', snacks:'#b7950b', brod:'#a0622d', deg:'#9c7b4f', bakning:'#c2185b',
   efterratt:'#7d3c98', varmratt:'#286e46', ovrigt:'#c0392b' };
 function buildKats() {

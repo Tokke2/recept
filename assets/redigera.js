@@ -1405,7 +1405,7 @@
 
     /* 🗂️ Kategorier (samma lista som recept.html) + nuvarande värden ur meta */
     var KATTER = [
-      ['', '🤖 Auto (gissas)'], ['husdjur', '🐶 Husdjur'], ['sylt', '🫙 Sylt & marmelad'],
+      ['', '🤖 Auto (gissas)'], ['husdjur', '🐶 Husdjur'], ['sas', '🥣 Sås & dressing'], ['sylt', '🫙 Sylt & marmelad'],
       ['saft', '🧃 Saft & dryck'], ['glass', '🍦 Glass & fryst'], ['snacks', '🥨 Snacks'],
       ['brod', '🍞 Bröd'], ['deg', '🥖 Deg'], ['bakning', '🍰 Bakning & fika'],
       ['efterratt', '🍮 Efterrätt'], ['varmratt', '🍲 Varmrätter'], ['ovrigt', '🍽️ Övrigt']
