@@ -444,3 +444,7 @@
 **2026-11-10**
 
 | sitemap.xml | 🗺️ omgenererad (50 adresser) |
+
+**2026-11-11**
+
+| sitemap.xml | 🗺️ omgenererad (50 adresser) |
