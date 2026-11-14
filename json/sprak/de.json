@@ -3398,13 +3398,24 @@
   "🫙 Svartvinbärssylt – klassiskt recept – Bakmaskin": "🫙 Schwarze Johannisbeermarmelade – klassisches Rezept – Backmaschine",
   "🫙 Svartvinbärssylt – klassiskt recept – Bakmaskin – Clatronic BBA 3774 | Mitt Maskinkök": "🫙 Schwarze Johannisbeermarmelade – klassisches Rezept – Backmaschine – Clatronic BBA 3774 | Meine Maschinenküche",
   "majonnäs": "Mayonnaise",
-  "🥣 Sås & dressing": "🥣 Soße & Dressing"
+  "🥣 Sås & dressing": "🥣 Soße & Dressing",
+  "Lägg potatisen eller moroten i hållaren och tryck ner handtaget – hela knölen blir jämna stavar i ett drag.": "Legen Sie die Kartoffel oder Karotte in den Halter und drücken Sie den Griff nach unten – die ganze Knolle wird mit einem Handgriff zu gleichmäßigen Stäbchen.",
+  "Manuell maskin – inga program eller tider. Uppgifterna kommer från produktsidans rubrik (rostfri, professionell, potatis & morötter). Ägaren använder en liknande modell.": "Manuelle Maschine – keine Programme oder Zeiten. Die Informationen stammen aus der Überschrift der Produktseite (Edelstahl, Profi, Kartoffeln & Karotten). Der Eigentümer verwendet ein ähnliches Modell.",
+  "Pommesskärare / Grönsaksskärare (manuell)": "Pommes-Frites-Schneider / Gemüseschneider (manuell)",
+  "Pommesskärare – rostfritt stål (manuell)": "Pommes-Frites-Schneider – Edelstahl (manuell)",
+  "Tryckskärning (stavar)": "Druckschneiden (Stangen)",
+  "ifall man bakar limpa ska den skivas med skivmaskin – erbjud i alla brödrecept": "Wenn Sie ein Brot backen, müssen Sie es mit einer Schneidemaschine in Scheiben schneiden, die in allen Brotrezepten angeboten wird",
+  "om det är en limpa ska det ej kallas fralla": "Wenn es sich um einen Laib handelt, sollte man ihn nicht als Brötchen bezeichnen",
+  "pommes frites-stavar, morotsstavar till airfryern": "Pommes-Frites-Sticks, Karottensticks für die Heißluftfritteuse",
+  "💪 Helt manuell – ingen el, inget ljud, inget program": "💪 Komplett manuell – kein Strom, kein Ton, kein Programm",
+  "🔩 Rostfritt stål": "🔩 Edelstahl",
+  "🥔 Skär potatis & morötter till jämna stavar i ett tryck": "🥔 Kartoffeln und Karotten mit einem Handgriff in gleichmäßige Stifte schneiden"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3397,
- "_senast_robot": "2026-11-13"
+ "_auto_genererade": 3408,
+ "_senast_robot": "2026-11-14"
 }
