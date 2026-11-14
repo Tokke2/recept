@@ -60,7 +60,7 @@
            document.title;
   }
   function arBrod() {
-    return /br[öo]d|limpa|toast|baguette|fralla/i.test(typText()) && !/br[öo]dkrutong/i.test(typText());
+    return /br[öo]d|limpa|toast|baguette|frall|bull|boll/i.test(typText()) && !/br[öo]dkrutong|k[öo]ttbull/i.test(typText());
   }
   function arFralla() {
     return /frall|bull|boll|muffin|scones?/i.test(typText());
@@ -209,6 +209,38 @@
       return (isNaN(v) || v <= 0) ? fallback : v;
     }
 
+    /* 🔪 SKIVMASKINEN (punkt 173, användarens order "ifall man bakar
+       limpa ska den skivas med skivmaskin – erbjud i alla brödrecept"):
+       i limpa-läget visas kökets egen skärmaskin (typ Skärmaskin ur
+       maskinparken) som erbjudande med länk. Finns ingen → ingen rad. */
+    async function visaSkivmaskin() {
+      if (document.getElementById('mp-skivmaskin')) return;
+      var park = null;
+      try { park = JSON.parse(sessionStorage.getItem('mk-maskinpark')); } catch (e) {}
+      if (!park || !park.length) {
+        try {
+          var rot0 = window.__MK_ROT || '../';
+          var ix = await (await fetch(rot0 + 'json/maskiner-index.json')).json();
+          park = (await Promise.all(ix.map(function (f0) {
+            return fetch(rot0 + 'json/maskiner/' + f0).then(function (r) { return r.json(); })['catch'](function () { return null; });
+          }))).filter(Boolean);
+          try { sessionStorage.setItem('mk-maskinpark', JSON.stringify(park)); } catch (e) {}
+        } catch (e) { return; }
+      }
+      var sk = null;
+      for (var i2 = 0; i2 < park.length; i2++) {
+        if (/skärmaskin|slicer/i.test(String(park[i2].typ || ''))) { sk = park[i2]; break; }
+      }
+      if (!sk || !utEl || !document.getElementById('mp-skiv')) return;   /* kvar i limpa-läget? */
+      var namn2 = ((sk.varumarke || '') + ' ' + (sk.modellnamn || '')).trim() || sk.namn || sk.id;
+      var rad = document.createElement('div');
+      rad.id = 'mp-skivmaskin';
+      rad.style.cssText = 'margin-top:6px;font-size:.82rem;color:#5f6e70;';
+      rad.innerHTML = '🔪 Skivas jämnast med kökets skärmaskin: <a href="' + (window.__MK_ROT || '../') +
+        'maskindatabas.html#' + encodeURIComponent(sk.id) + '" style="color:#a0622d;font-weight:700;">' +
+        namn2 + ' →</a>';
+      utEl.insertAdjacentElement('afterend', rad);
+    }
     function visa() {
       var bf0 = window.__MK_SKALA_F || 1;
       if (limpa) {
@@ -225,6 +257,7 @@
           '<span style="color:#5f6e70;font-size:.82rem;">Hela limpan' + (bf0 !== 1 ? ' (×' + fmt(bf0) + '-sats)' : '') + ': ' +
           fmt(tot.g * bf0, 0) + ' g · ' + fmt(tot.kcal * bf0, 0) + ' kcal → ' + N0 + ' skivor</span>';
         spara({ sk: N0 });
+        visaSkivmaskin();
         return;
       }
       var g = tal(gEl, portG);

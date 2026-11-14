@@ -3138,6 +3138,21 @@ data i json/, ALDRIG per receptfil.
     tappas); panelen byggs om direkt vid byte. Standardval som förr
     (frall-ord i namnet → styck).
 
+173. 🔪 SKIVMASKINEN ERBJUDS I LIMPA-LÄGET — ✔️ KLAR (2026-11-08,
+    användarens order "ifall man bakar limpa ska den skivas med
+    skivmaskin vid val – erbjud i alla brödrecept + räknare för
+    antal skivor → kcal per skiva"): limpa-läget i portionspanelen
+    (finns på ALLA brödrecept sedan 172, även AF-gräddade som kan
+    bli frallor) visar nu raden "🔪 Skivas jämnast med kökets
+    skärmaskin: VEVOR SUS420 →" (typ Skärmaskin slås upp LIVE ur
+    maskinparken – ingen hårdkodning; saknas typen visas inget).
+    Skivräknaren (± antal → vikt & kcal/skiva) fanns sedan punkt
+    135 och är limpa-lägets kärna. Styck-läget (🥯 frallor) visar
+    ingen skärmaskinsrad. BUGGFIX i samma runda: arBrod-regexen
+    matchade "fralla" men INTE "frallor" → frallrecept utan ordet
+    bröd missade hela växeln; nu frall/bull/boll (köttbullar
+    undantagna) – AF-bröd som görs till frallor täcks överallt.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
