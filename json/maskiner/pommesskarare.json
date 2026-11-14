@@ -1,0 +1,43 @@
+{
+ "id": "pommesskarare",
+ "namn": "Pommesskärare – rostfritt stål (manuell)",
+ "typ": "Pommesskärare / Grönsaksskärare (manuell)",
+ "varumarke": "",
+ "modellnamn": "Pommesskärare",
+ "asin": "B0FNMQYQQV",
+ "kapacitet": "",
+ "egenskaper": [
+  "🥔 Skär potatis & morötter till jämna stavar i ett tryck",
+  "🔩 Rostfritt stål",
+  "💪 Helt manuell – ingen el, inget ljud, inget program"
+ ],
+ "viktigt": [
+  "Manuell maskin – inga program eller tider. Uppgifterna kommer från produktsidans rubrik (rostfri, professionell, potatis & morötter). Ägaren använder en liknande modell."
+ ],
+ "lankar": {
+  "kop": "https://www.amazon.se/dp/B0FNMQYQQV/"
+ },
+ "program": [
+  {
+   "namn": "Tryckskärning (stavar)",
+   "typ": "Manuellt",
+   "standardtid": "–",
+   "beskrivning": "Lägg potatisen eller moroten i hållaren och tryck ner handtaget – hela knölen blir jämna stavar i ett drag.",
+   "bast_for": "pommes frites-stavar, morotsstavar till airfryern",
+   "nyckelord": [
+    "pommes",
+    "pommesskärare",
+    "stavar",
+    "strimla",
+    "potatisskärare",
+    "potatis",
+    "morot",
+    "morötter",
+    "skära"
+   ]
+  }
+ ],
+ "bild": "images/pommesskarare.jpg",
+ "effekt_w": 0,
+ "effekt_kalla": "manuell – ingen eldrift"
+}
