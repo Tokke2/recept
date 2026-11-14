@@ -344,13 +344,16 @@
           ? '<img src="' + rot + m.bild + '" alt="" loading="lazy" onerror="this.remove()" ' +
             'style="width:34px;height:34px;object-fit:contain;border-radius:8px;background:#f6f3ee;flex-shrink:0;">'
           : '';
-        return '<a href="' + rot + 'maskindatabas.html#' + encodeURIComponent(m.id) + '" ' +
+        /* 🍏 BUTTON i stället för <a> (punkt 172): iOS långtrycks-förhands-
+           visning på länkar kunde sluka 3-sekundersgesten – knappar har
+           ingen callout alls. Klick navigerar via data-href. */
+        return '<button type="button" data-href="' + rot + 'maskindatabas.html#' + encodeURIComponent(m.id) + '" ' +
           'data-mk-mid="' + m.id + '" data-mk-namn="' + n.replace(/"/g, '&quot;') + '" ' +
           'style="display:inline-flex;align-items:center;gap:8px;background:#f6f3ee;border:1px solid #eee2d2;' +
-          'border-radius:999px;padding:5px 14px 5px 6px;text-decoration:none;color:#2c3e50;' +
+          'border-radius:999px;padding:5px 14px 5px 6px;color:#2c3e50;cursor:pointer;font-family:inherit;' +
           'font-size:.84rem;font-weight:700;margin:3px 6px 3px 0;' +
           '-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;">' +
-          bild + '<span>' + n + '</span>' + status + '</a>';
+          bild + '<span>' + n + '</span>' + status + '</button>';
       }).join('');
       rad.innerHTML = '<span style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;' +
         'color:#a5967e;display:block;margin-bottom:6px;">🔧 Maskiner som används i receptet ' +
@@ -377,7 +380,7 @@
         return '';
       }
       var HALL_MS = window.__MK_HALL_MS || 3000;
-      rad.querySelectorAll('a[data-mk-mid]').forEach(function (a) {
+      rad.querySelectorAll('[data-mk-mid]').forEach(function (a) {
         var tmr = null, fired = false;
         function starta() {
           fired = false;
@@ -396,7 +399,11 @@
         a.addEventListener('mousedown', starta);
         ['mouseup', 'mouseleave'].forEach(function (ev) { a.addEventListener(ev, avbryt); });
         a.addEventListener('contextmenu', function (e) { if (fired || tmr) e.preventDefault(); });
-        a.addEventListener('click', function (e) { avbryt(); if (fired) { e.preventDefault(); fired = false; } });
+        a.addEventListener('click', function (e) {
+          avbryt();
+          if (fired) { e.preventDefault(); fired = false; return; }
+          location.href = a.getAttribute('data-href');   /* vanligt klick = maskinsidan */
+        });
       });
       header.parentNode.insertBefore(rad, header.nextSibling);
     })();

@@ -69,6 +69,11 @@
     var st = document.createElement('style');
     st.id = 'mk-base-style';
     st.textContent =
+      /* 📏 ÖVERBREDDSVAKTEN (punkt 172): clip stoppar sidledsscroll utan
+         att bryta sticky (till skillnad från hidden). Jästkonverteringen
+         bryter till egen rad i stället för att spränga tabellbredden. */
+      'html,body{overflow-x:clip;}' +
+      'td .mk-jastalt{display:block;white-space:normal;font-weight:400;margin-top:2px;}' +
       'html{scroll-behavior:smooth;}' +
       '::selection{background:#e67e22;color:#fff;}' +
       ':focus-visible{outline:3px solid #e67e22;outline-offset:2px;border-radius:4px;}' +

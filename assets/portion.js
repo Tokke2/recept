@@ -38,8 +38,12 @@
   function sparat() {
     try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; }
   }
-  function spara(o) {
-    try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {}
+  function spara(o) {   /* 🔀 merge – olika delar sparar olika nycklar */
+    try {
+      var c = sparat();
+      for (var k in o) c[k] = o[k];
+      localStorage.setItem(KEY, JSON.stringify(c));
+    } catch (e) {}
   }
   function fmt(n, dec) {
     return n.toLocaleString('sv-SE', { minimumFractionDigits: 0, maximumFractionDigits: dec === undefined ? 1 : dec });
@@ -77,7 +81,12 @@
 
     var pi = window.__MK_KALKYL_PORT || null;
     var s = sparat();
-    var limpa = arBrod() && !arFralla();   /* skivläge = PRIMÄRT på limpor */
+    /* 🍞/🥯 LÄGET (punkt 172, "om det är en limpa ska det ej kallas
+       fralla"): brödrecept kan VÄXLAS mellan limpa (skivor) och styck
+       (frallor) – t.ex. snabba frallor som gräddas som LIMPA i bak-
+       maskinen. Valet sparas per recept. Standard som förr. */
+    var lage = s.lage || (arFralla() ? 'styck' : 'limpa');
+    var limpa = arBrod() && lage === 'limpa';
 
     /* Startvärden: sparade val → kalkylens portionsinfo → hela satsen */
     var basN = (pi && pi.n) || 1;                                  /* receptets antal portioner */
@@ -125,7 +134,13 @@
         '<div><span style="' + lbl + '">🔥 Önskad kcal/portion</span>' +
           '<span style="white-space:nowrap;"><input id="mp-kcal" type="text" inputmode="numeric" style="' + inp + '" placeholder="t.ex. 300"> <b style="font-size:.9rem;">kcal</b></span></div>') +
       '</div>' +
-      '<div id="mp-ut" style="margin-top:10px;padding:9px 12px;background:#fdf6ee;border-radius:9px;font-size:.9rem;line-height:1.6;"></div>';
+      '<div id="mp-ut" style="margin-top:10px;padding:9px 12px;background:#fdf6ee;border-radius:9px;font-size:.9rem;line-height:1.6;"></div>' +
+      (arBrod() ? '<div style="margin-top:8px;font-size:.8rem;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">' +
+        '<span style="color:#5f6e70;font-weight:700;">Bakas som:</span>' +
+        '<button type="button" id="mp-lage-limpa" style="border:2px solid #a0622d;border-radius:999px;padding:5px 12px;font-weight:700;cursor:pointer;font-family:inherit;' +
+          (limpa ? 'background:#a0622d;color:#fff;' : 'background:#fff;color:#a0622d;') + '">🍞 Limpa (skivor)</button>' +
+        '<button type="button" id="mp-lage-styck" style="border:2px solid #e67e22;border-radius:999px;padding:5px 12px;font-weight:700;cursor:pointer;font-family:inherit;' +
+          (!limpa ? 'background:#e67e22;color:#fff;' : 'background:#fff;color:#e67e22;') + '">🥯 Styck (frallor)</button></div>' : '');
 
     /* 📦 KOMPAKTLÄGE (punkt 163, designorder A): panelen + satsväljaren
        göms bakom EN smal rad → ingredienserna hamnar på första skärmen.
@@ -243,6 +258,20 @@
       gEl.value = Math.round(vill / perG.kcal);
       visa();
     });
+    /* 🍞/🥯 lägesväxling → spara + bygg om panelen från grunden */
+    function bytLage(nytt) {
+      if ((nytt === 'limpa') === limpa) return;
+      spara({ lage: nytt });
+      var w = document.getElementById('mk-panelwrap');
+      var hdr = document.querySelector('body header');
+      var sv = document.getElementById('mk-satsval');
+      if (sv && hdr) hdr.parentNode.insertBefore(sv, hdr.nextSibling);   /* satsvalet räddas ut */
+      if (w) w.remove();
+      bygg(tot);
+    }
+    var lgL = box.querySelector('#mp-lage-limpa'), lgS = box.querySelector('#mp-lage-styck');
+    if (lgL) lgL.onclick = function () { bytLage('limpa'); };
+    if (lgS) lgS.onclick = function () { bytLage('styck'); };
     if (!limpa) gEl.addEventListener('input', function () { kcEl.value = ''; visa(); });
     if (limpa) {
       skEl.addEventListener('input', function () { kcEl.value = ''; visa(); });

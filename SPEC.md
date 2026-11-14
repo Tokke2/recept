@@ -3121,6 +3121,23 @@ data i json/, ALDRIG per receptfil.
     aioli" + steg13-GILTIGA). Flyttade via metan+kategorivakten:
     klassisk-hamburgdressing + grön tomatketchup → recept/sas/.
 
+172. 🍏 iOS-SÄKER HÅLLGEST + 📏 ÖVERBREDDSVAKT + 🍞/🥯 LIMPA-VÄXEL —
+    ✔️ KLAR (2026-11-08, användarens mobilfeedback):
+    A) Maskinradens chips är nu BUTTONS (inte <a>) – iOS långtrycks-
+    förhandsvisning på länkar kunde sluka 3-sekundersgesten; klick
+    navigerar via data-href som förr, håll 3 sek = verifiera.
+    B) "Ej bredare än skärm": html/body får overflow-x:clip (stoppar
+    sidledsscroll UTAN att bryta sticky-nav, till skillnad från
+    hidden) + jästkonverteringen "(≈ 3 g torrjäst)" bryter till egen
+    rad i måttkolumnen i stället för att spränga tabellen. Centralt
+    i site.js → gäller alla sidor.
+    C) "Om det är en limpa ska det ej kallas fralla": portions-
+    panelen på brödrecept har växeln "Bakas som: [🍞 Limpa (skivor)]
+    [🥯 Styck (frallor)]" – limpa-läget räknar per skiva, styck-läget
+    per fralla; valet sparas per recept (merge-spara så inga nycklar
+    tappas); panelen byggs om direkt vid byte. Standardval som förr
+    (frall-ord i namnet → styck).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
