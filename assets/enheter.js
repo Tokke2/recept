@@ -115,8 +115,7 @@
     b.className = 'rb';
     b.id = 'rnEnh';
     b.innerHTML = '<span class="ic">🌡️</span><span class="lb">°C · dl</span>';
-    var print = document.getElementById('rnPrint');
-    bar.insertBefore(b, print || null);
+    bar.appendChild(b);   /* 🐛 punkt 174: rnPrint i Mer-trayen → insertBefore kraschade */
     paintBtn(b);
     b.addEventListener('click', function () { toggle(b); });
 

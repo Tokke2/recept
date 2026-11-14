@@ -230,7 +230,7 @@
     b.title = 'Skriv ut burketiketter (namn, datum, näring, QR till receptet)';
     b.innerHTML = '<span class="ic">🏷️</span><span class="lb">Etiketter</span>';
     var share = document.getElementById('rnShare');
-    bar.insertBefore(b, share ? share.nextSibling : null);
+    bar.appendChild(b);   /* punkt 174: konsekvent – observern sorterar till Mer-trayen */
     b.addEventListener('click', oppna);
   })();
 })();

@@ -143,9 +143,10 @@
       btn.id = 'rnEdit';
       btn.title = 'Redigera receptet';
       btn.innerHTML = '<span class="ic">✏️</span><span class="lb">Redigera</span>';
-      // Lägg före Skriv ut-knappen
-      var printBtn = document.getElementById('rnPrint');
-      rnav.insertBefore(btn, printBtn || null);
+      /* 🐛 punkt 174 (autofelrapport iPhone 2026-11-14): rnPrint bor nu
+         i Mer-trayen (punkt 163) → insertBefore(bar, rnPrint) kastade
+         NotFoundError. appendChild – observern sorterar in i trayen. */
+      rnav.appendChild(btn);
       btn.addEventListener('click', requestEdit);
       return true;
     }

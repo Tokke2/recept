@@ -3153,6 +3153,18 @@ data i json/, ALDRIG per receptfil.
     bröd missade hela växeln; nu frall/bull/boll (köttbullar
     undantagna) – AF-bröd som görs till frallor täcks överallt.
 
+174. 🐛 MER-TRAY-REGRESSIONEN — ✔️ KLAR (2026-11-14, FÅNGAD AV
+    AUTOFELRAPPORTEN från en iPhone-besökare – systemet fungerar!):
+    punkt 163 flyttade Skriv ut m.fl. in i Mer-trayen, men
+    redigera.js/enheter.js/skala.js gjorde insertBefore(bar,
+    rnPrint-referens) → NotFoundError (referensen är inte längre
+    direkt barn till raden) → ✏️/°C·dl/⚖️-knapparna försvann på
+    receptsidor. Fix: appendChild i alla fyra modulerna (även
+    etikett.js för konsekvens) – MutationObservern sorterar ändå
+    automatiskt in allt i trayen. LÄRDOM inskriven: moduler får
+    ALDRIG positionera mot syskonknappar i mk-rnav – appendChild
+    gäller, trayen äger ordningen.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

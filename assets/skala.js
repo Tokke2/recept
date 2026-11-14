@@ -229,9 +229,7 @@
     b.id = 'rnSkala';
     b.title = 'Skala satsen (×2, egen faktor eller efter din skörd)';
     b.innerHTML = '<span class="ic">⚖️</span><span class="lb">Skala</span>';
-    var enh = document.getElementById('rnEnh');
-    var print = document.getElementById('rnPrint');
-    bar.insertBefore(b, enh || print || null);
+    bar.appendChild(b);   /* 🐛 punkt 174: referensknapparna bor i Mer-trayen → insertBefore kraschade */
     b.addEventListener('click', oppna);
   })();
   /* ============================================================
