@@ -456,3 +456,7 @@
 **2026-11-13**
 
 | sitemap.xml | 🗺️ omgenererad (50 adresser) |
+
+**2026-11-14**
+
+| sitemap.xml | 🗺️ omgenererad (50 adresser) |
