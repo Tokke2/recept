@@ -26,7 +26,10 @@
       "fiber": 3.6,
       "lank": "https://www.willys.se/produkt/Majsmjol-Finmalet-100272483_ST",
       "kalla": "willys.se (jamforpris kr/kg)",
-      "uppdaterad": "2026-11-08"
+      "uppdaterad": "2026-11-08",
+      "alias": [
+        "Majsmjöl finmalt"
+      ]
     },
     {
       "id": "whey80",
@@ -87,10 +90,7 @@
       "fiber": 0,
       "lank": "https://www.willys.se/produkt/Turkisk-Yoghurt-10procent-100486886_ST",
       "kalla": "willys.se (jamforpris kr/kg)",
-      "uppdaterad": "2026-11-08",
-      "alias": [
-        "Matyoghurt 10%"
-      ]
+      "uppdaterad": "2026-11-08"
     },
     {
       "id": "margarin",
