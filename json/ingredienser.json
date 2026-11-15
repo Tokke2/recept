@@ -87,7 +87,10 @@
       "fiber": 0,
       "lank": "https://www.willys.se/produkt/Turkisk-Yoghurt-10procent-100486886_ST",
       "kalla": "willys.se (jamforpris kr/kg)",
-      "uppdaterad": "2026-11-08"
+      "uppdaterad": "2026-11-08",
+      "alias": [
+        "Matyoghurt 10%"
+      ]
     },
     {
       "id": "margarin",
