@@ -466,3 +466,11 @@
 | recept/brod/snabba-frallor-bakmaskin.html | 📝 meta description ur receptets egna metadata (steg12) |
 | sitemap.xml | 🗺️ omgenererad (50 adresser) |
 | json/recept-index.json | 📁 omgenererad (36 recept) |
+
+**2026-11-15**
+
+| ostfyllda-frallor-bakmaskin.html | ⚡ energidata skapad: clatronic-bba3774 90 min, cosori-twinfry-10l 14 min, ninja-af500eucp 16 min |
+| recept/deg/ostfyllda-frallor-bakmaskin.html | 🍽️ recept:portioner "8 frallor" ur receptets text (steg11) |
+| recept/deg/ostfyllda-frallor-bakmaskin.html | 📝 meta description ur receptets egna metadata (steg12) |
+| sitemap.xml | 🗺️ omgenererad (51 adresser) |
+| json/recept-index.json | 📁 omgenererad (37 recept) |

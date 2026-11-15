@@ -355,6 +355,23 @@
     "min": 12,
     "moment": "Steg 13 (🤖 auto ur receptets meta)"
    }
+  ],
+  "ostfyllda-frallor-bakmaskin.html": [
+   {
+    "maskin": "clatronic-bba3774",
+    "min": 90,
+    "moment": "Steg 1 (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "cosori-twinfry-10l",
+    "min": 14,
+    "moment": "Steg 13 (🤖 auto ur receptets meta)"
+   },
+   {
+    "maskin": "ninja-af500eucp",
+    "min": 16,
+    "moment": "Steg 16 (🤖 auto ur receptets meta)"
+   }
   ]
  }
 }
