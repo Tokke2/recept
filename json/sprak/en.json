@@ -3290,7 +3290,12 @@
   "Ny PIN (4–20 tecken, specialtecken OK)": "New PIN (4-20 characters, special characters OK)",
   "Välj en ny PIN (4–20 tecken – specialtecken går bra).": "Choose a new PIN (4-20 characters - special characters are fine).",
   "⚠️ Kunde inte spara – försök igen.": "⚠️ Could not save - try again.",
-  "⚠️ Skriv eller diktera något först!": "⚠️ Write or dictate something first!"
+  "⚠️ Skriv eller diktera något först!": "⚠️ Write or dictate something first!",
+  "Snabb limpa – Bakmaskin": "Quick loaf - Baking machine",
+  "Snabb limpa – Bakmaskin. Snabb limpa: degen knådas och jäser i bakmaskinen, formas och gräddas i bakmaskinen (eller som bitar i airfryer). Klar på…": "Quick loaf - Baking machine. Quick loaf: the dough is kneaded and raised in the baking machine, shaped and baked in the baking machine (or as pieces in the air fryer). Ready for…",
+  "Snabb limpa: degen knådas och jäser i bakmaskinen, formas och gräddas i bakmaskinen (eller som bitar i airfryer). Klar på drygt 2 h.": "Quick loaf: the dough is kneaded and raised in the baking machine, shaped and baked in the baking machine (or as pieces in the air fryer). Ready in just over 2 hours.",
+  "🍞 Snabb limpa – Bakmaskin": "🍞 Quick loaf - Baking machine",
+  "🍞 Snabb limpa – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🍞 Quick loaf - Baking machine - Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | My Machine Kitchen"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3300,6 +3305,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3289,
+ "_auto_genererade": 3294,
  "_senast_robot": "2026-11-15"
 }
