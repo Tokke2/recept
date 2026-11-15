@@ -3224,6 +3224,46 @@ data i json/, ALDRIG per receptfil.
     ALDRIG själva avgöra limpa vs frallor – ägarens order styr via
     namn/metas, robotarna verkställer (sortering/titel/description).
 
+179. 🍞/🥯 DUBBELVERIFIERING + ⏳ AF-TIDER + 🌟 OVERIF-LISTA +
+    🎤 DIKTERA RECEPT — ✔️ KLAR (2026-11-15, användarens storder):
+    A) ALLA brödrecept (brödord i namn/taggar/titel, köttbullar
+    undantagna) visar i gräddningsrutorna: "Går att baka som limpa
+    ELLER frallor – degen verifieras en gång, gräddningen per
+    variant" + statusrad 🍞 Limpa ✅/⏳ · 🥯 Frallor ✅/⏳ + separata
+    verifieringsknappar per variant. Metanycklar: id#limpa /
+    id#fralla (legacy id räknas som limpa); mk-aftid-rader per
+    variant med 🍞/🥯-prefix; degrutor oförändrade (en ✅).
+    Toppchipsens ✅ tänds av valfri nyckel. B) AF-REGELN: brödrecepts
+    AF-gräddningsrutor med NOLL verifierade varianter döljer
+    programmets förinställda tid/temp runtime ("⏳ tid & temp sätts
+    vid admin-verifiering") – ägarens original återställs av
+    redigera.js vid sparning (data-mk-orig) och röjs aldrig i filen.
+    C) Adminpanelen listar alla OVERIFIERADE recept (läser metas
+    live): "Helt overifierade" + "Delvis (✅ finns, 🌟 saknas)" med
+    länkar. D) nytt-recept.html: 🎤 Diktera receptet-knapp (sv-SE)
+    rakt in i inklistringsfältet. .mk-brodstatus i städlistan.
+
+180. 👕 MERCH-SIDA (användarens fråga 2026-11-15): utreds/byggs på
+    order – rekommenderad väg UTAN lager/backend: Ko-fi Shop
+    (finns redan konto tokke2) eller Spreadshirt/Printful-spegel
+    med loggan; sidan merch.html länkar enbart ut (inga påhittade
+    priser – hämtas när butiken skapats). Vänta tills trafiken
+    bär? Ägarens beslut.
+
+181. 🧭 HOPP-PILLS PÅ RECEPTSIDOR (designrundans B, användarens
+    "enklare navigering – funkar det?"): [🧾 Ingredienser]
+    [🥣 Gör så här] [💰 Kalkyl] [💬 Kommentarer] under rubriken,
+    mjukscroll. Nästa naturliga navigeringsvinst.
+
+182. 🗣️ SIRI-GENVÄGAR & APP-STYRNING (användarens fråga): riktig
+    Siri-integration kräver native app – MEN: A) manifest-
+    genvägarna (154) ger långtrycksval; B) dokumentationssida
+    "Styr med Siri": iOS Genvägar-appen → Öppna URL (kockläge/
+    recept) → "Hej Siri, starta kockläget" fungerar idag;
+    C) sajtens EGEN röststyrning finns redan i kockläget och
+    nytt-recept/verifieringen (179/175). Byggs som guide-sektion
+    på order.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

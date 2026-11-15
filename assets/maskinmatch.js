@@ -128,6 +128,11 @@
     return null;
   }
   async function markeraTestad(maskin) {
+    /* 🍞/🥯 VARIANT (punkt 179): brödrecepts gräddning verifieras per
+       variant – metanyckeln blir id#limpa / id#fralla. Deg = utan variant. */
+    var variant = maskin.variant || '';
+    var vNyckel = maskin.id + (variant ? '#' + variant : '');
+    var vEtikett = variant === 'limpa' ? '🍞 LIMPA-gräddningen' : variant === 'fralla' ? '🥯 FRALL-gräddningen' : 'receptet';
     if (!window.__MK_SPARA) {
       if (window.__MK_TOAST) window.__MK_TOAST('⚠️ Spara-modulen kunde inte laddas – ladda om sidan.');
       return;
@@ -143,7 +148,7 @@
     bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:320;display:flex;align-items:center;justify-content:center;padding:16px;';
     bg.innerHTML =
       '<div style="background:#fff;border-radius:16px;max-width:440px;width:100%;padding:24px 26px;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
-        '<h3 style="margin:0 0 4px;">✅ Testat receptet i ' + maskin.namn + '?</h3>' +
+        '<h3 style="margin:0 0 4px;">✅ Testat ' + vEtikett + ' i ' + maskin.namn + '?</h3>' +
         '<p style="font-size:.85rem;color:#5f6e70;margin:0 0 12px;">Ange program och tid som funkade i just DENNA maskin (kan skilja sig från receptets) – visas grönt för alla besökare.</p>' +
         '<label style="display:block;font-size:.75rem;font-weight:700;color:#5f6e70;text-transform:uppercase;margin-bottom:4px;">Program &amp; tid som lyckades</label>' +
         '<input id="mt-prog" type="text" style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.92rem;font-family:inherit;" ' +
@@ -228,7 +233,7 @@
           vand = !!(bg.querySelector('#mt-vand') || {}).checked;
         }
         var note = '';   /* 📝 instruktioner läggs i STEG 2 (punkt 176) */
-        alla[maskin.id] = prog + (vand ? ' · vänd halvvägs' : '') + ' (verifierad ' + idag + ')';
+        alla[vNyckel] = prog + (vand ? ' · vänd halvvägs' : '') + ' (verifierad ' + idag + ')';
         var inneh = Object.keys(alla).map(function (k) { return k + ': ' + alla[k]; }).join(' | ');
         var rad = '<meta name="recept:testad" content="' + inneh.replace(/"/g, '&quot;') + '">\n';
         if (metaRe.test(txt)) txt = txt.replace(metaRe, rad);
@@ -240,16 +245,16 @@
         /* ⏱️/📝 raden i INSTRUKTIONERNA vid maskinens ⚙️-ruta (punkt 141+175):
            AF: tid/vändning/notering · övriga maskiner: notering */
         if ((arAF && (tidMin || vand || note)) || (!arAF && note)) {
-          var radTxt = (arAF
+          var radTxt = (variant === 'limpa' ? '🍞 ' : variant === 'fralla' ? '🥯 ' : '') + (arAF
             ? '⏱️ <b>' + maskin.namn + ':</b> ' + (tidMin ? tidMin + ' min' : prog) +
               (vand ? ' · 🔄 vänd/skaka halvvägs' : '') + (note ? ' · 📝 ' + note : '')
             : '📝 <b>' + maskin.namn + ':</b> ' + note) +
             ' <span style="color:#5f6e70;font-size:.85em;">(verifierad ' + idag + ')</span>';
-          var divNy = '<div class="mk-aftid" data-mid="' + maskin.id + '" ' +
+          var divNy = '<div class="mk-aftid" data-mid="' + vNyckel + '" ' +
             'style="margin-top:8px;padding:8px 12px;background:#eafaf1;border:1.5px solid #27ae60;' +
             'border-radius:9px;font-size:.9rem;">' + radTxt + '</div>';
           /* bort med ev. gammal rad för samma maskin */
-          txt = txt.replace(new RegExp('\\n?<div class="mk-aftid" data-mid="' + maskin.id + '"[\\s\\S]*?</div>', 'g'), '');
+          txt = txt.replace(new RegExp('\\n?<div class="mk-aftid" data-mid="' + vNyckel + '"[\\s\\S]*?</div>', 'g'), '');
           /* in efter maskinens ⚙️-rubrik (h3 som innehåller modellord/varumärke) */
           var nycklar = [String(mInfo.varumarke || ''), String(mInfo.modellnamn || '').split(/\s+/)[0]]
             .filter(function (x) { return x.length >= 3; });
@@ -303,13 +308,13 @@
         async function sparaNote(txt2) {
           var t2 = await window.__MK_SPARA.load('recept/' + fsokvag);
           if (!t2) return false;
-          t2 = t2.replace(new RegExp('\\n?<div class="mk-aftid" data-mid="' + maskin.id + '"[\\s\\S]*?</div>', 'g'), '');
-          var radTxt2 = (arAF
+          t2 = t2.replace(new RegExp('\\n?<div class="mk-aftid" data-mid="' + vNyckel + '"[\\s\\S]*?</div>', 'g'), '');
+          var radTxt2 = (variant === 'limpa' ? '🍞 ' : variant === 'fralla' ? '🥯 ' : '') + (arAF
             ? '⏱️ <b>' + maskin.namn + ':</b> ' + (tidMin ? tidMin + ' min' : prog) +
               (vand ? ' · 🔄 vänd/skaka halvvägs' : '') + ' · 📝 ' + txt2
             : '📝 <b>' + maskin.namn + ':</b> ' + txt2) +
             ' <span style="color:#5f6e70;font-size:.85em;">(verifierad ' + idag + ')</span>';
-          var divNy2 = '<div class="mk-aftid" data-mid="' + maskin.id + '" ' +
+          var divNy2 = '<div class="mk-aftid" data-mid="' + vNyckel + '" ' +
             'style="margin-top:8px;padding:8px 12px;background:#eafaf1;border:1.5px solid #27ae60;' +
             'border-radius:9px;font-size:.9rem;">' + radTxt2 + '</div>';
           var tr2 = -1, h3Re2 = /<h3>[^<]*/g, m32;
@@ -401,6 +406,14 @@
     }
     PARK = machines;
     var testade = machines.filter(arKand);
+    /* 🍞 BRÖDSIDA? (punkt 179) – namn/taggar/titel, köttbullar undantagna */
+    var brodTxt = ((document.querySelector('meta[name="recept:namn"]') || {}).content || '') + ' ' +
+      ((document.querySelector('meta[name="recept:taggar"]') || {}).content || '') + ' ' + document.title;
+    var AR_BROD = /br[öo]d|limpa|toast|baguette|frall|bull/i.test(brodTxt) && !/köttbull|br[öo]dkrutong/i.test(brodTxt);
+    function harNyckel(id) {
+      for (var k in manTest) if (k === id || k.indexOf(id + '#') === 0) return true;
+      return false;
+    }
     var testadeTyper = {};
     testade.forEach(function (m) { var t = typKey(m); if (t) testadeTyper[t] = m; });
 
@@ -440,7 +453,7 @@
       var chips = testade.map(function (m) {
         var n = ((m.varumarke || '') + ' ' + (m.modellnamn || '')).trim() || m.namn || m.id;
         if (window.__MK_MED_TYP) n = window.__MK_MED_TYP(n, m.typ);
-        var klar = manTest[m.id] || (receptVerifierad && testade.length < 2);
+        var klar = harNyckel(m.id) || (receptVerifierad && testade.length < 2);
         var status = klar
           ? '<span title="Admin har verifierat receptet i denna maskin" style="color:#27ae60;font-weight:900;">✅</span>'
           : '<span title="Ej verifierad av admin ännu" style="opacity:.75;">⏳</span>';
@@ -568,6 +581,55 @@
         if (!traff) return;
         var tid = manTest[m.id] || '';
         var box = h3.closest('.machine-step');
+        /* ============ 🍞/🥯 BRÖDGRÄDDNING (punkt 179): egen verifiering
+           per variant – limpa OCH frallor; degen som förr.
+           + AF-regeln: otestad AF-gräddning döljer förinställd tid/temp. */
+        var arGradd = /grädd|bake|baka|air ?fry|rost/i.test(txt);
+        if (AR_BROD && arGradd) {
+          var tidL = manTest[m.id + '#limpa'] || manTest[m.id] || '';
+          var tidF = manTest[m.id + '#fralla'] || '';
+          if (/airfryer/i.test(String(m.typ || '')) && !tidL && !tidF) {
+            var progEl = h3.querySelector('.prog');
+            if (progEl && !progEl.getAttribute('data-mk-orig')) {
+              progEl.setAttribute('data-mk-orig', progEl.textContent);
+              progEl.textContent = '⏳ tid & temp sätts vid admin-verifiering';
+            }
+          }
+          if (box && !box.querySelector('.mk-brodstatus')) {
+            var st = document.createElement('div');
+            st.className = 'mk-brodstatus no-print';
+            st.style.cssText = 'margin-top:8px;background:#fdf6ee;border:1px solid #e0d9cd;border-radius:9px;padding:7px 12px;font-size:.8rem;line-height:1.6;color:#5f6e70;';
+            st.innerHTML = '🍞/🥯 Går att baka som <b>limpa ELLER frallor</b> – degen verifieras en gång, gräddningen per variant.<br>' +
+              '🍞 Limpa: ' + (tidL ? '<b style="color:#27ae60;">✅ ' + tidL.replace(/</g, '&lt;') + '</b>' : '⏳ ej verifierad') +
+              ' · 🥯 Frallor: ' + (tidF ? '<b style="color:#27ae60;">✅ ' + tidF.replace(/</g, '&lt;') + '</b>' : '⏳ ej verifierad');
+            box.appendChild(st);
+            var progF = h3.textContent.split('·').slice(1).join('·').replace(/\s+/g, ' ').trim();
+            [['limpa', '🍞 Verifiera LIMPA', tidL], ['fralla', '🥯 Verifiera FRALLOR', tidF]].forEach(function (v) {
+              if (v[2]) return;
+              var kb = document.createElement('button');
+              kb.className = 'mk-verifdel no-print';
+              kb.textContent = '✅ ' + v[1];
+              kb.style.cssText = 'display:inline-block;margin:8px 6px 0 0;background:transparent;color:#5f6e70;border:1.5px dashed #b0bec5;border-radius:999px;padding:4px 12px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit;';
+              (function (mm3, vv) {
+                kb.onclick = function () {
+                  markeraTestad({ id: mm3.id, variant: vv,
+                    namn: ((mm3.varumarke || '') + ' ' + (mm3.modellnamn || '')).trim() || mm3.namn || mm3.id,
+                    forslag: progF });
+                };
+              })(m, v[0]);
+              box.appendChild(kb);
+            });
+            if (tidL && tidF) {
+              var bock2 = document.createElement('span');
+              bock2.className = 'mk-verifmask no-print';
+              bock2.title = 'Båda varianterna verifierade';
+              bock2.textContent = '✓';
+              bock2.style.cssText = 'display:inline-flex;width:26px;height:26px;background:#27ae60;color:#fff;border-radius:50%;align-items:center;justify-content:center;font-size:.95rem;font-weight:900;margin-right:8px;vertical-align:middle;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);line-height:1;flex-shrink:0;';
+              h3.insertBefore(bock2, h3.firstChild);
+            }
+          }
+          return;
+        }
         /* 🛡️ grindvakten + 🧩 PER MASKINDEL (användarens regel
            2026-10-31: "om recept har fler maskiner ska man verifiera
            var maskindel"): har receptet FLERA egna maskiner räcker

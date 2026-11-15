@@ -180,7 +180,7 @@
 
 <div class="card" style="--tc:#00897b;">
   <h2><span class="knr" style="background:#00897b;">1</span>📋 Klistra in receptet <span style="font-weight:400;font-size:.85rem;color:var(--muted);">(text eller HTML-kod – spelar ingen roll)</span></h2>
-  <div style="margin:4px 0 10px;"><button type="button" onclick="openImport()" style="background:#f0ebe3;color:#2c3e50;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit;">📥 Har du redan en färdig receptfil? Importera (.html/.pdf)</button></div>
+  <div style="margin:4px 0 10px;display:flex;gap:8px;flex-wrap:wrap;"><button type="button" id="rostRecept" style="background:#2c3e50;color:#fff;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit;display:none;">🎤 Diktera receptet</button><button type="button" onclick="openImport()" style="background:#f0ebe3;color:#2c3e50;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit;">📥 Har du redan en färdig receptfil? Importera (.html/.pdf)</button></div>
   <textarea id="src" placeholder="Våfflor
 
 Ingredienser
@@ -1135,6 +1135,31 @@ function tomFormular(bannerHtml) {
   try { document.getElementById('src').focus(); } catch (e) {}
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+</script>
+<script>
+/* 🎤 DIKTERA RECEPTET (punkt 179): Web Speech sv-SE rakt in i
+   inklistringsfältet – skriv/rätta fritt, analysera som vanligt. */
+(function () {
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var btn = document.getElementById('rostRecept');
+  if (!SR || !btn) return;
+  btn.style.display = '';
+  var rec = null;
+  btn.onclick = function () {
+    if (rec) { try { rec.stop(); } catch (e) {} rec = null; btn.style.background = '#2c3e50'; btn.textContent = '🎤 Diktera receptet'; return; }
+    rec = new SR();
+    rec.lang = 'sv-SE'; rec.continuous = true; rec.interimResults = false;
+    var ta = document.getElementById('src');
+    rec.onresult = function (e) {
+      for (var i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) ta.value = (ta.value + ' ' + e.results[i][0].transcript).trim();
+      }
+    };
+    rec.onerror = rec.onend = function () { if (rec) { rec = null; btn.style.background = '#2c3e50'; btn.textContent = '🎤 Diktera receptet'; } };
+    btn.style.background = '#c0392b'; btn.textContent = '⏹ Stoppa dikteringen';
+    try { rec.start(); } catch (e) { rec = null; }
+  };
+})();
 </script>
 <script src="assets/site.js"></script>
 

@@ -65,6 +65,12 @@
   </div>
 
   <div class="card">
+    <h2>🌟 Overifierade recept</h2>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">Recept helt utan admin-verifiering (varken 🌟 eller ✅-maskindelar) – din att-göra-lista i köket.</p>
+    <div id="overifLista" style="font-size:.9rem;line-height:1.9;">⏳ Läser recepten...</div>
+  </div>
+
+  <div class="card">
     <h2>🍟 AF-tillbehör (det du faktiskt använder)</h2>
     <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">Per airfryer – visas på maskinens kort i maskindatabasen.</p>
     <select id="afMaskin" style="width:100%;padding:11px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.95rem;font-family:inherit;margin-bottom:8px;"></select>
@@ -108,7 +114,33 @@
     document.getElementById('panel').style.display = '';
     visaStatus();
     laddaAF();
+    laddaOverif();
   };
+
+  /* 🌟 OVERIFIERADE (punkt 179): läser alla recepts metas live */
+  async function laddaOverif() {
+    var ut = el('overifLista');
+    try {
+      var ix = await (await fetch('json/recept-index.json', { cache: 'no-store' })).json();
+      var filer = (ix.recept || []).map(function (r) { return r.fil; }).filter(function (f) { return /\.html?$/i.test(f); });
+      var rows = await Promise.all(filer.map(async function (f) {
+        try {
+          var t = await (await fetch('recept/' + f.split('/').map(encodeURIComponent).join('/'), { cache: 'no-store' })).text();
+          var namn = (t.match(/recept:namn" content="([^"]*)"/) || [0, f])[1];
+          var verif = /recept:verifierad" content="\d/.test(t);
+          var testad = /recept:testad" content="./.test(t);
+          return { f: f, namn: namn, verif: verif, testad: testad };
+        } catch (e) { return null; }
+      }));
+      var over = rows.filter(function (r) { return r && !r.verif && !r.testad; });
+      var delvis = rows.filter(function (r) { return r && !r.verif && r.testad; });
+      ut.innerHTML =
+        (over.length ? '<b style="color:#c0392b;">⏳ Helt overifierade (' + over.length + '):</b><br>' +
+          over.map(function (r) { return '• <a href="recept/' + r.f.split('/').map(encodeURIComponent).join('/') + '" style="color:var(--dark);">' + r.namn + '</a>'; }).join('<br>') : '🎉 Inga helt overifierade!') +
+        (delvis.length ? '<br><br><b style="color:#e67e22;">🔶 Delvis (✅ finns, 🌟 saknas – ' + delvis.length + '):</b><br>' +
+          delvis.map(function (r) { return '• <a href="recept/' + r.f.split('/').map(encodeURIComponent).join('/') + '" style="color:var(--dark);">' + r.namn + '</a>'; }).join('<br>') : '');
+    } catch (e) { ut.textContent = '⚠️ Kunde inte läsa recepten: ' + e.message; }
+  }
 
   /* ===== 🍟 AF-TILLBEHÖR (punkt 143): per airfryer-maskin, sparas i
      maskinens json-fil (tillbehor: [...]) → syns i maskindatabasen ===== */
