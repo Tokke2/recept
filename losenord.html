@@ -71,6 +71,19 @@
   </div>
 
   <div class="card">
+    <h2>🧩 Recept med omatchade ingredienser</h2>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">Rader som inte hittar någon vara i ingrediensdatabasen (= ingen kalkyl/näring). Fixas på receptsidan via "🔽 Matcha mot..." eller genom att lägga in varan i databasen.</p>
+    <div id="omatchLista" style="font-size:.9rem;line-height:1.8;">⏳ Skannar recepten...</div>
+  </div>
+
+  <div class="card">
+    <h2>📈 Besöksstatistik</h2>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">Sidvisningar (inte unika personer) · 1 räkning per sida och besökssession · räknas sedan 2026-11-15 · endast tokke2.github.io.</p>
+    <div class="rad"><span>Totalt antal sidvisningar</span><b id="besokTotal">⏳</b></div>
+    <div id="besokLista" style="font-size:.9rem;line-height:1.8;margin-top:8px;">⏳ Hämtar räknarna...</div>
+  </div>
+
+  <div class="card">
     <h2>🍟 AF-tillbehör (det du faktiskt använder)</h2>
     <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">Per airfryer – visas på maskinens kort i maskindatabasen.</p>
     <select id="afMaskin" style="width:100%;padding:11px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.95rem;font-family:inherit;margin-bottom:8px;"></select>
@@ -230,5 +243,151 @@
 </script>
 <script src="assets/spara.js"></script>
 <script src="assets/site.js"></script>
+<script>
+/* ============================================================
+   🧩 OMATCHADE INGREDIENSER + 📈 BESÖKSSTATISTIK (SPEC-punkt 227)
+   Självständigt block: väntar tills panelen låsts upp (pollning på
+   #panel) och kör sedan båda laddarna EN gång.
+   OBS: norm()/matchAll() är en SPEGEL av kalkyl.js – ändras
+   matchningen där måste den ändras HÄR också (och tvärtom).
+   ============================================================ */
+(function () {
+  'use strict';
+  var API = 'https://abacus.jasoncameron.dev', NS = 'mitt-maskinkok-tokke2';
+  var startad = false;
+  var iv = setInterval(function () {
+    var p = document.getElementById('panel');
+    if (!p || p.style.display === 'none' || startad) return;
+    startad = true; clearInterval(iv);
+    laddaOmatchade(); laddaBesok();
+  }, 600);
+
+  /* --- SPEGEL av kalkyl.js norm/matchAll --- */
+  function norm(s) {
+    return String(s).toLowerCase()
+      .replace(/\([^)]*\)/g, '')
+      .replace(/å/g, 'a').replace(/ä/g, 'a').replace(/ö/g, 'o')
+      .replace(/[^a-z0-9%]+/g, ' ').trim();
+  }
+  function matchAll(namn, db) {
+    var n = norm(namn);
+    if (!n) return [];
+    var bestScore = 0, list = [];
+    for (var i = 0; i < db.length; i++) {
+      var d = norm(db[i].namn);
+      var score = 0;
+      var alias = db[i].alias || [];
+      for (var ai = 0; ai < alias.length; ai++) {
+        if (norm(alias[ai]) === n) { score = 100; break; }
+      }
+      if (!score) {
+        if (d === n) score = 100;
+        else if (n.indexOf(d) === 0 || d.indexOf(n) === 0) score = 80;
+        else {
+          var dw = d.split(' ').filter(function (w) { return w.length > 2; });
+          var hits = dw.filter(function (w) { return (' ' + n + ' ').indexOf(' ' + w + ' ') !== -1; }).length;
+          if (dw.length && hits === dw.length) score = 60;
+          else if (hits >= 2) score = 40;
+          else if (hits === 1 && dw.length === 1) score = 30;
+        }
+      }
+      if (score > bestScore) { bestScore = score; list = [db[i]]; }
+      else if (score === bestScore && score >= 30) list.push(db[i]);
+    }
+    return bestScore >= 30 ? list : [];
+  }
+  function radNamn(td) {
+    var c = td.cloneNode(true);
+    c.querySelectorAll('select, button, .mg, .mk-saknas, .mk-prodlank, .drop, .mk-rowbtn, .mk-ingsub, .no-print').forEach(function (x) { x.remove(); });
+    return c.textContent.replace(/[✕✖]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function ingTabell(doc) {
+    var t = doc.querySelector('.mk-ing2');
+    if (t) return t;
+    var cards = doc.querySelectorAll('.card');
+    for (var i = 0; i < cards.length; i++) {
+      var h = cards[i].querySelector('h2');
+      if (h && /ingrediens/i.test(h.textContent)) return cards[i].querySelector('table');
+    }
+    return null;
+  }
+
+  async function laddaOmatchade() {
+    var ut = document.getElementById('omatchLista');
+    try {
+      var dbj = await (await fetch('json/ingredienser.json', { cache: 'no-store' })).json();
+      var db = dbj.ingredienser || dbj;
+      var ix = await (await fetch('json/recept-index.json', { cache: 'no-store' })).json();
+      var filer = (ix.recept || []).map(function (r) { return r.fil; }).filter(function (f) { return /\.html?$/i.test(f); });
+      var rows = await Promise.all(filer.map(async function (f) {
+        try {
+          var t = await (await fetch('recept/' + f.split('/').map(encodeURIComponent).join('/'), { cache: 'no-store' })).text();
+          var doc = new DOMParser().parseFromString(t, 'text/html');
+          var namn = (doc.querySelector('meta[name="recept:namn"]') || {}).content || f;
+          var tbl = ingTabell(doc);
+          var saknas = [];
+          if (tbl) tbl.querySelectorAll('tr').forEach(function (tr) {
+            if (tr.classList.contains('total')) return;
+            var tds = tr.querySelectorAll('td');
+            if (tds.length < 2) return;
+            var rn = radNamn(tds[0]);
+            if (!rn || /^total/i.test(rn)) return;
+            if (!matchAll(rn, db).length) saknas.push(rn);
+          });
+          return { f: f, namn: namn, saknas: saknas };
+        } catch (e) { return null; }
+      }));
+      var med = rows.filter(function (r) { return r && r.saknas.length; });
+      ut.innerHTML = med.length
+        ? '<b style="color:#c0392b;">' + med.length + ' recept behöver matchning:</b><br>' +
+          med.map(function (r) {
+            return '• <a href="recept/' + r.f.split('/').map(encodeURIComponent).join('/') + '" style="color:var(--dark);">' + r.namn + '</a> → ' +
+              r.saknas.map(function (x) { return '<span style="background:#fdecea;color:#c0392b;border-radius:999px;padding:1px 9px;font-size:.8rem;font-weight:700;">' + x.replace(/</g, '&lt;') + '</span>'; }).join(' ');
+          }).join('<br>')
+        : '🎉 Alla ingredienser i alla recept är matchade mot databasen!';
+    } catch (e) { ut.textContent = '⚠️ Kunde inte skanna: ' + e.message; }
+  }
+
+  async function hamta(key) {
+    try {
+      var r = await fetch(API + '/get/' + NS + '/' + key);
+      if (!r.ok) return 0;
+      return (await r.json()).value || 0;
+    } catch (e) { return 0; }
+  }
+  async function laddaBesok() {
+    var ut = document.getElementById('besokLista');
+    var slug = window.__MK_BESOK_SLUG || function (x) { return String(x); };
+    try {
+      document.getElementById('besokTotal').textContent = await hamta('besok-total');
+      var ix = await (await fetch('json/recept-index.json', { cache: 'no-store' })).json();
+      var filer = (ix.recept || []).map(function (r) { return r.fil; }).filter(function (f) { return /\.html?$/i.test(f); });
+      var rec = await Promise.all(filer.map(async function (f) {
+        return {
+          f: f,
+          namn: f.split('/').pop().replace(/\.html?$/i, '').replace(/-/g, ' '),
+          antal: await hamta('besok-' + slug('recept/' + f))
+        };
+      }));
+      rec.sort(function (a, b) { return b.antal - a.antal; });
+      var SIDOR = [['start', 'Startsidan'], ['recept', 'Receptlistan'], ['maskindatabas', 'Maskindatabasen'],
+        ['ingredienser', 'Ingredienser'], ['matratter', 'Maträtter'], ['nytt-recept', 'Nytt recept'],
+        ['kopguide', 'Köpguiden'], ['stod', 'Stödsidan'], ['status', 'Status'], ['forslag', 'Förslagslådan']];
+      var sid = await Promise.all(SIDOR.map(async function (s2) { return { namn: s2[1], antal: await hamta('besok-' + s2[0]) }; }));
+      sid.sort(function (a, b) { return b.antal - a.antal; });
+      var medalj = ['🥇', '🥈', '🥉'];
+      ut.innerHTML =
+        '<b>🏆 Mest besökta recept:</b><br>' +
+        (rec.some(function (r) { return r.antal > 0; })
+          ? rec.slice(0, 3).map(function (r, i) { return medalj[i] + ' <a href="recept/' + r.f.split('/').map(encodeURIComponent).join('/') + '" style="color:var(--dark);">' + r.namn + '</a> – <b>' + r.antal + '</b>'; }).join('<br>')
+          : '<span style="color:var(--muted);">Inga räknade receptbesök ännu – räknaren startade i dag.</span>') +
+        '<br><br><b>📖 Hela receptstatistiken:</b><br>' +
+        rec.map(function (r) { return r.namn + ' – <b>' + r.antal + '</b>'; }).join('<br>') +
+        '<br><br><b>📄 Sidorna:</b><br>' +
+        sid.map(function (s2) { return s2.namn + ' – <b>' + s2.antal + '</b>'; }).join('<br>');
+    } catch (e) { ut.textContent = '⚠️ Kunde inte hämta räknarna: ' + e.message; }
+  }
+})();
+</script>
 </body>
 </html>

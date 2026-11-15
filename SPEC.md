@@ -3545,6 +3545,30 @@ data i json/, ALDRIG per receptfil.
     kockläget. jsdom-integrationstestat (riktiga recept.js, stubbad
     vibrate): chip = namn+mängd, noll skräp. sw v221.
 
+227. ✔️ KLAR – 📈 ADMINSTATISTIK + 🧩 OMATCHADE INGREDIENSER
+    (användarens beställning 2026-11-15): tre nya funktioner i
+    adminpanelen (losenord.html, bakom PIN-grinden).
+    A) 🧩 "Recept med omatchade ingredienser": skannar alla recept
+    live (recept-index → DOMParser → ingredienstabellen) och
+    matchar varje rad mot ingrediensdatabasen med en SPEGEL av
+    kalkyl.js norm()/matchAll() (alias=100, exakt=100, prefix=80,
+    ordöverlapp 60/40/30 – ändras kalkyl.js MÅSTE spegeln ändras,
+    kommenterat i båda). Rader utan träff listas som röda piller
+    per recept med länk.
+    B) 📈 BESÖKSRÄKNAREN (site.js): anonym sidvisningsräknare via
+    Abacus (samma API/namnrymd som betygen). Ärlighetsregler:
+    endast tokke2.github.io, 1 räkning per sida och session
+    (sessionStorage), SIDVISNINGAR inte personer (panelen skriver
+    ut det), räknas sedan 2026-11-15. Nycklar besok-total +
+    besok-<slug>; sluggen exporteras som __MK_BESOK_SLUG så
+    adminpanelen bygger EXAKT samma (paritet jsdom-testad).
+    C) 📈 Statistiksektionen: totalsiffra + 🥇🥈🥉 mest besökta
+    recept + HELA receptlistan sorterad + sidornas räknare.
+    Laddas när panelen låses upp (pollning på #panel, körs en
+    gång). 7 jsdom-tester gröna (syntax, prod-räkning, preview
+    räknar ALDRIG, slug-export, skanner, total, topplista).
+    sw v222.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

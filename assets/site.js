@@ -529,3 +529,41 @@
     }, 1500);
   });
 })();
+
+/* ============================================================
+   📈 BESÖKSRÄKNAREN (SPEC-punkt 227, användarens beställning:
+   besökarantal + mest besökta recept i adminpanelen): anonym
+   sidvisningsräknare via Abacus (samma gratis-API som betygen,
+   namnrymd mitt-maskinkok-tokke2). INGEN spårning av personer –
+   bara en siffra per sida. Ärlighetsregler:
+   · räknar ENDAST på tokke2.github.io (aldrig förhandsvisningar)
+   · 1 räkning per sida och webbläsarsession (sessionStorage)
+   · det är SIDVISNINGAR, inte unika besökare – adminpanelen
+     skriver ut det klartext.
+   Nyckelformat: besok-total + besok-<slug> där sluggen byggs av
+   __MK_BESOK_SLUG (exporteras – adminpanelen MÅSTE bygga samma).
+   ============================================================ */
+(function () {
+  'use strict';
+  if (window.__MK_BESOK) return;
+  window.__MK_BESOK = true;
+  function besokSlug(p) {
+    return String(p).toLowerCase()
+      .replace(/\.html?$/, '')
+      .replace(/å/g, 'a').replace(/ä/g, 'a').replace(/ö/g, 'o')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 80) || 'start';
+  }
+  window.__MK_BESOK_SLUG = besokSlug;
+  if (location.hostname !== 'tokke2.github.io') return;   /* räkna aldrig test/preview */
+  var sida = besokSlug(decodeURIComponent(location.pathname.replace(/^\/recept\//, '')));
+  try {
+    var nyckel = 'mk-hit:' + sida;
+    if (sessionStorage.getItem(nyckel)) return;            /* 1 per session & sida */
+    sessionStorage.setItem(nyckel, '1');
+  } catch (e) {}
+  var API = 'https://abacus.jasoncameron.dev/hit/mitt-maskinkok-tokke2/';
+  try { fetch(API + 'besok-total'); } catch (e) {}
+  try { fetch(API + 'besok-' + sida); } catch (e) {}
+})();
