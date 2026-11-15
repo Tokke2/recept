@@ -158,14 +158,6 @@
           '<label style="font-size:.9rem;font-weight:700;display:flex;align-items:center;gap:7px;cursor:pointer;margin-top:18px;">' +
           '<input id="mt-vand" type="checkbox" style="width:20px;height:20px;accent-color:#27ae60;"> 🔄 Vänd/skaka halvvägs</label>' +
         '</div>' : '') +
-        /* 🎤 EGEN INSTRUKTION MED RÖST (punkt 175, användarens order):
-           diktera en notering – skrivs in vid maskinens ruta i receptet */
-        '<label style="display:block;font-size:.75rem;font-weight:700;color:#5f6e70;text-transform:uppercase;margin:12px 0 4px;">📝 Egen instruktion (valfri – syns i receptet)</label>' +
-        '<div style="display:flex;gap:8px;align-items:stretch;">' +
-          '<textarea id="mt-note" rows="2" style="flex:1;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.92rem;font-family:inherit;resize:vertical;" placeholder="t.ex. Lossa brödet direkt och kyl på galler..."></textarea>' +
-          (('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) ?
-            '<button type="button" id="mt-rost" title="Diktera med rösten (svenska) – tryck igen för att stoppa" style="width:52px;background:#2c3e50;color:#fff;border:none;border-radius:10px;font-size:1.3rem;cursor:pointer;">🎤</button>' : '') +
-        '</div>' +
         '<div style="display:flex;gap:8px;margin-top:14px;">' +
           '<button id="mt-spara" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-family:inherit;">✅ Testad &amp; lyckad!</button>' +
           '<button id="mt-avbryt" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-family:inherit;">Avbryt</button>' +
@@ -173,29 +165,30 @@
         '<div id="mt-result" style="margin-top:8px;font-size:.85rem;"></div>' +
       '</div>';
     document.body.appendChild(bg);
-    /* 🎤 diktering: sv-SE, kontinuerlig tills man trycker igen/stänger */
-    var rec = null;
-    function rostStopp() { if (rec) { try { rec.stop(); } catch (e) {} rec = null; } var rb = bg.querySelector('#mt-rost'); if (rb) { rb.style.background = '#2c3e50'; rb.textContent = '🎤'; } }
-    var rostBtn = bg.querySelector('#mt-rost');
-    if (rostBtn) rostBtn.onclick = function () {
-      if (rec) { rostStopp(); return; }
-      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      rec = new SR();
-      rec.lang = 'sv-SE';
-      rec.continuous = true;
-      rec.interimResults = false;
-      rec.onresult = function (e) {
-        var ta = bg.querySelector('#mt-note');
-        for (var i = e.resultIndex; i < e.results.length; i++) {
-          if (e.results[i].isFinal) ta.value = (ta.value + ' ' + e.results[i][0].transcript).trim();
-        }
+    /* 🎤 diktering (punkt 175/176): sv-SE, kontinuerlig tills ⏹/stängning */
+    var rec = null, rostKnapp = null;
+    function rostStopp() {
+      if (rec) { try { rec.stop(); } catch (e) {} rec = null; }
+      if (rostKnapp) { rostKnapp.style.background = '#2c3e50'; rostKnapp.textContent = '🎤'; }
+    }
+    function kopplaRost(btn, ta) {
+      rostKnapp = btn;
+      btn.onclick = function () {
+        if (rec) { rostStopp(); return; }
+        var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        rec = new SR();
+        rec.lang = 'sv-SE'; rec.continuous = true; rec.interimResults = false;
+        rec.onresult = function (e) {
+          for (var i = e.resultIndex; i < e.results.length; i++) {
+            if (e.results[i].isFinal) ta.value = (ta.value + ' ' + e.results[i][0].transcript).trim();
+          }
+        };
+        rec.onerror = rostStopp;
+        rec.onend = function () { if (rec) rostStopp(); };
+        btn.style.background = '#c0392b'; btn.textContent = '⏹';
+        try { rec.start(); } catch (e) { rostStopp(); }
       };
-      rec.onerror = rostStopp;
-      rec.onend = function () { if (rec) rostStopp(); };
-      rostBtn.style.background = '#c0392b';
-      rostBtn.textContent = '⏹';
-      try { rec.start(); } catch (e) { rostStopp(); }
-    };
+    }
     bg.querySelector('#mt-avbryt').onclick = function () { rostStopp(); bg.remove(); };
     var dn = false;
     bg.addEventListener('mousedown', function (e) { dn = (e.target === bg); });
@@ -234,9 +227,7 @@
           tidMin = String((bg.querySelector('#mt-tid') || {}).value || '').replace(/[^\d]/g, '');
           vand = !!(bg.querySelector('#mt-vand') || {}).checked;
         }
-        /* 📝 egen instruktion (punkt 175) – alla maskintyper */
-        var note = String((bg.querySelector('#mt-note') || {}).value || '').trim().slice(0, 300)
-          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        var note = '';   /* 📝 instruktioner läggs i STEG 2 (punkt 176) */
         alla[maskin.id] = prog + (vand ? ' · vänd halvvägs' : '') + ' (verifierad ' + idag + ')';
         var inneh = Object.keys(alla).map(function (k) { return k + ': ' + alla[k]; }).join(' | ');
         var rad = '<meta name="recept:testad" content="' + inneh.replace(/"/g, '&quot;') + '">\n';
@@ -296,14 +287,89 @@
         }
         var a2 = lasTestade(); a2[maskin.id] = prog;
         mEl.setAttribute('content', Object.keys(a2).map(function (k) { return k + ': ' + a2[k]; }).join(' | '));
+        /* ============ STEG 2 (punkt 176, användarens order): appen
+           frågar efter YTTERLIGARE instruktioner – två val ============ */
+        var inre = bg.firstElementChild;
+        var befNote = '';
+        function stangKlart() {
+          rostStopp();
+          bg.remove();
+          var gammal = document.getElementById('mk-maskinmatch');
+          if (gammal) gammal.remove();
+          var topp = document.getElementById('mk-maskintop');
+          if (topp) topp.remove();
+          run();
+        }
+        async function sparaNote(txt2) {
+          var t2 = await window.__MK_SPARA.load('recept/' + fsokvag);
+          if (!t2) return false;
+          t2 = t2.replace(new RegExp('\\n?<div class="mk-aftid" data-mid="' + maskin.id + '"[\\s\\S]*?</div>', 'g'), '');
+          var radTxt2 = (arAF
+            ? '⏱️ <b>' + maskin.namn + ':</b> ' + (tidMin ? tidMin + ' min' : prog) +
+              (vand ? ' · 🔄 vänd/skaka halvvägs' : '') + ' · 📝 ' + txt2
+            : '📝 <b>' + maskin.namn + ':</b> ' + txt2) +
+            ' <span style="color:#5f6e70;font-size:.85em;">(verifierad ' + idag + ')</span>';
+          var divNy2 = '<div class="mk-aftid" data-mid="' + maskin.id + '" ' +
+            'style="margin-top:8px;padding:8px 12px;background:#eafaf1;border:1.5px solid #27ae60;' +
+            'border-radius:9px;font-size:.9rem;">' + radTxt2 + '</div>';
+          var tr2 = -1, h3Re2 = /<h3>[^<]*/g, m32;
+          var nycklar2 = [String(mInfo.varumarke || ''), String(mInfo.modellnamn || '').split(/\s+/)[0]]
+            .filter(function (x) { return x.length >= 3; });
+          while ((m32 = h3Re2.exec(t2))) {
+            var rub2 = m32[0].toLowerCase();
+            if (nycklar2.some(function (k) { return rub2.indexOf(k.toLowerCase()) !== -1; })) {
+              tr2 = t2.indexOf('</h3>', m32.index);
+              break;
+            }
+          }
+          if (tr2 !== -1) { tr2 += 5; t2 = t2.slice(0, tr2) + '\n' + divNy2 + t2.slice(tr2); }
+          else {
+            var gs2 = t2.search(/Gör så här<\/h2>/);
+            if (gs2 !== -1) { gs2 = t2.indexOf('</h2>', gs2) + 5; t2 = t2.slice(0, gs2) + '\n' + divNy2 + t2.slice(gs2); }
+          }
+          var r2 = await window.__MK_SPARA.save('recept/' + fsokvag, t2, '📝 Instruktion (' + maskin.namn + '): ' + fname);
+          return !!(r2 && r2.ok);
+        }
+        function visaFraga(medd) {
+          inre.innerHTML =
+            '<h3 style="margin:0 0 4px;">' + (medd || '✅ Verifieringen sparad!') + '</h3>' +
+            '<p style="font-size:.9rem;color:#5f6e70;margin:0 0 14px;">Vill du lägga till ytterligare instruktioner till ' + maskin.namn + '?</p>' +
+            '<div style="display:flex;gap:10px;">' +
+              '<button id="mt-mer" style="flex:1;background:#2c3e50;color:#fff;border:none;border-radius:10px;padding:13px;font-weight:700;cursor:pointer;font-family:inherit;">➕ Lägg till</button>' +
+              '<button id="mt-klar" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:13px;font-weight:700;cursor:pointer;font-family:inherit;">✔ Klar</button>' +
+            '</div>';
+          inre.querySelector('#mt-klar').onclick = stangKlart;
+          inre.querySelector('#mt-mer').onclick = visaNoteUI;
+        }
+        function visaNoteUI() {
+          inre.innerHTML =
+            '<h3 style="margin:0 0 4px;">📝 Instruktion till ' + maskin.namn + '</h3>' +
+            '<p style="font-size:.85rem;color:#5f6e70;margin:0 0 10px;">Skriv eller 🎤 diktera – syns vid maskinens ruta i receptet.</p>' +
+            '<div style="display:flex;gap:8px;align-items:stretch;">' +
+              '<textarea id="mt-note" rows="3" style="flex:1;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.92rem;font-family:inherit;resize:vertical;">' + befNote + '</textarea>' +
+              (('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) ?
+                '<button type="button" id="mt-rost" title="Diktera (svenska) – tryck igen för att stoppa" style="width:52px;background:#2c3e50;color:#fff;border:none;border-radius:10px;font-size:1.3rem;cursor:pointer;">🎤</button>' : '') +
+            '</div>' +
+            '<div style="display:flex;gap:10px;margin-top:12px;">' +
+              '<button id="mt-notespara" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-family:inherit;">💾 Spara instruktionen</button>' +
+              '<button id="mt-klar2" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-family:inherit;">✔ Klar</button>' +
+            '</div><div id="mt-noteres" style="margin-top:8px;font-size:.85rem;"></div>';
+          var rb = inre.querySelector('#mt-rost');
+          if (rb) kopplaRost(rb, inre.querySelector('#mt-note'));
+          inre.querySelector('#mt-klar2').onclick = stangKlart;
+          inre.querySelector('#mt-notespara').onclick = async function () {
+            var v = inre.querySelector('#mt-note').value.trim().slice(0, 300)
+              .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            if (!v) { inre.querySelector('#mt-noteres').textContent = '⚠️ Skriv eller diktera något först!'; return; }
+            inre.querySelector('#mt-noteres').textContent = '⏳ Sparar...';
+            rostStopp();
+            var ok2 = await sparaNote(v);
+            if (ok2) { befNote = v; visaFraga('✅ Instruktionen sparad!'); }
+            else inre.querySelector('#mt-noteres').textContent = '⚠️ Kunde inte spara – försök igen.';
+          };
+        }
         rostStopp();
-        bg.remove();
-        var gammal = document.getElementById('mk-maskinmatch');
-        if (gammal) gammal.remove();
-        /* 🔄 maskinraden överst byggs om så ⏳ → ✅ syns direkt */
-        var topp = document.getElementById('mk-maskintop');
-        if (topp) topp.remove();
-        run();
+        visaFraga();
       } else {
         out.innerHTML = '<span style="color:#c0392b;">⚠️ ' + res.error + '</span>';
       }

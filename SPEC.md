@@ -2989,8 +2989,9 @@ data i json/, ALDRIG per receptfil.
     surfplattans panel. Tiderna justerbara i en liten kugghjuls-
     inställning, sparas lokalt.
 
-162. 🔔 PIN-PÅMINNELSEBANNER (autoförslag 913, användarens
-    beställning): adminpanelen + första upplåsningen visar en
+162. 🔔 PIN-PÅMINNELSEBANNER — ✔️ KLAR (2026-11-14 i punkt 176:
+    popup efter upplåsning när ≤3 dagar återstår, Byt nu/Senare,
+    max en gång per session). URSPRUNGSBESKRIVNING: adminpanelen + första upplåsningen visar en
     vänlig banner när ≤3 dagar återstår till 20-dagarsgränsen
     ("byt nu och slipp tvånget mitt i baket").
 
@@ -3178,6 +3179,28 @@ data i json/, ALDRIG per receptfil.
     HTML-escapas, max 300 tecken, gammal rad för samma maskin
     ersätts som förr (data-mid). Mikrofonen stängs ALLTID vid
     avbryt/spara (kocklägesregeln).
+
+176. ➕/✔ INSTRUKTIONSFRÅGAN + 🔣 PIN-SPECIALTECKEN + 🔔 POPUP —
+    ✔️ KLAR (2026-11-14, användarens order):
+    A) Verifieringsflödet är nu TVÅSTEGS: efter "✅ Testad &
+    lyckad!" frågar appen "Vill du lägga till ytterligare
+    instruktioner?" med EXAKT två val: [➕ Lägg till] [✔ Klar].
+    Lägg till → textarea + 🎤-diktering (sv-SE) → 💾 sparar
+    instruktionen till maskinens ⚙️-ruta (ersätter via data-mid,
+    tid/vändning från steg 1 bevaras i raden) → frågan igen
+    (kan utöka/rätta tills ✔ Klar). 175-fältet flyttades hit.
+    ENDAST ADMIN: hela flödet ligger bakom PIN-låset som förr.
+    B) PIN får nu innehålla SPECIALTECKEN: 4–20 valfria tecken
+    (pinOk längdregel i stället för sifferregex; numerisk-
+    tangentbordstvånget borttaget; adminpanelens validering
+    uppdaterad). C) 20-dagarsbytet har nu POPUP-påminnelse
+    (= roadmap 162 ✔): ≤3 dagar kvar → "Byt nu/Senare" efter
+    upplåsning, en gång per session; tvånget vid >20 kvarstår.
+    D) LAGRINGEN: PIN:en ligger som SALTAD SHA-256-HASH i
+    json/las.json på GitHub (aldrig klartext – repot är publikt);
+    via DENNA CHATT kan agenten alltid verifiera status eller
+    NOLLSTÄLLA/sätta ny PIN på beställning (push-access) – glömd
+    PIN är aldrig ett lås-ute.
 
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 

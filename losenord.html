@@ -51,8 +51,8 @@
 
   <div class="card">
     <h2>🔢 Byt PIN</h2>
-    <input type="password" inputmode="numeric" class="pin" id="pin1" placeholder="Ny PIN (4–12 siffror)" autocomplete="off">
-    <input type="password" inputmode="numeric" class="pin" id="pin2" placeholder="Upprepa PIN" autocomplete="off">
+    <input type="password" class="pin" id="pin1" placeholder="Ny PIN (4–20 tecken, specialtecken OK)" autocomplete="off">
+    <input type="password" class="pin" id="pin2" placeholder="Upprepa PIN" autocomplete="off">
     <button class="btn" id="bytPin">💾 Spara ny PIN</button>
     <div class="msg" id="pinMsg"></div>
   </div>
@@ -161,7 +161,7 @@
 
   el('bytPin').onclick = async function () {
     var a = el('pin1').value.trim(), b = el('pin2').value.trim(), m = el('pinMsg');
-    if (!/^\d{4,12}$/.test(a)) { m.textContent = '⚠️ PIN = 4–12 siffror'; m.style.color = '#c0392b'; return; }
+    if (!(a.length >= 4 && a.length <= 20)) { m.textContent = '⚠️ PIN = 4–20 tecken (specialtecken OK)'; m.style.color = '#c0392b'; return; }
     if (a !== b) { m.textContent = '⚠️ PIN-koderna skiljer sig åt'; m.style.color = '#c0392b'; return; }
     m.textContent = '⏳ Sparar...'; m.style.color = '#5f6e70';
     var ok = await window.__MK_SPARA.pinByt(a, EPOST_NU);

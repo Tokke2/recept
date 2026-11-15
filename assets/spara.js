@@ -141,7 +141,7 @@
     var t = Date.parse(d);
     return isNaN(t) ? 9999 : Math.floor((Date.now() - t) / 86400000);
   }
-  function pinOk(p) { return /^\d{4,12}$/.test(p); }
+  function pinOk(p) { return typeof p === 'string' && p.length >= 4 && p.length <= 20; }   /* 🔣 punkt 176: siffror, bokstäver & specialtecken */
 
   function askPin(lock) {
     return new Promise(function (resolve) {
@@ -154,7 +154,7 @@
           '<h3 style="margin:6px 0 4px;">Ange din PIN</h3>' +
           '<p style="font-size:.85rem;color:#5f6e70;margin:0 0 12px;">Adminlåset för redigering &amp; sparning</p>' +
           '<input type="text" name="username" value="maskinkok-admin" autocomplete="username" style="position:absolute;left:-9999px;" tabindex="-1" aria-hidden="true">' +
-          '<input type="password" inputmode="numeric" autocomplete="current-password" name="password" id="mkPinIn" placeholder="••••" ' +
+          '<input type="password" autocomplete="current-password" name="password" id="mkPinIn" placeholder="••••" ' +
             'style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1.3rem;text-align:center;letter-spacing:.4em;box-sizing:border-box;">' +
           '<div id="mkPinMsg" style="color:#c0392b;font-size:.82rem;min-height:18px;margin-top:6px;"></div>' +
           '<div style="display:flex;gap:10px;margin-top:10px;">' +
@@ -196,7 +196,7 @@
         '<div style="background:#fff;border-radius:16px;max-width:380px;width:100%;padding:26px 28px;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
           '<h3 style="margin:0 0 6px;">' + rubrik + '</h3>' +
           '<p style="font-size:.85rem;color:#5f6e70;margin:0 0 12px;">' + intro + '</p>' +
-          '<input type="password" inputmode="numeric" autocomplete="new-password" name="new-password" id="mkNp1" placeholder="Ny PIN (4–12 siffror)" style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1.1rem;text-align:center;box-sizing:border-box;margin-bottom:8px;">' +
+          '<input type="password" autocomplete="new-password" name="new-password" id="mkNp1" placeholder="Ny PIN (4–20 tecken, specialtecken OK)" style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1.1rem;text-align:center;box-sizing:border-box;margin-bottom:8px;">' +
           '<input type="password" inputmode="numeric" autocomplete="off" id="mkNp2" placeholder="Upprepa PIN" style="width:100%;padding:12px 14px;border:2px solid #e8e2d8;border-radius:10px;font-size:1.1rem;text-align:center;box-sizing:border-box;">' +
           '<div id="mkNpMsg" style="color:#c0392b;font-size:.82rem;min-height:18px;margin-top:6px;"></div>' +
           '<div style="display:flex;gap:10px;margin-top:8px;">' +
@@ -208,7 +208,7 @@
       setTimeout(function () { bg.querySelector('#mkNp1').focus(); }, 120);
       bg.querySelector('#mkNpOk').onclick = function () {
         var a = bg.querySelector('#mkNp1').value.trim(), b = bg.querySelector('#mkNp2').value.trim();
-        if (!pinOk(a)) { bg.querySelector('#mkNpMsg').textContent = 'PIN = 4–12 siffror'; return; }
+        if (!pinOk(a)) { bg.querySelector('#mkNpMsg').textContent = 'PIN = 4–20 tecken'; return; }
         if (a !== b) { bg.querySelector('#mkNpMsg').textContent = 'PIN-koderna skiljer sig åt'; return; }
         bg.remove(); resolve(a);
       };
@@ -246,6 +246,32 @@
       try { sessionStorage.setItem(UNLOCK_KEY, '1'); } catch (e) {}
       /* ⏳ 20-dagarsregeln: tvinga nytt val */
       var alder = dagarSedan(lock.pinDatum);
+      /* 🔔 PÅMINNELSE-POPUPEN (roadmap 162, punkt 176): ≤3 dagar kvar →
+         vänlig fråga INNAN tvånget slår till. Max en gång per session. */
+      if (alder > PIN_DAGAR - 3 && alder <= PIN_DAGAR) {
+        var visad = false;
+        try { visad = sessionStorage.getItem('mk-pin-pamind') === '1'; } catch (e) {}
+        if (!visad) {
+          try { sessionStorage.setItem('mk-pin-pamind', '1'); } catch (e) {}
+          var svar = await new Promise(function (res2) {
+            var pb = document.createElement('div');
+            pb.className = 'no-print';
+            pb.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:460;display:flex;align-items:center;justify-content:center;padding:16px;';
+            pb.innerHTML = '<div style="background:#fff;border-radius:16px;max-width:360px;width:100%;padding:24px 26px;text-align:center;font-family:Segoe UI,system-ui,sans-serif;color:#2c3e50;">' +
+              '<div style="font-size:2rem;">⏳</div><h3 style="margin:6px 0 4px;">PIN-koden går ut om ' + (PIN_DAGAR - alder) + ' dag(ar)</h3>' +
+              '<p style="font-size:.86rem;color:#5f6e70;margin:0 0 14px;">Byt nu och slipp tvånget mitt i baket.</p>' +
+              '<div style="display:flex;gap:10px;"><button id="mkPp1" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;">🔢 Byt nu</button>' +
+              '<button id="mkPp2" style="flex:1;background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;">Senare</button></div></div>';
+            document.body.appendChild(pb);
+            pb.querySelector('#mkPp1').onclick = function () { pb.remove(); res2(true); };
+            pb.querySelector('#mkPp2').onclick = function () { pb.remove(); res2(false); };
+          });
+          if (svar) {
+            var nyP = await askNyPin('🔢 Byt PIN', 'Välj en ny PIN (4–20 tecken – specialtecken går bra).');
+            if (nyP) await sparaLas(nyP, lock.epost);
+          }
+        }
+      }
       if (alder > PIN_DAGAR) {
         var ny = await askNyPin('⏳ Dags för ny PIN',
           'Din PIN är ' + alder + ' dagar gammal (gränsen är ' + PIN_DAGAR + ') – välj en ny för att fortsätta.');
@@ -258,7 +284,7 @@
     /* 🆕 FÖRSTA GÅNGEN: gamla lösenordet en sista gång → skapa PIN */
     if (!(await askPassword(lock))) return false;   /* sätter UNLOCK_KEY vid rätt svar */
     var pin1 = await askNyPin('🆕 Skapa din PIN',
-      'Första inloggningen med nya låset: välj en PIN (4–12 siffror). Den ersätter lösenordet HELT och byts var ' + PIN_DAGAR + ':e dag.');
+      'Första inloggningen med nya låset: välj en PIN (4–20 tecken – specialtecken går bra). Den ersätter lösenordet HELT och byts var ' + PIN_DAGAR + ':e dag.');
     if (pin1) {
       var okSpar = await sparaLas(pin1, lock.epost);
       if (!okSpar && window.__MK_TOAST) window.__MK_TOAST('⚠️ PIN-koden kunde inte sparas – prova i adminpanelen (losenord.html).');
