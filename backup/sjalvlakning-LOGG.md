@@ -491,3 +491,7 @@
 **2026-11-15**
 
 | recept/bakning/pajdeg-i-bakmaskin.html | 🚫 spärrat program i metan: "10. Cake (Kaka)" (clatronic bba 3774) – ägarorder krävs (steg16) |
+
+**2026-11-15**
+
+| recept/bakning/pajdeg-i-bakmaskin.html | 🚫 spärrat program i metan: "10. Cake (Kaka)" (clatronic bba 3774) – ägarorder krävs (steg16) |
