@@ -3419,13 +3419,22 @@
   "Snabb limpa – Bakmaskin. Snabb limpa: degen knådas och jäser i bakmaskinen, formas och gräddas i bakmaskinen (eller som bitar i airfryer). Klar på…": "Schnelles Brot – Backmaschine. Schnelles Brot: Der Teig wird in der Backmaschine geknetet und aufgegangen, in der Backmaschine geformt und gebacken (oder in Stücken in der Heißluftfritteuse). Bereit für…",
   "Snabb limpa: degen knådas och jäser i bakmaskinen, formas och gräddas i bakmaskinen (eller som bitar i airfryer). Klar på drygt 2 h.": "Schnelles Brot: Der Teig wird in der Backmaschine geknetet und aufgegangen, in der Backmaschine geformt und gebacken (oder in Stücken in der Heißluftfritteuse). Fertig in etwas mehr als 2 Stunden.",
   "🍞 Snabb limpa – Bakmaskin": "🍞 Schneller Laib – Backmaschine",
-  "🍞 Snabb limpa – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🍞 Schneller Laib – Backmaschine – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche"
+  "🍞 Snabb limpa – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🍞 Schneller Laib – Backmaschine – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche",
+  "Båda varianterna verifierade": "Beide Varianten verifiziert",
+  "Recept helt utan admin-verifiering (varken 🌟 eller ✅-maskindelar) – din att-göra-lista i köket.": "Rezepte komplett ohne Admin-Verifizierung (weder 🌟 noch ✅ Maschinenteile) – Ihre To-Do-Liste in der Küche.",
+  "⏳ Läser recepten...": "⏳ Die Rezepte lesen...",
+  "⏳ tid & temp sätts vid admin-verifiering": "⏳ Zeit und Temperatur werden während der Administratorüberprüfung festgelegt",
+  "🌟 Overifierade recept": "🌟 Nicht verifizierte Rezepte",
+  "🍞 LIMPA-gräddningen": "🍞 Das LIMPA-Backen",
+  "🍞 Verifiera LIMPA": "🍞 Überprüfen Sie LIMPA",
+  "🎤 Diktera receptet": "🎤 Geben Sie das Rezept vor",
+  "🥯 FRALL-gräddningen": "🥯 Das FRALL-Backen"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3418,
+ "_auto_genererade": 3427,
  "_senast_robot": "2026-11-15"
 }
