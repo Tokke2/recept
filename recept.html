@@ -307,7 +307,7 @@ const KATEGORIER = [
    Specifikt före generellt: smulpaj→bakning FÖRE deg, pizzadeg→deg FÖRE pizza→varmrätt. */
 const KAT_ORD = [
   ['hund','husdjur'],['husdjur','husdjur'],['katt','husdjur'],
-  ['dressing','sas'],['ketchup','sas'],['majonnäs','sas'],['aioli','sas'],
+  ['dressing','sas'],['ketchup','sas'],['majonnäs','sas'],['aioli','sas'],['dipp','sas'],
   ['sylt','sylt'],['marmelad','sylt'],['chutney','sylt'],['inlagd','sylt'],
   ['smulpaj','bakning'],['smuldeg','bakning'],['paj','bakning'],
   ['glass','glass'],['sorbet','glass'],['frozen','glass'],
@@ -394,6 +394,7 @@ async function init() {
         beskrivning: get('beskrivning') || 'Öppna receptet för detaljer.',
         taggar: get('taggar') ? get('taggar').split(',').map(t => t.trim()).filter(Boolean) : [],
         kategori: get('kategori'),   /* ✏️ manuellt vald i redigeringsläget – vinner över gissningen */
+        under: get('underkategori'),  /* 🫕 "dipp" = underkategori till Sås (SPEC-punkt 185) */
         verifierad: get('verifierad'),  /* 🌟 "ÅÅÅÅ-MM-DD" = bakat & godkänt av kocken */
         portioner: get('portioner'),    /* 🍽️ "8 frallor" (portionsvakten) */
         rader: (() => {                 /* 💪 ingrediensrader för makro-beräkningen */
@@ -547,6 +548,13 @@ async function loadGlobalRatings() {
    maskiner som helst och tar en rad på mobilen. */
 function buildTabs() {
   RECIPES.forEach(r => { r.kat = (r.kategori && KATEGORIER.some(k => k.id === r.kategori)) ? r.kategori : kategoriFor(r); });
+  /* 🫕 UNDERKATEGORI (punkt 185): endast "dipp" under Sås just nu.
+     Metan (ägarens ord) vinner – annars gissas på namnet/taggarna. */
+  RECIPES.forEach(r => {
+    r.under = (r.kat === 'sas')
+      ? (r.under === 'dipp' ? 'dipp' : (/(^|[^a-zåäö])dipp/i.test(r.namn + ' ' + r.taggar.join(' ')) ? 'dipp' : ''))
+      : '';
+  });
   buildKats();
   const used = new Set();
   RECIPES.forEach(r => r.maskin_ids.forEach(id => used.add(id)));
@@ -576,6 +584,11 @@ function buildKats() {
     const n = RECIPES.filter(r => r.kat === k.id).length;
     if (!n) return;
     h += `<button class="kat" data-k="${k.id}" style="--kf:${KAT_FARG[k.id] || '#8e6e53'};" onclick="setKat('${k.id}',this)"><span class="em">${k.emoji}</span> ${k.namn} <span class="n">${n}</span></button>`;
+    /* 🫕 Underkategori-chip (punkt 185): "↳ Dipp" direkt efter Sås-chippen */
+    if (k.id === 'sas') {
+      const nd = RECIPES.filter(r => r.kat === 'sas' && r.under === 'dipp').length;
+      if (nd) h += `<button class="kat" data-k="sas:dipp" style="--kf:${KAT_FARG.sas};font-size:.86em;" onclick="setKat('sas:dipp',this)" title="Dipp till chips, grönsaker m.m. – underkategori till Sås"><span class="em">🫕</span> ↳ Dipp <span class="n">${nd}</span></button>`;
+    }
   });
   document.getElementById('katbar').innerHTML = h;
 }
@@ -642,7 +655,7 @@ function apply() {
   const filtered = list.filter(r => {
     const text = (r.namn + ' ' + r.beskrivning + ' ' + r.taggar.join(' ') + ' ' + r.maskiner.join(' ')).toLowerCase();
     return (!q || text.includes(q)) && (activeTab === 'all' || r.maskin_ids.includes(activeTab)) &&
-           (activeKat === 'all' || r.kat === activeKat) &&
+           (activeKat === 'all' || (activeKat === 'sas:dipp' ? (r.kat === 'sas' && r.under === 'dipp') : r.kat === activeKat)) &&
            (!MAKRO.prot || (r.makro && r.makro.prot100 >= 8)) &&
            (!MAKRO.latt || (r.makro && r.makro.kcal100 <= 150));
   });

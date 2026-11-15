@@ -294,11 +294,11 @@ const GENERIC = ['efterrätt','dessert','fika','fest','snack','mat'];
 /* 📁 KATEGORIER = mappar i recept/ (samma id:n som recept.html).
    Gissas av titel+taggar (prioriterad ordlista) – användaren kan ändra. */
 const KATTER = [
-  ['husdjur','🐶 Husdjur'],['sas','🥣 Sås & dressing'],['sylt','🫙 Sylt & marmelad'],['saft','🧃 Saft & dryck'],
+  ['husdjur','🐶 Husdjur'],['sas','🥣 Sås & dressing'],['sas:dipp','🥣 Sås → 🫕 Dipp'],['sylt','🫙 Sylt & marmelad'],['saft','🧃 Saft & dryck'],
   ['glass','🍦 Glass & fryst'],['snacks','🥨 Snacks'],['brod','🍞 Bröd'],['deg','🥖 Deg'],
   ['bakning','🍰 Bakning & fika'],['efterratt','🍮 Efterrätt'],['varmratt','🍲 Varmrätter'],['ovrigt','🍽️ Övrigt']];
 const KAT_ORD = [
-  ['hund','husdjur'],['husdjur','husdjur'],['katt','husdjur'],['dressing','sas'],['ketchup','sas'],
+  ['hund','husdjur'],['husdjur','husdjur'],['katt','husdjur'],['dipp','sas:dipp'],['dressing','sas'],['ketchup','sas'],
   ['sylt','sylt'],['marmelad','sylt'],['chutney','sylt'],
   ['smulpaj','bakning'],['paj','bakning'],
   ['glass','glass'],['sorbet','glass'],['frozen','glass'],
@@ -319,6 +319,10 @@ function gissaKat(text) {
   return 'ovrigt';
 }
 function valdKat() { return (document.getElementById('fKat') || {}).value || 'ovrigt'; }
+/* 🫕 UNDERKATEGORI (SPEC-punkt 185): "sas:dipp" → mappen/kategorin är sas,
+   underkategorin dipp skrivs som egen meta (recept:underkategori). */
+function valdKatMapp() { return valdKat().split(':')[0]; }
+function valdUnder() { return valdKat().split(':')[1] || ''; }
 
 const ING_RE = /^\s*[-•*·]?\s*((?:\d+[\d.,\/½¼¾]*|en|ett|några)\s*(?:g|kg|dl|cl|ml|l|msk|tsk|krm|st|påse|burk|kruka|skivor?|klyftor?)?)\s+([a-zåäöA-ZÅÄÖ].{1,60})$/;
 const ING_REV_RE = /^\s*[-•*·]?\s*([a-zåäöA-ZÅÄÖ].{1,45}?)[\s:]+(\d+[\d.,\/]*)\s*(g|kg|dl|cl|ml|l|msk|tsk|krm|st)\.?\s*$/i;
@@ -980,7 +984,7 @@ function buildHtml() {
   const seoTitel = namn + (seoMod.length ? ' – ' + seoMod.join(' & ') : '');
 
   return '<!DOCTYPE html>\n' +
-'<!-- PLATS: /recept/' + valdKat() + '/' + fil + '  (kategorimapp - läses in automatiskt) -->\n' +
+'<!-- PLATS: /recept/' + valdKatMapp() + '/' + fil + '  (kategorimapp - läses in automatiskt) -->\n' +
 '<!-- mk-std-v4 : skapad via nytt-recept.html i standardutformningen -->\n' +
 '<html lang="sv">\n<head>\n<meta charset="UTF-8">\n' +
 '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
@@ -990,7 +994,8 @@ function buildHtml() {
 '<meta name="recept:emoji" content="' + emoji + '">\n' +
 '<meta name="recept:beskrivning" content="' + esc(beskr) + '">\n' +
 '<meta name="recept:taggar" content="' + esc(taggar.join(', ')) + '">\n' +
-'<meta name="recept:kategori" content="' + valdKat() + '">\n' +
+'<meta name="recept:kategori" content="' + valdKatMapp() + '">\n' +
+(valdUnder() ? '<meta name="recept:underkategori" content="' + valdUnder() + '">\n' : '') +
 '<meta name="recept:maskiner" content="' + esc(metaMask) + '">\n' +
 '<!-- =========================== -->\n\n' +
 '<link rel="stylesheet" href="../../assets/print.css">\n<style>\n' + STD_STYLE + '\n</style>\n</head>\n<body>\n\n' +
@@ -1063,7 +1068,7 @@ async function cachaDirekt(fil, html) {
     const namn = keys.find(k => /-pages$/.test(k));
     if (!namn) return false;
     const c = await caches.open(namn);
-    const url = new URL('recept/' + valdKat() + '/' + encodeURIComponent(fil), location.href).href;
+    const url = new URL('recept/' + valdKatMapp() + '/' + encodeURIComponent(fil), location.href).href;
     await c.put(new Request(url), new Response(html, {
       status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' }
     }));
@@ -1083,7 +1088,7 @@ async function saveDirect() {
   const out = document.getElementById('saveResult');
   btn.disabled = true; btn.textContent = '⏳ Sparar...';
   const html = buildHtml();
-  const res = await __MK_SPARA.save('recept/' + valdKat() + '/' + fil, html,
+  const res = await __MK_SPARA.save('recept/' + valdKatMapp() + '/' + fil, html,
     'Nytt recept via sajten: ' + (document.getElementById('fNamn').value || fil));
   btn.disabled = false; btn.textContent = '💾 Spara direkt på sajten';
   if (res.ok) {
@@ -1092,12 +1097,12 @@ async function saveDirect() {
       (direkt
         ? '⚡ Receptet kan öppnas <b>DIREKT</b> (lokalt cachad kopia – nätet tar över inom ~1 min när Pages byggt om).'
         : 'Receptet dyker upp i <a href="recept.html">receptsamlingen</a> inom ~1 minut (GitHub Pages bygger om).') +
-      '<br>📄 <a href="recept/' + valdKat() + '/' + encodeURIComponent(fil) + '" target="_blank" rel="noopener"><b>Öppna receptet nu</b></a>' +
+      '<br>📄 <a href="recept/' + valdKatMapp() + '/' + encodeURIComponent(fil) + '" target="_blank" rel="noopener"><b>Öppna receptet nu</b></a>' +
       (res.url ? ' · <a href="' + res.url + '" target="_blank" rel="noopener">Visa på GitHub</a>' : '') +
       '<br>🧹 <b>Formuläret är tömt</b> – klistra in nästa recept direkt!</div>';
     if (direkt) {
       /* öppna receptet automatiskt i ny flik */
-      try { window.open('recept/' + valdKat() + '/' + encodeURIComponent(fil), '_blank'); } catch (e) {}
+      try { window.open('recept/' + valdKatMapp() + '/' + encodeURIComponent(fil), '_blank'); } catch (e) {}
     }
     /* 🧹 TÖM FORMULÄRET för nästa recept (användarens regel 2026-11-01)
        – bekräftelsen flyttas upp till inklistringsrutan så den syns. */
@@ -1137,14 +1142,46 @@ function tomFormular(bannerHtml) {
 }
 </script>
 <script>
-/* 🎤 DIKTERA RECEPTET (punkt 179): Web Speech sv-SE rakt in i
-   inklistringsfältet – skriv/rätta fritt, analysera som vanligt. */
+/* 🎤 DIKTERA RECEPTET v2 (SPEC-punkt 186 – "funka och kunna koppla
+   ingredienser"): varje taluttag blir en EGEN RAD så radparsern
+   (parseText) hittar ingredienserna → de hamnar i tabellen och
+   kopplas automatiskt till ingrediensdatabasen (pris/kcal/butiks-
+   länkar) på den färdiga sidan, precis som inklistrad text.
+   · Röstkommandon: säg "ingredienser" resp. "gör så här" ENSAMT
+     → egna rubrikrader. "ny rad" → radbrytning mitt i ett uttag.
+   · Talade enheter normaliseras: "2 deciliter" → "2 dl",
+     "en halv" → "0,5" osv – så ING_RE matchar raden. */
 (function () {
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   var btn = document.getElementById('rostRecept');
   if (!SR || !btn) return;
   btn.style.display = '';
+  btn.title = 'Varje paus blir en ny rad. Säg "ingredienser" och "gör så här" som rubriker, "ny rad" för radbrytning.';
   var rec = null;
+
+  function fixaEnheter(t) {
+    /* talade enheter efter ett tal → receptenheter (parsern kräver dem) */
+    t = t.replace(/\ben halv\b/gi, '0,5').replace(/\ben kvarts?\b/gi, '0,25');  /* FÖRE enhetsbytet: "en halv tesked" → "0,5 tsk" */
+    return t
+      .replace(/(\d[\d.,]*)\s*deciliter/gi, '$1 dl')
+      .replace(/(\d[\d.,]*)\s*centiliter/gi, '$1 cl')
+      .replace(/(\d[\d.,]*)\s*milliliter/gi, '$1 ml')
+      .replace(/(\d[\d.,]*)\s*liter/gi, '$1 l')
+      .replace(/(\d[\d.,]*)\s*matsked(?:ar)?/gi, '$1 msk')
+      .replace(/(\d[\d.,]*)\s*tesked(?:ar)?/gi, '$1 tsk')
+      .replace(/(\d[\d.,]*)\s*kryddmått/gi, '$1 krm')
+      .replace(/(\d[\d.,]*)\s*kilo(?:gram)?/gi, '$1 kg')
+      .replace(/(\d[\d.,]*)\s*gram/gi, '$1 g')
+      .replace(/(\d[\d.,]*)\s*stycken?/gi, '$1 st');
+  }
+  function tolka(t) {
+    t = fixaEnheter(String(t || '').trim());
+    if (/^(ingredienser|ingredienslista)[:,.!]?$/i.test(t)) return 'Ingredienser';
+    if (/^(gör så här|instruktioner|tillagning|stegen|steg för steg)[:,.!]?$/i.test(t)) return 'Gör så här';
+    /* "ny rad" mitt i uttaget → riktig radbrytning */
+    return t.replace(/\s*\b(ny rad|nästa rad|radbrytning)\b\s*/gi, '\n').trim();
+  }
+
   btn.onclick = function () {
     if (rec) { try { rec.stop(); } catch (e) {} rec = null; btn.style.background = '#2c3e50'; btn.textContent = '🎤 Diktera receptet'; return; }
     rec = new SR();
@@ -1152,11 +1189,15 @@ function tomFormular(bannerHtml) {
     var ta = document.getElementById('src');
     rec.onresult = function (e) {
       for (var i = e.resultIndex; i < e.results.length; i++) {
-        if (e.results[i].isFinal) ta.value = (ta.value + ' ' + e.results[i][0].transcript).trim();
+        if (!e.results[i].isFinal) continue;
+        var rad = tolka(e.results[i][0].transcript);
+        if (!rad) continue;
+        /* varje uttag = egen rad (parseText är radbaserad) */
+        ta.value = (ta.value ? ta.value.replace(/\s+$/, '') + '\n' : '') + rad;
       }
     };
     rec.onerror = rec.onend = function () { if (rec) { rec = null; btn.style.background = '#2c3e50'; btn.textContent = '🎤 Diktera receptet'; } };
-    btn.style.background = '#c0392b'; btn.textContent = '⏹ Stoppa dikteringen';
+    btn.style.background = '#c0392b'; btn.textContent = '⏹ Stoppa dikteringen – säg "ingredienser" / "gör så här" som rubriker';
     try { rec.start(); } catch (e) { rec = null; }
   };
 })();

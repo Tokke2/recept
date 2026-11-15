@@ -506,6 +506,8 @@
             used.map(function (ing) {
               /* 🦠 jästkonvertering även i kockläget (användarens regel) */
               var jastAlt = window.__MK_JAST_ALT ? window.__MK_JAST_ALT(ing.namn, ing.mangd) : '';
+              /* 🧁 bakpulver→bikarbonat även i kockläget (SPEC-punkt 184) */
+              jastAlt += window.__MK_BAKP_ALT ? window.__MK_BAKP_ALT(ing.namn, ing.mangd) : '';
               return '<span style="background:rgba(39,174,96,.25);border:1px solid rgba(39,174,96,.6);' +
                 'border-radius:999px;padding:6px 14px;font-size:.95rem;font-weight:700;">' +
                 ing.namn.replace(/\([^)]*\)/g, '').trim() + ' · ' + ing.mangd + jastAlt + '</span>';

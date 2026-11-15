@@ -903,6 +903,48 @@ def steg14_titelstandard(maskiner):
         rader.append('| %s | 🏷️ titel → "%s" (steg14) |' % (f, _h.unescape(nytt)[:60]))
 
 
+def steg14b_brodtitlar():
+    """🍞 BRÖDTITELVAKTEN (SPEC-punkt 187, användarens order "skriv
+    alltid limpa/fralla i titeln vid bröd"): brödrecept vars namn
+    saknar ett formord (limpa/frallor/bullar/pita...) kompletteras –
+    MEN ENDAST när ägarens meta (recept:portioner) entydigt anger
+    formen ("1 limpa" / "8 frallor"). Roboten kan ALDRIG själv avgöra
+    limpa vs frallor – utan tydlig meta loggas en varning istället
+    (ägarens order styr metas, roboten verkställer)."""
+    import re as _re, html as _h
+    FORMORD = _re.compile(r'limp|frall|bull|boll|pita|baguett|knäck|skorp|scon|tortilla', _re.I)
+    for f in sorted(glob.glob('recept/brod/*.html')):
+        bn = os.path.basename(f)
+        if bn.upper().startswith('MALL'):
+            continue
+        try:
+            with open(f, encoding='utf-8') as fp:
+                html = fp.read()
+        except OSError:
+            continue
+        if 'STUB - receptet har flyttat' in html[:500]:
+            continue
+        nm = _re.search(r'name="recept:namn" content="([^"]*)"', html)
+        if not nm:
+            continue
+        namn = nm.group(1)
+        if FORMORD.search(_h.unescape(namn)):
+            continue   # formordet finns redan i namnet
+        pm = _re.search(r'name="recept:portioner" content="([^"]*)"', html)
+        port = (pm.group(1) if pm else '').lower()
+        if 'limp' in port:
+            form = ' (limpa)'
+        elif 'frall' in port:
+            form = ' (frallor)'
+        else:
+            rader.append('| %s | ⚠️ brödtitel saknar limpa/frallor och metan är otydlig – ägarorder krävs (steg14b) |' % f)
+            continue
+        nytt = namn + form
+        with open(f, 'w', encoding='utf-8') as fp:
+            fp.write(html.replace(namn, nytt))
+        rader.append('| %s | 🍞 brödtitel → "%s" (steg14b) |' % (f, _h.unescape(nytt)[:60]))
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -916,6 +958,7 @@ def main():
     steg11_portioner()
     steg13_kategorivakt()
     steg14_titelstandard(maskiner)
+    steg14b_brodtitlar()
     steg12_beskrivningar()
     steg6_sitemap()
     steg7_receptindex()

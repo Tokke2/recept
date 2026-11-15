@@ -3264,6 +3264,72 @@ data i json/, ALDRIG per receptfil.
     nytt-recept/verifieringen (179/175). Byggs som guide-sektion
     på order.
 
+183. ✔️ KLAR – 🦠 JÄST ÖVERALLT (användarens order 2026-11-15: "alla
+    recept som innehåller jäst ska alltid visa färsk jäst g /
+    torrjäst g i ingredienser + kockläge + överallt där jäst
+    står"): sedan tidigare täcks ingredienstabellen (radtips
+    .mk-jastalt + 🦠-omvandlaren) och kockläget (__MK_JAST_ALT).
+    NYTT: stegTips() i jast.js – även "Gör så här"-stegen med
+    gramsatt jäst får tillägget "(≈ X torrjäst/färsk jäst)".
+    Samma heltalsregel (torr = 1/3 av färsk), samma flingskydd,
+    städas ur sparade filer av buildCleanHtml.
+
+184. ✔️ KLAR – 🧁 BAKPULVERERSÄTTAREN (användarens order: "visa så
+    man kan ersätta med bikarbonat och om citronsyra behövs om det
+    inte ingår yoghurt"): NY MODUL assets/bakpulver.js (laddas av
+    site.js på receptsidor). Webbverifierad regel (Santa Maria,
+    Kockens, Lindas bakskola): 1 tsk bakpulver = ½ tsk bikarbonat.
+    A) Radtips på bakpulverraden "(≈ ½ tsk bikarbonat)".
+    B) Panel "🧁 Slut på bakpulver?" under ingredienskortet: total
+    ersättning + SYRAKOLLEN – finns sur ingrediens i tabellen
+    (yoghurt/fil/kefir/gräddfil/crème fraiche/citron/lime/vinäger/
+    ättika/lingon m.fl.) → "✅ ingen citronsyra behövs (syran finns
+    i X)"; annars "⚠️ tillsätt ½ tsk citronsaft/vinäger – eller
+    lika mycket citronsyra – per tsk bakpulver" (Samarin-regeln
+    50/50). C) Stegtips i "Gör så här". D) Kockläget via
+    __MK_BAKP_ALT (recept.js). Mängder läses i tsk/msk/krm –
+    oläsbar mängd → inget visas (inga gissningar). #mk-bakp +
+    .mk-bakpalt i buildCleanHtml-städlistan.
+
+185. ✔️ KLAR – 🫕 UNDERKATEGORIN DIPP (användarens order: "underkategori
+    till Sås – dipp för chips, grönsaker m.m."): första under-
+    kategorin i systemet. Lagras som EGEN meta
+    <meta name="recept:underkategori" content="dipp"> – kategorin
+    är fortfarande sas och FILEN LIGGER KVAR i recept/sas/
+    (kategorivakten steg13 opåverkad). A) recept.html: chip
+    "↳ 🫕 Dipp" direkt efter Sås-chippen (syns när minst 1 dipp
+    finns), filtret förstår sas:dipp, metan vinner – annars
+    namngissning på "dipp". B) redigera.js 🗂️-väljaren: valet
+    "Sås → Dipp" (värde sas:dipp) sätter båda metas; mappen
+    splittas ALLTID på ':' vid sparning/flytt. C) nytt-recept.html:
+    samma val i kategoridropdownen + valdKatMapp()/valdUnder() –
+    mapp/PLATS/spara-sökväg använder aldrig ':'-värdet;
+    gissningsordet dipp → sas:dipp.
+
+186. ✔️ KLAR – 🎤 DIKTERINGEN v2 (användarens order: "funka och kunna
+    koppla ingredienser"): parseText är RADBASERAD – gamla
+    dikteringen klistrade allt på EN rad så inget parsades. Nu:
+    A) varje taluttag = egen rad → ingrediensrader hittas av
+    ING_RE, hamnar i tabellen och kopplas automatiskt till
+    ingrediensdatabasen (pris/kcal/butikslänkar) som vanligt.
+    B) Röstrubriker: säg "ingredienser" / "gör så här" ensamt →
+    egen rubrikrad; "ny rad" → radbrytning. C) Enhetsnormalisering:
+    "2 deciliter"→"2 dl", "3 matskedar"→"3 msk", "en halv"→"0,5"
+    osv. Knappens title förklarar kommandona.
+
+187. ✔️ KLAR – 🍞 BRÖDTITELREGELN (användarens order: "skriv alltid
+    limpa/fralla i titeln vid bröd"): A) Alla 8 bakmaskinbröd som
+    gräddas i maskinen fick "(limpa)" i titel/h1/og/recept:namn/
+    schema (endast titelytor – aldrig brödtexten). Majsfrallor,
+    Snabb limpa och Pitabröd var redan rätt (pita = eget formord).
+    B) ROBOTVAKT steg14b i sjalvlakning.py: brödrecept utan formord
+    (limp/frall/bull/boll/pita/baguett/knäck/skorp/scon/tortilla)
+    i namnet kompletteras ENDAST när ägarens recept:portioner-meta
+    entydigt säger "limpa"/"frallor" – annars loggas varning
+    (roboten kan ALDRIG själv avgöra limpa vs frallor). C) Regel
+    för agenten: alla NYA brödrecept namnges alltid med limpa/
+    frallor (eller annat formord) i titeln.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

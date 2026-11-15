@@ -251,11 +251,35 @@
       : ' (≈ ' + fmtG(g / FAKTOR) + ' torrjäst)';
   };
 
+  /* 🏷️ STEGTIPS i "Gör så här" (SPEC-punkt 183 – användarens regel:
+     färsk/torr jäst visas ÖVERALLT där jäst står, inte bara i
+     tabellen/kockläget): li-rader med gramsatt jäst får samma
+     diskreta tillägg. .mk-jastalt städas ur sparade filer av
+     buildCleanHtml – inget hamnar i receptfilen. */
+  function stegTips() {
+    document.querySelectorAll('.card ol li, .card ul li').forEach(function (li) {
+      if (li.querySelector('.mk-jastalt')) return;
+      var t = li.textContent;
+      if (!JAST_RE.test(t) || EJ_RE.test(t)) return;
+      if (/torr/i.test(t) && /färsk|farsk/i.test(t)) return;   /* båda formerna nämns redan */
+      var m = t.match(/([\d.,]+)\s*g\s*(?:färsk\s+)?(torrjäst|torr jäst|jäst|jast)/i);
+      if (!m) return;
+      var g = parseFloat(m[1].replace(',', '.'));
+      if (!g) return;
+      var torr = /torr/i.test(m[2]);
+      var s = document.createElement('span');
+      s.className = 'mk-jastalt';
+      s.textContent = ' (≈ ' + (torr ? fmtG(g * FAKTOR) + ' färsk jäst' : fmtG(g / FAKTOR) + ' torrjäst') + ')';
+      s.style.cssText = 'color:#5f6e70;font-weight:400;font-size:.88em;';
+      li.appendChild(s);
+    });
+  }
+
   /* tabellen kan byggas om av andra moduler – försök lugnt några gånger */
   var forsok = 0;
   var iv = setInterval(function () {
     forsok++;
     if (document.getElementById('mk-jast') || forsok > 10) { clearInterval(iv); return; }
-    if (ingTable()) { clearInterval(iv); bygg(); }
+    if (ingTable()) { clearInterval(iv); bygg(); stegTips(); }
   }, 400);
 })();

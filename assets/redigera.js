@@ -1406,12 +1406,16 @@
 
     /* 🗂️ Kategorier (samma lista som recept.html) + nuvarande värden ur meta */
     var KATTER = [
-      ['', '🤖 Auto (gissas)'], ['husdjur', '🐶 Husdjur'], ['sas', '🥣 Sås & dressing'], ['sylt', '🫙 Sylt & marmelad'],
+      ['', '🤖 Auto (gissas)'], ['husdjur', '🐶 Husdjur'], ['sas', '🥣 Sås & dressing'], ['sas:dipp', '🥣 Sås → 🫕 Dipp'], ['sylt', '🫙 Sylt & marmelad'],
       ['saft', '🧃 Saft & dryck'], ['glass', '🍦 Glass & fryst'], ['snacks', '🥨 Snacks'],
       ['brod', '🍞 Bröd'], ['deg', '🥖 Deg'], ['bakning', '🍰 Bakning & fika'],
       ['efterratt', '🍮 Efterrätt'], ['varmratt', '🍲 Varmrätter'], ['ovrigt', '🍽️ Övrigt']
     ];
     var metaKat = (document.querySelector('meta[name="recept:kategori"]') || {}).content || '';
+    /* 🫕 UNDERKATEGORI (SPEC-punkt 185): "dipp" under Sås – lagras i egen
+       meta (recept:underkategori), mappen är fortfarande recept/sas/ */
+    var metaUnder = (document.querySelector('meta[name="recept:underkategori"]') || {}).content || '';
+    if (metaKat && metaUnder) metaKat = metaKat + ':' + metaUnder;
     var metaIng = ((document.querySelector('meta[name="recept:ingrediens"]') || {}).content || '') === 'ja';
 
     var bar = document.createElement('div');
@@ -1454,7 +1458,10 @@
       m.setAttribute('content', varde);
     }
     document.getElementById('eb-kat').addEventListener('change', function () {
-      setMeta('kategori', this.value);
+      /* 🫕 "sas:dipp" → kategori=sas + underkategori=dipp (punkt 185) */
+      var delar = this.value.split(':');
+      setMeta('kategori', delar[0]);
+      setMeta('underkategori', delar[1] || '');
       markDirty();
     });
     document.getElementById('eb-ing').addEventListener('change', function () {
@@ -1772,7 +1779,7 @@
        (nycklarna är per FILNAMN). */
     var nuv = receptSokvag();                              /* "deg/x.html" eller "x.html" */
     var nuvKat = nuv.indexOf('/') !== -1 ? nuv.split('/')[0] : '';
-    var valKat = (document.getElementById('eb-kat') || {}).value || '';
+    var valKat = ((document.getElementById('eb-kat') || {}).value || '').split(':')[0];   /* 🫕 "sas:dipp" → mappen sas (punkt 185) */
     var malKat = valKat || nuvKat;                          /* Auto → behåll mappen */
     var mal = malKat ? malKat + '/' + fname : fname;
     var html = buildCleanHtml();
@@ -1847,7 +1854,7 @@
       '#mk-lang, #mk-auto-qr, #mk-provenance, #mk-betyg, #mk-maskinmatch, #mk-kalkyl, #mk-donation, #mk-aff-disclosure, ' +
       '.share-btn, .print-btn, [id^="mk-pd"], [id^="mk-pw"], [id^="mk-swish"], ' +
       '.mk-saknas, .mk-prodlank, .mk-ingsub, #mk-byt-notis, .mk-ingsok, .mk-bytsmak, .mk-smakval, .mk-kallval, .mk-gruppval, #mk-match-bg, #mk-kedja, #mk-kommentarer, #mk-komm-pill, ' +
-      '#mk-verif-badge, #mk-verif-info, #mk-verif-bg, .mk-sidepil, #mk-sidepil-css, #cmResume, #mk-portion, .mk-testad, #mk-testad-bg, #mk-txt, #mk-hydr, #mk-paste-bg, .mk-masktyp, #mk-jast, .mk-verifmask, .mk-jastalt, .mk-verifdel, .mk-altinfo, #mk-maskintop, #mk-ai-tag, .mk-brodstatus').forEach(function (el) { el.remove(); });
+      '#mk-verif-badge, #mk-verif-info, #mk-verif-bg, .mk-sidepil, #mk-sidepil-css, #cmResume, #mk-portion, .mk-testad, #mk-testad-bg, #mk-txt, #mk-hydr, #mk-paste-bg, .mk-masktyp, #mk-jast, #mk-bakp, .mk-verifmask, .mk-jastalt, .mk-bakpalt, .mk-verifdel, .mk-altinfo, #mk-maskintop, #mk-ai-tag, .mk-brodstatus').forEach(function (el) { el.remove(); });
     /* 🦠 jästomvandlarens radväxling är per besökare – sparade filen får
        ALLTID receptets originaljäst tillbaka (data-mk-jast-orig) */
     clone.querySelectorAll('tr[data-mk-jast-orig]').forEach(function (tr) {

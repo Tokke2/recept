@@ -73,7 +73,7 @@
          att bryta sticky (till skillnad från hidden). Jästkonverteringen
          bryter till egen rad i stället för att spränga tabellbredden. */
       'html,body{overflow-x:clip;}' +
-      'td .mk-jastalt{display:block;white-space:normal;font-weight:400;margin-top:2px;}' +
+      'td .mk-jastalt,td .mk-bakpalt{display:block;white-space:normal;font-weight:400;margin-top:2px;}' +
       'html{scroll-behavior:smooth;}' +
       '::selection{background:#e67e22;color:#fff;}' +
       ':focus-visible{outline:3px solid #e67e22;outline-offset:2px;border-radius:4px;}' +
@@ -455,7 +455,7 @@
   ensureCss('print.css');
   ensureCss('design.css');   /* 🎨 central designfil – vinner över sidornas :root */
   var scripts = ['logg.js', 'felrapport.js', 'stadare.js', 'print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js', 'emoji.js', 'seo.js', 'hero.js', 'sok.js'];
-  if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js', 'portion.js', 'hydrering.js', 'radio.js', 'jast.js');
+  if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js', 'portion.js', 'hydrering.js', 'radio.js', 'jast.js', 'bakpulver.js');
   if (isRattPage) scripts.push('ratt.js');   /* 🍽️ maträttssidor (ratter/) */
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');
   if (/(nytt-recept|generator|maskin-import|ingredienser|maskindatabas|forslag|matratter)\.html$/i.test(location.pathname)) scripts.push('spara.js');
