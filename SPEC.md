@@ -3165,6 +3165,20 @@ data i json/, ALDRIG per receptfil.
     ALDRIG positionera mot syskonknappar i mk-rnav – appendChild
     gäller, trayen äger ordningen.
 
+175. 🎤 RÖSTINSTRUKTION VID VERIFIERING — ✔️ KLAR (2026-11-14,
+    användarens order "efter att man verifierat en maskin ska man
+    kunna lägga till instruktioner via röst"): verifieringsdialogen
+    har nytt fält "📝 Egen instruktion (valfri)" med 🎤-knapp
+    (Web Speech, sv-SE, kontinuerlig tills ⏹/stängning – samma
+    motor som kockläget; knappen visas bara där API:t stöds,
+    texten kan alltid skrivas/redigeras för hand). Vid sparning
+    skrivs noteringen PERMANENT in vid maskinens ⚙️-ruta:
+    AF-maskiner: "⏱️ Namn: 12 min · 🔄 vänd · 📝 noteringen",
+    övriga maskiner: "📝 Namn: noteringen" (verifierad datum).
+    HTML-escapas, max 300 tecken, gammal rad för samma maskin
+    ersätts som förr (data-mid). Mikrofonen stängs ALLTID vid
+    avbryt/spara (kocklägesregeln).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

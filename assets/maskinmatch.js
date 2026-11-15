@@ -158,6 +158,14 @@
           '<label style="font-size:.9rem;font-weight:700;display:flex;align-items:center;gap:7px;cursor:pointer;margin-top:18px;">' +
           '<input id="mt-vand" type="checkbox" style="width:20px;height:20px;accent-color:#27ae60;"> 🔄 Vänd/skaka halvvägs</label>' +
         '</div>' : '') +
+        /* 🎤 EGEN INSTRUKTION MED RÖST (punkt 175, användarens order):
+           diktera en notering – skrivs in vid maskinens ruta i receptet */
+        '<label style="display:block;font-size:.75rem;font-weight:700;color:#5f6e70;text-transform:uppercase;margin:12px 0 4px;">📝 Egen instruktion (valfri – syns i receptet)</label>' +
+        '<div style="display:flex;gap:8px;align-items:stretch;">' +
+          '<textarea id="mt-note" rows="2" style="flex:1;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.92rem;font-family:inherit;resize:vertical;" placeholder="t.ex. Lossa brödet direkt och kyl på galler..."></textarea>' +
+          (('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) ?
+            '<button type="button" id="mt-rost" title="Diktera med rösten (svenska) – tryck igen för att stoppa" style="width:52px;background:#2c3e50;color:#fff;border:none;border-radius:10px;font-size:1.3rem;cursor:pointer;">🎤</button>' : '') +
+        '</div>' +
         '<div style="display:flex;gap:8px;margin-top:14px;">' +
           '<button id="mt-spara" style="flex:1;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-family:inherit;">✅ Testad &amp; lyckad!</button>' +
           '<button id="mt-avbryt" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-family:inherit;">Avbryt</button>' +
@@ -165,7 +173,30 @@
         '<div id="mt-result" style="margin-top:8px;font-size:.85rem;"></div>' +
       '</div>';
     document.body.appendChild(bg);
-    bg.querySelector('#mt-avbryt').onclick = function () { bg.remove(); };
+    /* 🎤 diktering: sv-SE, kontinuerlig tills man trycker igen/stänger */
+    var rec = null;
+    function rostStopp() { if (rec) { try { rec.stop(); } catch (e) {} rec = null; } var rb = bg.querySelector('#mt-rost'); if (rb) { rb.style.background = '#2c3e50'; rb.textContent = '🎤'; } }
+    var rostBtn = bg.querySelector('#mt-rost');
+    if (rostBtn) rostBtn.onclick = function () {
+      if (rec) { rostStopp(); return; }
+      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      rec = new SR();
+      rec.lang = 'sv-SE';
+      rec.continuous = true;
+      rec.interimResults = false;
+      rec.onresult = function (e) {
+        var ta = bg.querySelector('#mt-note');
+        for (var i = e.resultIndex; i < e.results.length; i++) {
+          if (e.results[i].isFinal) ta.value = (ta.value + ' ' + e.results[i][0].transcript).trim();
+        }
+      };
+      rec.onerror = rostStopp;
+      rec.onend = function () { if (rec) rostStopp(); };
+      rostBtn.style.background = '#c0392b';
+      rostBtn.textContent = '⏹';
+      try { rec.start(); } catch (e) { rostStopp(); }
+    };
+    bg.querySelector('#mt-avbryt').onclick = function () { rostStopp(); bg.remove(); };
     var dn = false;
     bg.addEventListener('mousedown', function (e) { dn = (e.target === bg); });
     bg.addEventListener('click', function (e) { if (e.target === bg && dn) bg.remove(); });
@@ -203,6 +234,9 @@
           tidMin = String((bg.querySelector('#mt-tid') || {}).value || '').replace(/[^\d]/g, '');
           vand = !!(bg.querySelector('#mt-vand') || {}).checked;
         }
+        /* 📝 egen instruktion (punkt 175) – alla maskintyper */
+        var note = String((bg.querySelector('#mt-note') || {}).value || '').trim().slice(0, 300)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         alla[maskin.id] = prog + (vand ? ' · vänd halvvägs' : '') + ' (verifierad ' + idag + ')';
         var inneh = Object.keys(alla).map(function (k) { return k + ': ' + alla[k]; }).join(' | ');
         var rad = '<meta name="recept:testad" content="' + inneh.replace(/"/g, '&quot;') + '">\n';
@@ -212,10 +246,13 @@
           if (ankare.test(txt)) txt = txt.replace(ankare, '$1' + rad);
           else txt = txt.replace(/(<meta\s+name="recept:namn"[^>]*>\s*\n?)/i, '$1' + rad);
         }
-        /* 🍟 AF: skriv ⏱️-raden i INSTRUKTIONERNA vid maskinens ⚙️-ruta (punkt 141) */
-        if (arAF && (tidMin || vand)) {
-          var radTxt = '⏱️ <b>' + maskin.namn + ':</b> ' + (tidMin ? tidMin + ' min' : prog) +
-            (vand ? ' · 🔄 vänd/skaka halvvägs' : '') +
+        /* ⏱️/📝 raden i INSTRUKTIONERNA vid maskinens ⚙️-ruta (punkt 141+175):
+           AF: tid/vändning/notering · övriga maskiner: notering */
+        if ((arAF && (tidMin || vand || note)) || (!arAF && note)) {
+          var radTxt = (arAF
+            ? '⏱️ <b>' + maskin.namn + ':</b> ' + (tidMin ? tidMin + ' min' : prog) +
+              (vand ? ' · 🔄 vänd/skaka halvvägs' : '') + (note ? ' · 📝 ' + note : '')
+            : '📝 <b>' + maskin.namn + ':</b> ' + note) +
             ' <span style="color:#5f6e70;font-size:.85em;">(verifierad ' + idag + ')</span>';
           var divNy = '<div class="mk-aftid" data-mid="' + maskin.id + '" ' +
             'style="margin-top:8px;padding:8px 12px;background:#eafaf1;border:1.5px solid #27ae60;' +
@@ -259,6 +296,7 @@
         }
         var a2 = lasTestade(); a2[maskin.id] = prog;
         mEl.setAttribute('content', Object.keys(a2).map(function (k) { return k + ': ' + a2[k]; }).join(' | '));
+        rostStopp();
         bg.remove();
         var gammal = document.getElementById('mk-maskinmatch');
         if (gammal) gammal.remove();
