@@ -3610,6 +3610,19 @@ data i json/, ALDRIG per receptfil.
     recept/brod/ + kategori-meta brod (ägarens order "- bröd");
     robotarna (index/sitemap/energi) läker resten. sw v223.
 
+232. 🧩 STEGRADSFILTER I OMATCHAD-SKANNERN (putsen, beställd till
+    listan 2026-11-15): i äldre recept med print-layout (äppelkakan,
+    tomatsåsen, lökbrödet m.fl.) ligger "Gör så här"-stegen som
+    RADER I SAMMA TABELL som ingredienserna → adminpanelens
+    🧩-skanner (SPEC 227) listar stegtexter som "omatchade
+    ingredienser". Fix när den byggs: återanvänd parseText-reglerna
+    (serUtSomMening: slutar med skiljetecken / >7 ord / innehåller
+    verb som häll/blanda/grädda; rubrikrader 🥣/⚙️/💡/📊; numrerade
+    steg "1.") för att HOPPA ÖVER icke-ingrediensrader i skannern –
+    och samma filter i kalkylens "Ej i databasen"-varning. Endast
+    filtrering vid LÄSNING – receptfilerna rörs aldrig. Byggs på
+    order.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
