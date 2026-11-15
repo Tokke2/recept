@@ -3623,6 +3623,22 @@ data i json/, ALDRIG per receptfil.
     filtrering vid LÄSNING – receptfilerna rörs aldrig. Byggs på
     order.
 
+233. ✔️ KLAR – 🔔 INDEXNOW-ROBOTEN (förslag 1010, ägarens order
+    2026-11-15 efter Bing-registreringen: sajten verifierad,
+    sitemap Success med 51 URL:er samma dag): varje push till main
+    anmäler ÄNDRADE HTML-sidor till api.indexnow.org (når Bing
+    m.fl. – ChatGPT kör Bings index).
+    · Nyckelfil i sajtroten (991bf49e43471533d8b76c6b68c1581f.txt,
+      innehåll = nyckeln; publik per IndexNow-standarden, inget
+      hemligt). keyLocation ger scope /recept/*.
+    · .github/workflows/indexnow.yml (on: push main) kör
+      indexnow.py: git diff HEAD^ (core.quotepath=off – åäö-
+      filnamn citeras aldrig sönder, DRY-testat med test-bröd →
+      %C3%B6), endast *.html + startsidan vid sitemap/llms-ändring,
+      max 100/push, sover 120 s så Pages hinner publicera, fel
+      fäller ALDRIG bygget.
+    · DRY=1-läge för tester. Ingen sw-bump (ingen klientkod).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
