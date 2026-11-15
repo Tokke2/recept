@@ -3484,13 +3484,15 @@
   "⚙️ Steg 16: Ninja AF500EUCP (koppar/svart) (Airfryer) ·": "⚙️ Schritt 16: Ninja AF500EUCP (Kupfer/Schwarz) (Airfryer) ·",
   "🥯 FYLLNING: Hushållsost (skivor, ca 8 st à 15 g) – läggs i EFTER jäsning!": "🥯 FÜLLUNG: Hüttenkäse (Scheiben, ca. 8 Stück à 15 g) – NACH der Gärung hinzugefügt!",
   "🧀 Ostfyllda frallor – Bakmaskin": "🧀 Mit Käse gefüllte Brötchen – Backmaschine",
-  "🧀 Ostfyllda frallor – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🧀 Mit Käse gefüllte Brötchen – Backmaschine – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche"
+  "🧀 Ostfyllda frallor – Bakmaskin – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🧀 Mit Käse gefüllte Brötchen – Backmaschine – Clatronic BBA 3774 & COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche",
+  "går ändå att skjuta appen åt sidan på mobil": "Sie können die App auf Mobilgeräten immer noch zur Seite schieben",
+  "📏 Sidledsvakten: sidan är": "📏 Der Seitenschutz: Die Seite ist"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3483,
+ "_auto_genererade": 3485,
  "_senast_robot": "2026-11-15"
 }
