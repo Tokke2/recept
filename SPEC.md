@@ -3344,7 +3344,7 @@ data i json/, ALDRIG per receptfil.
     exakta maskinprogram (blender/riskokare). Recepten skrivs som
     OVERIFIERADE tills admin bakat/blandat. Byggs på order.
 
-190. 🏷️ UNDERKATEGORI-MÖNSTRET GENERELLT (förslag 952, beställd
+190. ✔️ KLAR (2026-11-15) – 🏷️ UNDERKATEGORI-MOTORN: central definition window.__MK_UNDERKAT i site.js driver ALLA tre UI:n (recept.html-rullgardinen, redigera 🗂️, nytt-recept). Definierade nu (punkttextens exempel): sas→Dipp, glass→Sorbet, brod→Söta bröd. NY underkategori = EN rad i site.js på ägarorder. — URSPRUNGSTEXT: (förslag 952, beställd
     till listan 2026-11-15): dipp-motorn (recept:underkategori +
     ↳-chip + 🗂️-val, punkt 185) återanvänds för fler: t.ex.
     Glass → Sorbet, Bröd → Söta bröd. Varje ny underkategori
@@ -3377,7 +3377,7 @@ data i json/, ALDRIG per receptfil.
     "tillbaka"/"läs upp" (sv-SE, samma SpeechRecognition-mönster som
     175/179) – degiga fingrar behöver aldrig röra skärmen. Byggs på order.
 
-197. ✅ INGREDIENS-AVBOCKNING (förslag 976): tap på ingredienschip i
+197. ✔️ KLAR (2026-11-15, kockläges-chips klickbara → genomstruket, sessionStorage mk-avbock:<fil> per recept-session, följer med genom alla steg – jsdom-testat inkl. persistens) – ✅ INGREDIENS-AVBOCKNING (förslag 976): tap på ingredienschip i
     kockläget = genomstruken, följer med genom ALLA steg (per
     recept-session). Byggs på order.
 
@@ -3432,7 +3432,7 @@ data i json/, ALDRIG per receptfil.
     språkrobotens en/de-texter i json/sprak/. Listan byggs ut i SPEC
     allteftersom ägaren godkänner nya ord. Byggs på order.
 
-209. 🔗 AFFILIATE-RÖTVAKTEN (förslag 1023): robotsteg som kollar
+209. ✔️ KLAR (2026-11-15, robotsteg 18: ingrediensernas lank + maskinernas lankar, HEAD→GET-fallback, endast 404/410 = DÖD (botskydd 403/405/429/503 larmar ALDRIG), max 80/körning, endast rapport – sandlådetestad mot riktiga URL:er) – 🔗 AFFILIATE-RÖTVAKTEN (förslag 1023): robotsteg som kollar
     produkt-/affiliatelänkar (HEAD-anrop): 404/301-kedjor/utgångna →
     rapport, aldrig autoborttagning. Byggs på order.
 
@@ -3452,7 +3452,7 @@ data i json/, ALDRIG per receptfil.
     (Web3Forms) → publik önskelista med röstning (abacus-räknarna),
     admin godkänner innan publicering. Byggs på order.
 
-214. 💌 TIPSA EN VÄN (förslag 1033): mailto-knapp med färdigt
+214. ✔️ KLAR (2026-11-15, assets/tipsa.js: 💌-knapp i verktygsraden → mailto med namn+maskinrad+länk, noll tracking) – 💌 TIPSA EN VÄN (förslag 1033): mailto-knapp med färdigt
     receptkort i brödtexten (namn, maskin, tid, länk) – ingen
     tracking, inga tredjepartstjänster. Byggs på order.
 
@@ -3470,7 +3470,7 @@ data i json/, ALDRIG per receptfil.
 218. ❄️ FRYSETIKETTEN (förslag 1042): etikettmotorn (etikett.js) får
     frysvariant: namn + infrysningsdatum + QR. Byggs på order.
 
-219. 🎁 GÅVOETIKETTEN (förslag 1043): etikettvariant för bortskänkta
+219. ✔️ KLAR (2026-11-15, 🎁-kryss i etikettdialogen → innehållsförteckning ur städade ingrediensnamn på etiketten, alla storlekar/skrivare) – 🎁 GÅVOETIKETTEN (förslag 1043): etikettvariant för bortskänkta
     burkar: "hemgjord sylt" + ingredienslista + bäst före. Byggs på order.
 
 220. 👓 LÄTTLÄST-VÄXELN (förslag 1047): dyslexivänligare systemtypsnitt

@@ -564,10 +564,12 @@ function buildTabs() {
   RECIPES.forEach(r => { r.kat = (r.kategori && KATEGORIER.some(k => k.id === r.kategori)) ? r.kategori : kategoriFor(r); });
   /* 🫕 UNDERKATEGORI (punkt 185): endast "dipp" under Sås just nu.
      Metan (ägarens ord) vinner – annars gissas på namnet/taggarna. */
+  const UNDERKAT = window.__MK_UNDERKAT || { sas: [['dipp', '🫕 Dipp']], glass: [['sorbet', '🧊 Sorbet']], brod: [['sota', '🍩 Söta bröd']] };
   RECIPES.forEach(r => {
-    r.under = (r.kat === 'sas')
-      ? (r.under === 'dipp' ? 'dipp' : (/(^|[^a-zåäö])dipp/i.test(r.namn + ' ' + r.taggar.join(' ')) ? 'dipp' : ''))
-      : '';
+    const giltiga = (UNDERKAT[r.kat] || []).map(u => u[0]);
+    r.under = giltiga.includes(r.under) ? r.under
+      /* namngissning endast för dipp (visningssida – metan vinner alltid) */
+      : (r.kat === 'sas' && /(^|[^a-zåäö])dipp/i.test(r.namn + ' ' + r.taggar.join(' ')) ? 'dipp' : '');
   });
   buildKats();
   const used = new Set();
@@ -602,10 +604,10 @@ function buildKats() {
     const n = RECIPES.filter(r => r.kat === k.id).length;
     if (!n) return;
     opts += `<option value="${k.id}">${k.emoji} ${k.namn} (${n})</option>`;
-    if (k.id === 'sas') {
-      const nd = RECIPES.filter(r => r.kat === 'sas' && r.under === 'dipp').length;
-      if (nd) opts += `<option value="sas:dipp">\u00a0\u00a0↳ 🫕 Dipp (${nd})</option>`;
-    }
+    ((window.__MK_UNDERKAT || {})[k.id] || []).forEach(([uid, unamn]) => {
+      const nu = RECIPES.filter(r => r.kat === k.id && r.under === uid).length;
+      if (nu) opts += `<option value="${k.id}:${uid}">\u00a0\u00a0↳ ${unamn} (${nu})</option>`;
+    });
   });
   document.getElementById('katbar').innerHTML =
     `<label style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem;flex-wrap:wrap;">🏷️ Kategori:` +
@@ -705,7 +707,7 @@ function apply() {
   const filtered = list.filter(r => {
     const text = (r.namn + ' ' + r.beskrivning + ' ' + r.taggar.join(' ') + ' ' + r.maskiner.join(' ')).toLowerCase();
     return (!q || text.includes(q)) && (activeTab === 'all' || r.maskin_ids.includes(activeTab)) &&
-           (activeKat === 'all' || (activeKat === 'sas:dipp' ? (r.kat === 'sas' && r.under === 'dipp') : r.kat === activeKat)) &&
+           (activeKat === 'all' || (activeKat.includes(':') ? (r.kat === activeKat.split(':')[0] && r.under === activeKat.split(':')[1]) : r.kat === activeKat)) &&
            (!MAKRO.prot || (r.makro && r.makro.prot100 >= 8)) &&
            (!MAKRO.latt || (r.makro && r.makro.kcal100 <= 150));
   });

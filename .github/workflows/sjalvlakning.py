@@ -1038,6 +1038,60 @@ def steg17_internlankar():
                 fp.write(h)
 
 
+def steg18_affiliaterot():
+    """🔗 AFFILIATE-RÖTVAKTEN (SPEC 209, förslag 1023): kollar alla
+    produkt-/butikslänkar (ingrediensernas lank + maskinernas lankar).
+    404/410 = DÖD länk → rapportrad. Botskydd (403/405/429/503 även
+    efter GET-försök) rapporteras ALDRIG (inga falsklarm). ENDAST
+    RAPPORT – roboten tar aldrig bort länkar själv."""
+    import json as _json
+    import urllib.request
+    import urllib.error
+    urler = set()
+    try:
+        d = _json.load(open('json/ingredienser.json', encoding='utf-8'))
+        for i in d.get('ingredienser', []):
+            u = str(i.get('lank') or '')
+            if u.startswith('http'):
+                urler.add(u)
+    except Exception:
+        pass
+    for f in sorted(glob.glob('json/maskiner/*.json')):
+        try:
+            m = _json.load(open(f, encoding='utf-8'))
+        except Exception:
+            continue
+        ln = m.get('lankar') or {}
+        if isinstance(ln, dict):
+            for u in ln.values():
+                if isinstance(u, str) and u.startswith('http'):
+                    urler.add(u)
+    UA = {'User-Agent': 'Mozilla/5.0 (compatible; MittMaskinkok-lankvakt)'}
+
+    def status_for(u, metod):
+        req = urllib.request.Request(u, method=metod, headers=UA)
+        try:
+            with urllib.request.urlopen(req, timeout=8) as r:
+                return r.status
+        except urllib.error.HTTPError as e:
+            return e.code
+        except Exception:
+            return None
+
+    kollade = 0
+    for u in sorted(urler):
+        if kollade >= 80:
+            break
+        kollade += 1
+        st = status_for(u, 'HEAD')
+        if st in (403, 405, 429, 503) or st is None:
+            st = status_for(u, 'GET')
+        if st in (404, 410):
+            rader.append('| %s | 🔗 DÖD produktlänk (HTTP %d) – byt via ✏️-dialogen (steg18) |' % (u[:90], st))
+        elif st is None:
+            rader.append('| %s | 🔗 gick inte att nå (nätfel/timeout) – kontrollera manuellt (steg18) |' % u[:90])
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -1054,6 +1108,7 @@ def main():
     steg14b_brodtitlar()
     steg16_programvakten(maskiner)
     steg17_internlankar()
+    steg18_affiliaterot()
     steg12_beskrivningar()
     steg6_sitemap()
     steg7_receptindex()

@@ -294,7 +294,7 @@ const GENERIC = ['efterrätt','dessert','fika','fest','snack','mat'];
 /* 📁 KATEGORIER = mappar i recept/ (samma id:n som recept.html).
    Gissas av titel+taggar (prioriterad ordlista) – användaren kan ändra. */
 const KATTER = [
-  ['husdjur','🐶 Husdjur'],['sas','🥣 Sås & dressing'],['sas:dipp','🥣 Sås → 🫕 Dipp'],['sylt','🫙 Sylt & marmelad'],['saft','🧃 Saft & dryck'],
+  ['husdjur','🐶 Husdjur'],['sas','🥣 Sås & dressing'],['sylt','🫙 Sylt & marmelad'],['saft','🧃 Saft & dryck'],
   ['glass','🍦 Glass & fryst'],['snacks','🥨 Snacks'],['brod','🍞 Bröd'],['deg','🥖 Deg'],
   ['bakning','🍰 Bakning & fika'],['efterratt','🍮 Efterrätt'],['varmratt','🍲 Varmrätter'],['ovrigt','🍽️ Övrigt']];
 const KAT_ORD = [
@@ -807,7 +807,14 @@ async function analyze() {
   document.getElementById('fFil').value = slug(PARSED.namn) + '.html';
   /* 📁 kategori-gissning (titel+taggar) – dropdownen byggs med gissningen vald */
   const gKat = metaOf('kategori') || gissaKat(PARSED.namn + ' ' + allText);
-  document.getElementById('fKat').innerHTML = KATTER.map(k =>
+  /* 🏷️ UNDERKATEGORIERNA (SPEC 190): expanderas ur centrala __MK_UNDERKAT */
+  const UK = window.__MK_UNDERKAT || { sas: [['dipp', '🫕 Dipp']] };
+  const KATTER_ALLA = [];
+  KATTER.forEach(k => {
+    KATTER_ALLA.push(k);
+    (UK[k[0]] || []).forEach(u => KATTER_ALLA.push([k[0] + ':' + u[0], k[1] + ' → ' + u[1]]));
+  });
+  document.getElementById('fKat').innerHTML = KATTER_ALLA.map(k =>
     '<option value="' + k[0] + '"' + (k[0] === gKat ? ' selected' : '') + '>' + k[1] + '</option>').join('');
   document.getElementById('fBeskr').value = metaOf('beskrivning') ||
     PARSED.others.find(o => o.length > 20 && o.length < 160) ||

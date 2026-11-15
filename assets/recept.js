@@ -69,6 +69,19 @@
     c.querySelectorAll(UI_SKRAP).forEach(function (x) { x.remove(); });
     return c.textContent.replace(/[✕✖]/g, ' ').replace(/\s+/g, ' ').trim();
   }
+  /* ✅ AVBOCKNINGSLAGRET (SPEC 197): per recept & webbläsarsession –
+     ny session = tom lista (sessionStorage, precis som punkttexten). */
+  var AVB_NYCKEL = 'mk-avbock:' + decodeURIComponent(location.pathname.split('/').pop());
+  function avbSet() {
+    try { return new Set(JSON.parse(sessionStorage.getItem(AVB_NYCKEL) || '[]')); } catch (e) { return new Set(); }
+  }
+  function avbockad(k) { return avbSet().has(k); }
+  function sattAvbock(k, pa) {
+    var st = avbSet();
+    if (pa) st.add(k); else st.delete(k);
+    try { sessionStorage.setItem(AVB_NYCKEL, JSON.stringify([...st])); } catch (e) {}
+  }
+
   function renTabellHtml() {
     var kalla = ingTabellEl;
     if (!kalla) return ingHTML;
@@ -522,14 +535,19 @@
           if (s.isIngredients) return '';
           var used = ingredientsInStep(s.plain);
           if (!used.length) return '';
+          /* ✅ AVBOCKNING (SPEC 197): tap på chip = genomstruken,
+             följer med genom ALLA steg under recept-sessionen. */
           return '<div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;">' +
             used.map(function (ing) {
               /* 🦠 jästkonvertering även i kockläget (användarens regel) */
               var jastAlt = window.__MK_JAST_ALT ? window.__MK_JAST_ALT(ing.namn, ing.mangd) : '';
               /* 🧁 bakpulver→bikarbonat även i kockläget (SPEC-punkt 184) */
               jastAlt += window.__MK_BAKP_ALT ? window.__MK_BAKP_ALT(ing.namn, ing.mangd) : '';
-              return '<span style="background:rgba(39,174,96,.25);border:1px solid rgba(39,174,96,.6);' +
-                'border-radius:999px;padding:6px 14px;font-size:.95rem;font-weight:700;">' +
+              var avbKey = ing.namn.toLowerCase().replace(/\s+/g, ' ').trim();
+              var avb = avbockad(avbKey);
+              return '<span class="cmIngChip" data-avb="' + avbKey.replace(/"/g, '') + '" style="background:rgba(39,174,96,.25);border:1px solid rgba(39,174,96,.6);' +
+                'border-radius:999px;padding:6px 14px;font-size:.95rem;font-weight:700;cursor:pointer;-webkit-user-select:none;user-select:none;' +
+                (avb ? 'opacity:.4;text-decoration:line-through;' : '') + '" title="Tryck när ingrediensen är i – bocken följer med genom alla steg">' +
                 ing.namn.replace(/\([^)]*\)/g, '').trim() + ' · ' + ing.mangd + jastAlt + '</span>';
             }).join('') + '</div>';
         })() +
@@ -603,6 +621,17 @@
       };
       paintRost();   /* återställ knappens läge efter stegbyte */
     }
+    /* ✅ avbockningschipsen (SPEC 197) */
+    overlay.querySelectorAll('.cmIngChip').forEach(function (c) {
+      c.onclick = function () {
+        var k = c.getAttribute('data-avb');
+        var nu = !avbockad(k);
+        sattAvbock(k, nu);
+        c.style.opacity = nu ? '.4' : '';
+        c.style.textDecoration = nu ? 'line-through' : '';
+        if (navigator.vibrate) try { navigator.vibrate(15); } catch (e) {}
+      };
+    });
     overlay.querySelectorAll('.cmT').forEach(function (b) {
       b.onclick = function () { startTimer(+b.dataset.s, b.dataset.l); };
     });

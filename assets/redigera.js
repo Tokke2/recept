@@ -1406,11 +1406,20 @@
 
     /* 🗂️ Kategorier (samma lista som recept.html) + nuvarande värden ur meta */
     var KATTER = [
-      ['', '🤖 Auto (gissas)'], ['husdjur', '🐶 Husdjur'], ['sas', '🥣 Sås & dressing'], ['sas:dipp', '🥣 Sås → 🫕 Dipp'], ['sylt', '🫙 Sylt & marmelad'],
+      ['', '🤖 Auto (gissas)'], ['husdjur', '🐶 Husdjur'], ['sas', '🥣 Sås & dressing'], ['sylt', '🫙 Sylt & marmelad'],
       ['saft', '🧃 Saft & dryck'], ['glass', '🍦 Glass & fryst'], ['snacks', '🥨 Snacks'],
       ['brod', '🍞 Bröd'], ['deg', '🥖 Deg'], ['bakning', '🍰 Bakning & fika'],
       ['efterratt', '🍮 Efterrätt'], ['varmratt', '🍲 Varmrätter'], ['ovrigt', '🍽️ Övrigt']
     ];
+    /* 🏷️ UNDERKATEGORIERNA (SPEC 190): expanderas ur centrala
+       __MK_UNDERKAT (site.js) – värde "kat:under", mappen splittas
+       alltid på ':' vid sparning/flytt. */
+    var UK = window.__MK_UNDERKAT || { sas: [['dipp', '🫕 Dipp']] };
+    var KATTER_ALLA = [];
+    KATTER.forEach(function (k) {
+      KATTER_ALLA.push(k);
+      (UK[k[0]] || []).forEach(function (u) { KATTER_ALLA.push([k[0] + ':' + u[0], k[1] + ' → ' + u[1]]); });
+    });
     var metaKat = (document.querySelector('meta[name="recept:kategori"]') || {}).content || '';
     /* 🫕 UNDERKATEGORI (SPEC-punkt 185): "dipp" under Sås – lagras i egen
        meta (recept:underkategori), mappen är fortfarande recept/sas/ */
@@ -1426,7 +1435,7 @@
       '<span id="eb-dirty" style="font-size:.78rem;opacity:.85;"></span>' +
       '<label style="display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:700;" title="Var receptet hamnar i receptsamlingen. Auto = gissas av namnet/taggarna.">🗂️' +
         '<select id="eb-kat" style="border:none;border-radius:8px;padding:6px 8px;font-size:.8rem;font-family:inherit;font-weight:700;color:#2c3e50;cursor:pointer;max-width:170px;">' +
-        KATTER.map(function (k) {
+        KATTER_ALLA.map(function (k) {
           return '<option value="' + k[0] + '"' + (k[0] === metaKat ? ' selected' : '') + '>' + k[1] + '</option>';
         }).join('') + '</select></label>' +
       '<label style="display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,.15);border-radius:8px;padding:6px 10px;" ' +

@@ -27,6 +27,21 @@
    HÄR, tidigt, så sidan inte hoppar. Ren rem-skalning – all CSS
    i rem/em följer med automatiskt.
    ============================================================ */
+/* ============================================================
+   🏷️ UNDERKATEGORIERNA – CENTRAL DEFINITION (SPEC-punkt 190):
+   dipp-motorn (185) generaliserad. EN plats styr rullgardinen i
+   recept.html, 🗂️-väljaren i redigera.js och kategorivalet i
+   nytt-recept.html. Ny underkategori = EN rad här (ägarens order
+   krävs – robotar gissar aldrig). Lagras som egen meta
+   recept:underkategori; filerna ligger kvar i huvudkategorins
+   mapp (kategorivakten opåverkad).
+   ============================================================ */
+window.__MK_UNDERKAT = {
+  sas:   [['dipp', '🫕 Dipp']],
+  glass: [['sorbet', '🧊 Sorbet']],
+  brod:  [['sota', '🍩 Söta bröd']]
+};
+
 (function () {
   'use strict';
   var NIV = ['', '112%', '125%'];
@@ -489,7 +504,7 @@
   ensureCss('print.css');
   ensureCss('design.css');   /* 🎨 central designfil – vinner över sidornas :root */
   var scripts = ['logg.js', 'felrapport.js', 'stadare.js', 'print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js', 'emoji.js', 'seo.js', 'hero.js', 'sok.js'];
-  if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js', 'portion.js', 'hydrering.js', 'radio.js', 'jast.js', 'bakpulver.js', 'inkopslista.js');
+  if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js', 'portion.js', 'hydrering.js', 'radio.js', 'jast.js', 'bakpulver.js', 'inkopslista.js', 'tipsa.js');
   if (isRattPage) scripts.push('ratt.js');   /* 🍽️ maträttssidor (ratter/) */
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');
   if (/(nytt-recept|generator|maskin-import|ingredienser|maskindatabas|forslag|matratter)\.html$/i.test(location.pathname)) scripts.push('spara.js');

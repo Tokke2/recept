@@ -92,7 +92,33 @@
   }
 
   /* ---------- Bygg utskriftsarket ---------- */
-  function skrivUt(antal, storlek, datum, extraRad, bastFore) {
+  /* 🎁 GÅVOLÄGET (SPEC 219): innehållsförteckning ur ingredienstabellen
+     – för bortskänkta burkar (namnen, aldrig mängder; städade celler). */
+  function innehallsLista() {
+    var tbl = document.querySelector('.mk-ing2');
+    if (!tbl) {
+      var cards = document.querySelectorAll('.card');
+      for (var i = 0; i < cards.length; i++) {
+        var h = cards[i].querySelector('h2');
+        if (h && /ingrediens/i.test(h.textContent)) { tbl = cards[i].querySelector('table'); break; }
+      }
+    }
+    if (!tbl) return '';
+    var ut = [];
+    tbl.querySelectorAll('tr').forEach(function (tr) {
+      if (tr.classList.contains('total')) return;
+      var tds = tr.querySelectorAll('td');
+      if (tds.length < 2) return;
+      var c = tds[0].cloneNode(true);
+      c.querySelectorAll('select, button, .mg, .mk-saknas, .mk-prodlank, .drop, .mk-rowbtn, .mk-ingsub, .mk-jastalt, .mk-bakpalt, .no-print').forEach(function (x) { x.remove(); });
+      var n = c.textContent.replace(/[✕✖✓🛒💧]/g, ' ').replace(/\s+/g, ' ').trim();
+      n = n.replace(/^[^A-Za-zÅÄÖåäö0-9]+/, '').replace(/\([^)]*\)/g, '').trim();
+      if (n && !/^total/i.test(n) && n.length > 1) ut.push(n);
+    });
+    return ut.join(', ');
+  }
+
+  function skrivUt(antal, storlek, datum, extraRad, bastFore, gava) {
     var S = STORLEKAR[storlek];
     var rulle = S.lage === 'rulle';
     var namn = receptNamn(), emoji = receptEmoji();
@@ -138,6 +164,10 @@
       '</div><div style="font-size:' + (S.fs - 2.5) + 'pt;">(' + esc(bastFore.forvaring) + ')</div>';
     if (info) en += '<div style="font-size:' + (S.fs - 1.5) + 'pt;">' + info.kcal + ' kcal/100 g · ' + info.kr.toLocaleString('sv-SE') + ' kr/kg</div>';
     if (extraRad) en += '<div style="font-size:' + (S.fs - 1.5) + 'pt;font-style:italic;">' + esc(extraRad) + '</div>';
+    if (gava) {
+      var inneh = innehallsLista();
+      if (inneh) en += '<div style="font-size:' + (S.fs - 2.8) + 'pt;line-height:1.2;max-height:' + (S.fs * 3.2) + 'pt;overflow:hidden;margin-top:0.6mm;">🎁 Hemgjord · Innehåll: ' + esc(inneh) + '</div>';
+    }
     if (S.qr) en += '<img src="' + qrUrl(S.qr * 4) + '" style="width:' + S.qr + 'mm;height:' + S.qr + 'mm;margin-top:1mm;" alt="QR">';
     en += '</div>';
     ark.innerHTML = new Array(antal + 1).join(en);
@@ -192,6 +222,8 @@
         '<label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:4px;">📅 Bäst före <span style="font-weight:400;color:#5f6e70;">(räknas ut av receptet – ändra fritt)</span></label>' +
         '<input id="et-bastfore" type="text" value="' + (autoBf ? autoBf.datum : '') + '" placeholder="lämna tomt för att utelämna" style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.9rem;font-family:inherit;margin-bottom:4px;">' +
         (autoBf ? '<p style="font-size:.74rem;color:#27ae60;margin:0 0 12px;">🤖 ' + autoBf.dagar + ' dagar (' + autoBf.forvaring + ') utifrån recepttypen</p>' : '<p style="margin:0 0 12px;"></p>') +
+        '<label style="display:flex;align-items:center;gap:8px;font-size:.86rem;font-weight:700;margin:0 0 12px;cursor:pointer;background:#fdf6ee;border:1.5px solid #ead9c2;border-radius:10px;padding:10px 12px;">' +
+          '<input type="checkbox" id="et-gava" style="width:17px;height:17px;accent-color:#c0392b;cursor:pointer;">🎁 Gåvoetikett – innehållsförteckningen följer med (för bortskänkta burkar)</label>' +
         '<label style="display:block;font-size:.82rem;font-weight:700;margin-bottom:4px;">Extra rad (valfritt)</label>' +
         '<input id="et-extra" type="text" placeholder="t.ex. Öppnad burk: 1 vecka i kyl" style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.9rem;font-family:inherit;margin-bottom:16px;">' +
         '<div style="display:flex;gap:10px;">' +
@@ -213,8 +245,9 @@
       var extra = bg.querySelector('#et-extra').value.trim();
       var bfText = bg.querySelector('#et-bastfore').value.trim();
       var bastFore = bfText ? { datum: bfText, forvaring: (autoBf && autoBf.datum === bfText) ? autoBf.forvaring : 'se recept' } : null;
+      var gava = !!bg.querySelector('#et-gava').checked;
       stang();
-      skrivUt(antal, storlek, datum, extra, bastFore);
+      skrivUt(antal, storlek, datum, extra, bastFore, gava);
     };
   }
 
