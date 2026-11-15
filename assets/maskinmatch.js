@@ -73,7 +73,13 @@
     try {
       var idx = await (await fetch((window.__MK_ROT || '../') + 'json/maskiner-index.json')).json();
       await Promise.all(idx.map(async function (f) {
-        try { out.push(await (await fetch((window.__MK_ROT || '../') + 'json/maskiner/' + f)).json()); } catch (e) {}
+        try {
+          var mj = await (await fetch((window.__MK_ROT || '../') + 'json/maskiner/' + f)).json();
+          /* 🚫 SPÄRRADE PROGRAM (SPEC 225): anvands_ej-program göms för
+             förslag/alternativ – receptens egen text styr fortfarande. */
+          mj.program = (mj.program || []).filter(function (pr) { return !pr.anvands_ej; });
+          out.push(mj);
+        } catch (e) {}
       }));
       try { sessionStorage.setItem('mk-maskinpark', JSON.stringify(out)); } catch (e) {}
     } catch (e) {}

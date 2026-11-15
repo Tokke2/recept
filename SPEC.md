@@ -3502,6 +3502,33 @@ data i json/, ALDRIG per receptfil.
     breda tabeller i .card) scrollar vidare som vanligt – låset
     sitter på body-nivån. jsdom-testat med stubbad layout. sw v219.
 
+225. ✔️ KLAR – 🚫 BAKMASKINEN = ENDAST DEG (ägarens order 2026-11-15,
+    bekräftad i frågerundan: tolkning B + airfryer-ersättning +
+    spärr överallt): bakmaskinens gräddande program används ALDRIG
+    mer i recepten – endast 8. Dough (Deg). All gräddning sker i
+    COSORI-airfryern med ⏳-regeln (tid/temp sätts först vid admin-
+    verifiering, 179-maskeringen gäller – inga påhittade tider).
+    A) 10 recept konverterade: protein-ostbröd, toastbröd, whey-
+    bröd, rostbröd, grekiskt lantbröd, rivet äpple, lökbröd (alla
+    Sandwich→Dough + formning/jäsning + AF-gräddning), majsbröd
+    (Cake-smet → helt utan bakmaskin, AF-gräddning, omtitlad till
+    COSORI), majsfrallor + ostfyllda frallor (bakmaskinsgräddnings-
+    alternativen borttagna, stegen omnumrerade), Snabb limpa
+    (12. Bake-rutan → "Gräddning (limpa)" i COSORI). Schema-steg
+    städade. Energitabellernas gamla programrader uppdateras av
+    energiroboten från nya metan.
+    B) SPÄRREN: clatronic-bba3774.json – 10 program märkta
+    anvands_ej + skäl (8. Dough och 9. Jam kvar; Jam är ingen
+    gräddning – säg till om den också ska bort). maskindatabas.html
+    visar "🚫 används ej"-badge (fakta döljs aldrig), nytt-recept
+    och maskinmatch filtrerar bort spärrade program ur alla förslag.
+    C) ROBOTVAKT steg16: spärrat program i någon recept-meta →
+    rapportrad, aldrig autoändring.
+    D) UNDANTAG mägarens granskning: pajdeg + biscoff-smuldeg kör
+    10. Cake ENDAST som kort knådning (6 min, avbryts före all
+    gräddning) – de flaggas nu av steg16 tills ägaren beslutat
+    (byt till Dough eller godkänn undantag). sw v220.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

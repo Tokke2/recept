@@ -415,7 +415,8 @@ async function init() {
     notes: (m.viktigt || []).join(' · ') || null,
     programs: (m.program || []).map(p => ({
       name: p.namn, type: p.typ, time: p.standardtid || '-',
-      desc: p.beskrivning, best: p.bast_for, keywords: p.nyckelord || []
+      desc: p.beskrivning, best: p.bast_for, keywords: p.nyckelord || [],
+      sparr: !!p.anvands_ej, sparrSkal: p.anvands_ej_skal || ''
     }))
   }));
   renderAll();
@@ -562,7 +563,7 @@ function renderAll() {
         <tbody>
         ${m.programs.map(p => `
           <tr>
-            <td class="prog-name">${p.name}<span class="prog-type">${p.type}</span></td>
+            <td class="prog-name">${p.name}${p.sparr ? ` <span title="${p.sparrSkal.replace(/"/g,'&quot;')}" style="background:#fdecea;color:#c0392b;border-radius:999px;padding:1px 8px;font-size:.72rem;font-weight:700;white-space:nowrap;">🚫 används ej</span>` : ''}<span class="prog-type">${p.type}</span></td>
             <td class="time">${p.time}</td>
             <td>${p.desc}</td>
             <td><span class="badge">${p.best}</span></td>

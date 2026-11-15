@@ -534,7 +534,13 @@ async function loadMachines() {
   try {
     const idx = await (await fetch('json/maskiner-index.json')).json();
     await Promise.all(idx.map(async f => {
-      try { MACHINES.push(await (await fetch('json/maskiner/' + f)).json()); } catch (e) {}
+      try {
+        const mj = await (await fetch('json/maskiner/' + f)).json();
+        /* 🚫 SPÄRRADE PROGRAM (SPEC 225): ägarmärkta anvands_ej-program
+           ska ALDRIG föreslås i nya recept – filtreras bort vid källan. */
+        mj.program = (mj.program || []).filter(pr => !pr.anvands_ej);
+        MACHINES.push(mj);
+      } catch (e) {}
     }));
   } catch (e) {}
   return MACHINES;

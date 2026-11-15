@@ -945,6 +945,40 @@ def steg14b_brodtitlar():
         rader.append('| %s | 🍞 brödtitel → "%s" (steg14b) |' % (f, _h.unescape(nytt)[:60]))
 
 
+def steg16_programvakten(maskiner):
+    """🚫 PROGRAMVAKTEN (SPEC 225, ägarens order "bakmaskinens bake-
+    program ska ej användas, endast degprogrammet"): program märkta
+    anvands_ej i maskin-json får inte förekomma i receptens
+    recept:maskiner-meta. ENDAST RAPPORT – roboten ändrar aldrig
+    recept själv (ägarens order styr, agenten verkställer)."""
+    import re as _re
+    sparr = []   # (maskinnamn-nyckel, programnamn)
+    for m in maskiner.values():
+        namn = (str(m.get('varumarke', '')) + ' ' + str(m.get('modellnamn', ''))).strip()
+        for pr in m.get('program', []):
+            if pr.get('anvands_ej') and pr.get('namn'):
+                sparr.append((namn.lower(), str(pr['namn'])))
+    if not sparr:
+        return
+    for f in sorted(glob.glob('recept/*/*.html')):
+        try:
+            with open(f, encoding='utf-8') as fp:
+                html = fp.read()
+        except OSError:
+            continue
+        if 'STUB - receptet har flyttat' in html[:500]:
+            continue
+        mm = _re.search(r'name="recept:maskiner" content="([^"]*)"', html)
+        if not mm:
+            continue
+        meta = mm.group(1)
+        for seg in meta.split('|'):
+            seg_l = seg.lower()
+            for mnamn, pnamn in sparr:
+                if mnamn and mnamn.split(' ')[0] in seg_l and pnamn.lower() in seg_l:
+                    rader.append('| %s | 🚫 spärrat program i metan: "%s" (%s) – ägarorder krävs (steg16) |' % (f, pnamn, mnamn))
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -959,6 +993,7 @@ def main():
     steg13_kategorivakt()
     steg14_titelstandard(maskiner)
     steg14b_brodtitlar()
+    steg16_programvakten(maskiner)
     steg12_beskrivningar()
     steg6_sitemap()
     steg7_receptindex()

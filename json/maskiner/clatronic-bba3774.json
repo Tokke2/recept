@@ -41,7 +41,9 @@
     "limpa",
     "blandbröd",
     "surdegsbröd"
-   ]
+   ],
+   "anvands_ej": true,
+   "anvands_ej_skal": "Ägarens regel (SPEC 225): bakmaskinen används ENDAST för deg (program 8) och sylt (program 9) – all gräddning sker i airfryer."
   },
   {
    "namn": "2. French",
@@ -55,7 +57,9 @@
     "baguette",
     "luftigt bröd",
     "krispig skorpa"
-   ]
+   ],
+   "anvands_ej": true,
+   "anvands_ej_skal": "Ägarens regel (SPEC 225): bakmaskinen används ENDAST för deg (program 8) och sylt (program 9) – all gräddning sker i airfryer."
   },
   {
    "namn": "3. Whole Wheat (Fullkorn)",
@@ -69,7 +73,9 @@
     "rågbröd",
     "grovt bröd",
     "grahamsbröd"
-   ]
+   ],
+   "anvands_ej": true,
+   "anvands_ej_skal": "Ägarens regel (SPEC 225): bakmaskinen används ENDAST för deg (program 8) och sylt (program 9) – all gräddning sker i airfryer."
   },
   {
    "namn": "4. Quick (Snabbt bröd)",
@@ -80,7 +86,9 @@
    "nyckelord": [
     "snabbt bröd",
     "snabbprogram"
-   ]
+   ],
+   "anvands_ej": true,
+   "anvands_ej_skal": "Ägarens regel (SPEC 225): bakmaskinen används ENDAST för deg (program 8) och sylt (program 9) – all gräddning sker i airfryer."
   },
   {
    "namn": "5. Sweet (Sött bröd)",
@@ -93,7 +101,9 @@
     "russinbröd",
     "vetebröd",
     "kanelbröd"
-   ]
+   ],
+   "anvands_ej": true,
+   "anvands_ej_skal": "Ägarens regel (SPEC 225): bakmaskinen används ENDAST för deg (program 8) och sylt (program 9) – all gräddning sker i airfryer."
   },
   {
    "namn": "6. Gluten Free (Glutenfritt)",
@@ -105,7 +115,9 @@
     "glutenfritt",
     "glutenfri",
     "specialkost"
-   ]
+   ],
+   "anvands_ej": true,
+   "anvands_ej_skal": "Ägarens regel (SPEC 225): bakmaskinen används ENDAST för deg (program 8) och sylt (program 9) – all gräddning sker i airfryer."
   },
   {
    "namn": "7. Quick (Extra snabb)",
@@ -118,7 +130,9 @@
     "snabbast",
     "lökbröd",
     "pizzabröd"
-   ]
+   ],
+   "anvands_ej": true,
+   "anvands_ej_skal": "Ägarens regel (SPEC 225): bakmaskinen används ENDAST för deg (program 8) och sylt (program 9) – all gräddning sker i airfryer."
   },
   {
    "namn": "8. Dough (Deg)",
@@ -160,7 +174,9 @@
     "sockerkaka",
     "bakpulver",
     "pound cake"
-   ]
+   ],
+   "anvands_ej": true,
+   "anvands_ej_skal": "Ägarens regel (SPEC 225): bakmaskinen används ENDAST för deg (program 8) och sylt (program 9) – all gräddning sker i airfryer."
   },
   {
    "namn": "11. Sandwich",
@@ -172,7 +188,9 @@
     "sandwichbröd",
     "toastbröd",
     "mjukt bröd"
-   ]
+   ],
+   "anvands_ej": true,
+   "anvands_ej_skal": "Ägarens regel (SPEC 225): bakmaskinen används ENDAST för deg (program 8) och sylt (program 9) – all gräddning sker i airfryer."
   },
   {
    "namn": "12. Bake (Endast gräddning)",
@@ -184,7 +202,9 @@
     "grädda",
     "eftergrädda",
     "endast bakning"
-   ]
+   ],
+   "anvands_ej": true,
+   "anvands_ej_skal": "Ägarens regel (SPEC 225): bakmaskinen används ENDAST för deg (program 8) och sylt (program 9) – all gräddning sker i airfryer."
   }
  ],
  "bild": "images/clatronic-bba3774.png",
