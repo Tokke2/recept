@@ -3210,6 +3210,20 @@ data i json/, ALDRIG per receptfil.
     fortsatt ÖVERALLT (säkerhetsregeln orörd); panelens statusruta
     visar dagarna som förr.
 
+178. 🍞 "SNABB LIMPA" – OMDÖPT & OMSORTERAD — ✔️ KLAR (2026-11-15,
+    användarens order "detta är ett bröd, robot ska sortera och ej
+    kalla det frallor om det är en limpa"): snabba-frallor-recepten
+    omdefinierat: namn "Snabba frallor – Bakmaskin" → "Snabb limpa
+    – Bakmaskin" (alla förekomster: title/h1/og/schema/metas),
+    emoji 🥖→🍞, beskrivning i limp-språk, portioner-metan "8
+    frallor"→"1 limpa" (skivläget blir default – inga frall-ord
+    kvar), gamla description-metan raderad (steg12 genererar ny ur
+    nya namnet), kategori deg→brod via metan → KATEGORIVAKTEN
+    (steg13) flyttade filen till recept/brod/. FILNAMNET behålls
+    (länkar/QR/AI-bild består). PRINCIP INSKRIVEN: robotar kan
+    ALDRIG själva avgöra limpa vs frallor – ägarens order styr via
+    namn/metas, robotarna verkställer (sortering/titel/description).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
