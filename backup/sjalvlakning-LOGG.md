@@ -474,3 +474,8 @@
 | recept/deg/ostfyllda-frallor-bakmaskin.html | 📝 meta description ur receptets egna metadata (steg12) |
 | sitemap.xml | 🗺️ omgenererad (51 adresser) |
 | json/recept-index.json | 📁 omgenererad (37 recept) |
+
+**2026-11-15**
+
+| recept/brod/rostbrod-for-smorgasgrill-bakmaskin.html | 📍 2 maskinrutor till sina steg, 0 kvar överst (steg10) |
+| recept/bakning/pajdeg-i-bakmaskin.html | 🚫 spärrat program i metan: "10. Cake (Kaka)" (clatronic bba 3774) – ägarorder krävs (steg16) |
