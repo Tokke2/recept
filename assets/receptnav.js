@@ -40,7 +40,11 @@
     /* 📱 ENDAST upp/ner-scroll på receptsidor: ingen sidledsscroll/
        gummiband i x-led (pan-y = vertikal panorering + nyp-zoom OK).
        Receptbyte sker ENDAST via klick på sidopilarna/bottenraden. */
-    'html,body{overflow-x:hidden!important;touch-action:pan-y pinch-zoom;}' +
+    'html,body{overflow-x:clip!important;touch-action:pan-y pinch-zoom;overscroll-behavior-x:none;}' +
+    /* 🛡️ SIDLEDSLÅSET (punkt 224): hidden → clip! På iOS går en
+       hidden-yta FORTFARANDE att panorera/gummibanda i x-led –
+       clip förbjuder scroll helt (172-lärdomen, nu även här).
+       hidden!important körde dessutom över site.js-clippet. */
 
     /* ---------- Verktygsraden ---------- */
     '#mk-rnav{position:fixed;bottom:0;left:0;right:0;z-index:115;' +

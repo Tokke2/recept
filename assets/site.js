@@ -72,7 +72,7 @@
       /* 📏 ÖVERBREDDSVAKTEN (punkt 172): clip stoppar sidledsscroll utan
          att bryta sticky (till skillnad från hidden). Jästkonverteringen
          bryter till egen rad i stället för att spränga tabellbredden. */
-      'html,body{overflow-x:clip;}' +
+      'html,body{overflow-x:clip!important;max-width:100%;overscroll-behavior-x:none;}' +
       'td .mk-jastalt,td .mk-bakpalt{display:block;white-space:normal;font-weight:400;margin-top:2px;}' +
       'html{scroll-behavior:smooth;}' +
       '::selection{background:#e67e22;color:#fff;}' +
@@ -485,4 +485,47 @@
 
   Promise.all(scripts.map(function (f) { return loadScript(f); }))
     .then(function () { printReport(checkMeta()); });
+})();
+
+/* ============================================================
+   📏 SIDLEDSVAKTEN (SPEC-punkt 224, användarens felrapport "går
+   ändå att skjuta appen åt sidan på mobil"): clip-låset ovan
+   stoppar själva panoreringen – vakten hittar dessutom BOVEN:
+   1,5 s efter load mäts om sidan är bredare än skärmen, och de
+   (max 3) yttersta elementen loggas via console.warn → hamnar i
+   Svarta lådan (logg.js konsol-warn-kroken) → syns i 🤖-rapporten.
+   Endast mätning/logg – ändrar ALDRIG layouten själv.
+   ============================================================ */
+(function () {
+  'use strict';
+  if (window.__MK_SIDLEDS) return;
+  window.__MK_SIDLEDS = true;
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      try {
+        var de = document.documentElement;
+        var over = de.scrollWidth - de.clientWidth;
+        if (over < 3) return;
+        var bovar = [];
+        var alla = document.querySelectorAll('body *');
+        for (var i = 0; i < alla.length && bovar.length < 3; i++) {
+          var el = alla[i];
+          var r = el.getBoundingClientRect();
+          if (!r.width || (r.right <= de.clientWidth + 2 && r.left >= -2)) continue;
+          /* rapportera bara YTTERSTA boven – inte alla dess barn */
+          var p = el.parentElement;
+          if (p && p !== document.body) {
+            var pr = p.getBoundingClientRect();
+            if (pr.right > de.clientWidth + 2 || pr.left < -2) continue;
+          }
+          var namn = el.id ? '#' + el.id
+            : el.tagName.toLowerCase() + (typeof el.className === 'string' && el.className
+              ? '.' + el.className.trim().split(/\s+/)[0] : '');
+          bovar.push(namn + ' (' + Math.round(r.width) + 'px)');
+        }
+        console.warn('📏 Sidledsvakten: sidan är ' + over + 'px bredare än skärmen. Bovar: ' +
+          (bovar.join(', ') || 'okänd (troligen marginal/padding på body-nivå)'));
+      } catch (e) {}
+    }, 1500);
+  });
 })();

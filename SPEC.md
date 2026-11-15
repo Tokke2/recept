@@ -3486,6 +3486,22 @@ data i json/, ALDRIG per receptfil.
     räknare per recept) → adminpanelen visar sämst rankade = förbättra
     först. Byggs på order.
 
+224. ✔️ KLAR – 🛡️ SIDLEDSLÅSET (användarens felrapport 2026-11-15:
+    "går ändå att skjuta appen åt sidan på mobil, ska ej va
+    möjligt"): BOVEN var receptnav.js som satte
+    overflow-x:hidden!important på html/body och därmed körde ÖVER
+    site.js-clippet – på iOS går hidden fortfarande att panorera/
+    gummibanda, endast CLIP förbjuder scroll (172-lärdomen).
+    A) receptnav.js: hidden → clip!important + overscroll-behavior-x:
+    none. B) site.js: globala låset förstärkt (clip!important +
+    max-width:100% + overscroll-behavior-x:none på ALLA sidor).
+    C) 📏 SIDLEDSVAKTEN i site.js: 1,5 s efter load mäts om sidan är
+    bredare än skärmen → de yttersta bovarna (max 3, med bredd)
+    loggas via console.warn → Svarta lådan → 🤖-rapporten. Endast
+    mätning – ändrar aldrig layout. Inre ytor (navrad, karusellen,
+    breda tabeller i .card) scrollar vidare som vanligt – låset
+    sitter på body-nivån. jsdom-testat med stubbad layout. sw v219.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
