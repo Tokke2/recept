@@ -42,6 +42,10 @@
    "kategori": "brod"
   },
   {
+   "fil": "brod/ostfyllda-frallor-bakmaskin.html",
+   "kategori": "brod"
+  },
+  {
    "fil": "brod/recept_pitabrod_airfryer.html",
    "kategori": "brod"
   },
@@ -59,10 +63,6 @@
   },
   {
    "fil": "deg/klassisk-havresmuldeg-lagom-sot.html",
-   "kategori": "deg"
-  },
-  {
-   "fil": "deg/ostfyllda-frallor-bakmaskin.html",
    "kategori": "deg"
   },
   {
