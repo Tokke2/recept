@@ -29,7 +29,7 @@
 
   var isSub = (window.__MK_IS_RECIPE !== undefined ? window.__MK_IS_RECIPE : !!document.querySelector('meta[name="recept:namn"]'));
   if (!isSub) return; // energitabell bara på receptsidor
-  var base = '../';
+  var base = window.__MK_ROT || '../';   /* 🛡️ SPEC 231: hårdkodad '../' gav 404 i kategorimappar (Svarta lådan 2026-11-15) */
   var DEFAULT_PRICE = 2.5;
 
   // Filnamn = nyckel i energi.json

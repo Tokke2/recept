@@ -118,7 +118,7 @@
         '<input id="mk-match-sok" type="text" placeholder="🔍 Sök vara..." style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.92rem;font-family:inherit;margin-bottom:8px;">' +
         '<div id="mk-match-lista" style="max-height:260px;overflow:auto;border:1.5px solid #f0ebe3;border-radius:10px;"></div>' +
         '<div style="display:flex;gap:8px;margin-top:12px;">' +
-          '<a href="../ingredienser.html" style="flex:1;text-align:center;background:#f0ebe3;color:#2c3e50;border-radius:10px;padding:11px;font-weight:700;font-size:.85rem;text-decoration:none;">➕ Finns inte – lägg till ny</a>' +
+          '<a href="' + (window.__MK_ROT || '../') + 'ingredienser.html" style="flex:1;text-align:center;background:#f0ebe3;color:#2c3e50;border-radius:10px;padding:11px;font-weight:700;font-size:.85rem;text-decoration:none;">➕ Finns inte – lägg till ny</a>' +
           '<button id="mk-match-avbryt" style="background:#ecf0f1;color:#2c3e50;border:none;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;font-family:inherit;">Avbryt</button>' +
         '</div>' +
         '<div id="mk-match-result" style="margin-top:8px;font-size:.85rem;"></div>' +
@@ -529,7 +529,7 @@
           if (namnCell && !namnCell.querySelector('.mk-saknas')) {
             var s = document.createElement('a');
             s.className = 'mk-saknas no-print';
-            s.href = '../ingredienser.html';
+            s.href = (window.__MK_ROT || '../') + 'ingredienser.html';
             s.title = 'Ingrediensen saknas i databasen – välj rätt vara i listan eller klicka för fler alternativ';
             s.textContent = '✖ saknas';
             s.style.cssText = 'display:inline-block;margin-left:8px;background:#fdecea;color:#c0392b;border:1px solid #c0392b;border-radius:999px;padding:0 8px;font-size:.68rem;font-weight:700;text-decoration:none;vertical-align:middle;cursor:pointer;';
@@ -598,6 +598,24 @@
             ok.style.cssText = 'margin-left:6px;color:#27ae60;font-weight:700;font-size:.8em;vertical-align:middle;';
             nc.appendChild(ok);
           }
+          /* 🔁 OMMATCHNING (SPEC 230, användarens order "i receptet,
+             kunna ommatcha ingrediens till annan"): även MATCHADE
+             rader får en diskret 🔁 som öppnar samma matchningsdialog
+             – valet sparas som alias (vinner alltid, poäng 100).
+             Klassen mk-rowbtn städas redan av alla rensare. */
+          var om = document.createElement('button');
+          om.type = 'button';
+          om.className = 'mk-rowbtn no-print';
+          om.textContent = '🔁';
+          om.title = 'Fel vara? Matcha om raden mot en annan vara i databasen (sparas som alias).';
+          om.style.cssText = 'margin-left:4px;background:none;border:none;cursor:pointer;font-size:.8em;opacity:.45;vertical-align:middle;padding:2px;';
+          (function (radNamn) {
+            om.addEventListener('click', function (e) {
+              e.preventDefault(); e.stopPropagation();
+              oppnaMatchning(radNamn, db);
+            });
+          })(r.namn);
+          nc.appendChild(om);
         }
       }
       if (g === null) { missed.push(r.namn); return; }  /* finns men okänd mängd-enhet */
@@ -712,7 +730,7 @@
           varn.className = 'no-print mk-naring-varn';
           varn.innerHTML = '⚠️ <b>Kunde inte kontrollräknas:</b> bara ' + matched + ' av ' + rows.length +
             ' ingredienser finns i databasen – siffrorna ovan är receptets egna. ' +
-            '<a href="../ingredienser.html" style="color:#c0392b;">Lägg till de saknade</a> så live-verifieras kortet.';
+            '<a href="' + (window.__MK_ROT || '../') + 'ingredienser.html" style="color:#c0392b;">Lägg till de saknade</a> så live-verifieras kortet.';
           varn.style.cssText = 'font-size:.76rem;color:#c0392b;background:#fdecea;border-radius:8px;padding:6px 10px;margin-top:8px;';
           kort.appendChild(varn);
         }
@@ -802,7 +820,7 @@
           fmt(hyd.vatska, 0) + ' g vätska / ' + fmt(hyd.mjol, 0) + ' g mjöl & gryn – ' + beskr + ')</span></div>';
       })() : '') +
       (missed.length ? '<p style="font-size:.78rem;color:#a5967e;margin-top:8px;">⚠️ Ej i databasen (räknas inte med): ' +
-        missed.join(' · ') + ' – <a href="../ingredienser.html" style="color:#c0392b;">lägg till dem här</a> så blir kalkylen komplett!</p>' : '') +
+        missed.join(' · ') + ' – <a href="' + (window.__MK_ROT || '../') + 'ingredienser.html" style="color:#c0392b;">lägg till dem här</a> så blir kalkylen komplett!</p>' : '') +
       '<button id="mk-recept2ing" class="no-print" style="margin-top:10px;background:#eaf7ef;color:#27ae60;' +
         'border:2px dashed #27ae60;border-radius:10px;padding:8px 16px;font-size:.85rem;font-weight:700;' +
         'cursor:pointer;font-family:inherit;">🫙 Spara receptet som INGREDIENS (sylt, saft, buljong...)</button>' +
@@ -883,7 +901,7 @@
       btn.disabled = false; btn.textContent = '🫙 Spara receptet som INGREDIENS (sylt, saft, buljong...)';
       if (res.ok) {
         out.innerHTML = '<p style="font-size:.85rem;color:#27ae60;margin-top:6px;">🎉 <b>' + namn +
-          '</b> finns nu i <a href="../ingredienser.html" style="color:#27ae60;">ingrediensdatabasen</a>: ' +
+          '</b> finns nu i <a href="' + (window.__MK_ROT || '../') + 'ingredienser.html" style="color:#27ae60;">ingrediensdatabasen</a>: ' +
           post.pris_kr_per_kg.toLocaleString('sv-SE') + ' kr/kg · ' + post.kcal + ' kcal/100 g · ' +
           post.protein + ' g protein. Använd den i andra recept & generatorn!</p>';
       } else {

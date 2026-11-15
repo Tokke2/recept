@@ -29,7 +29,8 @@
       .replace(/\.(html?|pdf)$/i, '')
       .toLowerCase()
       .replace(/å/g, 'a').replace(/ä/g, 'a').replace(/ö/g, 'o')
-      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+      .slice(0, 56).replace(/-+$/, '');   /* 🛡️ SPEC 231: Abacus max 64 tecken/nyckel – långa namn gav 400 (Svarta lådan 2026-11-15) */
   }
 
   /* ---------- Cache ---------- */

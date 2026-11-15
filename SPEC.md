@@ -3569,6 +3569,43 @@ data i json/, ALDRIG per receptfil.
     räknar ALDRIG, slug-export, skanner, total, topplista).
     sw v222.
 
+228. 📊 BESÖKSGRAF I ADMINPANELEN (förslag 1056, beställd 2026-11-15
+    med ägarens tillägg "endast i adminpanelen"): statistiken ritas
+    som stapeldiagram per vecka (ren SVG, ingen lib) – ENDAST i
+    adminpanelen, aldrig publikt. Byggs när räknarna samlat några
+    veckors data (startade 2026-11-15 – en graf i dag vore tom).
+
+229. ✔️ KLAR – 🏷️ KATEGORIRULLGARDIN + 🖼️ MINIATYRVY (användarens
+    order: "visa kategorier i rullgardinsmeny + anpassad meny som
+    anpassar sig efter alla skärmar" + "visa recepten som
+    thumbnails"): kategorichipsen ersatta av <select id=katVal>
+    (samma stil som maskinväljaren – krymper naturligt på alla
+    skärmar; Dipp som indragen underpunkt). NY VYVÄXEL: 🖼️
+    Miniatyrer (standard – kompakta bildrutor: bild/AI-reserv +
+    namn + ★-verifiering, auto-fill-grid 130px) / 🗂️ Kort (gamla
+    vyn med beskrivning+näring). Valet sparas per besökare
+    (mk-receptvy). setKat finns kvar som API mot rullgardinen.
+
+230. ✔️ KLAR – 🔁 OMMATCHA INGREDIENS I RECEPTET (användarens order):
+    även MATCHADE rader får diskret 🔁-knapp (klass mk-rowbtn →
+    städas redan överallt) som öppnar samma matchningsdialog som
+    ✖ saknas-flödet – valet sparas som alias och vinner (poäng 100).
+
+231. ✔️ KLAR – 🩹 SVARTA LÅDANS SKÖRD 2026-11-15 (tre äkta buggar ur
+    användarens exporterade logg) + KATEGORIFLYTT:
+    A) energi.js hårdkodade base='../' → 404 på json/energi.json +
+    json/maskindatabas.json från kategorimappar → __MK_ROT.
+    B) "Se även"-chips byggde länkar utan rotprefix → 404 som
+    /recept/deg/bakning/... → __MK_ROT + 'recept/'. Samma fix på
+    kalkyl.js FEM ingredienser.html-länkar.
+    C) Abacus-nycklar >64 tecken gav 400 PERMANENT för långa
+    receptnamn (toastbrödet m.fl.): betyg.js slug kapas till 56
+    (+-cnt/-sum), besöksslugen till 50 ('besok-'+50) – admin ärver
+    automatiskt via __MK_BESOK_SLUG.
+    D) ostfyllda-frallor-bakmaskin.html flyttad recept/deg/ →
+    recept/brod/ + kategori-meta brod (ägarens order "- bröd");
+    robotarna (index/sitemap/energi) läker resten. sw v223.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

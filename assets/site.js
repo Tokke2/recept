@@ -553,7 +553,7 @@
       .replace(/å/g, 'a').replace(/ä/g, 'a').replace(/ö/g, 'o')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
-      .slice(0, 80) || 'start';
+      .slice(0, 50).replace(/-+$/, '') || 'start';   /* 🛡️ SPEC 231: 'besok-' + 50 ≤ Abacus 64-teckensgräns */
   }
   window.__MK_BESOK_SLUG = besokSlug;
   if (location.hostname !== 'tokke2.github.io') return;   /* räkna aldrig test/preview */

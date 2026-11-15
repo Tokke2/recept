@@ -199,6 +199,20 @@
   .nav-cards { max-width: min(1460px, 95vw) !important; margin-left: auto !important; margin-right: auto !important; }
 </style>
 <link rel="stylesheet" href="assets/print.css">
+<style>
+/* 🏷️ Kategorirullgardinen + 🖼️ miniatyrvyn (SPEC 229) */
+#katbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.vybtn{background:#f0ebe3;border:2px solid #e0d9cd;border-radius:10px;padding:8px 12px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit;color:#2c3e50;}
+.vybtn.aktiv{background:#2c3e50;color:#fff;border-color:#2c3e50;}
+.grid.mini{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;}
+.grid.mini .kat-rubrik{grid-column:1/-1;}
+.rmini{display:flex;flex-direction:column;background:#fff;border-radius:12px;overflow:hidden;text-decoration:none;color:#2c3e50;box-shadow:0 1px 6px rgba(0,0,0,.08);}
+.rm-media{position:relative;aspect-ratio:1/1;background:#f0ebe3;display:flex;align-items:center;justify-content:center;}
+.rm-emoji{font-size:2.1rem;position:absolute;z-index:0;}
+.rm-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;}
+.rm-verif{position:absolute;top:6px;left:6px;z-index:2;width:22px;height:22px;background:#27ae60;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;border:1.5px solid #fff;}
+.rm-namn{padding:7px 9px;font-size:.78rem;font-weight:700;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+</style>
 </head>
 <body>
 
@@ -578,24 +592,60 @@ const KAT_FARG = { matratt:'#e6a817', husdjur:'#8e6e53', sas:'#b03a2e', sylt:'#8
   glass:'#2980b9', snacks:'#b7950b', brod:'#a0622d', deg:'#9c7b4f', bakning:'#c2185b',
   efterratt:'#7d3c98', varmratt:'#286e46', ovrigt:'#c0392b' };
 function buildKats() {
-  let h = `<span style="font-weight:700;font-size:.95rem;align-self:center;margin-right:2px;">🏷️ Kategori:</span>` +
-    `<button class="kat active" data-k="all" style="--kf:#2c3e50;" onclick="setKat('all',this)"><span class="em">🍽️</span> Alla <span class="n">${RECIPES.length}</span></button>`;
+  /* 🏷️ RULLGARDINSMENY (SPEC 229, användarens order "visa kategorier i
+     rullgardinsmeny + anpassad meny som anpassar sig efter alla
+     skärmar"): chipsen ersatta av en <select> (samma stil som
+     maskinväljaren – krymper naturligt på alla skärmar). Dipp ligger
+     som indragen underpunkt under Sås (punkt 185). */
+  let opts = `<option value="all">🍽️ Alla kategorier (${RECIPES.length})</option>`;
   KATEGORIER.forEach(k => {
     const n = RECIPES.filter(r => r.kat === k.id).length;
     if (!n) return;
-    h += `<button class="kat" data-k="${k.id}" style="--kf:${KAT_FARG[k.id] || '#8e6e53'};" onclick="setKat('${k.id}',this)"><span class="em">${k.emoji}</span> ${k.namn} <span class="n">${n}</span></button>`;
-    /* 🫕 Underkategori-chip (punkt 185): "↳ Dipp" direkt efter Sås-chippen */
+    opts += `<option value="${k.id}">${k.emoji} ${k.namn} (${n})</option>`;
     if (k.id === 'sas') {
       const nd = RECIPES.filter(r => r.kat === 'sas' && r.under === 'dipp').length;
-      if (nd) h += `<button class="kat" data-k="sas:dipp" style="--kf:${KAT_FARG.sas};font-size:.86em;" onclick="setKat('sas:dipp',this)" title="Dipp till chips, grönsaker m.m. – underkategori till Sås"><span class="em">🫕</span> ↳ Dipp <span class="n">${nd}</span></button>`;
+      if (nd) opts += `<option value="sas:dipp">\u00a0\u00a0↳ 🫕 Dipp (${nd})</option>`;
     }
   });
-  document.getElementById('katbar').innerHTML = h;
+  document.getElementById('katbar').innerHTML =
+    `<label style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem;flex-wrap:wrap;">🏷️ Kategori:` +
+    `<select id="katVal" onchange="setKatSel(this.value)" style="padding:10px 14px;border:2px solid #e0d9cd;border-radius:10px;font-size:1rem;font-family:inherit;max-width:100%;background:#fff;cursor:pointer;">${opts}</select></label>` +
+    `<span style="flex:1;"></span>` +
+    `<span style="display:inline-flex;gap:6px;align-items:center;">` +
+    `<button class="vybtn" data-vy="mini" onclick="setVy('mini',true)" title="Kompakta bildminiatyrer">🖼️ Miniatyrer</button>` +
+    `<button class="vybtn" data-vy="kort" onclick="setVy('kort',true)" title="Stora kort med beskrivning och näring">🗂️ Kort</button></span>`;
+  const sel = document.getElementById('katVal');
+  if (sel && [...sel.options].some(o => o.value === activeKat)) sel.value = activeKat;
+  mVyKnappar();
 }
+function setKatSel(id) { activeKat = id; apply(); }
+
+/* 🖼️ MINIATYRVYN (SPEC 229, användarens order "visa recepten som
+   thumbnails"): kompakta bildrutor – bild + namn + ★. Växeln sparas
+   per besökare, miniatyrer är standard. Kortvyn finns kvar. */
+let VY = 'mini';
+try { VY = localStorage.getItem('mk-receptvy') || 'mini'; } catch (e) {}
+function setVy(v, spara) {
+  VY = v;
+  if (spara) try { localStorage.setItem('mk-receptvy', v); } catch (e) {}
+  mVyKnappar(); apply();
+}
+function mVyKnappar() {
+  document.querySelectorAll('.vybtn').forEach(b => b.classList.toggle('aktiv', b.dataset.vy === VY));
+}
+function miniCard(r) {
+  const verif = r.verifierad ? `<span class="rm-verif" title="Admin har verifierat receptet ${r.verifierad}">★</span>` : '';
+  return `<a class="rmini" href="${r.file}"${r.isPdf ? ' target="_blank" rel="noopener"' : ''} title="${(r.namn || '').replace(/"/g, '&quot;')}">
+    <span class="rm-media"><span class="rm-emoji">${r.emoji}</span>${verif}<img src="${r.bild}" alt="" loading="lazy" data-namn="${(r.namn || '').replace(/"/g, '&quot;')}" data-emoji="${r.emoji || ''}" onerror="window.__MK_AIBILD ? __MK_AIBILD(this) : this.remove()"></span>
+    <span class="rm-namn">${r.namn}</span></a>`;
+}
+function rita(r) { return VY === 'mini' ? miniCard(r) : card(r); }
+
 function setKat(id, el) {
+  /* behålls som API (anropas utifrån) – pekar nu på rullgardinen */
   activeKat = id;
-  document.querySelectorAll('.kat').forEach(k => k.classList.remove('active'));
-  el.classList.add('active');
+  const sel = document.getElementById('katVal');
+  if (sel && [...sel.options].some(o => o.value === id)) sel.value = id;
   apply();
 }
 
@@ -660,6 +710,8 @@ function apply() {
            (!MAKRO.latt || (r.makro && r.makro.kcal100 <= 150));
   });
 
+  document.getElementById('grid').classList.toggle('mini', VY === 'mini');
+
   /* Alla kategorier + namnsortering → GRUPPERAT med rubriker per kategori */
   if (activeKat === 'all' && sort === 'name' && !q) {
     let h = '';
@@ -667,11 +719,11 @@ function apply() {
       const inK = filtered.filter(r => r.kat === k.id);
       if (!inK.length) return;
       h += `<div class="kat-rubrik">${k.emoji} ${k.namn} <small>${inK.length} recept</small></div>`;
-      h += inK.map(card).join('');
+      h += inK.map(rita).join('');
     });
     document.getElementById('grid').innerHTML = h;
   } else {
-    document.getElementById('grid').innerHTML = filtered.map(card).join('');
+    document.getElementById('grid').innerHTML = filtered.map(rita).join('');
   }
   document.getElementById('noHit').style.display = filtered.length ? 'none' : 'block';
   document.getElementById('count').textContent =
