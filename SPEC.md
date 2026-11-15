@@ -3330,6 +3330,29 @@ data i json/, ALDRIG per receptfil.
     för agenten: alla NYA brödrecept namnges alltid med limpa/
     frallor (eller annat formord) i titeln.
 
+188. 🧂 SALTVAKTEN (förslag 946, beställd till listan 2026-11-15):
+    röd flagga direkt på saltraden i ingredienstabellen när
+    receptet passerar FSA-ampelns höga gräns (1,5 g salt/100 g) –
+    ampel.js äger gränserna, radvarningen är ny. Byggs på order.
+
+189. 🫕 DIPPBIBLIOTEKET (förslag 947, beställd till listan
+    2026-11-15): 5 startrecept till underkategorin Dipp (tzatziki,
+    vitlöksdipp, ranch, sweet chili-kesodipp, varm ostdipp) med
+    exakta maskinprogram (blender/riskokare). Recepten skrivs som
+    OVERIFIERADE tills admin bakat/blandat. Byggs på order.
+
+190. 🏷️ UNDERKATEGORI-MÖNSTRET GENERELLT (förslag 952, beställd
+    till listan 2026-11-15): dipp-motorn (recept:underkategori +
+    ↳-chip + 🗂️-val, punkt 185) återanvänds för fler: t.ex.
+    Glass → Sorbet, Bröd → Söta bröd. Varje ny underkategori
+    kräver ägarens order (aldrig robotgissning). Byggs på order.
+
+191. 🖨️ UTSKRIFT "INKÖPSLISTA" (förslag 955, beställd till listan
+    2026-11-15): utskriftsläge med ENDAST ingredienstabellen +
+    kryssrutor i A5 – att ta med till butiken. Egen knapp bredvid
+    befintliga utskriften, print.css-regler återanvänds. Byggs på
+    order.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
