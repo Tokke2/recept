@@ -979,6 +979,65 @@ def steg16_programvakten(maskiner):
                     rader.append('| %s | 🚫 spärrat program i metan: "%s" (%s) – ägarorder krävs (steg16) |' % (f, pnamn, mnamn))
 
 
+def steg17_internlankar():
+    """🔗 INTERNLÄNK-ROBOTEN (SPEC 202, förslag 1006): stegtexter som
+    nämner ett annat recepts EXAKTA titel (recept:namn, ≥10 tecken)
+    länkas automatiskt. ENDAST exakt strängmatch i rena textnoder
+    inne i <li> – aldrig fuzzy, aldrig inuti befintliga länkar
+    (gissningsförbudet). Max en länk per receptpar och fil."""
+    import re as _re
+    from urllib.parse import quote
+    titlar = []
+    for f in sorted(glob.glob('recept/*/*.html')):
+        if os.path.basename(f).upper().startswith('MALL'):
+            continue
+        try:
+            with open(f, encoding='utf-8') as fp:
+                h = fp.read()
+        except OSError:
+            continue
+        if 'STUB - receptet har flyttat' in h[:500]:
+            continue
+        nm = _re.search(r'name="recept:namn" content="([^"]{10,})"', h)
+        if nm:
+            titlar.append((nm.group(1), f))
+    for f in sorted(glob.glob('recept/*/*.html')):
+        try:
+            with open(f, encoding='utf-8') as fp:
+                h = fp.read()
+        except OSError:
+            continue
+        if 'STUB - receptet har flyttat' in h[:500]:
+            continue
+        orig = h
+        for namn, mal in titlar:
+            if mal == f or namn not in h:
+                continue
+            rel = '../' + '/'.join(quote(x) for x in mal.split('/')[1:])
+            if rel in h:
+                continue   # redan länkad
+            lankad = [False]
+            def fixa_li(m):
+                if lankad[0]:
+                    return m.group(0)
+                block = m.group(0)
+                if namn not in block or '<a' in block:
+                    return block   # länkar redan i steget → rör inte
+                delar = _re.split(r'(<[^>]+>)', block)
+                for i, d in enumerate(delar):
+                    if not d.startswith('<') and namn in d:
+                        delar[i] = d.replace(namn, '<a href="' + rel + '">' + namn + '</a>', 1)
+                        lankad[0] = True
+                        break
+                return ''.join(delar)
+            h = _re.sub(r'<li[^>]*>.*?</li>', fixa_li, h, flags=_re.S)
+            if lankad[0]:
+                rader.append('| %s | 🔗 internlänk → %s (steg17) |' % (f, os.path.basename(mal)))
+        if h != orig:
+            with open(f, 'w', encoding='utf-8') as fp:
+                fp.write(h)
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -994,6 +1053,7 @@ def main():
     steg14_titelstandard(maskiner)
     steg14b_brodtitlar()
     steg16_programvakten(maskiner)
+    steg17_internlankar()
     steg12_beskrivningar()
     steg6_sitemap()
     steg7_receptindex()

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!-- PLATS: /onskelista.html  (receptönskelistan, SPEC 213 – besökare önskar, röstar via Abacus; admin godkänner i adminpanelen) -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🙏 Receptönskelistan | Mitt Maskinkök</title>
+<meta name="description" content="Önska ett recept till Mitt Maskinkök – ägaren bakar, verifierar i riktigt kök och publicerar med exakt maskinprogram. Rösta på andras önskningar!">
+<link rel="canonical" href="https://tokke2.github.io/recept/onskelista.html">
+<style>
+  :root { --dark:#2c3e50; --muted:#5f6e70; --bg:#faf7f2; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--dark); line-height:1.6; }
+  main { max-width:680px; margin:0 auto; padding:20px 16px 60px; }
+  h1 { font-size:1.5rem; margin:16px 0 6px; }
+  .card { background:#fff; border-radius:14px; padding:16px 18px; margin:14px 0; box-shadow:0 1px 6px rgba(0,0,0,.07); }
+  .onsk { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid #f0ebe3; }
+  .onsk:last-child { border-bottom:none; }
+  .onsk b { flex:1; font-size:.98rem; }
+  .rosta { background:#eafaf1; border:1.5px solid #27ae60; color:#1e7e45; border-radius:999px; padding:7px 14px; font-weight:700; cursor:pointer; font-family:inherit; font-size:.9rem; }
+  .rosta[disabled] { opacity:.55; cursor:default; }
+  input, textarea { width:100%; padding:11px 13px; border:2px solid #e8e2d8; border-radius:10px; font-size:.95rem; font-family:inherit; margin:6px 0; }
+  .btn { background:#27ae60; color:#fff; border:none; border-radius:10px; padding:12px 18px; font-weight:700; cursor:pointer; font-family:inherit; font-size:.95rem; }
+  .hint { font-size:.85rem; color:var(--muted); }
+</style>
+</head>
+<body>
+<main>
+<h1>🙏 Receptönskelistan</h1>
+<p class="hint">Önska ett recept – ägaren bakar, verifierar i riktigt kök och publicerar med exakt maskinprogram. Rösta på det du vill se härnäst (1 röst per önskning och webbläsare).</p>
+
+<div class="card">
+  <h2 style="font-size:1.05rem;margin-bottom:6px;">🗳️ Rösta på önskningarna</h2>
+  <div id="lista">⏳ Hämtar önskelistan...</div>
+</div>
+
+<div class="card">
+  <h2 style="font-size:1.05rem;margin-bottom:6px;">✍️ Önska ett nytt recept</h2>
+  <input id="fTitel" maxlength="90" placeholder="Vad vill du se? (t.ex. Glutenfri limpa i bakmaskin)">
+  <textarea id="fVarfor" rows="3" maxlength="400" placeholder="Valfritt: berätta mer – maskin du har, varför, minnen..."></textarea>
+  <button class="btn" id="skicka">📨 Skicka önskningen</button>
+  <div class="hint" id="fMsg" style="margin-top:8px;"></div>
+  <p class="hint" style="margin-top:10px;">Önskningen mejlas till ägaren som godkänner innan den syns i listan (inga spam-bottar på väggen). Ingen e-post krävs av dig.</p>
+</div>
+<script>
+(function () {
+  'use strict';
+  var API = 'https://abacus.jasoncameron.dev', NS = 'mitt-maskinkok-tokke2';
+  async function hamta(k) {
+    try { var r = await fetch(API + '/get/' + NS + '/' + k); if (!r.ok) return 0; return (await r.json()).value || 0; } catch (e) { return 0; }
+  }
+  async function ladda() {
+    var ut = document.getElementById('lista');
+    try {
+      var d = await (await fetch('json/onskelista.json', { cache: 'no-store' })).json();
+      var on = d.onskningar || [];
+      if (!on.length) { ut.innerHTML = '<span class="hint">Listan är tom – bli först att önska! 👇</span>'; return; }
+      var rader = await Promise.all(on.map(async function (o) {
+        var n = await hamta('onske-' + o.id);
+        return { o: o, n: n };
+      }));
+      rader.sort(function (a, b) { return b.n - a.n; });
+      ut.innerHTML = rader.map(function (r) {
+        var rostat = false;
+        try { rostat = !!localStorage.getItem('mk-onske:' + r.o.id); } catch (e) {}
+        return '<div class="onsk"><b>' + String(r.o.titel).replace(/</g, '&lt;') + '</b>' +
+          '<button class="rosta" data-id="' + r.o.id + '"' + (rostat ? ' disabled' : '') + '>👍 ' + r.n + '</button></div>';
+      }).join('');
+      ut.querySelectorAll('.rosta:not([disabled])').forEach(function (b) {
+        b.onclick = async function () {
+          b.disabled = true;
+          try { await fetch(API + '/hit/' + NS + '/onske-' + b.getAttribute('data-id')); } catch (e) {}
+          try { localStorage.setItem('mk-onske:' + b.getAttribute('data-id'), '1'); } catch (e) {}
+          b.textContent = '👍 ' + (parseInt(b.textContent.replace(/\D/g, ''), 10) + 1) + ' ✓';
+        };
+      });
+    } catch (e) { ut.textContent = '⚠️ Kunde inte läsa listan just nu.'; }
+  }
+  ladda();
+
+  document.getElementById('skicka').onclick = async function () {
+    var t = document.getElementById('fTitel').value.trim();
+    var v = document.getElementById('fVarfor').value.trim();
+    var msg = document.getElementById('fMsg');
+    if (t.length < 4) { msg.textContent = '⚠️ Skriv vad du önskar först (minst 4 tecken).'; return; }
+    this.disabled = true; this.textContent = '⏳ Skickar...';
+    try {
+      var r = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: '1d0d747a-fe30-4e87-898b-faa2a421005f',
+          subject: '🙏 Receptönskning: ' + t,
+          from_name: 'Receptönskelistan',
+          message: 'Önskning: ' + t + (v ? '\n\nMer info: ' + v : '') + '\n\n(Godkänn i adminpanelen → Önskelistan så syns den publikt.)'
+        })
+      });
+      if ((await r.json()).success) {
+        msg.textContent = '💚 Tack! Önskningen är skickad till ägaren.';
+        document.getElementById('fTitel').value = ''; document.getElementById('fVarfor').value = '';
+      } else throw new Error();
+    } catch (e) { msg.textContent = '⚠️ Gick inte att skicka just nu – prova igen senare.'; }
+    this.disabled = false; this.textContent = '📨 Skicka önskningen';
+  };
+})();
+</script>
+<script src="assets/site.js"></script>
+</main>
+</body>
+</html>

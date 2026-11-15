@@ -2572,7 +2572,10 @@ data i json/, ALDRIG per receptfil.
     kapacitetsfält (max_deg_g e.d.) i maskinjson – fylls ENDAST ur
     officiella manualer, aldrig gissat.
 
-116. 🤖 LLMS.TXT – MODELL-SEO (förslag 752, användarens beställning;
+116. ✔️ KLAR (2026-11-15) – 🤖 LLMS.TXT – MODELL-SEO
+    (BYGGD: /llms.txt enligt llmstxt-standarden – sajtbeskrivning,
+    verifieringsmodellen, recept/maskin/JSON-länkar, jämförelse-
+    sidan, citeringsregler. Ärliga formuleringar utan sifferdrift.) (förslag 752, användarens beställning;
     ⬆️ PRIORITERAD 2026-11-07 efter forskningsrundan: Ahrefs-studien
     visar att teknisk AI-tillgänglighet (llms.txt/robots) väger
     tyngre än mer schema markup för AI-citeringar):
@@ -3347,7 +3350,7 @@ data i json/, ALDRIG per receptfil.
     Glass → Sorbet, Bröd → Söta bröd. Varje ny underkategori
     kräver ägarens order (aldrig robotgissning). Byggs på order.
 
-191. 🖨️ UTSKRIFT "INKÖPSLISTA" (förslag 955, beställd till listan
+191. ✔️ KLAR (2026-11-15) – 🖨️ UTSKRIFT "INKÖPSLISTA" (assets/inkopslista.js, 🛒-knapp i verktygsraden) (förslag 955, beställd till listan
     2026-11-15): utskriftsläge med ENDAST ingredienstabellen +
     kryssrutor i A5 – att ta med till butiken. Egen knapp bredvid
     befintliga utskriften, print.css-regler återanvänds. Byggs på
@@ -3370,7 +3373,7 @@ data i json/, ALDRIG per receptfil.
     receptsida – samma kategori + minst en gemensam maskin, aldrig
     gissning, läses ur recept-index. Byggs på order.
 
-196. 🗣️ HANDSFREE-BLÄDDRING I KOCKLÄGET (förslag 971): säg "nästa"/
+196. ✔️ KLAR (2026-11-15, FANNS REDAN via roadmap 12-röststyrningen: "nästa"/"tillbaka"/"timer"/"läs upp"/"tyst"/"stäng" – verifierad i koden, ingen ny kod behövdes) – 🗣️ HANDSFREE-BLÄDDRING I KOCKLÄGET (förslag 971): säg "nästa"/
     "tillbaka"/"läs upp" (sv-SE, samma SpeechRecognition-mönster som
     175/179) – degiga fingrar behöver aldrig röra skärmen. Byggs på order.
 
@@ -3387,7 +3390,7 @@ data i json/, ALDRIG per receptfil.
     riktiga bild via spara.js, ersätter AI-bilden i hero-kedjan.
     Byggs på order.
 
-200. ⚔️ JÄMFÖRELSESIDOR (förslag 1004): "Bakmaskin vs ugn för limpa"
+200. ✔️ KLAR (2026-11-15, första sidan: jamforelse-bakmaskin-vs-ugn.html – 550 W vs 2000–3000 W, källor Kraftval/OBH Nordica, svar i första 50 orden, FAQ; fler sidor på order) – ⚔️ JÄMFÖRELSESIDOR (förslag 1004): "Bakmaskin vs ugn för limpa"
     m.fl. i listicle-format (43,8 % av ChatGPT-citeringar enligt
     Ahrefs-forskningen i business/) – alla påståenden webbverifieras.
     Byggs på order.
@@ -3396,7 +3399,7 @@ data i json/, ALDRIG per receptfil.
     på receptsidor + lastmod i sitemap.xml (robotsteget som bygger
     sitemapen utökas) – färskhetssignal för Google/AI. Byggs på order.
 
-202. 🔗 INTERNLÄNK-ROBOTEN (förslag 1006): robotsteg som länkar
+202. ✔️ KLAR (2026-11-15, robotsteg 17: exakt titelmatch ≥10 tecken, endast textnoder i <li>, aldrig i befintliga länkar, max 1/receptpar, sandlådetestad) – 🔗 INTERNLÄNK-ROBOTEN (förslag 1006): robotsteg som länkar
     stegtexter som nämner ett annat recepts EXAKTA titel – exakt
     strängmatch, aldrig fuzzy (gissningsförbudet). Byggs på order.
 
@@ -3408,7 +3411,7 @@ data i json/, ALDRIG per receptfil.
     per recept (receptfotot + titel-overlay, PIL i Actions) →
     images/og/ + og:image-tagg. Byggs på order.
 
-205. 🔠 TEXTSTORLEKSVÄXEL (förslag 1014): A/A+/A++ i verktygsraden,
+205. ✔️ KLAR (2026-11-15, 🔠 A/A+/A++-knapp sist i verktygsraden på ALLA sidor, rem-skalning 100/112/125 %, sparas i mk-textskala, appliceras tidigt mot hopp) – 🔠 TEXTSTORLEKSVÄXEL (förslag 1014): A/A+/A++ i verktygsraden,
     sparas i localStorage, påverkar brödtext + ingredienstabell
     (site.js-css-variabel). Byggs på order.
 
@@ -3445,7 +3448,7 @@ data i json/, ALDRIG per receptfil.
 212. 💬 VECKANS KOMMENTAR (förslag 1031): admin väljer en kommentar i
     adminpanelen → lyfts i egen ruta på startsidan. Byggs på order.
 
-213. 🙏 RECEPTÖNSKELISTAN (förslag 1032): besökare önskar recept
+213. ✔️ KLAR (2026-11-15, onskelista.html: Web3Forms-önskningar → admin godkänner i panelens nya 🙏-sektion → json/onskelista.json → publik röstning via Abacus onske-<id>, 1 röst/webbläsare; länkad från startsidans verktygsruta) – 🙏 RECEPTÖNSKELISTAN (förslag 1032): besökare önskar recept
     (Web3Forms) → publik önskelista med röstning (abacus-räknarna),
     admin godkänner innan publicering. Byggs på order.
 
@@ -3518,8 +3521,9 @@ data i json/, ALDRIG per receptfil.
     städade. Energitabellernas gamla programrader uppdateras av
     energiroboten från nya metan.
     B) SPÄRREN: clatronic-bba3774.json – 10 program märkta
-    anvands_ej + skäl (8. Dough och 9. Jam kvar; Jam är ingen
-    gräddning – säg till om den också ska bort). maskindatabas.html
+    anvands_ej + skäl (8. Dough och 9. Jam kvar.
+    ÄGARBESLUT 2026-11-15: Jam GODKÄND – "endast bakning förutom
+    deg ska spärras". Spärren ligger exakt så.). maskindatabas.html
     visar "🚫 används ej"-badge (fakta döljs aldrig), nytt-recept
     och maskinmatch filtrerar bort spärrade program ur alla förslag.
     C) ROBOTVAKT steg16: spärrat program i någon recept-meta →

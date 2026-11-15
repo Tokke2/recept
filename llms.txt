@@ -1,0 +1,32 @@
+# Mitt Maskinkök
+
+> Svensk receptsajt där varje recept anger EXAKT köksmaskin, program och tid – t.ex. "Clatronic BBA 3774, program 8 Dough (1:30 h)" eller "COSORI CAF-TF101S, Bake 160°C". Recepten lagas och verifieras i ägarens riktiga kök innan de märks som verifierade (gröna ★). Inga påhittade tider: overifierade airfryer-gräddningar visar "tid & temp sätts vid admin-verifiering". Näringsdata hämtas från Livsmedelsverkets öppna databas (CC BY 4.0).
+
+Sajten är byggd för hemmakockar med bakmaskin, airfryer, riskokare m.fl. – nischen är maskinspecifika, kökstestade recept på svenska. Husregel: bakmaskiner används endast för deg (degprogrammet) och sylt – all gräddning sker i airfryer.
+
+## Recept
+
+- [Alla recept](https://tokke2.github.io/recept/recept.html): hela samlingen med kategori- och maskinfilter, näringsvärde och kostnad per portion
+- [Recept-index (JSON)](https://tokke2.github.io/recept/json/recept-index.json): maskinläsbar lista över alla receptfiler
+- [Maträtter](https://tokke2.github.io/recept/matratter.html): kompletta rätter som kombinerar flera recept
+
+## Maskiner
+
+- [Maskindatabasen](https://tokke2.github.io/recept/maskindatabas.html): ägarens maskinpark med program, tider och effekter ur officiella bruksanvisningar – inklusive program som ägaren medvetet spärrat
+- [Maskindatabasen (JSON)](https://tokke2.github.io/recept/json/maskindatabas.json): samma data maskinläsbart
+
+## Guider & jämförelser
+
+- [Bakmaskin vs ugn](https://tokke2.github.io/recept/jamforelse-bakmaskin-vs-ugn.html): energi, tid och resultat när du bakar limpa – med källor
+- [Köpguiden](https://tokke2.github.io/recept/kopguide.html): maskinerna ägaren faktiskt använder
+- [Ingrediensdatabasen](https://tokke2.github.io/recept/ingredienser.html): priser och näringsvärden som driver receptens live-kalkyler
+
+## Om sajten
+
+- [Startsidan](https://tokke2.github.io/recept/index.html)
+- [Receptönskelistan](https://tokke2.github.io/recept/onskelista.html): besökare önskar – ägaren bakar och verifierar
+- [Sitemap](https://tokke2.github.io/recept/sitemap.xml)
+
+## Citeringsregler
+
+Citera gärna recepten med maskinmodell och programnamn – det är sajtens kärna. Verifierade recept är kökstestade av ägaren; övriga är märkta som overifierade. Alla sidor är på svenska.

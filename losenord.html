@@ -71,6 +71,15 @@
   </div>
 
   <div class="card">
+    <h2>🙏 Önskelistan (publika receptönskningar)</h2>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">Önskningar mejlas till dig – godkänn genom att lägga in dem här, så syns de med röstning på onskelista.html.</p>
+    <input id="onskNy" maxlength="90" placeholder="Godkänd önskning (t.ex. Glutenfri limpa i bakmaskin)" style="width:100%;padding:11px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.95rem;font-family:inherit;margin-bottom:8px;">
+    <button class="btn" id="onskAdd">➕ Lägg till i publika listan</button>
+    <div id="onskLista" style="margin-top:10px;font-size:.9rem;line-height:1.9;">⏳ Läser...</div>
+    <div class="msg" id="onskMsg"></div>
+  </div>
+
+  <div class="card">
     <h2>🧩 Recept med omatchade ingredienser</h2>
     <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">Rader som inte hittar någon vara i ingrediensdatabasen (= ingen kalkyl/näring). Fixas på receptsidan via "🔽 Matcha mot..." eller genom att lägga in varan i databasen.</p>
     <div id="omatchLista" style="font-size:.9rem;line-height:1.8;">⏳ Skannar recepten...</div>
@@ -259,7 +268,7 @@
     var p = document.getElementById('panel');
     if (!p || p.style.display === 'none' || startad) return;
     startad = true; clearInterval(iv);
-    laddaOmatchade(); laddaBesok();
+    laddaOmatchade(); laddaBesok(); laddaOnsk();
   }, 600);
 
   /* --- SPEGEL av kalkyl.js norm/matchAll --- */
@@ -347,6 +356,48 @@
         : '🎉 Alla ingredienser i alla recept är matchade mot databasen!';
     } catch (e) { ut.textContent = '⚠️ Kunde inte skanna: ' + e.message; }
   }
+
+  /* ===== 🙏 ÖNSKELISTAN (SPEC 213): godkända önskningar i json/onskelista.json ===== */
+  var ONSK = null;
+  async function laddaOnsk() {
+    var ut = document.getElementById('onskLista');
+    try {
+      ONSK = await (await fetch('json/onskelista.json', { cache: 'no-store' })).json();
+      ritaOnsk();
+    } catch (e) { ut.textContent = '⚠️ Kunde inte läsa onskelista.json'; }
+  }
+  function ritaOnsk() {
+    var ut = document.getElementById('onskLista');
+    var on = (ONSK && ONSK.onskningar) || [];
+    ut.innerHTML = on.length ? on.map(function (o, i) {
+      return '• ' + String(o.titel).replace(/</g, '&lt;') +
+        ' <button data-oi="' + i + '" style="background:#c0392b;color:#fff;border:none;border-radius:6px;padding:2px 8px;cursor:pointer;font-size:.75rem;">✕</button>';
+    }).join('<br>') : '<span style="color:var(--muted);">Inga godkända önskningar ännu.</span>';
+    ut.querySelectorAll('button[data-oi]').forEach(function (b) {
+      b.onclick = function () { ONSK.onskningar.splice(+b.getAttribute('data-oi'), 1); ritaOnsk(); sparaOnsk('Önskning borttagen'); };
+    });
+  }
+  async function sparaOnsk(logg) {
+    var msg = document.getElementById('onskMsg');
+    if (!window.__MK_SPARA) { msg.textContent = '⚠️ Spara-modulen saknas'; return; }
+    var res = await window.__MK_SPARA.save('json/onskelista.json', JSON.stringify(ONSK, null, 1) + '\n', '🙏 Önskelistan: ' + logg);
+    msg.textContent = res.ok ? '💚 Sparat!' : '⚠️ ' + (res.fel || 'kunde inte spara');
+  }
+  (function () {
+    var btn = document.getElementById('onskAdd');
+    if (!btn) return;
+    btn.onclick = function () {
+      var inp = document.getElementById('onskNy');
+      var t = inp.value.trim();
+      if (t.length < 4 || !ONSK) return;
+      var id = t.toLowerCase().replace(/å/g, 'a').replace(/ä/g, 'a').replace(/ö/g, 'o')
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50).replace(/-+$/, '');
+      if (ONSK.onskningar.some(function (o) { return o.id === id; })) { document.getElementById('onskMsg').textContent = '⚠️ Finns redan i listan'; return; }
+      ONSK.onskningar.push({ id: id, titel: t, datum: new Date().toISOString().slice(0, 10) });
+      inp.value = '';
+      ritaOnsk(); sparaOnsk('ny önskning godkänd: ' + t);
+    };
+  })();
 
   async function hamta(key) {
     try {

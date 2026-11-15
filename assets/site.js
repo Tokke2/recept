@@ -20,6 +20,31 @@
      hälsorapport i konsolen, visuell felbanner → status.html,
      designbas (fokusring, scrollbar, selection, tryckkänsla)
    ============================================================ */
+/* ============================================================
+   🔠 TEXTSTORLEKSVÄXELN (SPEC-punkt 205, förslag 1014): A → A+ →
+   A++ cyklas med knappen i verktygsraden (byggs i nav-koden
+   nedan). Nivån sparas per besökare (mk-textskala) och appliceras
+   HÄR, tidigt, så sidan inte hoppar. Ren rem-skalning – all CSS
+   i rem/em följer med automatiskt.
+   ============================================================ */
+(function () {
+  'use strict';
+  var NIV = ['', '112%', '125%'];
+  var n = 0;
+  try { n = parseInt(localStorage.getItem('mk-textskala'), 10) || 0; } catch (e) {}
+  if (n < 0 || n > 2) n = 0;
+  if (n) document.documentElement.style.fontSize = NIV[n];
+  window.__MK_TEXTSKALA = {
+    get niva() { return n; },
+    vaxla: function () {
+      n = (n + 1) % 3;
+      try { localStorage.setItem('mk-textskala', String(n)); } catch (e) {}
+      document.documentElement.style.fontSize = NIV[n];
+      return n;
+    }
+  };
+})();
+
 (function () {
   'use strict';
   if (window.__MK_SITE_LOADED) return;
@@ -206,6 +231,15 @@
                (on ? ' aria-current="page"' : '') + '>' +
                p.ikon + ' <span>' + visNamn + '</span></a>';
       }).join('');
+    /* 🔠 textstorleksknappen (SPEC 205) – sist i verktygsraden */
+    var tx = document.createElement('button');
+    tx.type = 'button';
+    tx.title = 'Textstorlek: A → A+ → A++ (sparas i din webbläsare)';
+    tx.style.cssText = 'margin-left:4px;background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-weight:700;font-size:.78rem;cursor:pointer;font-family:inherit;flex:0 0 auto;';
+    var visaTx = function (nv) { tx.textContent = ['🔠 A', '🔠 A+', '🔠 A++'][nv] || '🔠 A'; };
+    visaTx(window.__MK_TEXTSKALA ? window.__MK_TEXTSKALA.niva : 0);
+    tx.onclick = function () { if (window.__MK_TEXTSKALA) visaTx(window.__MK_TEXTSKALA.vaxla()); };
+    nav.appendChild(tx);
     document.body.insertBefore(nav, document.body.firstChild);
     if (bottenlage) document.body.classList.add('mk-has-bottomnav');
     /* 📱 scrolla den aktiva fliken i synfältet på mobil */
@@ -455,7 +489,7 @@
   ensureCss('print.css');
   ensureCss('design.css');   /* 🎨 central designfil – vinner över sidornas :root */
   var scripts = ['logg.js', 'felrapport.js', 'stadare.js', 'print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js', 'emoji.js', 'seo.js', 'hero.js', 'sok.js'];
-  if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js', 'portion.js', 'hydrering.js', 'radio.js', 'jast.js', 'bakpulver.js');
+  if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js', 'portion.js', 'hydrering.js', 'radio.js', 'jast.js', 'bakpulver.js', 'inkopslista.js');
   if (isRattPage) scripts.push('ratt.js');   /* 🍽️ maträttssidor (ratter/) */
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');
   if (/(nytt-recept|generator|maskin-import|ingredienser|maskindatabas|forslag|matratter)\.html$/i.test(location.pathname)) scripts.push('spara.js');
