@@ -3496,7 +3496,10 @@
   "🙏 Receptönskelistan": "🙏 The recipe wish list",
   "🙏 Receptönskelistan | Mitt Maskinkök": "🙏 Recipe Wish List | My Machine Kitchen",
   "🙏 Önskelistan (publika receptönskningar)": "🙏 Wish list (public recipe wishes)",
-  "🥖 3. Resultatet": "🥖 3. The result"
+  "🥖 3. Resultatet": "🥖 3. The result",
+  "Tipsa en vän via e-post – färdigt receptkort, ingen spårning": "Tell a friend by email - ready recipe card, no tracking",
+  "Tryck när ingrediensen är i – bocken följer med genom alla steg": "Press when the ingredient is in - the tick follows through all steps",
+  "🍩 Söta bröd": "🍩 Sweet bread"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3506,6 +3509,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3495,
+ "_auto_genererade": 3498,
  "_senast_robot": "2026-11-15"
 }
