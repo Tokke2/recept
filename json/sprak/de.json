@@ -3409,13 +3409,18 @@
   "pommes frites-stavar, morotsstavar till airfryern": "Pommes-Frites-Sticks, Karottensticks für die Heißluftfritteuse",
   "💪 Helt manuell – ingen el, inget ljud, inget program": "💪 Komplett manuell – kein Strom, kein Ton, kein Programm",
   "🔩 Rostfritt stål": "🔩 Edelstahl",
-  "🥔 Skär potatis & morötter till jämna stavar i ett tryck": "🥔 Kartoffeln und Karotten mit einem Handgriff in gleichmäßige Stifte schneiden"
+  "🥔 Skär potatis & morötter till jämna stavar i ett tryck": "🥔 Kartoffeln und Karotten mit einem Handgriff in gleichmäßige Stifte schneiden",
+  "Diktera (svenska) – tryck igen för att stoppa": "Diktieren (Schwedisch) – zum Stoppen erneut drücken",
+  "Ny PIN (4–20 tecken, specialtecken OK)": "Neue PIN (4-20 Zeichen, Sonderzeichen OK)",
+  "Välj en ny PIN (4–20 tecken – specialtecken går bra).": "Wählen Sie eine neue PIN (4–20 Zeichen – Sonderzeichen sind in Ordnung).",
+  "⚠️ Kunde inte spara – försök igen.": "⚠️ Speichern nicht möglich – versuchen Sie es erneut.",
+  "⚠️ Skriv eller diktera något först!": "⚠️Schreiben oder diktieren Sie zuerst etwas!"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3408,
- "_senast_robot": "2026-11-14"
+ "_auto_genererade": 3413,
+ "_senast_robot": "2026-11-15"
 }

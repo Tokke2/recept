@@ -3285,7 +3285,12 @@
   "pommes frites-stavar, morotsstavar till airfryern": "french fries sticks, carrot sticks for the air fryer",
   "💪 Helt manuell – ingen el, inget ljud, inget program": "💪 Completely manual - no electricity, no sound, no program",
   "🔩 Rostfritt stål": "🔩 Stainless steel",
-  "🥔 Skär potatis & morötter till jämna stavar i ett tryck": "🥔 Cut potatoes & carrots into even sticks in one push"
+  "🥔 Skär potatis & morötter till jämna stavar i ett tryck": "🥔 Cut potatoes & carrots into even sticks in one push",
+  "Diktera (svenska) – tryck igen för att stoppa": "Dictate (Swedish) – press again to stop",
+  "Ny PIN (4–20 tecken, specialtecken OK)": "New PIN (4-20 characters, special characters OK)",
+  "Välj en ny PIN (4–20 tecken – specialtecken går bra).": "Choose a new PIN (4-20 characters - special characters are fine).",
+  "⚠️ Kunde inte spara – försök igen.": "⚠️ Could not save - try again.",
+  "⚠️ Skriv eller diktera något först!": "⚠️ Write or dictate something first!"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3295,6 +3300,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3284,
- "_senast_robot": "2026-11-14"
+ "_auto_genererade": 3289,
+ "_senast_robot": "2026-11-15"
 }
