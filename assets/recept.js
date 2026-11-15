@@ -57,6 +57,26 @@
      laddning OCH varje gång kockläget öppnas – satsväljarens ×½/×2
      (skala.js) ska synas i "Ställ fram allt"-steget och stegchipsen.
      OBS: textContent läses så mk-skala-spannens SKALADE värden följer med. */
+  /* 🧹 REN CELLTEXT (SPEC 226, användarens felrapport: kockläget visade
+     "✖ saknas 🔽 Matcha mot..." + HELA rullistan för omatchade
+     ingredienser): matchnings-UI:t och övriga radverktyg är no-print/
+     select-element – de städas ur en KLON innan texten läses. Endast
+     ingrediensens namn/mängd blir kvar (skalade mk-skala-spann och
+     jäst/bakpulver-tipsen behålls – de är äkta innehåll). */
+  var UI_SKRAP = 'select, button, .mk-saknas, .mk-prodlank, .drop, .mk-rowbtn, .mk-bytsmak, .mk-smakval, .mk-kallval, .mk-gruppval, .mk-ingsub, .no-print';
+  function cellText(td) {
+    var c = td.cloneNode(true);
+    c.querySelectorAll(UI_SKRAP).forEach(function (x) { x.remove(); });
+    return c.textContent.replace(/[✕✖]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function renTabellHtml() {
+    var kalla = ingTabellEl;
+    if (!kalla) return ingHTML;
+    var c = kalla.cloneNode(true);
+    c.querySelectorAll(UI_SKRAP).forEach(function (x) { x.remove(); });
+    return c.outerHTML;
+  }
+
   function lasIngredienser() {
     ingList = [];
     if (!ingTabellEl) return;
@@ -64,8 +84,8 @@
     for (var ri = 0; ri < rows.length; ri++) {
       var tds = rows[ri].querySelectorAll('td');
       if (tds.length >= 2) {
-        var namn = tds[0].textContent.trim();
-        var mangd = tds[1].textContent.trim();
+        var namn = cellText(tds[0]);
+        var mangd = cellText(tds[1]);
         if (namn && mangd && !/^total/i.test(namn)) ingList.push({ namn: namn, mangd: mangd });
         continue;
       }
@@ -535,7 +555,7 @@
       /* Ingredienspanel (dold) */
       (ingHTML ? '<div id="cmIngPanel" style="display:none;position:absolute;inset:56px 16px 16px;background:#fff;color:#2c3e50;border-radius:14px;padding:18px;overflow:auto;z-index:5;box-shadow:0 10px 40px rgba(0,0,0,.5);">' +
         '<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><b>🧾 Ingredienser</b>' +
-        '<button id="cmIngClose" style="background:#2c3e50;color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;">✕</button></div>' + (ingTabellEl ? ingTabellEl.outerHTML : ingHTML) + '</div>' : '');
+        '<button id="cmIngClose" style="background:#2c3e50;color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;">✕</button></div>' + renTabellHtml() + '</div>' : '');
 
     /* Händelser */
     overlay.querySelector('#cmClose').onclick = close;

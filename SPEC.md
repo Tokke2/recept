@@ -3529,6 +3529,22 @@ data i json/, ALDRIG per receptfil.
     gräddning) – de flaggas nu av steg16 tills ägaren beslutat
     (byt till Dough eller godkänn undantag). sw v220.
 
+226. ✔️ KLAR – 🧹 KOCKLÄGET VISAR ENDAST INGREDIENSERNA (användarens
+    felrapport 2026-11-15, pizzadeg-exemplet: omatchad ingrediens
+    gav chipet "Falksalt Mineralsalt ✖ saknas 🔽 Matcha mot..." +
+    HELA ingrediensrullistan som text): kocklägets lasIngredienser
+    läste cellens råa textContent – en <select> har ju ALLA options
+    som textinnehåll. Fix i recept.js: cellText() läser en KLON av
+    cellen där UI_SKRAP städats (select/button/.mk-saknas/
+    .mk-prodlank/.drop/.mk-rowbtn/.mk-bytsmak/.mk-smakval/
+    .mk-kallval/.mk-gruppval/.mk-ingsub/.no-print) – skalade
+    mk-skala-spann och jäst/bakpulver-tips behålls (äkta innehåll).
+    Även kocklägets 🧾-ingredienspanel renderar nu renTabellHtml()
+    (städad klon) istället för rå outerHTML. Matchnings-UI:t på
+    själva receptsidan är orört – det ska finnas där, bara inte i
+    kockläget. jsdom-integrationstestat (riktiga recept.js, stubbad
+    vibrate): chip = namn+mängd, noll skräp. sw v221.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
