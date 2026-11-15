@@ -3538,13 +3538,30 @@
   "🍞 Saftigt majsbröd (limpa) – Airfryer – COSORI CAF-TF101S (Dual Blaze TwinFry)": "🍞 Saftiges Maisbrot (Laib) – Airfryer – COSORI CAF-TF101S (Dual Blaze TwinFry)",
   "🍞 Saftigt majsbröd (limpa) – Airfryer – COSORI CAF-TF101S (Dual Blaze TwinFry) | Mitt Maskinkök": "🍞 Saftiges Maisbrot (Laib) – Airfryer – COSORI CAF-TF101S (Dual Blaze TwinFry) | Meine Maschinenküche",
   "💧 Spreja med VATTEN på ovansidan precis innan du startar airfryern: ångan håller skorpan mjuk en stund så brödet reser sig lite till innan skorpan stelnar – det ger den krispiga lantbrödsytan.": "💧 Sprühen Sie WASSER auf die Oberseite, kurz bevor Sie die Heißluftfritteuse starten: Der Dampf hält die Kruste eine Weile weich, sodass das Brot noch etwas aufgeht, bevor die Kruste hart wird – so erhält die knusprige Oberfläche des Landbrots.",
-  "🔥 FORMNING & GRÄDDNING I AIRFRYERN": "🔥 FORMEN & BACKEN IN DER LUFTFRITEUSE"
+  "🔥 FORMNING & GRÄDDNING I AIRFRYERN": "🔥 FORMEN & BACKEN IN DER LUFTFRITEUSE",
+  "2 värden auto-korrigerade": "2 Werte automatisch korrigiert",
+  "Auto-korrigerad mot ingrediensdatabasen (stod: ~19,88 kr)": "Automatisch korrigiert anhand der Zutatendatenbank (Stand: ~19,88 SEK)",
+  "Auto-korrigerad mot ingrediensdatabasen (stod: ~4,97 kr)": "Automatisch anhand der Zutatendatenbank korrigiert (Stand: ~4,97 SEK)",
+  "Fel vara? Matcha om raden mot en annan vara i databasen (sparas som alias).": "Falscher Artikel? Vergleichen Sie die Zeile erneut mit einem anderen Element in der Datenbank (als Alias ​​gespeichert).",
+  "Live-pris ur ingrediensdatabasen (willys.se (jamforpris kr/kg))": "Live-Preis aus der Zutatendatenbank (willys.se (Marmeladenpreis SEK/kg))",
+  "Rader som inte hittar någon vara i ingrediensdatabasen (= ingen kalkyl/näring). Fixas på receptsidan via \"🔽 Matcha mot...\" eller genom att lägga in varan i databasen.": "Zeilen, die keinen Artikel in der Zutatendatenbank finden (= keine Berechnung/Ernährung). Kann auf der Rezeptseite über „🔽 Zuordnen zu…“ oder durch Eingabe des Produkts in die Datenbank behoben werden.",
+  "Sidvisningar (inte unika personer) · 1 räkning per sida och besökssession · räknas sedan 2026-11-15 · endast tokke2.github.io.": "Seitenaufrufe (keine einzelnen Personen) · 1 Zählung pro Seite und Besuchssitzung · gezählt seit 15.11.2026 · nur tokke2.github.io.",
+  "Totalt antal sidvisningar": "Gesamtzahl der Seitenaufrufe",
+  "clatronic-bba3774: 8. Dough (Deg) 1:30 h (verifierad 2026-11-15)": "clatronic-bba3774: 8. Teig 1:30 h (verifiziert 15.11.2026)",
+  "~3,54 kr": "~ 3,54 SEK",
+  "⏳ Hämtar räknarna...": "⏳ Laden Sie die Zähler herunter...",
+  "⏳ Skannar recepten...": "⏳ Scannen der Rezepte...",
+  "▾ Ändra": "▾ Veränderung",
+  "⚖️ ×1 · 🍽️ 4 port à 246 g · 🔥 557 kcal/port": "⚖️ ×1 · 🍽️ 4 Portionen à 246 g · 🔥 557 kcal/Port",
+  "🍕 Pizzadeg – Bakmaskin 4 × 250 g": "🍕 Pizzateig – Backmaschine 4 × 250 g",
+  "📈 Besöksstatistik": "📈 Besucherstatistik",
+  "🧩 Recept med omatchade ingredienser": "🧩 Rezepte mit nicht übereinstimmenden Zutaten"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3537,
+ "_auto_genererade": 3554,
  "_senast_robot": "2026-11-15"
 }
