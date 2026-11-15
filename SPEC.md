@@ -3353,6 +3353,139 @@ data i json/, ALDRIG per receptfil.
     befintliga utskriften, print.css-regler återanvänds. Byggs på
     order.
 
+192. 🎄 SÄSONGSFLAGGOR (förslag 956, listad 2026-11-15): meta
+    recept:sasong → badge (🎄☀️🎃) på kort/receptsida + "säsongens
+    hylla" överst på startsidan under rätt månader. Byggs på order.
+
+193. 🔗 RECEPTKEDJOR (förslag 958): "samma deg blir pizzabotten" –
+    meta som länkar basrecept ↔ variationer, kedjesymbol på båda
+    sidorna. Ägaren anger kopplingen, aldrig gissning. Byggs på order.
+
+194. 🌡️ INNERTEMP-TABELLEN (förslag 964): central json (bröd 96°,
+    kyckling 72°, fläskytterfilé 68°...) – ALLA värden webbverifieras
+    mot Livsmedelsverket före inläggning; 🌡️-chip på receptsidor där
+    termometer nämns. Byggs på order.
+
+195. 🧲 LIKNANDE RECEPT (förslag 966): 3 kort längst ner på varje
+    receptsida – samma kategori + minst en gemensam maskin, aldrig
+    gissning, läses ur recept-index. Byggs på order.
+
+196. 🗣️ HANDSFREE-BLÄDDRING I KOCKLÄGET (förslag 971): säg "nästa"/
+    "tillbaka"/"läs upp" (sv-SE, samma SpeechRecognition-mönster som
+    175/179) – degiga fingrar behöver aldrig röra skärmen. Byggs på order.
+
+197. ✅ INGREDIENS-AVBOCKNING (förslag 976): tap på ingredienschip i
+    kockläget = genomstruken, följer med genom ALLA steg (per
+    recept-session). Byggs på order.
+
+198. 🧽 KOCKLÄGETS SLUTVY (förslag 978): "Klart! Du använde bunke,
+    visp, form – dags att diska" – redskapen plockas ur stegtexterna
+    (ordlista, inga gissningar utanför den). Byggs på order.
+
+199. 📸 VERIFIERINGSKAMERAN (förslag 981): ta foto direkt i
+    verifieringsflödet (input capture) → sparas som receptets
+    riktiga bild via spara.js, ersätter AI-bilden i hero-kedjan.
+    Byggs på order.
+
+200. ⚔️ JÄMFÖRELSESIDOR (förslag 1004): "Bakmaskin vs ugn för limpa"
+    m.fl. i listicle-format (43,8 % av ChatGPT-citeringar enligt
+    Ahrefs-forskningen i business/) – alla påståenden webbverifieras.
+    Byggs på order.
+
+201. 📆 SYNLIGT UPPDATERAD-DATUM (förslag 1005): "uppdaterad ÅÅÅÅ-MM-DD"
+    på receptsidor + lastmod i sitemap.xml (robotsteget som bygger
+    sitemapen utökas) – färskhetssignal för Google/AI. Byggs på order.
+
+202. 🔗 INTERNLÄNK-ROBOTEN (förslag 1006): robotsteg som länkar
+    stegtexter som nämner ett annat recepts EXAKTA titel – exakt
+    strängmatch, aldrig fuzzy (gissningsförbudet). Byggs på order.
+
+203. 🌍 HREFLANG-TAGGAR (förslag 1008): sv/en/de-alternativ i head på
+    alla sidor språkroboten redan översätter (json/sprak/) – robotsteg
+    skriver taggarna. Byggs på order.
+
+204. 🖼️ AUTO-DELNINGSBILDER (förslag 1012): robotsteg bygger og-bild
+    per recept (receptfotot + titel-overlay, PIL i Actions) →
+    images/og/ + og:image-tagg. Byggs på order.
+
+205. 🔠 TEXTSTORLEKSVÄXEL (förslag 1014): A/A+/A++ i verktygsraden,
+    sparas i localStorage, påverkar brödtext + ingredienstabell
+    (site.js-css-variabel). Byggs på order.
+
+206. 🔄 DRA-FÖR-ATT-UPPDATERA (förslag 1016): pull-to-refresh i
+    PWA-läget (standalone) – touchstart/move vid scrollTop 0,
+    aldrig i kockläget (140-regeln: stör inte kocken). Byggs på order.
+
+207. 🖼️ DÖD-BILD-ROBOTEN (förslag 1021): robotsteg som listar img-src
+    som pekar på filer som inte finns i repot → rapportrad per träff.
+    Byggs på order.
+
+208. 🔤 STAVNINGSROBOTEN MED AUTO-RÄTTNING (förslag 1022, ÄNDRAD av
+    ägaren 2026-11-15: "rätta ord auto även andra språk"): robotsteg
+    som rättar stavfel AUTOMATISKT – MEN endast ord på en fast,
+    ägargodkänd felstavningslista (t.ex. "ingridienser"→"ingredienser",
+    "youghurt"→"yoghurt"); allt utanför listan RAPPORTERAS bara
+    (gissningsförbudet gäller även språk). Gäller svenska sidorna OCH
+    språkrobotens en/de-texter i json/sprak/. Listan byggs ut i SPEC
+    allteftersom ägaren godkänner nya ord. Byggs på order.
+
+209. 🔗 AFFILIATE-RÖTVAKTEN (förslag 1023): robotsteg som kollar
+    produkt-/affiliatelänkar (HEAD-anrop): 404/301-kedjor/utgångna →
+    rapport, aldrig autoborttagning. Byggs på order.
+
+210. 📋 ROBOT-DASHBOARD I ADMINPANELEN (förslag 1024, ÄNDRAD av
+    ägaren: ska ligga på ADMINPANELEN, inte statussidan): losenord.html
+    får sektion som visar senaste robotkörningens alla åtgärdsrader
+    (läser robotrapporten ur repot) – bakom PIN-grinden. Byggs på order.
+
+211. 🏋️ BILDVIKTSVAKTEN (förslag 1027): robotsteg som rapporterar
+    bilder över 170 kB-taket med komprimeringsorder (PIL-kedjan
+    quality 82→52 finns dokumenterad). Byggs på order.
+
+212. 💬 VECKANS KOMMENTAR (förslag 1031): admin väljer en kommentar i
+    adminpanelen → lyfts i egen ruta på startsidan. Byggs på order.
+
+213. 🙏 RECEPTÖNSKELISTAN (förslag 1032): besökare önskar recept
+    (Web3Forms) → publik önskelista med röstning (abacus-räknarna),
+    admin godkänner innan publicering. Byggs på order.
+
+214. 💌 TIPSA EN VÄN (förslag 1033): mailto-knapp med färdigt
+    receptkort i brödtexten (namn, maskin, tid, länk) – ingen
+    tracking, inga tredjepartstjänster. Byggs på order.
+
+215. 🗃️ RECEPTKORT A6 (förslag 1039): utskriftsläge som kondenserar
+    hela receptet till ett A6-kort (print.css-variant + egen knapp).
+    Byggs på order.
+
+216. 📕 PÄRMLÄGET (förslag 1040): bocka valfria recept → en samlad
+    utskriftsvänlig "kokbok"-sida med innehållsförteckning. Byggs på order.
+
+217. 📱 QR PÅ UTSKRIFTER (förslag 1041): varje utskrift får QR
+    (api.qrserver, redan använd) tillbaka till receptet/kockläget.
+    Byggs på order.
+
+218. ❄️ FRYSETIKETTEN (förslag 1042): etikettmotorn (etikett.js) får
+    frysvariant: namn + infrysningsdatum + QR. Byggs på order.
+
+219. 🎁 GÅVOETIKETTEN (förslag 1043): etikettvariant för bortskänkta
+    burkar: "hemgjord sylt" + ingredienslista + bäst före. Byggs på order.
+
+220. 👓 LÄTTLÄST-VÄXELN (förslag 1047): dyslexivänligare systemtypsnitt
+    + ökat radavstånd/ordmellanrum som växel (ingen CDN – systemfonter).
+    Byggs på order.
+
+221. 📳 HAPTIKPROFILER (förslag 1049): olika vibrationsmönster för
+    timer-klar / fel / verifierat-sparat (navigator.vibrate-mönster,
+    iOS-begränsningar dokumenteras ärligt). Byggs på order.
+
+222. 💪 KR PER GRAM PROTEIN (förslag 1054): ny sortering i recept.html
+    (kalkylens pris ÷ proteingram) – gymnischen hittar sajten. Byggs
+    på order.
+
+223. 👍 TUMME UPP/NER PER RECEPT (förslag 1055): anonym 👍/👎 (abacus-
+    räknare per recept) → adminpanelen visar sämst rankade = förbättra
+    först. Byggs på order.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
