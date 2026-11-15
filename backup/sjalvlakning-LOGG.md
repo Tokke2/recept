@@ -505,3 +505,8 @@
 **2026-11-15**
 
 | recept/bakning/pajdeg-i-bakmaskin.html | 🚫 spärrat program i metan: "10. Cake (Kaka)" (clatronic bba 3774) – ägarorder krävs (steg16) |
+
+**2026-11-15**
+
+| recept/bakning/pajdeg-i-bakmaskin.html | 🚫 spärrat program i metan: "10. Cake (Kaka)" (clatronic bba 3774) – ägarorder krävs (steg16) |
+| https://www.greenpan.us/products/frost-6-in-1-ice-cream-frozen-drink-maker | 🔗 DÖD produktlänk (HTTP 404) – byt via ✏️-dialogen (steg18) |
