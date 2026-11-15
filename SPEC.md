@@ -3202,6 +3202,14 @@ data i json/, ALDRIG per receptfil.
     NOLLSTÄLLA/sätta ny PIN på beställning (push-access) – glömd
     PIN är aldrig ett lås-ute.
 
+177. 🔔 POPUP ENDAST VID ADMIN-INLOGGNING — ✔️ KLAR (2026-11-15,
+    användarens förtydligande av 162/176): 20-dagars-påminnelse-
+    popupen visas ENDAST när upplåsningen sker på adminpanelen
+    (losenord.html) – aldrig mitt i verifiering/redigering ute i
+    köket (stör bakflödet). Tvingade bytet vid >20 dagar gäller
+    fortsatt ÖVERALLT (säkerhetsregeln orörd); panelens statusruta
+    visar dagarna som förr.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

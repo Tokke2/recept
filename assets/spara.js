@@ -246,9 +246,13 @@
       try { sessionStorage.setItem(UNLOCK_KEY, '1'); } catch (e) {}
       /* ⏳ 20-dagarsregeln: tvinga nytt val */
       var alder = dagarSedan(lock.pinDatum);
-      /* 🔔 PÅMINNELSE-POPUPEN (roadmap 162, punkt 176): ≤3 dagar kvar →
-         vänlig fråga INNAN tvånget slår till. Max en gång per session. */
-      if (alder > PIN_DAGAR - 3 && alder <= PIN_DAGAR) {
+      /* 🔔 PÅMINNELSE-POPUPEN (roadmap 162, punkt 176+177): ≤3 dagar kvar →
+         vänlig fråga INNAN tvånget slår till. Max en gång per session.
+         ENDAST vid admin-INLOGGNINGEN (adminpanelen losenord.html) –
+         aldrig mitt i en verifiering/redigering ute i köket
+         (användarens förtydligande 2026-11-15). */
+      var arAdminpanel = /losenord\.html$/i.test(location.pathname);
+      if (arAdminpanel && alder > PIN_DAGAR - 3 && alder <= PIN_DAGAR) {
         var visad = false;
         try { visad = sessionStorage.getItem('mk-pin-pamind') === '1'; } catch (e) {}
         if (!visad) {
