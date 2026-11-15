@@ -460,3 +460,9 @@
 **2026-11-14**
 
 | sitemap.xml | 🗺️ omgenererad (50 adresser) |
+
+**2026-11-15**
+
+| recept/brod/snabba-frallor-bakmaskin.html | 📝 meta description ur receptets egna metadata (steg12) |
+| sitemap.xml | 🗺️ omgenererad (50 adresser) |
+| json/recept-index.json | 📁 omgenererad (36 recept) |
