@@ -25,6 +25,21 @@
   var isRecipePage = (window.__MK_IS_RECIPE !== undefined ? window.__MK_IS_RECIPE : !!document.querySelector('meta[name="recept:namn"]'));
   if (!isRecipePage) return;
 
+  /* 🍞/🥯 STYCKORDET (användarens order 2026-11-16: "om det är en
+     limpa så ska det ej kallas fralla"): ordet för styck-varianten
+     hämtas ur recept:portioner-metan – frall→frallor, bull→bullar,
+     annars (t.ex. "1 limpa") det neutrala "bitar". Datanycklarna
+     (id#fralla) RÖRS ALDRIG – endast visningsorden. Måste ligga på
+     IIFE-toppnivå: används både i markeraTestad och brödstatusen.
+     Exporteras som __MK_STYCKORD (portion.js använder samma). */
+  function styckOrd() {
+    var pm = (document.querySelector('meta[name="recept:portioner"]') || {}).content || '';
+    if (/frall/i.test(pm)) return 'frallor';
+    if (/bull/i.test(pm)) return 'bullar';
+    return 'bitar';
+  }
+  window.__MK_STYCKORD = styckOrd;
+
   function meta(n) {
     var el = document.querySelector('meta[name="recept:' + n + '"]');
     return el ? el.content : '';
@@ -138,7 +153,7 @@
        variant – metanyckeln blir id#limpa / id#fralla. Deg = utan variant. */
     var variant = maskin.variant || '';
     var vNyckel = maskin.id + (variant ? '#' + variant : '');
-    var vEtikett = variant === 'limpa' ? '🍞 LIMPA-gräddningen' : variant === 'fralla' ? '🥯 FRALL-gräddningen' : 'receptet';
+    var vEtikett = variant === 'limpa' ? '🍞 LIMPA-gräddningen' : variant === 'fralla' ? '🥯 ' + styckOrd().toUpperCase() + '-gräddningen' : 'receptet';
     if (!window.__MK_SPARA) {
       if (window.__MK_TOAST) window.__MK_TOAST('⚠️ Spara-modulen kunde inte laddas – ladda om sidan.');
       return;
@@ -415,7 +430,7 @@
     /* 🍞 BRÖDSIDA? (punkt 179) – namn/taggar/titel, köttbullar undantagna */
     var brodTxt = ((document.querySelector('meta[name="recept:namn"]') || {}).content || '') + ' ' +
       ((document.querySelector('meta[name="recept:taggar"]') || {}).content || '') + ' ' + document.title;
-    var AR_BROD = /br[öo]d|limpa|toast|baguette|frall|bull/i.test(brodTxt) && !/köttbull|br[öo]dkrutong/i.test(brodTxt);
+  var AR_BROD = /br[öo]d|limpa|toast|baguette|frall|bull/i.test(brodTxt) && !/köttbull|br[öo]dkrutong/i.test(brodTxt);
     function harNyckel(id) {
       for (var k in manTest) if (k === id || k.indexOf(id + '#') === 0) return true;
       return false;
@@ -503,10 +518,17 @@
         return '';
       }
       var HALL_MS = window.__MK_HALL_MS || 3000;
+
       rad.querySelectorAll('[data-mk-mid]').forEach(function (a) {
-        var tmr = null, fired = false;
-        function starta() {
+        var tmr = null, fired = false, startXY = null;
+        function starta(e) {
           fired = false;
+          /* 📱 HÅLLTOLERANS (användarens mobilrapport 2026-11-16: hållet
+             avbröts alltid → klicket tog en till maskinsidan): fingret
+             darrar ALLTID någon mm under 3 sekunder – touchmove får bara
+             avbryta vid RIKTIG rörelse (>12 px). */
+          var t = e && e.touches && e.touches[0];
+          startXY = t ? { x: t.clientX, y: t.clientY } : null;
           tmr = setTimeout(function () {
             fired = true;
             try { if (navigator.vibrate) navigator.vibrate(60); } catch (e2) {}
@@ -518,7 +540,11 @@
         function avbryt() { if (tmr) { clearTimeout(tmr); tmr = null; } }
         a.addEventListener('touchstart', starta, { passive: true });
         ['touchend', 'touchcancel'].forEach(function (ev) { a.addEventListener(ev, avbryt); });
-        a.addEventListener('touchmove', avbryt, { passive: true });
+        a.addEventListener('touchmove', function (e) {
+          if (!startXY || !e.touches || !e.touches[0]) return avbryt();
+          var dx = e.touches[0].clientX - startXY.x, dy = e.touches[0].clientY - startXY.y;
+          if (Math.sqrt(dx * dx + dy * dy) > 12) avbryt();   /* riktig svepning → avbryt */
+        }, { passive: true });
         a.addEventListener('mousedown', starta);
         ['mouseup', 'mouseleave'].forEach(function (ev) { a.addEventListener(ev, avbryt); });
         a.addEventListener('contextmenu', function (e) { if (fired || tmr) e.preventDefault(); });
@@ -605,12 +631,13 @@
             var st = document.createElement('div');
             st.className = 'mk-brodstatus no-print';
             st.style.cssText = 'margin-top:8px;background:#fdf6ee;border:1px solid #e0d9cd;border-radius:9px;padding:7px 12px;font-size:.8rem;line-height:1.6;color:#5f6e70;';
-            st.innerHTML = '🍞/🥯 Går att baka som <b>limpa ELLER frallor</b> – degen verifieras en gång, gräddningen per variant.<br>' +
+            var sOrd = styckOrd();
+            st.innerHTML = '🍞/🥯 Går att baka som <b>limpa ELLER ' + sOrd + '</b> – degen verifieras en gång, gräddningen per variant.<br>' +
               '🍞 Limpa: ' + (tidL ? '<b style="color:#27ae60;">✅ ' + tidL.replace(/</g, '&lt;') + '</b>' : '⏳ ej verifierad') +
-              ' · 🥯 Frallor: ' + (tidF ? '<b style="color:#27ae60;">✅ ' + tidF.replace(/</g, '&lt;') + '</b>' : '⏳ ej verifierad');
+              ' · 🥯 ' + sOrd.charAt(0).toUpperCase() + sOrd.slice(1) + ': ' + (tidF ? '<b style="color:#27ae60;">✅ ' + tidF.replace(/</g, '&lt;') + '</b>' : '⏳ ej verifierad');
             box.appendChild(st);
             var progF = h3.textContent.split('·').slice(1).join('·').replace(/\s+/g, ' ').trim();
-            [['limpa', '🍞 Verifiera LIMPA', tidL], ['fralla', '🥯 Verifiera FRALLOR', tidF]].forEach(function (v) {
+            [['limpa', '🍞 Verifiera LIMPA', tidL], ['fralla', '🥯 Verifiera ' + sOrd.toUpperCase(), tidF]].forEach(function (v) {
               if (v[2]) return;
               var kb = document.createElement('button');
               kb.className = 'mk-verifdel no-print';

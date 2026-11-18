@@ -140,7 +140,7 @@
         '<button type="button" id="mp-lage-limpa" style="border:2px solid #a0622d;border-radius:999px;padding:5px 12px;font-weight:700;cursor:pointer;font-family:inherit;' +
           (limpa ? 'background:#a0622d;color:#fff;' : 'background:#fff;color:#a0622d;') + '">🍞 Limpa (skivor)</button>' +
         '<button type="button" id="mp-lage-styck" style="border:2px solid #e67e22;border-radius:999px;padding:5px 12px;font-weight:700;cursor:pointer;font-family:inherit;' +
-          (!limpa ? 'background:#e67e22;color:#fff;' : 'background:#fff;color:#e67e22;') + '">🥯 Styck (frallor)</button></div>' : '');
+          (!limpa ? 'background:#e67e22;color:#fff;' : 'background:#fff;color:#e67e22;') + '">🥯 Styck (' + ((window.__MK_STYCKORD && window.__MK_STYCKORD()) || 'bitar') + ')</button></div>' : '');
 
     /* 📦 KOMPAKTLÄGE (punkt 163, designorder A): panelen + satsväljaren
        göms bakom EN smal rad → ingredienserna hamnar på första skärmen.

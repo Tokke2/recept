@@ -3639,6 +3639,31 @@ data i json/, ALDRIG per receptfil.
       fäller ALDRIG bygget.
     · DRY=1-läge för tester. Ingen sw-bump (ingen klientkod).
 
+234. ✔️ KLAR – 📱 MOBILRUNDAN 2026-11-16 (ägarens skärmdumps-
+    rapport IMG_0861/IMG_0897, 3 fixar i ett svep, sw v226):
+    a) HÅLLTOLERANSEN (maskinmatch.js): håll-inne-3-sek-
+       verifieringen på maskinchipsen avbröts ALLTID på mobil –
+       fingret darrar några px → touchmove dödade timern → kvar
+       blev bara klicket (till maskinsidan) och PIN-dialogen kom
+       aldrig. Nu avbryter touchmove först vid RIKTIG svepning
+       (>12 px från startpunkten). Jsdom-testat: darr 5 px +
+       håll → unlock anropas; svep 50 px → avbryts.
+    b) SKALBADGEN (skala.js): ⚖️ "Satsen ×N + Återställ"-pillen
+       (position:fixed, top/right 12px) kunde sticka utanför
+       mobilskärmen → max-width:calc(100vw - 24px) +
+       box-sizing:border-box + flex-wrap:wrap + left:auto.
+    c) STYCKORDET (maskinmatch.js + portion.js): 🍞 BRÖDTITEL-
+       REGELNS syskon – en limpa får ALDRIG kallas fralla.
+       Ny hjälpare styckOrd() (exporterad som __MK_STYCKORD,
+       IIFE-toppnivå – används i både markeraTestad och bröd-
+       statusen) läser recept:portioner-metan: frall→"frallor",
+       bull→"bullar", annars (t.ex. "1 limpa") neutrala "bitar".
+       Dubbelverifierings-texten "limpa ELLER frallor", ⏳-raden,
+       verifieringsknappen och portion.js-växeln "🥯 Styck (…)"
+       använder alla ordet. DATANYCKLARNA (id#limpa/id#fralla)
+       RÖRS ALDRIG – endast visningsorden (robotar förbättrar,
+       gissar aldrig: ordet kommer ur ägarens egen portionsmeta).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

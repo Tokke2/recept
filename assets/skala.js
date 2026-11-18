@@ -95,7 +95,8 @@
     var badge = document.createElement('div');
     badge.id = 'mk-skala-badge';
     badge.className = 'no-print';
-    badge.style.cssText = 'position:fixed;top:12px;right:12px;z-index:118;background:#8e44ad;color:#fff;' +
+    badge.style.cssText = 'position:fixed;top:12px;right:12px;left:auto;z-index:118;background:#8e44ad;color:#fff;' +
+      'max-width:calc(100vw - 24px);box-sizing:border-box;flex-wrap:wrap;' +
       'border-radius:999px;padding:8px 16px;font-family:Segoe UI,system-ui,sans-serif;font-size:.85rem;' +
       'font-weight:700;box-shadow:0 4px 14px rgba(142,68,173,.4);display:flex;gap:10px;align-items:center;';
     badge.innerHTML = '⚖️ Satsen ×' + sv(f) +
