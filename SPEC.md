@@ -3664,6 +3664,90 @@ data i json/, ALDRIG per receptfil.
        RÖRS ALDRIG – endast visningsorden (robotar förbättrar,
        gissar aldrig: ordet kommer ur ägarens egen portionsmeta).
 
+235. ⏳ 🗣️ RÖSTUPPLÄSNING AV HELA STEGET (förslag 1079, beställd
+    2026-11-16): "läs upp" i kockläget läser inte bara stegtexten
+    utan även inbakade jäst-/bakpulvertips och maskinalternativ
+    som hör till steget – allt kökshjälp i ett svep.
+
+236. ⏳ 📳 VIBRATIONSPULS VID TIMERSLUT (förslag 1080, beställd
+    2026-11-16): kocklägestimern vibrerar mobilen (navigator.
+    vibrate-mönster) utöver plinget – hörs inte alltid över
+    airfryerfläkten. Tyst fallback där API saknas (iOS Safari
+    saknar vibrate – då extra tydlig visuell blink i stället).
+
+237. ⏳ 🌙 MÖRKT LÄGE (förslag 1081, beställd 2026-11-16):
+    prefers-color-scheme: dark följs automatiskt + manuell
+    växel i menyn (sparas lokalt). Hela paletten (krämvit/
+    träbrun) får mörk tvilling – kvällsbak utan bländning.
+    Etiketter/utskrift förblir ALLTID ljusa (A5/skrivare).
+
+238. ⏳ 🖐️ SVEP-NAVIGERING I KOCKLÄGET (förslag 1082, beställd
+    2026-11-16): svep vänster/höger byter steg (touchstart/
+    touchend-delta, generösa trösklar så scroll inte krockar) –
+    snabbare än knapptryck med mjöliga fingrar. Samma 12 px-
+    darrtolerans-tänk som SPEC 234a.
+
+239. ⏳ 🌡️ DEGTERMOMETER-FÄLTET (förslag 1084, beställd
+    2026-11-16): verifieringsdialogen får frivilligt fält
+    "innertemp när klar" (t.ex. 96 °C limpa) → visas som extra
+    kvalitetsmärke på receptet ("🌡️ 96 °C vid admin-bak").
+    Ägarens egna siffror – aldrig gissade.
+
+240. ⏳ 📅 BAKLOGGEN (förslag 1086, beställd 2026-11-16):
+    "jag bakade detta"-knapp sparar datum lokalt (localStorage,
+    per recept) → "🧑‍🍳 Du har bakat detta 4 ggr, senast 12 nov"
+    + samlad bakhistorik på en egen sida. Endast lokalt på
+    enheten – ingen molnlagring.
+
+241. ⏳ 🧊 FRYSMÄRKNINGEN (förslag 1087, beställd 2026-11-16):
+    receptmeta "fryser bra ✅/❌ + antal månader" (ägarens bedöm-
+    ning) → visas på receptsidan OCH bakas automatiskt in på
+    etiketten med beräknat bäst-före-datum (bakdatum + månader).
+
+242. ⏳ 🖨️ 62 MM-ETIKETTMALLEN FÖR BROTHER QL (förslag 1090,
+    beställd 2026-11-16 efter skrivardiskussionen): etikett-
+    modulen får AirPrint-vänlig 62 mm-layout – receptnamn,
+    bakdatum, allergirad i RÖTT (QL-seriens tvåfärg), QR till
+    receptet. Skrivs ut direkt från Safari via AirPrint –
+    ingen app-brygga. (Byggs klokast när skrivaren finns
+    hemma så den kan provtryckas på riktigt.)
+
+243. ⏳ 📦 BATCHETIKETTER (förslag 1091, beställd 2026-11-16):
+    dubbel/trippel sats → skriv ut X likadana etiketter med
+    löpnummer (1/4, 2/4 …) i ett svep. Antalet föreslås ur
+    satsfaktorn (__MK_SKALA_F).
+
+244. ⏳ 🎨 ETIKETT-TEMA PER KATEGORI (förslag 1092, beställd
+    2026-11-16): etiketterna får diskret motiv ur receptets
+    kategori – bröd=vete, sylt=bär, glass=snöflinga osv.
+    Inline-SVG (inga externa bilder), gåvoläget behåller sitt.
+
+245. ⏳ 📊 VECKORAPPORTEN MED FELLOGGAR (förslag 1094 + ägarens
+    tillägg "felloggar", beställd 2026-11-16): robot (GitHub
+    Actions, söndagar) mejlar sammanfattning via Web3Forms:
+    besökssiffror, nya verifieringar, trasiga länkar, omatchade
+    ingredienser SAMT FELLOGGARNA – sidledsvaktens bovar,
+    JS-fel ur Svarta lådan och robotarnas flaggor, så fel
+    upptäcks utan att öppna devtools/adminpanelen.
+
+246. ⏳ 🎥 15-SEKUNDERS STEGFILMER (förslag 1098, beställd
+    2026-11-16): kritiska moment (degkonsistens!) får kort
+    film inbäddad i steget – ägarens egna klipp, lazy-laddade,
+    aldrig autoplay med ljud. Det ingen annan maskinrecept-
+    sajt har.
+
+247. ⏳ 💬 FRÅGA OM RECEPTET → FAQ (förslag 1099, beställd
+    2026-11-16): besökare ställer fråga via Web3Forms direkt
+    på receptsidan → ägaren godkänner/besvarar i adminpanelen
+    → publiceras som FAQ-sektion på receptet (med FAQPage-
+    schema = SEO-guld). Inget publiceras utan ägargodkännande.
+
+248. ⏳ 🏅 VERIFIERINGSBADGEN SOM DELNINGSBILD (förslag 1100,
+    beställd 2026-11-16): og:image genereras med "✅ Verifierad
+    i [maskin]"-märke för verifierade recept – syns vid delning
+    och i sökresultat. Endast ÄKTA verifieringar får badgen
+    (aldrig förverifierat – verifieringsmodellen gäller).
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
