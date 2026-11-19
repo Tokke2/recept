@@ -3625,13 +3625,14 @@
   "🥖 3. Resultatet": "🥖 3. Das Ergebnis",
   "Tipsa en vän via e-post – färdigt receptkort, ingen spårning": "Sagen Sie es einem Freund per E-Mail – fertige Rezeptkarte, keine Nachverfolgung",
   "Tryck när ingrediensen är i – bocken följer med genom alla steg": "Drücken Sie, wenn die Zutat drin ist – das Häkchen folgt allen Schritten",
-  "🍩 Söta bröd": "🍩 Süßes Brot"
+  "🍩 Söta bröd": "🍩 Süßes Brot",
+  "om det är en limpa så ska det ej kallas fralla": "Wenn es ein Laib ist, sollte man es nicht Brötchen nennen"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3624,
- "_senast_robot": "2026-11-18"
+ "_auto_genererade": 3625,
+ "_senast_robot": "2026-11-19"
 }
