@@ -3776,6 +3776,23 @@ data i json/, ALDRIG per receptfil.
        json/affiliate.json (🟢 Amazon-tag aktiv · ⏳ väntar på
        Adtraction/Awin-avtal). Aldrig publikt. sw v227.
 
+251. ⏳ 📖 E-KOKBOKEN (förslag 1102, beställd 2026-11-22): roboten
+    genererar automatiskt en säljbar PDF av alla 🌟-verifierade
+    recept (titel, bild, ingredienstabell, maskininställningar,
+    jäst-/bakpulvertipsen) → säljs via Ko-fi/Gumroad. Roboten
+    bygger om PDF:en vid varje ny verifiering – köparna har
+    alltid senaste versionen, ägaren gör ingenting. Endast
+    VERIFIERADE recept får plats (verifieringsmodellen = bokens
+    säljargument). Byggs när det finns 🌟-recept att fylla den
+    med (idag 0 – bakhelgen först!).
+
+252. ⏳ 🎄 SÄSONGSPAKETET (förslag 1105, beställd 2026-11-22):
+    tematiska mini-PDF:er ("Julbaket i maskinerna", påsk,
+    midsommar) ur samma PDF-motor som 251 – filtrerat på
+    säsongstaggar. Säsongsroboten (förslag 1097) påminner i
+    adminpanelen när det är dags att paketera. Samma regel:
+    endast verifierade recept.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
