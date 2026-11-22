@@ -3573,11 +3573,16 @@ data i json/, ALDRIG per receptfil.
     räknar ALDRIG, slug-export, skanner, total, topplista).
     sw v222.
 
-228. 📊 BESÖKSGRAF I ADMINPANELEN (förslag 1056, beställd 2026-11-15
-    med ägarens tillägg "endast i adminpanelen"): statistiken ritas
-    som stapeldiagram per vecka (ren SVG, ingen lib) – ENDAST i
-    adminpanelen, aldrig publikt. Byggs när räknarna samlat några
-    veckors data (startade 2026-11-15 – en graf i dag vore tom).
+228. ✔️ KLAR – 📊 BESÖKSGRAF I ADMINPANELEN (förslag 1056, byggd
+    2026-11-16 på ägarens "bygg dessa"): NY nattlig logg-robot
+    (.github/workflows/besokslogg.yml + besokslogg.py, cron 03:17)
+    läser besok-total/kop-total ur Abacus (GET /get/ – ökar inget)
+    och lägger en rad per natt i json/besok-historik.json (ROBOT-
+    ÄGD, max en rad/datum, API nere → natten hoppas över helt,
+    aldrig ljugande nollor, 400 dagar behålls). Adminpanelen ritar
+    stapelgraf (ren SVG) av NYA sidvisningar/dag + 🟢-prick för
+    dagar med köpklick – ENDAST adminpanelen, aldrig publikt.
+    Grafen fylls på dag för dag (ägarens val 2026-11-16).
 
 229. ✔️ KLAR – 🏷️ KATEGORIRULLGARDIN + 🖼️ MINIATYRVY (användarens
     order: "visa kategorier i rullgardinsmeny + anpassad meny som
@@ -3747,6 +3752,29 @@ data i json/, ALDRIG per receptfil.
     i [maskin]"-märke för verifierade recept – syns vid delning
     och i sökresultat. Endast ÄKTA verifieringar får badgen
     (aldrig förverifierat – verifieringsmodellen gäller).
+
+249. ⏳ 🛡️ PIN-HÄRDNINGEN (förslag 1101, beställd 2026-11-16):
+    (a) hashen byts till PBKDF2 med 300 000 varv (WebCrypto) –
+    offline-gissning mot publika las.json blir tusentals gånger
+    långsammare, (b) 3 sekunders väntetid efter fel PIN i
+    dialogen, (c) PIN-styrkemätare i adminpanelen som föreslår
+    8+ tecken vid nästa byte. Datalagret rörs inte – bara
+    hashmetoden. (Lager 2 – GitHub-nyckeln – är oförändrat det
+    riktiga skrivskyddet.)
+
+250. ✔️ KLAR – 💰 INTÄKTSROBOTEN A+B (ägarens order 2026-11-16
+    "robot som genererar intäkt", frågerunda besvarad: C=båda):
+    A) INTÄKTSVAKTEN – självläkningsroboten steg19: varje maskin
+       ska ha en köpväg (giltig ASIN / lankar.kop / butiker-post),
+       annars rapportrad; trasigt ASIN-format flaggas. ENDAST
+       RAPPORT – roboten hittar ALDRIG på produktlänkar.
+    B) KÖPKLICKS-RÄKNAREN – NY assets/intakt.js (laddas överallt
+       av site.js): klick på Amazon-/butiksknappar räknas anonymt
+       (Abacus kop-total + kop-<maskin-id>, keepalive-fetch,
+       endast tokke2.github.io). 💰 Intäktsrapporten i ADMIN-
+       PANELEN: topplista per maskin + ärlig affiliatestatus ur
+       json/affiliate.json (🟢 Amazon-tag aktiv · ⏳ väntar på
+       Adtraction/Awin-avtal). Aldrig publikt. sw v227.
 
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 

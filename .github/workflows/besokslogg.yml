@@ -1,0 +1,26 @@
+# PLATS: /.github/workflows/besokslogg.yml
+# 📈 Nattlig besökslogg (SPEC 228) – kör besokslogg.py varje natt
+# och committar json/besok-historik.json (robotägd fil).
+name: Besokslogg
+
+on:
+  schedule:
+    - cron: '17 3 * * *'   # varje natt 03:17 UTC
+  workflow_dispatch: {}     # + manuell körning för test
+
+permissions:
+  contents: write
+
+jobs:
+  logg:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Logga dagens räknare
+        run: python .github/workflows/besokslogg.py
+      - name: Committa historiken
+        run: |
+          git config user.name "Mitt Maskinkok-robot"
+          git config user.email "tokke2@users.noreply.github.com"
+          git add json/besok-historik.json
+          git diff --cached --quiet || { git commit -m "📈 Nattlig besokslogg"; git push; }

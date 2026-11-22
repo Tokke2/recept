@@ -1092,6 +1092,34 @@ def steg18_affiliaterot():
             rader.append('| %s | 🔗 gick inte att nå (nätfel/timeout) – kontrollera manuellt (steg18) |' % u[:90])
 
 
+def steg19_intaktsvakt():
+    """💰 INTÄKTSVAKTEN (SPEC 250 del A, ägarens order 2026-11-16
+    "robot som genererar intäkt"): varje maskin i json/maskiner/
+    ska ha en KÖPVÄG – giltig ASIN (10 tecken A-Z/0-9), lankar.kop
+    eller en butiker-post. Saknas → rapportrad. Trasigt ASIN-format
+    flaggas. ENDAST RAPPORT – roboten HITTAR ALDRIG PÅ produktlänkar
+    (ägarens regel: exakta länkar klistras in via ✏️-dialogen)."""
+    import json as _json
+    import re as _re
+    for f in sorted(glob.glob('json/maskiner/*.json')):
+        try:
+            m = _json.load(open(f, encoding='utf-8'))
+        except Exception:
+            continue
+        if not isinstance(m, dict) or not m.get('id'):
+            continue
+        asin = str(m.get('asin') or '').strip().upper()
+        ln = m.get('lankar') or {}
+        bt = m.get('butiker') or {}
+        asin_ok = bool(_re.fullmatch(r'[A-Z0-9]{10}', asin))
+        kop_ok = isinstance(ln, dict) and str(ln.get('kop') or '').startswith('http')
+        butik_ok = isinstance(bt, dict) and any(str(v).startswith('http') for v in bt.values())
+        if asin and not asin_ok:
+            rader.append('| %s | 💰 ASIN ser fel ut ("%s" – ska vara exakt 10 tecken A-Z/0-9) (steg19) |' % (f, asin[:20]))
+        if not (asin_ok or kop_ok or butik_ok):
+            rader.append('| %s | 💰 köpväg saknas (ingen asin/kop-länk/butik) – utan den kan maskinen aldrig ge intäkt; lägg in via ✏️-dialogen (steg19) |' % f)
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -1109,6 +1137,7 @@ def main():
     steg16_programvakten(maskiner)
     steg17_internlankar()
     steg18_affiliaterot()
+    steg19_intaktsvakt()
     steg12_beskrivningar()
     steg6_sitemap()
     steg7_receptindex()

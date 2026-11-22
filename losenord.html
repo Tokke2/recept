@@ -89,7 +89,16 @@
     <h2>📈 Besöksstatistik</h2>
     <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">Sidvisningar (inte unika personer) · 1 räkning per sida och besökssession · räknas sedan 2026-11-15 · endast tokke2.github.io.</p>
     <div class="rad"><span>Totalt antal sidvisningar</span><b id="besokTotal">⏳</b></div>
+    <div id="besokGraf" style="margin-top:10px;">⏳ Ritar grafen...</div>
     <div id="besokLista" style="font-size:.9rem;line-height:1.8;margin-top:8px;">⏳ Hämtar räknarna...</div>
+  </div>
+
+  <div class="card">
+    <h2>💰 Intäktsrapporten</h2>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">Klick på köpknapparna (Amazon/butiker) – anonym räknare, endast här i panelen. Visar vilka maskiner som driver flest klick: beslutsunderlag inför affiliateavtalen.</p>
+    <div id="intaktStatus" style="font-size:.85rem;line-height:1.7;background:#fdf6ee;border-radius:10px;padding:8px 12px;margin-bottom:8px;">⏳</div>
+    <div class="rad"><span>Totalt antal köpklick</span><b id="kopTotal">⏳</b></div>
+    <div id="intaktLista" style="font-size:.9rem;line-height:1.8;margin-top:8px;">⏳ Hämtar köpklicken...</div>
   </div>
 
   <div class="card">
@@ -268,8 +277,76 @@
     var p = document.getElementById('panel');
     if (!p || p.style.display === 'none' || startad) return;
     startad = true; clearInterval(iv);
-    laddaOmatchade(); laddaBesok(); laddaOnsk();
+    laddaOmatchade(); laddaBesok(); laddaOnsk(); laddaGraf(); laddaIntakt();
   }, 600);
+
+  /* ============================================================
+     📊 BESÖKSGRAFEN (SPEC 228) – ritas ur json/besok-historik.json
+     som den nattliga logg-roboten (besokslogg.py) fyller på.
+     Ren SVG, ingen lib. Staplar = NYA sidvisningar per dag.
+     ============================================================ */
+  async function laddaGraf() {
+    var el = document.getElementById('besokGraf');
+    try {
+      var hist = await (await fetch('json/besok-historik.json', { cache: 'no-store' })).json();
+      if (!Array.isArray(hist) || !hist.length) {
+        el.innerHTML = '<span style="color:var(--muted);font-size:.85rem;">📈 Grafen fylls på när logg-roboten samlat sina första nätter (loggar varje natt kl 03:17).</span>';
+        return;
+      }
+      var pts = hist.slice(-30);
+      var deltor = pts.map(function (pp, i) {
+        var fore = i ? (pts[i - 1].besok || 0) : (pp.besok || 0);
+        return { d: String(pp.datum || '').slice(5), v: Math.max(0, (pp.besok || 0) - fore), k: Math.max(0, (pp.kop || 0) - (i ? (pts[i - 1].kop || 0) : (pp.kop || 0))) };
+      });
+      if (pts.length === 1) deltor = [{ d: String(pts[0].datum || '').slice(5), v: pts[0].besok || 0, k: pts[0].kop || 0 }];
+      var max = Math.max.apply(null, deltor.map(function (x) { return x.v; }).concat([1]));
+      var W = 560, H = 130, bw = W / deltor.length;
+      var bars = deltor.map(function (x, i) {
+        var h = Math.round(x.v / max * (H - 34));
+        return '<rect x="' + (i * bw + 2).toFixed(1) + '" y="' + (H - 18 - h) + '" width="' + Math.max(2, bw - 4).toFixed(1) + '" height="' + Math.max(1, h) + '" rx="3" fill="#e67e22"><title>' + x.d + ': ' + x.v + ' besök, ' + x.k + ' köpklick</title></rect>' +
+          (deltor.length <= 14 ? '<text x="' + (i * bw + bw / 2).toFixed(1) + '" y="' + (H - 5) + '" font-size="9" text-anchor="middle" fill="#5f6e70">' + x.d + '</text>' : '') +
+          (x.k > 0 ? '<circle cx="' + (i * bw + bw / 2).toFixed(1) + '" cy="' + (H - 24 - h) + '" r="3.5" fill="#27ae60"><title>' + x.k + ' köpklick</title></circle>' : '');
+      }).join('');
+      el.innerHTML = '<div style="font-size:.8rem;color:var(--muted);margin-bottom:4px;">Nya sidvisningar per dag (senaste ' + deltor.length + ') · 🟢 prick = dag med köpklick</div>' +
+        '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;background:#fdf6ee;border-radius:10px;">' + bars + '</svg>';
+    } catch (e) { el.textContent = '⚠️ Grafen kunde inte ritas: ' + e.message; }
+  }
+
+  /* ============================================================
+     💰 INTÄKTSRAPPORTEN (SPEC 250 del B) – köpklick per maskin
+     (kop-<id>-räknarna som assets/intakt.js tickar upp) + ärlig
+     affiliatestatus ur json/affiliate.json.
+     ============================================================ */
+  async function laddaIntakt() {
+    var el = document.getElementById('intaktLista');
+    try {
+      var aff = {};
+      try { aff = await (await fetch('json/affiliate.json', { cache: 'no-store' })).json(); } catch (e2) {}
+      var status = [];
+      status.push(aff.amazon_tag ? '🟢 Amazon-taggen aktiv (<b>' + aff.amazon_tag + '</b>) – Amazonklick kan ge provision'
+                                 : '🔴 Amazon-tag saknas i json/affiliate.json');
+      var ptn = aff.partners || {};
+      var vantar = Object.keys(ptn).filter(function (k) { return k !== 'amazon' && ptn[k] && !ptn[k].deeplink_mall; });
+      if (vantar.length) status.push('⏳ Väntar på nätverksavtal (klick räknas men ger inget än): ' + vantar.map(function (k) { return ptn[k].namn || k; }).join(', '));
+      document.getElementById('intaktStatus').innerHTML = status.join('<br>');
+      document.getElementById('kopTotal').textContent = await hamta('kop-total');
+      var slug = window.__MK_BESOK_SLUG || function (x) { return String(x).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50); };
+      var ix = await (await fetch('json/maskiner-index.json', { cache: 'no-store' })).json();
+      var rows = await Promise.all(ix.map(async function (f) {
+        try {
+          var m = await (await fetch('json/maskiner/' + f, { cache: 'no-store' })).json();
+          if (!m || !m.id) return null;
+          return { namn: ((m.varumarke || '') + ' ' + (m.modellnamn || '')).trim() || m.id,
+                   antal: await hamta('kop-' + slug(m.id)) };
+        } catch (e3) { return null; }
+      }));
+      rows = rows.filter(Boolean).sort(function (a2, b2) { return b2.antal - a2.antal; });
+      var medalj2 = ['🥇', '🥈', '🥉'];
+      el.innerHTML = rows.some(function (r) { return r.antal > 0; })
+        ? rows.map(function (r, i) { return (medalj2[i] || '·') + ' ' + r.namn + ' – <b>' + r.antal + '</b>'; }).join('<br>')
+        : '<span style="color:var(--muted);">Inga köpklick räknade ännu – räknaren startade i dag.</span>';
+    } catch (e) { el.textContent = '⚠️ Kunde inte hämta köpklicken: ' + e.message; }
+  }
 
   /* --- SPEGEL av kalkyl.js norm/matchAll --- */
   function norm(s) {
