@@ -3499,7 +3499,15 @@
   "🥖 3. Resultatet": "🥖 3. The result",
   "Tipsa en vän via e-post – färdigt receptkort, ingen spårning": "Tell a friend by email - ready recipe card, no tracking",
   "Tryck när ingrediensen är i – bocken följer med genom alla steg": "Press when the ingredient is in - the tick follows through all steps",
-  "🍩 Söta bröd": "🍩 Sweet bread"
+  "🍩 Söta bröd": "🍩 Sweet bread",
+  "Form:": "Shape:",
+  "Klick på köpknapparna (Amazon/butiker) – anonym räknare, endast här i panelen. Visar vilka maskiner som driver flest klick: beslutsunderlag inför affiliateavtalen.": "Click on the buy buttons (Amazon/stores) - anonymous calculator, only here in the panel. Shows which machines drive the most clicks: decision basis for affiliate agreements.",
+  "Totalt antal köpklick": "Total purchase clicks",
+  "om det är en limpa så ska det ej kallas fralla": "if it's a loaf, it shouldn't be called a roll",
+  "robot som genererar intäkt": "robot that generates income",
+  "⏳ Hämtar köpklicken...": "⏳ Fetching the buy click...",
+  "⏳ Ritar grafen...": "⏳ Draws the graph...",
+  "💰 Intäktsrapporten": "💰 The income report"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3509,6 +3517,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3498,
- "_senast_robot": "2026-11-22"
+ "_auto_genererade": 3506,
+ "_senast_robot": "2026-11-23"
 }

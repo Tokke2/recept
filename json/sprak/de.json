@@ -3626,13 +3626,19 @@
   "Tipsa en vän via e-post – färdigt receptkort, ingen spårning": "Sagen Sie es einem Freund per E-Mail – fertige Rezeptkarte, keine Nachverfolgung",
   "Tryck när ingrediensen är i – bocken följer med genom alla steg": "Drücken Sie, wenn die Zutat drin ist – das Häkchen folgt allen Schritten",
   "🍩 Söta bröd": "🍩 Süßes Brot",
-  "om det är en limpa så ska det ej kallas fralla": "Wenn es ein Laib ist, sollte man es nicht Brötchen nennen"
+  "om det är en limpa så ska det ej kallas fralla": "Wenn es ein Laib ist, sollte man es nicht Brötchen nennen",
+  "Klick på köpknapparna (Amazon/butiker) – anonym räknare, endast här i panelen. Visar vilka maskiner som driver flest klick: beslutsunderlag inför affiliateavtalen.": "Klicken Sie auf die Kaufen-Buttons (Amazon/Stores) – anonymer Rechner, nur hier im Panel. Zeigt, welche Maschinen die meisten Klicks generieren: Entscheidungsgrundlage für Affiliate-Verträge.",
+  "Totalt antal köpklick": "Gesamtzahl der Kaufklicks",
+  "robot som genererar intäkt": "Roboter, der Einkommen generiert",
+  "⏳ Hämtar köpklicken...": "⏳ Kaufklick wird abgerufen...",
+  "⏳ Ritar grafen...": "⏳ Zeichnet die Grafik...",
+  "💰 Intäktsrapporten": "💰 Der Einkommensbericht"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3625,
- "_senast_robot": "2026-11-22"
+ "_auto_genererade": 3631,
+ "_senast_robot": "2026-11-23"
 }
