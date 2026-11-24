@@ -3793,6 +3793,28 @@ data i json/, ALDRIG per receptfil.
     adminpanelen när det är dags att paketera. Samma regel:
     endast verifierade recept.
 
+253. ✔️ KLAR – 🔬 SKÄRPE- & PRESTANDAPASSET (ägarens order
+    2026-11-22: "anpassa sig till skärm, bättre layout/design,
+    bättre skärpa/DPI, tydligare text/font/bild/kolumn, ej
+    grumlig, bättre minneshantering, snabbare, energisnålare"):
+    a) SKÄRPAN (design.css v4): font-smoothing på high-DPI-
+       skärmar + optimizeLegibility; miniatyrbilder får
+       -webkit-optimize-contrast (Chrome/Edge smetar annars
+       vid nedskalning).
+    b) FLYTANDE RUBRIKER: h1/h2 skalar mjukt med clamp() mellan
+       mobil och jätteskärm – rem-baserat (respekterar 🔠 text-
+       skalan), utan !important (sidors egna storlekar vinner).
+    c) TYDLIGARE KOLUMNER: zebraränder, markerad rubrikrad,
+       tabular-nums (siffror i lod), hover-markering endast på
+       muspekar-enheter, allt vitt i print.
+    d) SURFPLATTEPASSET: 641–1024px utnyttjar bredden (96vw).
+    e) ⚡ PRESTANDA (site.js): bilder nedanför vikningen lazy-
+       laddas (mindre data/minne/batteri – bilder i synfältet
+       rörs aldrig = ingen LCP-skada), decoding=async överallt,
+       preconnect till räknar-API:t. sw v228.
+    ÄRLIG GRÄNS: AI-källbilder med låg upplösning kan CSS inte
+    skärpa – omgenerering i högre upplösning = förslag 1157.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller

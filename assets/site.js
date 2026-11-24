@@ -616,3 +616,43 @@ window.__MK_UNDERKAT = {
   try { fetch(API + 'besok-total'); } catch (e) {}
   try { fetch(API + 'besok-' + sida); } catch (e) {}
 })();
+
+/* ============================================================
+   ⚡ PRESTANDAPASSET (SPEC 253, ägarens order 2026-11-22:
+   "bättre minneshantering, snabbare, energisnålare"):
+   · Bilder NEDANFÖR vikningen lazy-laddas (hämtas först när
+     de närmar sig skärmen = mindre data, mindre minne, mindre
+     batteri). Bilder i synfältet rörs ALDRIG (ingen LCP-skada).
+   · decoding=async på alla bilder: avkodningen blockerar
+     aldrig texten (snabbare upplevd rendering).
+   · preconnect till räknar-API:t: första räknaranropet slipper
+     DNS+TLS-väntan.
+   Körs EN gång per sida, rör aldrig layouten.
+   ============================================================ */
+(function () {
+  'use strict';
+  if (window.__MK_PERF_LOADED) return;
+  window.__MK_PERF_LOADED = true;
+
+  function passet() {
+    var vh = window.innerHeight || 800;
+    document.querySelectorAll('img').forEach(function (img) {
+      if (!img.hasAttribute('decoding')) img.setAttribute('decoding', 'async');
+      if (!img.hasAttribute('loading')) {
+        var r;
+        try { r = img.getBoundingClientRect(); } catch (e) { return; }
+        if (r.top > vh * 1.2) img.setAttribute('loading', 'lazy');
+      }
+    });
+    try {
+      if (!document.querySelector('link[rel="preconnect"][href*="abacus"]')) {
+        var l = document.createElement('link');
+        l.rel = 'preconnect';
+        l.href = 'https://abacus.jasoncameron.dev';
+        document.head.appendChild(l);
+      }
+    } catch (e) {}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', passet);
+  else passet();
+})();
