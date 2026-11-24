@@ -585,3 +585,9 @@
 | ananaskaka-med-svartvinbarssylt-i-riskokare.jpg | 🖼️ bild krympt 262 → 196 kB |
 | ananaskaka.jpg | 🖼️ bild krympt 262 → 196 kB |
 | sitemap.xml | 🗺️ omgenererad (51 adresser) |
+
+**2026-11-24**
+
+| recept/bakning/pajdeg-i-bakmaskin.html | 🚫 spärrat program i metan: "10. Cake (Kaka)" (clatronic bba 3774) – ägarorder krävs (steg16) |
+| https://www.greenpan.us/products/frost-6-in-1-ice-cream-frozen-drink-maker | 🔗 DÖD produktlänk (HTTP 404) – byt via ✏️-dialogen (steg18) |
+| sitemap.xml | 🗺️ omgenererad (52 adresser) |
