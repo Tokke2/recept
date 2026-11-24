@@ -3815,6 +3815,58 @@ data i json/, ALDRIG per receptfil.
     ÄRLIG GRÄNS: AI-källbilder med låg upplösning kan CSS inte
     skärpa – omgenerering i högre upplösning = förslag 1157.
 
+254. ⏳ 🥫 SKAFFERISÖKET (förslag 1133, beställd 2026-11-22):
+    "vad har jag hemma?"-sök – bocka i ingredienser du har →
+    recepten du kan baka UTAN att handla (matchar mot recept-
+    index/ingredienslistor, samma matchningsmotor som kalkylen).
+
+255. ⏳ 🔀 SMART SORTERING (förslag 1155, beställd 2026-11-22):
+    receptlistan kan sorteras på "senast verifierad" / "högst
+    betyg" / "snabbast" (total tid ur portionsmeta) utöver
+    dagens ordning. Valet sparas lokalt per besökare.
+
+256. ⏳ 🎓 NYBÖRJARSKOLAN (förslag 1148, beställd 2026-11-22):
+    grundteknik-sidor (knåda, jäsa, vika, degkänsla) med egna
+    URL:er (SEO!) – länkas automatiskt från stegtexter där
+    tekniken nämns. Ägarens egna beskrivningar/bilder, aldrig
+    påhittat innehåll.
+
+257. ⏳ 📺 TV-LÄGET (förslag 1153, beställd 2026-11-22): kock-
+    läget i jätteformat för köksskärm/surfplatta på avstånd –
+    extrastor text, maxkontrast, stegknappar i fullbredd.
+    Växel i kocklägets meny, inget nytt läge att underhålla
+    (samma data, annan kostym).
+
+258. ⏳ 🧒 KIDS-LÄGET (förslag 1154, beställd 2026-11-22): barn-
+    anpassad stegvisning – symboler, korta meningar, "vuxen-
+    steg"-märkning där het ugn/maskin kräver vuxen. Ägaren
+    väljer per recept om kids-läget erbjuds.
+
+259. ⏳ 📤 DELNINGSKNAPPEN (förslag 1142, beställd 2026-11-22):
+    mobilens delningsark (Web Share API) på receptsidor –
+    delar titel + länk (+ receptkort-bild när 248-badgen
+    finns). Diskret fallback: kopiera länk-knapp på datorer.
+
+260. ⏳ 🇬🇧 ENGELSKA LÄGET (förslag 1144, beställd 2026-11-22):
+    EN-version av recepten – robotöversatt till json/sprak/
+    (robotägd), publiceras ENDAST efter ägargranskning i
+    adminpanelen (samma modell som stavningsroboten 1022).
+    hreflang + egna URL:er. Nischen är oexploaterad på
+    engelska = stor räckviddschans.
+
+261. ⏳ 🇺🇸 CUPS/OZ-LÄGET (förslag 1145, beställd 2026-11-22):
+    enhetsväxel dl/g ↔ cups/oz för utländska besökare (bygger
+    på enheter.js-motorn). Visas främst i engelska läget (260);
+    omvandlingstabeller webbverifieras per ingredienstyp –
+    cups är volym, så mjöl/socker får egna faktorer.
+
+262. ⏳ 🪄 RECEPTIMPORTERAREN (förslag 1152, beställd 2026-11-22):
+    klistra in valfritt recept (text/URL) i nytt-recept-flödet →
+    tolkas och konverteras till maskinformatet (ingredienstabell,
+    steg, maskinmappning via dikterings-/fixaEnheter-motorn).
+    ALLTID utkast som ägaren granskar – roboten publicerar
+    aldrig själv. Killer-differentiator i nischen.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
