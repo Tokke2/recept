@@ -566,3 +566,22 @@
 | https://www.amazon.se/dp/B0D3HQKCQ9 | 🔗 DÖD produktlänk (HTTP 404) – byt via ✏️-dialogen (steg18) |
 | https://www.greenpan.us/products/frost-6-in-1-ice-cream-frozen-drink-maker | 🔗 DÖD produktlänk (HTTP 404) – byt via ✏️-dialogen (steg18) |
 | sitemap.xml | 🗺️ omgenererad (51 adresser) |
+
+**2026-11-24**
+
+| recept/bakning/pajdeg-i-bakmaskin.html | 🚫 spärrat program i metan: "10. Cake (Kaka)" (clatronic bba 3774) – ägarorder krävs (steg16) |
+| https://www.greenpan.us/products/frost-6-in-1-ice-cream-frozen-drink-maker | 🔗 DÖD produktlänk (HTTP 404) – byt via ✏️-dialogen (steg18) |
+| cosori-twinfry-10l.jpg | 🖼️ bild krympt 273 → 132 kB |
+| midea-mb-fs5017.jpg | 🖼️ bild krympt 174 → 106 kB |
+| ninja-detect-power.png | 🖼️ bild krympt 99 → 34 kB |
+| ninja-nc502eu.png | 🖼️ bild krympt 99 → 34 kB |
+| Ananas_Rom_Yoghurt_Slush.jpg | 🖼️ bild krympt 146 → 112 kB |
+| Mjukglass MAX.jpg | 🖼️ bild krympt 121 → 95 kB |
+| a4-makaronichips-airfryer-salt--peppar.jpg | 🖼️ bild krympt 163 → 124 kB |
+| kokt-ris-i-riskokare-500-g-ris-1000-g-vatten.jpg | 🖼️ bild krympt 164 → 128 kB |
+| pizzadeg-i-bakmaskin-4-250-g-utan-protein.jpg | 🖼️ bild krympt 144 → 110 kB |
+| recept_proteinshake_saft.jpg | 🖼️ bild krympt 144 → 111 kB |
+| svartvinbarssylt-klassiskt-recept.jpg | 🖼️ bild krympt 164 → 127 kB |
+| ananaskaka-med-svartvinbarssylt-i-riskokare.jpg | 🖼️ bild krympt 262 → 196 kB |
+| ananaskaka.jpg | 🖼️ bild krympt 262 → 196 kB |
+| sitemap.xml | 🗺️ omgenererad (51 adresser) |
