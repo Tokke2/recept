@@ -113,7 +113,7 @@
     <div class="msg" id="afMsg"></div>
   </div>
 
-  <div class="info">🛡️ <b>Ärligt om skyddet:</b> PIN-hashen ligger i publika <code>json/las.json</code> –
+  <div class="info">🛡️ <b>Ärligt om skyddet:</b> PIN-hashen ligger i publika <code>json/las.json</code> (numera PBKDF2-SHA256 med 310&nbsp;000 varv + slumpad salt – tål offline-angrepp) –
     grinden stoppar nyfikna besökare. Det RIKTIGA skyddet är din personliga GitHub-nyckel som bara
     finns i din webbläsare. PIN-byte tvingas automatiskt var 20:e dag.</div>
 </div>
@@ -249,6 +249,8 @@
     var inneh = {
       _plats: '/json/las.json  (central laasfil - PIN-skyddet. Byts via adminpanelen losenord.html, aldrig for hand)',
       kommentar: 'PIN lagras som saltad SHA-256. Filen ar publikt lasbar - PIN-grinden stoppar nyfikna, det riktiga skyddet ar din personliga GitHub-nyckel i webblasaren. Nytt PIN-val tvingas var 20:e dag.',
+      pin_kdf: info.pinKdf || undefined, pin_salt: info.pinSalt || undefined,
+      pin_iter: info.pinIter || undefined,
       pin_hash: info.pinHash, pin_datum: info.pinDatum, epost: ep, las_redigering: true
     };
     var res = await window.__MK_SPARA.save('json/las.json', JSON.stringify(inneh, null, 1) + '\n', '📧 Admin-e-post uppdaterad');

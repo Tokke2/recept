@@ -26,6 +26,21 @@
   var OWNER = 'Tokke2', REPO = 'recept', BRANCH = 'main';
   var TOKEN_KEY = 'mk-gh-token';
   var UNLOCK_KEY = 'mk-edit-unlocked';   // samma upplåsning som ✏️-redigering
+  /* ⏲️ SPEC 249: upplåsningen gäller 30 min (förnyas vid användning) –
+     förr satt den tills fliken stängdes. */
+  var UNLOCK_MS = 30 * 60 * 1000;
+  function lasUpp() { try { sessionStorage.setItem(UNLOCK_KEY, String(Date.now())); } catch (e) {} }
+  function arUpplast() {
+    try {
+      var v = sessionStorage.getItem(UNLOCK_KEY);
+      if (!v) return false;
+      if (v === '1') { lasUpp(); return true; }   /* äldre session → uppgradera */
+      var t = +v;
+      if (t && Date.now() - t < UNLOCK_MS) { lasUpp(); return true; }
+      sessionStorage.removeItem(UNLOCK_KEY);
+    } catch (e) {}
+    return false;
+  }
 
   /* ============================================================
      🔒 LÖSENORDSGATE – samma lösenord som i json/las.json
@@ -47,13 +62,16 @@
           pw: String(d.losenord || ''),
           hash: String(d.losenord_hash || '').toLowerCase().trim(),
           pinHash: String(d.pin_hash || '').toLowerCase().trim(),
+          pinSalt: String(d.pin_salt || '').toLowerCase().trim(),
+          pinIter: parseInt(d.pin_iter, 10) || 0,
+          pinKdf: String(d.pin_kdf || ''),
           pinDatum: String(d.pin_datum || ''),
           epost: String(d.epost || ''),
           on: d.las_redigering !== false
         };
       } catch (e) {}
     }
-    return { pw: '', hash: '', pinHash: '', pinDatum: '', epost: '', on: false };  // ingen låsfil = inget lås
+    return { pw: '', hash: '', pinHash: '', pinSalt: '', pinIter: 0, pinKdf: '', pinDatum: '', epost: '', on: false };  // ingen låsfil = inget lås
   }
 
   async function checkPassword(input, lock) {
@@ -100,7 +118,7 @@
       var fel = 0;
       async function attempt() {
         if (await checkPassword(input.value, lock)) {
-          try { sessionStorage.setItem(UNLOCK_KEY, '1'); } catch (e) {}
+          lasUpp();
           bg.remove(); resolve(true);
         } else {
           fel++;
@@ -137,6 +155,51 @@
   var PINSALT = 'mitt-maskinkok:';
   var PIN_DAGAR = 20;
   function pinHashOf(pin) { return sha256(PINSALT + pin); }
+
+  /* 🔐 SPEC 249 "100 % säker PIN" (2026-07-05):
+     · PBKDF2-SHA256, 310 000 varv + slumpad salt per PIN – att
+       offline-knäcka hashen i publika las.json går från sekunder
+       (gamla enkel-SHA256) till år för en hygglig PIN.
+     · Äldre las.json (bara pin_hash) verifieras som förr tills
+       nästa PIN-byte skriver nya formatet.
+     · Uthållig felspärr (nedan) + 30-min-session i requireUnlock.
+     ÄRLIGHET: på en statisk sajt är PIN-grinden ett UI-lås – det
+     RIKTIGA skrivskyddet är GitHub-nyckeln i din webbläsare. */
+  var PIN_ITER = 310000;
+  function hex2buf(h) {
+    var u = new Uint8Array(h.length / 2);
+    for (var i = 0; i < u.length; i++) u[i] = parseInt(h.substr(i * 2, 2), 16);
+    return u;
+  }
+  function buf2hex(b) {
+    return Array.prototype.map.call(new Uint8Array(b), function (x) {
+      return x.toString(16).padStart(2, '0');
+    }).join('');
+  }
+  async function pbkdf2Hex(pin, saltHex, iter) {
+    var key = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveBits']);
+    var bits = await crypto.subtle.deriveBits(
+      { name: 'PBKDF2', hash: 'SHA-256', salt: hex2buf(saltHex), iterations: iter }, key, 256);
+    return buf2hex(bits);
+  }
+  async function checkPin(pin, lock) {
+    if (lock.pinSalt) {
+      try { return (await pbkdf2Hex(pin, lock.pinSalt, lock.pinIter || PIN_ITER)) === lock.pinHash; }
+      catch (e) { return false; }   /* http/urgammal webbläsare → nekas hellre än släpps in */
+    }
+    return (await pinHashOf(pin)) === lock.pinHash;   /* äldre las.json */
+  }
+
+  /* 🚫 UTHÅLLIG FELSPÄRR (SPEC 249): räknaren överlever omladdning –
+     6 fel totalt = 5 min, 9 fel = 30 min, 12+ fel = 2 h.
+     3-fel-regeln per dialog (→ startsidan) gäller precis som förr. */
+  var SPARR_KEY = 'mk-pin-sparr';
+  function sparrLas() {
+    try { return JSON.parse(localStorage.getItem(SPARR_KEY)) || { n: 0, till: 0 }; }
+    catch (e) { return { n: 0, till: 0 }; }
+  }
+  function sparrSpara(o) { try { localStorage.setItem(SPARR_KEY, JSON.stringify(o)); } catch (e) {} }
+  function sparrMin(n) { return n >= 12 ? 120 : n >= 9 ? 30 : n >= 6 ? 5 : 0; }
   function dagarSedan(d) {
     var t = Date.parse(d);
     return isNaN(t) ? 9999 : Math.floor((Date.now() - t) / 86400000);
@@ -165,12 +228,37 @@
       document.body.appendChild(bg);
       var input = bg.querySelector('#mkPinIn');
       setTimeout(function () { input.focus(); }, 120);
+      /* 🚫 spärrad sedan tidigare fel? */
+      function sparrKoll() {
+        var sp = sparrLas();
+        if (sp.till <= Date.now()) return false;
+        var min = Math.ceil((sp.till - Date.now()) / 60000);
+        bg.querySelector('#mkPinMsg').textContent = '🚫 Spärrad ' + min + ' min till (för många felförsök)';
+        input.disabled = true;
+        bg.querySelector('#mkPinOk').disabled = true;
+        setTimeout(function () {
+          if (!document.body.contains(bg)) return;
+          input.disabled = false;
+          bg.querySelector('#mkPinOk').disabled = false;
+          bg.querySelector('#mkPinMsg').textContent = '';
+          sparrKoll();
+        }, Math.min(sp.till - Date.now(), 60000) + 500);
+        return true;
+      }
+      sparrKoll();
       var fel = 0;
       async function attempt() {
-        if ((await pinHashOf(input.value.trim())) === lock.pinHash) {
+        if (sparrKoll()) return;
+        if (await checkPin(input.value.trim(), lock)) {
+          sparrSpara({ n: 0, till: 0 });   /* rätt PIN nollar spärren */
           bg.remove(); resolve(true);
         } else {
           fel++;
+          var sp = sparrLas();
+          sp.n++;
+          var min = sparrMin(sp.n);
+          if (min) sp.till = Date.now() + min * 60000;
+          sparrSpara(sp);
           if (fel >= 3) {   /* 🚪 3 fel = startsidan (användarens regel) */
             bg.querySelector('#mkPinMsg').textContent = '❌ 3 felaktiga försök – skickas till startsidan...';
             input.disabled = true; bg.querySelector('#mkPinOk').disabled = true;
@@ -218,10 +306,17 @@
 
   /* skriver nya las.json (legacy-lösenfälten försvinner för alltid) */
   async function sparaLas(nyPin, epost) {
-    var hash = await pinHashOf(nyPin);
+    /* 🔐 SPEC 249: nya PIN skrivs ALLTID i PBKDF2-formatet */
+    var saltB = new Uint8Array(16);
+    crypto.getRandomValues(saltB);
+    var salt = buf2hex(saltB);
+    var hash = await pbkdf2Hex(nyPin, salt, PIN_ITER);
     var inneh = {
       _plats: '/json/las.json  (central laasfil - PIN-skyddet. Byts via adminpanelen losenord.html, aldrig for hand)',
-      kommentar: 'PIN lagras som saltad SHA-256. Filen ar publikt lasbar - PIN-grinden stoppar nyfikna, det riktiga skyddet ar din personliga GitHub-nyckel i webblasaren. Nytt PIN-val tvingas var ' + PIN_DAGAR + ':e dag.',
+      kommentar: 'PIN lagras som PBKDF2-SHA256 (' + PIN_ITER + ' varv, slumpad salt) - SPEC 249. Filen ar publikt lasbar; grinden stoppar nyfikna och haschen tal numera offline-angrepp. Riktiga skrivskyddet ar din personliga GitHub-nyckel i webblasaren. Nytt PIN-val tvingas var ' + PIN_DAGAR + ':e dag.',
+      pin_kdf: 'pbkdf2-sha256',
+      pin_salt: salt,
+      pin_iter: PIN_ITER,
       pin_hash: hash,
       pin_datum: new Date().toISOString().slice(0, 10),
       epost: String(epost || ''),
@@ -235,7 +330,7 @@
 
   async function requireUnlock() {
     var unlocked = false;
-    try { unlocked = sessionStorage.getItem(UNLOCK_KEY) === '1'; } catch (e) {}
+    try { unlocked = arUpplast(); } catch (e) {}
     if (unlocked) return true;
     var lock = await getLock();
     if (!lock.on || (!lock.pinHash && !lock.pw && !lock.hash)) return true;  // lås avstängt
@@ -243,7 +338,7 @@
     /* 🔢 PIN-läget (normalfallet) */
     if (lock.pinHash) {
       if (!(await askPin(lock))) return false;
-      try { sessionStorage.setItem(UNLOCK_KEY, '1'); } catch (e) {}
+      lasUpp();
       /* ⏳ 20-dagarsregeln: tvinga nytt val */
       var alder = dagarSedan(lock.pinDatum);
       /* 🔔 PÅMINNELSE-POPUPEN (roadmap 162, punkt 176+177): ≤3 dagar kvar →
@@ -463,6 +558,7 @@
     load: load,
     remove: remove,
     unlock: requireUnlock,   /* 🔒 sidlås: nytt-recept/maskin-import låser hela sidan */
+    requireUnlock: requireUnlock,   /* 🔐 SPEC 249: ett enda PIN-lås för hela sajten (redigera.js delegerar hit) */
     pinByt: sparaLas,        /* 🔢 adminpanelen: (nyPin, epost) – kräver unlock först */
     lasInfo: getLock,        /* 🔢 adminpanelen: pin_datum/epost (read-only) */
     hasToken: function () { return !!getToken(); },
@@ -478,7 +574,7 @@
   (function sidlas() {
     if (!/(nytt-recept|maskin-import)\.html$/i.test(location.pathname)) return;
     var unlocked = false;
-    try { unlocked = sessionStorage.getItem(UNLOCK_KEY) === '1'; } catch (e) {}
+    try { unlocked = arUpplast(); } catch (e) {}
     if (unlocked) return;
 
     function visaLasskarm() {

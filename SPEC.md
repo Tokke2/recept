@@ -1995,7 +1995,8 @@ data i json/, ALDRIG per receptfil.
     och ETIKETTER per låda via etikettmodulen (namn, datum, näring
     per låda). Meal prep-flöde på en knapp.
 
-60. 🌒 MÖRKT LÄGE (förslag 352): auto via prefers-color-scheme +
+60. 🌒 MÖRKT LÄGE (förslag 352): auto via prefers-color-scheme + ✔️
+   KLART 2026-07-05: Täcks helt av punkt 237 (mörkt läge byggt 2026-07-05).
     växlare i menyn. ENDAST :root-variablerna byts i design.css
     (mörk palett: bg/card/dark inverteras, accent behålls) –
     Centralt-principen gör att hela sajten följer med. Valet
@@ -3684,7 +3685,8 @@ data i json/, ALDRIG per receptfil.
     airfryerfläkten. Tyst fallback där API saknas (iOS Safari
     saknar vibrate – då extra tydlig visuell blink i stället).
 
-237. ⏳ 🌙 MÖRKT LÄGE (förslag 1081, beställd 2026-11-16):
+237.  🌙 MÖRKT LÄGE (förslag 1081, beställd 2026-11-16): ✔️
+   KLART 2026-07-05: Mörkt läge live: site.js sätter html.mk-dark FÖRE första målningen (sparat val, annars systemets – följer live-byten), knapp i assets/morkt.js (receptnavet/flytande), färger i design.css. JÄRNREGEL hålls: etiketter & ALL utskrift tvingas ljusa i @media print. JS-dialogerna förblir medvetet ljusa kort.
     prefers-color-scheme: dark följs automatiskt + manuell
     växel i menyn (sparas lokalt). Hela paletten (krämvit/
     träbrun) får mörk tvilling – kvällsbak utan bländning.
@@ -3761,7 +3763,8 @@ data i json/, ALDRIG per receptfil.
     och i sökresultat. Endast ÄKTA verifieringar får badgen
     (aldrig förverifierat – verifieringsmodellen gäller).
 
-249. ⏳ 🛡️ PIN-HÄRDNINGEN (förslag 1101, beställd 2026-11-16):
+249.  🛡️ PIN-HÄRDNINGEN (förslag 1101, beställd 2026-11-16): ✔️
+   KLART 2026-07-05: PIN-låset säkrat: (1) PBKDF2-SHA256 310 000 varv + slumpad salt (offline-knäckning av publika las.json: sekunder → år), las.json migrerad utan PIN-byte; (2) uthållig felspärr 6 fel=5 min/9=30 min/12+=2 h (3-fel-regeln → startsidan kvar); (3) upplåsning gäller 30 min, inte hela fliken; (4) TÄPPT HÅL: redigera.js släppte in ✏️ HELT utan PIN sedan PIN-migreringen – delegerar nu till centrala låset. Ärlighet: UI-grind, riktiga skrivskyddet är GitHub-nyckeln.
     (a) hashen byts till PBKDF2 med 300 000 varv (WebCrypto) –
     offline-gissning mot publika las.json blir tusentals gånger
     långsammare, (b) 3 sekunders väntetid efter fel PIN i

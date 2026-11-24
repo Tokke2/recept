@@ -44,6 +44,17 @@ window.__MK_UNDERKAT = {
 
 (function () {
   'use strict';
+  /* 🌙 MÖRKT LÄGE (SPEC 237, förslag 1085): appliceras TIDIGT (före
+     första målningen) så sidan aldrig blinkar vit. Sparat val vinner,
+     annars följs systemets inställning. Knappen bor i assets/morkt.js.
+     Etiketter & utskrift förblir ALLTID ljusa (regel i design.css). */
+  try {
+    var tema = localStorage.getItem('mk-tema');
+    var morkt = tema === 'mork' ||
+      (!tema && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (morkt) document.documentElement.classList.add('mk-dark');
+  } catch (e) {}
+
   var NIV = ['', '112%', '125%'];
   var n = 0;
   try { n = parseInt(localStorage.getItem('mk-textskala'), 10) || 0; } catch (e) {}
@@ -503,7 +514,7 @@ window.__MK_UNDERKAT = {
      ============================================================ */
   ensureCss('print.css');
   ensureCss('design.css');   /* 🎨 central designfil – vinner över sidornas :root */
-  var scripts = ['logg.js', 'dela.js', 'felrapport.js', 'stadare.js', 'print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js', 'intakt.js', 'emoji.js', 'seo.js', 'hero.js', 'sok.js'];
+  var scripts = ['logg.js', 'morkt.js', 'dela.js', 'felrapport.js', 'stadare.js', 'print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js', 'intakt.js', 'emoji.js', 'seo.js', 'hero.js', 'sok.js'];
   if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js', 'portion.js', 'hydrering.js', 'radio.js', 'jast.js', 'bakpulver.js', 'inkopslista.js', 'tipsa.js');
   if (isRattPage) scripts.push('ratt.js');   /* 🍽️ maträttssidor (ratter/) */
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');

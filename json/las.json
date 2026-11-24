@@ -1,7 +1,10 @@
 {
  "_plats": "/json/las.json  (central laasfil - PIN-skyddet. Byts via adminpanelen losenord.html, aldrig for hand)",
- "kommentar": "PIN lagras som saltad SHA-256. Filen ar publikt lasbar - PIN-grinden stoppar nyfikna, det riktiga skyddet ar din personliga GitHub-nyckel i webblasaren. Nytt PIN-val tvingas var 20:e dag.",
- "pin_hash": "880a0a87d856a0172a24b2be2df5b9f295c3b649120c798892e53efff8dca000",
+ "kommentar": "PIN lagras som PBKDF2-SHA256 (310000 varv, slumpad salt) - SPEC 249. Filen ar publikt lasbar; grinden stoppar nyfikna och haschen tal numera offline-angrepp. Riktiga skrivskyddet ar din personliga GitHub-nyckel i webblasaren. Nytt PIN-val tvingas var 20:e dag.",
+ "pin_kdf": "pbkdf2-sha256",
+ "pin_salt": "85976deba4497c11f0e4fbe9f4686221",
+ "pin_iter": 310000,
+ "pin_hash": "94c9420b4250839a9bdbcd7c52ac2d445b8c93a5f42f227f0c6aa58d0ba82c58",
  "pin_datum": "2026-11-15",
  "epost": "",
  "las_redigering": true

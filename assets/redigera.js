@@ -263,10 +263,21 @@
 
   async function requestEdit() {
     if (editing) return;
+    /* 🔐 SPEC 249 (hålet täppt 2026-07-05): sedan PIN-migreringen finns
+       inte losenord/losenord_hash i las.json → gamla villkoret släppte
+       in ✏️-redigering HELT UTAN FRÅGA. Nu delegeras alltid till det
+       centrala PIN-låset i spara.js (PBKDF2 + felspärr + 30-min-session). */
+    if (window.__MK_SPARA && window.__MK_SPARA.requireUnlock) {
+      if (await window.__MK_SPARA.requireUnlock()) startEdit();
+      return;
+    }
+    /* reserv (spara.js kunde inte laddas): gamla flödet, men ALDRIG
+       upplåst när lösenfälten saknas och ett PIN-lås finns */
     var lock = await getLock();
     var unlocked = false;
-    try { unlocked = sessionStorage.getItem(UNLOCK_KEY) === '1'; } catch (e) {}
-    if (!lock.on || (!lock.pw && !lock.hash) || unlocked) return startEdit();
+    try { unlocked = !!sessionStorage.getItem(UNLOCK_KEY); } catch (e) {}
+    if (!lock.on || unlocked) return startEdit();
+    if (!lock.pw && !lock.hash) return;   /* PIN-lås utan spara.js → neka */
     askPassword(lock, startEdit);
   }
 

@@ -207,3 +207,43 @@ td, th { vertical-align: top; }
 
 /* --- 🔢 Tal i tabeller: lika breda siffror = kolumner i lod --- */
 td { font-variant-numeric: tabular-nums; }
+
+
+/* ============================================================
+   🌙 MÖRKT LÄGE (SPEC 237, förslag 1085) – html.mk-dark sätts av
+   site.js (sparat val eller systemets). Bygger på att alla sidor
+   målar med :root-variablerna; html.mk-dark vinner i specificitet.
+   JS-dialogerna (PIN, verifiering m.fl.) förblir ljusa kort –
+   medvetet: de är små, tydliga och alltid läsbara.
+   ⚖️ JÄRNREGEL: etiketter & ALL utskrift förblir ljusa (sist i blocket).
+   ============================================================ */
+html.mk-dark {
+  color-scheme: dark;
+  --bg: #14181d; --card: #1d242c; --dark: #e8e4da;
+  --muted: #a9b3b5; --green: #2ecc71;
+  background: #14181d;
+}
+html.mk-dark body { background: var(--bg); color: var(--dark); }
+html.mk-dark th { background: #262e37; color: #b8c2c4; }
+html.mk-dark td { border-bottom-color: #2d353f; }
+html.mk-dark tbody tr:nth-child(even) { background: rgba(255, 255, 255, .035); }
+html.mk-dark tbody tr:hover { background: rgba(255, 255, 255, .06); }
+html.mk-dark .card { box-shadow: 0 2px 10px rgba(0, 0, 0, .45); }
+html.mk-dark input:not([type=checkbox]):not([type=radio]), html.mk-dark select, html.mk-dark textarea {
+  background: #262e37; color: var(--dark); border-color: #3a434e;
+}
+html.mk-dark img:not(.hero-img) { filter: brightness(.94); }
+html.mk-dark a { color: #7fb8e6; }
+html.mk-dark header a, html.mk-dark .mk-hero a { color: inherit; }
+
+/* ⚖️ utskrift & etiketter: ALLTID ljust – oavsett tema */
+@media print {
+  html.mk-dark {
+    color-scheme: light;
+    --bg: #f6f3ee; --card: #fff; --dark: #2c3e50; --muted: #5f6e70;
+    background: #fff;
+  }
+  html.mk-dark body { background: #fff !important; color: #2c3e50 !important; }
+  html.mk-dark th { background: #f0ebe3; color: #5f6e70; }
+  html.mk-dark img { filter: none; }
+}
