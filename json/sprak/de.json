@@ -3632,13 +3632,26 @@
   "robot som genererar intäkt": "Roboter, der Einkommen generiert",
   "⏳ Hämtar köpklicken...": "⏳ Kaufklick wird abgerufen...",
   "⏳ Ritar grafen...": "⏳ Zeichnet die Grafik...",
-  "💰 Intäktsrapporten": "💰 Der Einkommensbericht"
+  "💰 Intäktsrapporten": "💰 Der Einkommensbericht",
+  "Alla verifierade recept – testade på riktigt i köket – samlade som bok. Spara som PDF och dela med vem du vill.": "Alle verifizierten Rezepte – echt in der Küche getestet – gesammelt als Buch. Speichern Sie es als PDF und teilen Sie es mit jedem, den Sie möchten.",
+  "Dela": "Teilen",
+  "Delningskort": "Karte teilen",
+  "Gratis e-kokbok med alla verifierade recept från Mitt Maskinkök – spara som PDF.": "Kostenloses E-Kochbuch mit allen verifizierten Rezepten von Mitt Maskinkök – als PDF speichern.",
+  "Länk kopierad!": "Link kopiert!",
+  "Recept byggda för maskinerna i köket": "Rezepte für die Maschinen in der Küche",
+  "bättre minneshantering, snabbare, energisnålare": "bessere Speicherverwaltung, schneller, energieeffizienter",
+  "⏳ Bygger boken ur de verifierade recepten …": "⏳ Baut das Buch aus den verifizierten Rezepten auf...",
+  "⚠️ Kopiera adressraden manuellt": "⚠️ Kopieren Sie die Adressleiste manuell",
+  "💾 Spara som PDF": "💾 Als PDF speichern",
+  "📔 E-kokboken": "📔 Das E-Kochbuch",
+  "📔 E-kokboken – verifierade recept | Mitt Maskinkök": "📔 E-Kochbuch – Verifizierte Rezepte | Meine Maschinenküche",
+  "🔗 Länk kopierad!": "🔗 Link kopiert!"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3631,
+ "_auto_genererade": 3644,
  "_senast_robot": "2026-11-24"
 }
