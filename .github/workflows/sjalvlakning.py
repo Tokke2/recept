@@ -1120,6 +1120,49 @@ def steg19_intaktsvakt():
             rader.append('| %s | 💰 köpväg saknas (ingen asin/kop-länk/butik) – utan den kan maskinen aldrig ge intäkt; lägg in via ✏️-dialogen (steg19) |' % f)
 
 
+
+def steg20_bildoptimering():
+    """🖼️ BILDOPTIMERINGS-ROBOTEN (SPEC 51, förslag 1046): krymper
+    tunga bilder i images/ automatiskt – max 1280 px bred, JPEG
+    kvalitet 82. Skriver ENDAST om nya filen blir minst 10 % mindre
+    (annars rörs ingenting). PNG-ikoner/logga hoppas över (genomskinlighet).
+    Saknas Pillow på byggmaskinen hoppas steget över med en loggrad."""
+    try:
+        from PIL import Image
+    except ImportError:
+        print('steg20: Pillow saknas - bildsteget hoppas over (ofarligt).')
+        return
+    SKYDDADE = ('logo', 'icon-')
+    for fil in sorted(glob.glob('images/**/*.*', recursive=True)):
+        namn = os.path.basename(fil).lower()
+        if not namn.endswith(('.jpg', '.jpeg', '.png')):
+            continue
+        if any(namn.startswith(sk) for sk in SKYDDADE):
+            continue
+        try:
+            fore = os.path.getsize(fil)
+            img = Image.open(fil)
+            w, h = img.size
+            if fore < 120 * 1024 and w <= 1280:
+                continue
+            if w > 1280:
+                img = img.resize((1280, round(h * 1280 / w)), Image.LANCZOS)
+            tmp = fil + '.optimerad'
+            if namn.endswith('.png') and img.mode in ('RGBA', 'LA', 'P'):
+                img.save(tmp, 'PNG', optimize=True)
+            else:
+                img.convert('RGB').save(tmp, 'JPEG', quality=82, optimize=True, progressive=True)
+            efter = os.path.getsize(tmp)
+            if efter < fore * 0.9:
+                os.replace(tmp, fil)
+                rader.append('| %s | 🖼️ bild krympt %d → %d kB |' % (os.path.basename(fil), fore // 1024, efter // 1024))
+            else:
+                os.remove(tmp)
+        except Exception as e:
+            print('steg20: hoppar %s (%s)' % (fil, e))
+
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -1138,6 +1181,7 @@ def main():
     steg17_internlankar()
     steg18_affiliaterot()
     steg19_intaktsvakt()
+    steg20_bildoptimering()
     steg12_beskrivningar()
     steg6_sitemap()
     steg7_receptindex()

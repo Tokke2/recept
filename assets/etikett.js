@@ -154,9 +154,26 @@
 
     var ark = document.createElement('div');
     ark.id = 'mk-etikett-ark';
+    /* 🎨 ETIKETT-TEMAN (SPEC 244, förslag 1092): diskret inline-SVG-motiv
+       ur receptets kategori (mappen i sökvägen) – bröd=veteax, sylt=bär,
+       glass=snöflinga, sås/dipp=droppe, annars visp. Opacitet .13 så
+       texten alltid vinner; print-color-adjust så motivet skrivs ut. */
+    function temaSvg() {
+      var kat = (location.pathname.match(/recept\/([^/]+)\//) || [])[1] || '';
+      var P = { brod: 'M12 2c-2 3-2 5 0 8 2-3 2-5 0-8zm-5 6c-1 3 0 5 3 7 1-3 0-5-3-7zm10 0c-3 2-4 4-3 7 3-2 4-4 3-7zM12 11v11',
+                sylt: 'M8 8a4 4 0 118 0 4 4 0 01-8 0zm-4 8a3 3 0 116 0 3 3 0 01-6 0zm10 1a3.5 3.5 0 117 0 3.5 3.5 0 01-7 0z',
+                glass: 'M12 2v20M4 6l16 12M20 6L4 18M12 7l3-2M12 7L9 5m3 10l3 2m-3-2l-3 2',
+                sas: 'M12 3c-4 6-6 9-6 12a6 6 0 0012 0c0-3-2-6-6-12z',
+                dipp: 'M12 3c-4 6-6 9-6 12a6 6 0 0012 0c0-3-2-6-6-12z' };
+      var d = P[kat] || 'M7 3c0 7 1 10 5 10s5-3 5-10M12 13v8m-3 0h6';
+      return '<svg viewBox="0 0 24 24" style="position:absolute;right:1.5mm;bottom:1.5mm;width:7mm;height:7mm;opacity:.13;' +
+        '-webkit-print-color-adjust:exact;print-color-adjust:exact;" fill="none" stroke="#2c3e50" stroke-width="1.6" ' +
+        'stroke-linecap="round" stroke-linejoin="round"><path d="' + d + '"/></svg>';
+    }
     var en = '';
     en += '<div class="mk-etikett" style="width:' + S.w + 'mm;height:' + S.h + 'mm;padding:3mm 2mm 1.5mm;">';
     en += '<div class="rand"></div>';
+    en += temaSvg();
     en += '<div style="font-size:' + (S.fs + 3) + 'pt;line-height:1;">' + esc(emoji) + '</div>';
     en += '<div style="font-size:' + S.fs + 'pt;font-weight:700;line-height:1.15;max-height:' + (S.fs * 2.6) + 'pt;overflow:hidden;">' + esc(namn) + '</div>';
     en += '<div style="font-size:' + (S.fs - 1.5) + 'pt;margin-top:0.8mm;">🍳 Tillagad: ' + esc(datum) + '</div>';

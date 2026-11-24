@@ -240,7 +240,8 @@
     <div class="katbar no-print" id="katbar"></div>
     <div class="toolrow no-print">
       <input type="text" id="q" placeholder="🔍 Sök i fliken..." oninput="apply()">
-      <select id="sort" onchange="apply()">
+      <a href="kokbok.html" class="no-print" style="display:inline-block;background:#fff;border:1.5px solid #e0d9cd;border-radius:11px;padding:9px 13px;font-size:.85rem;font-weight:700;color:#2c3e50;text-decoration:none;margin-right:8px;">📔 E-kokboken</a>
+      <select id="sort" onchange="try{localStorage.setItem('mk-sort',this.value)}catch(e){};apply()">
         <option value="name">A–Ö</option>
         <option value="nameRev">Ö–A</option>
         <option value="rating">⭐ Bäst betyg</option>
@@ -468,6 +469,11 @@ async function init() {
     `<span class="stat">🔧 ${DB.maskiner.length} maskiner</span>` +
     `<span class="stat">👨‍🍳 Kockläge på alla recept</span>`;
 
+  /* 🔀 SPEC 255: sorteringsvalet sparas per besökare */
+  try {
+    var sparadSort = localStorage.getItem('mk-sort');
+    if (sparadSort && document.querySelector('#sort option[value="' + sparadSort + '"]')) document.getElementById('sort').value = sparadSort;
+  } catch (e) {}
   buildTabs();
   apply();
   loadGlobalRatings();

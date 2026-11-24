@@ -174,6 +174,11 @@
         '<label style="display:block;font-size:.75rem;font-weight:700;color:#5f6e70;text-transform:uppercase;margin-bottom:4px;">Program &amp; tid som lyckades</label>' +
         '<input id="mt-prog" type="text" style="width:100%;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.92rem;font-family:inherit;" ' +
           'placeholder="t.ex. Kakbakning (Cake), 45 min" value="' + String(maskin.forslag || '').replace(/"/g, '&quot;') + '">' +
+        /* 🌡️ DEGTERMOMETERN (SPEC 239, förslag 1084): frivillig innertemp
+           vid klart – ägarens egen siffra, bakas in i programtexten och
+           visas överallt där verifieringen syns. */
+        '<label style="display:block;font-size:.75rem;font-weight:700;color:#5f6e70;text-transform:uppercase;margin:10px 0 4px;">🌡️ Innertemp när klar (°C, frivilligt)</label>' +
+        '<input id="mt-temp" type="text" inputmode="decimal" style="width:110px;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.92rem;font-family:inherit;" placeholder="t.ex. 96">' +
         /* 🍟 AIRFRYER-EXTRA (användarens order 2026-11-07, punkt 141):
            registrera faktisk tid + om maten ska vändas – skrivs AUTOMATISKT
            in i instruktionerna vid maskinens ⚙️-ruta, med maskinnamnet */
@@ -221,6 +226,9 @@
     bg.addEventListener('click', function (e) { if (e.target === bg && dn) bg.remove(); });
     bg.querySelector('#mt-spara').onclick = async function () {
       var prog = bg.querySelector('#mt-prog').value.trim();
+      var tEl = bg.querySelector('#mt-temp');
+      var tv = tEl ? tEl.value.trim().replace(',', '.') : '';
+      if (tv && /^\d{1,3}(\.\d)?$/.test(tv)) prog += ' · 🌡️ ' + tv.replace('.', ',') + '°C';
       if (!prog) {
         bg.querySelector('#mt-result').textContent = '⚠️ Ange program & tid som funkade!';
         bg.querySelector('#mt-prog').focus();

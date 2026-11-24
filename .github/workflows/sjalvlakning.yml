@@ -37,6 +37,9 @@ jobs:
       - name: Hämta repot
         uses: actions/checkout@v4
 
+      - name: Bildverktyg (Pillow – för steg 20, bildoptimeringen)
+        run: pip install --quiet pillow || echo "Pillow gick inte att installera – steg 20 hoppar över sig själv."
+
       - name: Kör självläkningen
         run: python3 .github/workflows/sjalvlakning.py
 
@@ -45,7 +48,7 @@ jobs:
           set -euo pipefail
           git config user.name  "Läknings-robot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A json/ recept/ ratter/ backup/ sitemap.xml
+          git add -A json/ recept/ ratter/ backup/ images/ sitemap.xml
           if git diff --cached --quiet; then
             echo "Allt friskt."
           else
@@ -57,7 +60,7 @@ jobs:
               git fetch origin main
               git reset --hard origin/main
               python3 .github/workflows/sjalvlakning.py
-              git add -A json/ recept/ ratter/ backup/ sitemap.xml
+              git add -A json/ recept/ ratter/ backup/ images/ sitemap.xml
               if git diff --cached --quiet; then echo "Inget nytt efter omkörning."; exit 0; fi
               git commit -m "🩹 Självläkning: effekt/energi/bildvägar ($(date +%F))"
               sleep 5

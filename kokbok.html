@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<!-- PLATS: /kokbok.html  (repo-roten, bredvid index.html) -->
+<!-- ============================================================
+     📔 E-KOKBOKEN – Mitt Maskinkök (SPEC 251, förslag 1131)
+     ============================================================
+     · Samlar ENDAST verifierade recept (meta recept:testad –
+       ägarens järnregel: aldrig overifierat i boken).
+     · Byggs HELT i besökarens webbläsare: hämtar recept-index,
+       läser varje receptsida, filtrerar, bygger boksidor.
+     · "Spara som PDF" = webbläsarens utskrift med bok-CSS
+       (framsida + innehåll + ett recept per sida). Ingen server,
+       inga kostnader, växer automatiskt när nya verifieringar
+       kommer in.
+     ============================================================ -->
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📔 E-kokboken – verifierade recept | Mitt Maskinkök</title>
+<meta name="description" content="Gratis e-kokbok med alla verifierade recept från Mitt Maskinkök – spara som PDF.">
+<style>
+  :root { --bg:#f6f3ee; --accent:#c0392b; --accent2:#e67e22; --dark:#2c3e50; --muted:#5f6e70; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--dark); padding:24px; max-width:900px; margin:0 auto; }
+  header.mk-hero { background:linear-gradient(135deg,#c0392b,#e67e22); color:#fff; border-radius:16px; padding:26px 30px; margin-bottom:20px; }
+  header.mk-hero h1 { font-size:1.6rem; margin-bottom:4px; }
+  header.mk-hero p { opacity:.95; font-size:.92rem; }
+  .verktyg { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+  .verktyg button { background:var(--accent); color:#fff; border:none; border-radius:11px; padding:12px 20px; font-size:.95rem; font-weight:700; cursor:pointer; font-family:inherit; }
+  .verktyg button[disabled] { opacity:.5; cursor:wait; }
+  #bokStatus { font-size:.88rem; color:var(--muted); margin-bottom:16px; }
+  /* ---- boksidorna ---- */
+  .boksida { background:#fff; border-radius:14px; padding:26px 30px; margin-bottom:18px; box-shadow:0 2px 8px rgba(0,0,0,.07); }
+  .boksida.framsida { text-align:center; padding:60px 30px; background:linear-gradient(160deg,#fff 60%,#fdf3e7); }
+  .boksida.framsida .em { font-size:4rem; }
+  .boksida.framsida h2 { font-size:2rem; margin:10px 0 6px; font-family:Georgia,serif; }
+  .boksida.framsida .verifrad { display:inline-block; background:#eafaf1; color:#1e8449; font-weight:700; border-radius:999px; padding:6px 16px; margin-top:12px; font-size:.9rem; }
+  .boksida h3.rubrik { font-size:1.35rem; font-family:Georgia,serif; border-bottom:3px solid var(--accent2); padding-bottom:6px; margin-bottom:12px; }
+  .boksida .metarad { font-size:.88rem; color:var(--muted); margin-bottom:12px; }
+  .boksida table { width:100%; border-collapse:collapse; font-size:.9rem; margin-bottom:12px; }
+  .boksida th { text-align:left; padding:7px 10px; background:#f0ebe3; font-size:.76rem; text-transform:uppercase; color:var(--muted); }
+  .boksida td { padding:6px 10px; border-bottom:1px solid #eee; }
+  .boksida ol { padding-left:22px; line-height:1.7; }
+  .boksida .machine-step { border-left:5px solid #27ae60; background:#f4fbf6; border-radius:10px; padding:12px 14px; margin-bottom:10px; font-size:.92rem; }
+  .boksida .verif { background:#eafaf1; border-radius:10px; padding:10px 14px; font-size:.88rem; color:#1e8449; font-weight:600; margin-bottom:12px; }
+  .innehall li { line-height:1.9; }
+  .tom { background:#fff; border-radius:14px; padding:30px; text-align:center; color:var(--muted); }
+  @media print {
+    body { background:#fff !important; padding:0; max-width:none; }
+    .no-print, header.mk-hero, .verktyg, #bokStatus, #mk-nav { display:none !important; }
+    .boksida { box-shadow:none; border-radius:0; page-break-after:always; padding:14mm 10mm; }
+    .boksida:last-child { page-break-after:auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="mk-hero">
+  <h1>📔 E-kokboken</h1>
+  <p>Alla verifierade recept – testade på riktigt i köket – samlade som bok. Spara som PDF och dela med vem du vill.</p>
+</header>
+
+<div class="verktyg no-print">
+  <button id="btnPdf" disabled onclick="window.print()">💾 Spara som PDF</button>
+</div>
+<p id="bokStatus">⏳ Bygger boken ur de verifierade recepten …</p>
+
+<div id="bok"></div>
+
+<script>
+(function () {
+  'use strict';
+  var bok = document.getElementById('bok');
+  var status = document.getElementById('bokStatus');
+
+  function esc(s) { var d = document.createElement('div'); d.textContent = String(s == null ? '' : s); return d.innerHTML; }
+
+  function meta(doc, n) {
+    var m = doc.querySelector('meta[name="recept:' + n + '"]');
+    return m ? m.content : '';
+  }
+
+  /* plocka Ingredienser- och Gör så här-korten ur receptsidans RÅA html
+     (JS-byggda tillägg som köpknappar följer inte med = rent boktryck) */
+  function kort(doc, rubrikDel) {
+    var ut = null;
+    doc.querySelectorAll('.card').forEach(function (c) {
+      var h = c.querySelector('h2');
+      if (h && h.textContent.indexOf(rubrikDel) !== -1) ut = c;
+    });
+    return ut;
+  }
+
+  function stada(el) {
+    if (!el) return '';
+    var k = el.cloneNode(true);
+    k.querySelectorAll('script,button,input,select,.no-print').forEach(function (x) { x.remove(); });
+    return k.innerHTML;
+  }
+
+  async function bygg() {
+    var index;
+    try {
+      index = await (await fetch('json/recept-index.json', { cache: 'no-store' })).json();
+    } catch (e) {
+      status.textContent = '⚠️ Kunde inte läsa receptlistan – prova att ladda om sidan.';
+      return;
+    }
+    var lista = Array.isArray(index) ? index : (index.recept || []);
+    var parser = new DOMParser();
+    var klara = [];
+    var i = 0;
+    for (var r of lista) {
+      i++;
+      status.textContent = '⏳ Läser recept ' + i + ' av ' + lista.length + ' …';
+      try {
+        var html = await (await fetch('recept/' + r.kategori + '/' + r.fil)).text();
+        var doc = parser.parseFromString(html, 'text/html');
+        if (!doc.querySelector('meta[name="recept:testad"]')) continue;   /* ⚖️ järnregeln: ENDAST verifierat */
+        klara.push({
+          namn: meta(doc, 'namn'), emoji: meta(doc, 'emoji') || '🍞',
+          portioner: meta(doc, 'portioner'), beskrivning: meta(doc, 'beskrivning'),
+          testad: meta(doc, 'testad'),
+          ingredienser: stada(kort(doc, 'Ingredienser')),
+          gorsahar: stada(kort(doc, 'Gör så här'))
+        });
+      } catch (e2) { /* ett trasigt recept fäller aldrig boken */ }
+    }
+
+    if (!klara.length) {
+      status.textContent = '';
+      bok.innerHTML = '<div class="tom">📭 Inga verifierade recept ännu – boken fylls på automatiskt i samma stund som recepten verifieras i köket.</div>';
+      return;
+    }
+
+    klara.sort(function (a, b) { return a.namn.localeCompare(b.namn, 'sv'); });
+
+    var h = '<div class="boksida framsida"><div class="em">📔</div>' +
+      '<h2>Mitt Maskinkök</h2><p style="color:var(--muted);">Kokboken med enbart verifierade recept</p>' +
+      '<div class="verifrad">✅ ' + klara.length + ' recept · testade på riktigt</div>' +
+      '<p style="margin-top:26px;font-size:.85rem;color:var(--muted);">tokke2.github.io/recept · ' + new Date().toLocaleDateString('sv-SE') + '</p></div>';
+
+    h += '<div class="boksida"><h3 class="rubrik">Innehåll</h3><ol class="innehall">' +
+      klara.map(function (r2) { return '<li>' + esc(r2.emoji) + ' ' + esc(r2.namn) + '</li>'; }).join('') + '</ol></div>';
+
+    klara.forEach(function (r2) {
+      h += '<div class="boksida"><h3 class="rubrik">' + esc(r2.emoji) + ' ' + esc(r2.namn) + '</h3>' +
+        '<div class="metarad">' + esc(r2.portioner ? '🍽️ ' + r2.portioner : '') + (r2.beskrivning ? ' · ' + esc(r2.beskrivning) : '') + '</div>' +
+        (r2.testad ? '<div class="verif">✅ Verifierat i köket: ' + esc(r2.testad) + '</div>' : '') +
+        r2.ingredienser + r2.gorsahar + '</div>';
+    });
+
+    bok.innerHTML = h;
+    status.textContent = '✅ Boken är klar – ' + klara.length + ' verifierade recept. Tryck "Spara som PDF".';
+    document.getElementById('btnPdf').disabled = false;
+  }
+
+  bygg();
+})();
+</script>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

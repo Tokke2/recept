@@ -1908,7 +1908,8 @@ data i json/, ALDRIG per receptfil.
     kopiera-knapp. Sänker tröskeln för TikTok/Reels/Shorts.
     Central modul; manus-mallar per kategori (bröd/glass/sylt).
 
-47. 🖼️ DELNINGSKORT-GENERATOR (förslag 252): en knapp per recept →
+47. 🖼️ DELNINGSKORT-GENERATOR (förslag 252): en knapp per recept → ✔️
+   KLART 2026-07-05: Delningskort-generatorn i assets/dela.js: 🖼️-knappen i receptnavet ritar 1200×630-PNG lokalt i canvas (namn+emoji+sajtfärger) och laddar ner den.
     snygg 1080×1080-bild ritas i canvas (receptfoto/hero-SVG + namn
     + kcal + pris + QR till receptet) → laddas ner färdig för
     Instagram/Facebook. Ingen server behövs (allt i webbläsaren).
@@ -2207,7 +2208,8 @@ data i json/, ALDRIG per receptfil.
     recept (titel- + ingredienslikhet via Levenshtein) i gransknings-
     kön: "slå ihop toastbröd v1+v2?" – raderar ALDRIG själv.
 
-83. 🏷️ NÄRING PÅ BURKETIKETTEN (förslag 615): etikettgeneratorn
+83. 🏷️ NÄRING PÅ BURKETIKETTEN (förslag 615): etikettgeneratorn ✔️
+   KLART 2026-07-05: Redan på plats i etikett.js (kalkylInfo → "kcal/100 g · kr/kg" på etiketten) – bockas av vid genomgång.
     hämtar live-kalkylens kcal/protein/kolh/fett per 100 g automatiskt
     → riktiga innehållsdeklarationer på sylt-/såsburkar.
 
@@ -2316,7 +2318,8 @@ data i json/, ALDRIG per receptfil.
     etikettgeneratorn får frysläge – "Tillagad ÅÅÅÅ-MM-DD · ät inom
     X mån" på etiketten, för frysbara rätter som tomatsåsen.
 
-94. 📲 DELA-KNAPPEN (förslag 658, användarens beställning):
+94. 📲 DELA-KNAPPEN (förslag 658, användarens beställning): ✔️
+   KLART 2026-07-05: assets/dela.js: 📤 Dela i receptnavet – mobilens delningsark (Web Share API), dator-fallback kopierar länken + toast. Täcker även punkt 259.
     Web Share API på receptsidorna – receptnamn + länk direkt till
     WhatsApp/SMS/valfri app. Döljs i webbläsare utan stöd
     (skrivbords-Firefox m.fl.) – aldrig en död knapp.
@@ -3069,7 +3072,8 @@ data i json/, ALDRIG per receptfil.
     OBS SLV-noten: vissa D-vitaminfält kan saknas – saknade
     värden får ALDRIG skrivas som 0.
 
-168. 📱 DELA-KNAPP PÅ INGREDIENSSIDAN (autoförslag 935, användarens
+168. 📱 DELA-KNAPP PÅ INGREDIENSSIDAN (autoförslag 935, användarens ✔️
+   KLART 2026-07-05: assets/dela.js: diskret 📤-knapp nere till höger på ingredienser.html, samma delningsark/kopiering som recepten.
     beställning): delningsknapp ("kolla vår öppna ingrediensdatabas
     – priser & näring med källor") via Web Share API på mobil,
     kopiera-länk-reserv på dator. Samma mönster som receptens
@@ -3686,13 +3690,15 @@ data i json/, ALDRIG per receptfil.
     träbrun) får mörk tvilling – kvällsbak utan bländning.
     Etiketter/utskrift förblir ALLTID ljusa (A5/skrivare).
 
-238. ⏳ 🖐️ SVEP-NAVIGERING I KOCKLÄGET (förslag 1082, beställd
+238.  🖐️ SVEP-NAVIGERING I KOCKLÄGET (förslag 1082, beställd ✔️
+   KLART 2026-07-05: Svep vänster/höger i kocklägesoverlayen byter steg (recept.js): 60 px-tröskel vågrätt, max hälften lodrätt → krockar aldrig med scroll; återanvänder cmPrev/cmNext-knapparnas logik.
     2026-11-16): svep vänster/höger byter steg (touchstart/
     touchend-delta, generösa trösklar så scroll inte krockar) –
     snabbare än knapptryck med mjöliga fingrar. Samma 12 px-
     darrtolerans-tänk som SPEC 234a.
 
-239. ⏳ 🌡️ DEGTERMOMETER-FÄLTET (förslag 1084, beställd
+239.  🌡️ DEGTERMOMETER-FÄLTET (förslag 1084, beställd ✔️
+   KLART 2026-07-05: maskinmatch.js verifieringsdialog: frivilligt 🌡️-fält (innertemp °C) – bakas in i programtexten (" · 🌡️ 96°C") och syns överallt där verifieringen visas.
     2026-11-16): verifieringsdialogen får frivilligt fält
     "innertemp när klar" (t.ex. 96 °C limpa) → visas som extra
     kvalitetsmärke på receptet ("🌡️ 96 °C vid admin-bak").
@@ -3722,12 +3728,14 @@ data i json/, ALDRIG per receptfil.
     löpnummer (1/4, 2/4 …) i ett svep. Antalet föreslås ur
     satsfaktorn (__MK_SKALA_F).
 
-244. ⏳ 🎨 ETIKETT-TEMA PER KATEGORI (förslag 1092, beställd
+244.  🎨 ETIKETT-TEMA PER KATEGORI (förslag 1092, beställd ✔️
+   KLART 2026-07-05: etikett.js temaSvg(): diskret inline-SVG per kategori (bröd=veteax, sylt=bär, glass=snöflinga, sås/dipp=droppe, övrigt=visp) nere i hörnet, opacitet .13, print-color-adjust – etiketten förblir ljus.
     2026-11-16): etiketterna får diskret motiv ur receptets
     kategori – bröd=vete, sylt=bär, glass=snöflinga osv.
     Inline-SVG (inga externa bilder), gåvoläget behåller sitt.
 
-245. ⏳ 📊 VECKORAPPORTEN MED FELLOGGAR (förslag 1094 + ägarens
+245.  📊 VECKORAPPORTEN MED FELLOGGAR (förslag 1094 + ägarens ✔️
+   KLART 2026-07-05: veckorapport.py + .yml: mejl via Web3Forms varje söndag 06:00 UTC – veckans besök (besok-historik.json), köpklick (abacus), receptläge + ROBOTFLAGGORNA ur sjalvlakning-LOGG.md. Ärlig gräns: klientfel (Svarta lådan) bor i besökarens webbläsare → ses i adminpanelen.
     tillägg "felloggar", beställd 2026-11-16): robot (GitHub
     Actions, söndagar) mejlar sammanfattning via Web3Forms:
     besökssiffror, nya verifieringar, trasiga länkar, omatchade
@@ -3776,7 +3784,8 @@ data i json/, ALDRIG per receptfil.
        json/affiliate.json (🟢 Amazon-tag aktiv · ⏳ väntar på
        Adtraction/Awin-avtal). Aldrig publikt. sw v227.
 
-251. ⏳ 📖 E-KOKBOKEN (förslag 1102, beställd 2026-11-22): roboten
+251.  📖 E-KOKBOKEN (förslag 1102, beställd 2026-11-22): roboten ✔️
+   KLART 2026-07-05: kokbok.html: bygger boken i webbläsaren ur recept-index, tar ENDAST recept med meta recept:testad (järnregeln), framsida+innehåll+en sida per recept, "Spara som PDF"=print-CSS. Länkad från recept.html. Växer automatiskt med varje verifiering.
     genererar automatiskt en säljbar PDF av alla 🌟-verifierade
     recept (titel, bild, ingredienstabell, maskininställningar,
     jäst-/bakpulvertipsen) → säljs via Ko-fi/Gumroad. Roboten
@@ -3820,7 +3829,8 @@ data i json/, ALDRIG per receptfil.
     recepten du kan baka UTAN att handla (matchar mot recept-
     index/ingredienslistor, samma matchningsmotor som kalkylen).
 
-255. ⏳ 🔀 SMART SORTERING (förslag 1155, beställd 2026-11-22):
+255.  🔀 SMART SORTERING (förslag 1155, beställd 2026-11-22): ✔️
+   KLART 2026-07-05: Sorteringsvalet på recept.html sparas i localStorage (mk-sort) och återställs vid nästa besök – alla sorter (betyg/billig/snabb/verifierad/protein/kcal…) fanns redan i apply().
     receptlistan kan sorteras på "senast verifierad" / "högst
     betyg" / "snabbast" (total tid ur portionsmeta) utöver
     dagens ordning. Valet sparas lokalt per besökare.
@@ -3842,7 +3852,8 @@ data i json/, ALDRIG per receptfil.
     steg"-märkning där het ugn/maskin kräver vuxen. Ägaren
     väljer per recept om kids-läget erbjuds.
 
-259. ⏳ 📤 DELNINGSKNAPPEN (förslag 1142, beställd 2026-11-22):
+259.  📤 DELNINGSKNAPPEN (förslag 1142, beställd 2026-11-22): ✔️
+   KLART 2026-07-05: Täcks helt av punkt 94 (assets/dela.js – delningsark + kopieringsfallback på alla receptsidor).
     mobilens delningsark (Web Share API) på receptsidor –
     delar titel + länk (+ receptkort-bild när 248-badgen
     finns). Diskret fallback: kopiera länk-knapp på datorer.

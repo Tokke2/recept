@@ -582,6 +582,28 @@
     if (radioBtn && window.__MK_RADIO) radioBtn.onclick = function () { window.__MK_RADIO.vaxla(overlay); };
     if (window.__MK_RADIO) window.__MK_RADIO.mala(overlay);
     overlay.querySelector('#cmPrev').onclick = prev;
+    /* 🖐️ SVEPNAVIGERING (SPEC 238, förslag 1082): svep vänster/höger
+       byter steg – generösa trösklar (60 px vågrätt, max hälften så
+       mycket lodrätt) så vanlig scroll aldrig krockar. Klickar på
+       befintliga knapparna = sista stegets speciallogik återanvänds. */
+    if (!overlay.__mkSwipe) {
+      overlay.__mkSwipe = true;
+      var swStart = null;
+      overlay.addEventListener('touchstart', function (e) {
+        var t = e.touches && e.touches[0];
+        swStart = t ? { x: t.clientX, y: t.clientY } : null;
+      }, { passive: true });
+      overlay.addEventListener('touchend', function (e) {
+        if (!swStart) return;
+        var t = e.changedTouches && e.changedTouches[0];
+        if (!t) { swStart = null; return; }
+        var dx = t.clientX - swStart.x, dy = t.clientY - swStart.y;
+        swStart = null;
+        if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) / 2) return;
+        var kn = overlay.querySelector(dx < 0 ? '#cmNext' : '#cmPrev');
+        if (kn) kn.click();
+      }, { passive: true });
+    }
     /* ⚖️ Satsväxling INNE i kockläget (punkt 133): ×1 → ×2 → ×½ → ×1,
        samma motor + samma sparade val som satsväljaren på sidan */
     var satsBtn = overlay.querySelector('#cmSats');
