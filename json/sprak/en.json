@@ -3507,7 +3507,29 @@
   "robot som genererar intäkt": "robot that generates income",
   "⏳ Hämtar köpklicken...": "⏳ Fetching the buy click...",
   "⏳ Ritar grafen...": "⏳ Draws the graph...",
-  "💰 Intäktsrapporten": "💰 The income report"
+  "💰 Intäktsrapporten": "💰 The income report",
+  "(numera PBKDF2-SHA256 med 310 000 varv + slumpad salt – tål offline-angrepp) – grinden stoppar nyfikna besökare. Det RIKTIGA skyddet är din personliga GitHub-nyckel som bara finns i din webbläsare. PIN-byte tvingas automatiskt var 20:e dag.": "(now PBKDF2-SHA256 with 310,000 revolutions + random salt - withstands offline attacks) - the gate stops curious visitors. The REAL protection is your personal GitHub key that only exists in your browser. PIN change is automatically forced every 20 days.",
+  "100 % säker PIN": "100% secure PIN",
+  "Alla verifierade recept – testade på riktigt i köket – samlade som bok. Spara som PDF och dela med vem du vill.": "All verified recipes - tested for real in the kitchen - collected as a book. Save as PDF and share with whoever you want.",
+  "Byt till ljust läge": "Switch to bright mode",
+  "Byt till mörkt läge": "Switch to dark mode",
+  "Dela": "Share",
+  "Delningskort": "Sharing card",
+  "Gratis e-kokbok med alla verifierade recept från Mitt Maskinkök – spara som PDF.": "Free e-cookbook with all verified recipes from Mitt Maskinkök - save as PDF.",
+  "Ljust": "Bright",
+  "Länk kopierad!": "Link copied!",
+  "Mörkt": "Dark",
+  "PIN lagras som PBKDF2-SHA256 (": "PIN is stored as PBKDF2-SHA256 (",
+  "Recept byggda för maskinerna i köket": "Recipes built for the machines in the kitchen",
+  "bättre minneshantering, snabbare, energisnålare": "better memory management, faster, more energy efficient",
+  "min till (för många felförsök)": "min to (too many wrong attempts)",
+  "⏳ Bygger boken ur de verifierade recepten …": "⏳ Builds the book from the verified recipes...",
+  "⚠️ Kopiera adressraden manuellt": "⚠️ Copy the address bar manually",
+  "💾 Spara som PDF": "💾 Save as PDF",
+  "📔 E-kokboken": "📔 The e-cookbook",
+  "📔 E-kokboken – verifierade recept | Mitt Maskinkök": "📔 E-Cookbook - Verified Recipes | My Machine Kitchen",
+  "🔗 Länk kopierad!": "🔗 Link copied!",
+  "🚫 Spärrad": "🚫 Blocked"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3517,6 +3539,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3506,
+ "_auto_genererade": 3528,
  "_senast_robot": "2026-11-24"
 }

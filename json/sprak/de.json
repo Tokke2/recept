@@ -3645,13 +3645,22 @@
   "💾 Spara som PDF": "💾 Als PDF speichern",
   "📔 E-kokboken": "📔 Das E-Kochbuch",
   "📔 E-kokboken – verifierade recept | Mitt Maskinkök": "📔 E-Kochbuch – Verifizierte Rezepte | Meine Maschinenküche",
-  "🔗 Länk kopierad!": "🔗 Link kopiert!"
+  "🔗 Länk kopierad!": "🔗 Link kopiert!",
+  "(numera PBKDF2-SHA256 med 310 000 varv + slumpad salt – tål offline-angrepp) – grinden stoppar nyfikna besökare. Det RIKTIGA skyddet är din personliga GitHub-nyckel som bara finns i din webbläsare. PIN-byte tvingas automatiskt var 20:e dag.": "(jetzt PBKDF2-SHA256 mit 310.000 Umdrehungen + Zufallssalz – hält Offline-Angriffen stand) – das Tor stoppt neugierige Besucher. Der WIRKLICHE Schutz ist Ihr persönlicher GitHub-Schlüssel, der nur in Ihrem Browser vorhanden ist. Die PIN-Änderung wird automatisch alle 20 Tage erzwungen.",
+  "100 % säker PIN": "100 % sichere PIN",
+  "Byt till ljust läge": "Wechseln Sie in den Hellmodus",
+  "Byt till mörkt läge": "Wechseln Sie in den Dunkelmodus",
+  "Ljust": "Hell",
+  "Mörkt": "Dunkel",
+  "PIN lagras som PBKDF2-SHA256 (": "Die PIN ist als PBKDF2-SHA256 gespeichert (",
+  "min till (för många felförsök)": "min bis (zu viele falsche Versuche)",
+  "🚫 Spärrad": "🚫 Gesperrt"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3644,
+ "_auto_genererade": 3653,
  "_senast_robot": "2026-11-24"
 }
