@@ -20,32 +20,53 @@
 
   var rot = document.documentElement;
 
-  function arMork() { return rot.classList.contains('mk-dark'); }
-
-  function satt(mork, spara) {
-    rot.classList.toggle('mk-dark', mork);
-    if (spara) { try { localStorage.setItem('mk-tema', mork ? 'mork' : 'ljus'); } catch (e) {} }
+  /* 🔀 TREVALSLÄGET (ägarens order 2026-07-05): mörkt / ljust / system.
+     'system' = inget sparat val → följer enhetens inställning live.
+     Klick vandrar: system → mörkt → ljust → system → … */
+  function systemMorkt() {
+    try { return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; }
+    catch (e) { return false; }
+  }
+  function lage() {
+    var v = null;
+    try { v = localStorage.getItem('mk-tema'); } catch (e) {}
+    return v === 'mork' || v === 'ljus' ? v : 'system';
+  }
+  function applicera() {
+    var l = lage();
+    rot.classList.toggle('mk-dark', l === 'mork' || (l === 'system' && systemMorkt()));
     uppdateraKnappar();
   }
+  function nastaLage() {
+    var ordning = { system: 'mork', mork: 'ljus', ljus: 'system' };
+    var nytt = ordning[lage()];
+    try {
+      if (nytt === 'system') localStorage.removeItem('mk-tema');
+      else localStorage.setItem('mk-tema', nytt);
+    } catch (e) {}
+    applicera();
+  }
 
+  var VISNING = {
+    mork:   { ikon: '🌙', text: ' Mörkt',  titel: 'Tema: Mörkt – klicka för Ljust' },
+    ljus:   { ikon: '☀️', text: ' Ljust',  titel: 'Tema: Ljust – klicka för System (auto)' },
+    system: { ikon: '🖥️', text: ' Auto',  titel: 'Tema: System (följer enheten) – klicka för Mörkt' }
+  };
   function uppdateraKnappar() {
+    var v = VISNING[lage()];
     document.querySelectorAll('.mk-tema-knapp').forEach(function (b) {
       var span = b.querySelector('span');
-      b.firstChild.textContent = arMork() ? '☀️' : '🌙';
-      if (span) span.textContent = arMork() ? ' Ljust' : ' Mörkt';
-      b.title = arMork() ? 'Byt till ljust läge' : 'Byt till mörkt läge';
-      b.setAttribute('aria-label', b.title);
+      b.firstChild.textContent = v.ikon;
+      if (span) span.textContent = v.text;
+      b.title = v.titel;
+      b.setAttribute('aria-label', v.titel);
     });
   }
 
   /* systemet byter tema mitt i besöket → följ med (endast utan sparat val) */
   try {
     var mq = window.matchMedia('(prefers-color-scheme: dark)');
-    var lyssna = function (e) {
-      var sparat = null;
-      try { sparat = localStorage.getItem('mk-tema'); } catch (e2) {}
-      if (!sparat) satt(e.matches, false);
-    };
+    var lyssna = function () { if (lage() === 'system') applicera(); };
     if (mq.addEventListener) mq.addEventListener('change', lyssna);
     else if (mq.addListener) mq.addListener(lyssna);
   } catch (e) {}
@@ -56,7 +77,7 @@
     b.type = 'button';
     b.appendChild(document.createTextNode(''));
     if (medText) b.appendChild(document.createElement('span'));
-    b.onclick = function () { satt(!arMork(), true); };
+    b.onclick = nastaLage;
     return b;
   }
 

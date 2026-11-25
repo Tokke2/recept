@@ -3687,6 +3687,7 @@ data i json/, ALDRIG per receptfil.
 
 237.  🌙 MÖRKT LÄGE (förslag 1081, beställd 2026-11-16): ✔️
    KLART 2026-07-05: Mörkt läge live: site.js sätter html.mk-dark FÖRE första målningen (sparat val, annars systemets – följer live-byten), knapp i assets/morkt.js (receptnavet/flytande), färger i design.css. JÄRNREGEL hålls: etiketter & ALL utskrift tvingas ljusa i @media print. JS-dialogerna förblir medvetet ljusa kort.
+   TILLÄGG 2026-07-05 (ägarorder): TREVALSLÄGE – knappen vandrar Mörkt (🌙) → Ljust (☀️) → System/Auto (🖥️, följer enheten live); system-valet = inget sparat värde.
     prefers-color-scheme: dark följs automatiskt + manuell
     växel i menyn (sparas lokalt). Hela paletten (krämvit/
     träbrun) får mörk tvilling – kvällsbak utan bländning.
