@@ -54,13 +54,17 @@
 
   /* 🖼️ DELNINGSKORTET (SPEC 47): 1200×630 – og-bildformatet */
   function kort() {
+    /* 🌙 SPEC 266 (förslag 1165): kortet följer temat – mörkt läge
+       ger mörk variant med samma varumärkesfärger i ramen */
+    var mork = document.documentElement.classList.contains('mk-dark');
     var c = document.createElement('canvas');
     c.width = 1200; c.height = 630;
     var x = c.getContext('2d');
     var g = x.createLinearGradient(0, 0, 1200, 630);
-    g.addColorStop(0, '#c0392b'); g.addColorStop(1, '#e67e22');
+    if (mork) { g.addColorStop(0, '#7e241a'); g.addColorStop(1, '#9c5410'); }
+    else { g.addColorStop(0, '#c0392b'); g.addColorStop(1, '#e67e22'); }
     x.fillStyle = g; x.fillRect(0, 0, 1200, 630);
-    x.fillStyle = '#fff';
+    x.fillStyle = mork ? '#1d242c' : '#fff';
     rundad(x, 60, 70, 1080, 490, 28);
     x.fill();
     /* emoji + titel (radbruten) */
@@ -70,13 +74,13 @@
     x.font = '90px serif';
     x.textAlign = 'center';
     x.fillText(em, 600, 210);
-    x.fillStyle = '#2c3e50';
+    x.fillStyle = mork ? '#e8e4da' : '#2c3e50';
     x.font = '700 58px Georgia, serif';
     radbryt(x, titel(), 600, 300, 940, 66, 3);
-    x.fillStyle = '#a5967e';
+    x.fillStyle = mork ? '#a9b3b5' : '#a5967e';
     x.font = '700 30px Segoe UI, sans-serif';
     x.fillText('Recept byggda för maskinerna i köket', 600, 470);
-    x.fillStyle = '#c0392b';
+    x.fillStyle = mork ? '#e67e22' : '#c0392b';
     x.font = '800 34px Segoe UI, sans-serif';
     x.fillText('tokke2.github.io/recept', 600, 522);
     var a = document.createElement('a');

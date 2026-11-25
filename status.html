@@ -114,6 +114,67 @@
 
 <div id="out"><div class="card"><div class="running">⏳ Kör tester…</div></div></div>
 
+<!-- 📦 FLYTTA TILL NY TELEFON (SPEC 265, förslag 1164) -->
+<div class="card no-print" style="margin-top:14px;">
+  <h2>📦 Flytta till ny telefon</h2>
+  <p style="font-size:.88rem;color:#5f6e70;margin:6px 0 12px;">
+    Exporterar allt som bor i just den här webbläsaren: betyg, ⭐-favoriter, tema, textskala,
+    avbockningar, kocklägespositioner m.m. – som en fil du öppnar på nya telefonen.<br>
+    🔒 <b>Följer ALDRIG med:</b> GitHub-nyckeln, PIN-sessionen och felspärren (säkerhet – nyckeln klistrar du in själv på nya enheten).</p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+    <button class="btn" onclick="mkExportera()">⬇️ Exportera till fil</button>
+    <label class="btn" style="cursor:pointer;">⬆️ Importera fil<input type="file" accept=".json,application/json" style="display:none;" onchange="mkImportera(this)"></label>
+    <span id="flyttMsg" style="font-size:.88rem;font-weight:700;"></span>
+  </div>
+</div>
+<script>
+/* 📦 SPEC 265: export/import av lokala data. Spärrlista hålls kort och
+   säkerhetskritisk – allt annat följer med (även framtida nycklar). */
+var MK_FLYTT_ALDRIG = ['mk-gh-token', 'mk-edit-unlocked', 'mk-pin-sparr'];
+function mkExportera() {
+  var ut = { _plats: 'mitt-maskinkok-flyttfil', _datum: new Date().toISOString().slice(0, 10), data: {} };
+  try {
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (MK_FLYTT_ALDRIG.indexOf(k) !== -1) continue;
+      ut.data[k] = localStorage.getItem(k);
+    }
+  } catch (e) {}
+  var n = Object.keys(ut.data).length;
+  var a = document.createElement('a');
+  a.download = 'mitt-maskinkok-flytt-' + ut._datum + '.json';
+  a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(ut, null, 1));
+  a.click();
+  var m = document.getElementById('flyttMsg');
+  m.textContent = '✅ ' + n + ' poster exporterade!';
+  m.style.color = '#27ae60';
+}
+function mkImportera(inp) {
+  var fil = inp.files && inp.files[0];
+  var m = document.getElementById('flyttMsg');
+  if (!fil) return;
+  var fr = new FileReader();
+  fr.onload = function () {
+    try {
+      var d = JSON.parse(fr.result);
+      if (!d || d._plats !== 'mitt-maskinkok-flyttfil' || !d.data) throw new Error('fel format');
+      var n = 0;
+      Object.keys(d.data).forEach(function (k) {
+        if (MK_FLYTT_ALDRIG.indexOf(k) !== -1) return;   /* försvar även vid import */
+        try { localStorage.setItem(k, String(d.data[k])); n++; } catch (e) {}
+      });
+      m.textContent = '✅ ' + n + ' poster importerade – ladda om valfri sida så syns allt!';
+      m.style.color = '#27ae60';
+    } catch (e) {
+      m.textContent = '⚠️ Det där var ingen flyttfil från Mitt Maskinkök.';
+      m.style.color = '#c0392b';
+    }
+    inp.value = '';
+  };
+  fr.readAsText(fil);
+}
+</script>
+
 <footer>Hälsokontrollen körs live i webbläsaren varje gång sidan öppnas.</footer>
 
 <script>

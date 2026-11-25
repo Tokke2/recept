@@ -40,6 +40,7 @@
   /* Statiska nycklar som ALDRIG röres (aktiva funktioner) */
   var VITLISTA = [
     'mk-lang', 'mk-gh-token', 'mk-edit-unlocked', 'mk-fit', 'mk-tema',
+    'mk-favoriter', 'mk-sort', 'mk-pin-sparr',
     'mk-print-mode', 'mk-last-recipe', 'mk-install-promo',
     'mk-ing-priceupdate', 'mk-logg', 'mk-stadad-datum',
     'mk-felrapport-datum', 'mk-felrapport-sedda'

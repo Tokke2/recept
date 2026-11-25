@@ -215,6 +215,43 @@ window.__MK_UNDERKAT = {
   })();
 
   /* ============================================================
+     ⬆️ TILLBAKA TILL TOPPEN (SPEC 267, förslag 1166): rund knapp
+     nere till höger efter ~2 skärmhöjders scroll – på långa listor
+     (receptsamlingen, maskindatabasen) slipper tummen jobba.
+     Ligger ovanför 📤-knappen (bottom 84px) och krockar inte med
+     verktygsraden mk-rnav.
+     ============================================================ */
+  (function toppen() {
+    var b = null;
+    function visa(ja) {
+      if (ja && !b) {
+        b = document.createElement('button');
+        b.className = 'no-print';
+        b.textContent = '⬆️';
+        b.title = 'Tillbaka till toppen';
+        b.setAttribute('aria-label', b.title);
+        b.style.cssText = 'position:fixed;bottom:84px;right:14px;z-index:114;width:44px;height:44px;' +
+          'border-radius:50%;border:none;background:rgba(44,62,80,.82);color:#fff;font-size:1.15rem;' +
+          'cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;padding:0;';
+        b.onclick = function () {
+          try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+        };
+        document.body.appendChild(b);
+      }
+      if (b) b.style.display = ja ? 'flex' : 'none';
+    }
+    var vantar = false;
+    window.addEventListener('scroll', function () {
+      if (vantar) return;
+      vantar = true;
+      setTimeout(function () {
+        vantar = false;
+        visa(window.scrollY > window.innerHeight * 2);
+      }, 150);
+    }, { passive: true });
+  })();
+
+  /* ============================================================
      CENTRAL TOPPMENY (hoppar över sidor med egen .topnav)
      ============================================================ */
   (function topNav() {
@@ -515,7 +552,7 @@ window.__MK_UNDERKAT = {
   ensureCss('print.css');
   ensureCss('design.css');   /* 🎨 central designfil – vinner över sidornas :root */
   var scripts = ['logg.js', 'morkt.js', 'dela.js', 'felrapport.js', 'stadare.js', 'print.js', 'app.js', 'sprak.js', 'betyg.js', 'affiliate.js', 'intakt.js', 'emoji.js', 'seo.js', 'hero.js', 'sok.js'];
-  if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js', 'portion.js', 'hydrering.js', 'radio.js', 'jast.js', 'bakpulver.js', 'inkopslista.js', 'tipsa.js');
+  if (isRecipePage) scripts.push('ingrediens.js', 'kalkyl.js', 'recept.js', 'energi.js', 'receptnav.js', 'redigera.js', 'maskinmatch.js', 'spara.js', 'enheter.js', 'skala.js', 'etikett.js', 'tydlig.js', 'maskinlank.js', 'kommentarer.js', 'verifierad.js', 'portion.js', 'hydrering.js', 'radio.js', 'jast.js', 'bakpulver.js', 'inkopslista.js', 'tipsa.js', 'favorit.js');
   if (isRattPage) scripts.push('ratt.js');   /* 🍽️ maträttssidor (ratter/) */
   if (/recept\.html$/i.test(location.pathname)) scripts.push('kokbok.js');
   if (/(nytt-recept|generator|maskin-import|ingredienser|maskindatabas|forslag|matratter)\.html$/i.test(location.pathname)) scripts.push('spara.js');

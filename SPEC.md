@@ -3882,6 +3882,21 @@ data i json/, ALDRIG per receptfil.
     ALLTID utkast som ägaren granskar – roboten publicerar
     aldrig själv. Killer-differentiator i nischen.
 
+263. ⭐ Favoritstjärnan (förslag 1158) ✔️
+   KLART 2026-07-05: assets/favorit.js – ⭐-knapp i receptnavet (174-regeln), lista i localStorage mk-favoriter (stadar-vitlistad); recept.html fick ⭐ Favoriter-filterknappen bredvid 💪/🍃 som läser samma lista. Flyttas mellan enheter via 📦-kortet (265).
+
+264. ⏲️ Köksklockan i kockläget (förslag 1161) ✔️
+   KLART 2026-07-05: FANNS REDAN – kockläget har multitimers (⏱️ Starta-knappar per tidsangivelse i steget, cmTimers-raden överlever stegbyten) med pling (AudioContext) + vibration. Bockas av utan nybygge.
+
+265. 📦 Flytta till ny telefon (förslag 1164) ✔️
+   KLART 2026-07-05: kort på status.html – exporterar ALLA lokala poster (betyg, favoriter, tema, textskala, bockar; även framtida nycklar) som JSON-fil, import med formatkontroll. Spärrlista som ALDRIG följer med (ens vid import): mk-gh-token, mk-edit-unlocked, mk-pin-sparr.
+
+266. 🌙🖼️ Mörkt delningskort (förslag 1165) ✔️
+   KLART 2026-07-05: delningskort-generatorn i dela.js följer temat – mörkt läge ger mörk kortvariant (mörk platta, dämpad varumärkesram, ljus text).
+
+267. ⬆️ Tillbaka till toppen (förslag 1166) ✔️
+   KLART 2026-07-05: rund knapp nere till höger (site.js) efter 2 skärmhöjders scroll, mjuk scroll upp; bottom 84px → krockar aldrig med 📤-knappen eller verktygsraden.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
