@@ -3654,13 +3654,25 @@
   "Mörkt": "Dunkel",
   "PIN lagras som PBKDF2-SHA256 (": "Die PIN ist als PBKDF2-SHA256 gespeichert (",
   "min till (för många felförsök)": "min bis (zu viele falsche Versuche)",
-  "🚫 Spärrad": "🚫 Gesperrt"
+  "🚫 Spärrad": "🚫 Gesperrt",
+  "Exporterar allt som bor i just den här webbläsaren: betyg, ⭐-favoriter, tema, textskala, avbockningar, kocklägespositioner m.m. – som en fil du öppnar på nya telefonen.": "Exportiert alles, was in diesem speziellen Browser lebt: Bewertungen, ⭐-Favoriten, Thema, Textskalierung, Häkchen, Chefmodus-Positionen usw. – als Datei, die Sie auf dem neuen Telefon öffnen.",
+  "Favorit – tryck för att ta bort": "Favorit – zum Entfernen antippen",
+  "Favoriten borttagen": "Favorit entfernt",
+  "Följer ALDRIG med:": "NIEMALS folgt:",
+  "GitHub-nyckeln, PIN-sessionen och felspärren (säkerhet – nyckeln klistrar du in själv på nya enheten).": "Der GitHub-Schlüssel, die Sitzungs-PIN und der Failsafe (Sicherheit – Sie fügen den Schlüssel selbst auf dem neuen Gerät ein).",
+  "Spara som favorit (syns i ⭐-filtret på receptsamlingen)": "Als Favorit speichern (sichtbar im ⭐-Filter der Rezeptsammlung)",
+  "Tillbaka till toppen": "Zurück nach oben",
+  "Visa bara dina favoriter (⭐-knappen på varje recept)": "Zeige nur deine Favoriten (⭐-Button bei jedem Rezept)",
+  "⬆️ Importera fil": "⬆️ Datei importieren",
+  "⬇️ Exportera till fil": "⬇️ In eine Datei exportieren",
+  "⭐ Favoriter": "⭐ Favoriten",
+  "📦 Flytta till ny telefon": "📦 Wechseln Sie zu einem neuen Telefon"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3653,
- "_senast_robot": "2026-11-24"
+ "_auto_genererade": 3665,
+ "_senast_robot": "2026-11-25"
 }

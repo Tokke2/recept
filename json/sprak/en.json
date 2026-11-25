@@ -3529,7 +3529,19 @@
   "📔 E-kokboken": "📔 The e-cookbook",
   "📔 E-kokboken – verifierade recept | Mitt Maskinkök": "📔 E-Cookbook - Verified Recipes | My Machine Kitchen",
   "🔗 Länk kopierad!": "🔗 Link copied!",
-  "🚫 Spärrad": "🚫 Blocked"
+  "🚫 Spärrad": "🚫 Blocked",
+  "Exporterar allt som bor i just den här webbläsaren: betyg, ⭐-favoriter, tema, textskala, avbockningar, kocklägespositioner m.m. – som en fil du öppnar på nya telefonen.": "Exports everything that lives in this particular browser: ratings, ⭐-favorites, theme, text scale, checkmarks, chef mode positions, etc. – as a file you open on the new phone.",
+  "Favorit – tryck för att ta bort": "Favorite - tap to remove",
+  "Favoriten borttagen": "Favorite removed",
+  "Följer ALDRIG med:": "NEVER follows:",
+  "GitHub-nyckeln, PIN-sessionen och felspärren (säkerhet – nyckeln klistrar du in själv på nya enheten).": "The GitHub key, the session PIN and the failsafe (security - you paste the key yourself on the new device).",
+  "Spara som favorit (syns i ⭐-filtret på receptsamlingen)": "Save as favorite (visible in the ⭐ filter on the recipe collection)",
+  "Tillbaka till toppen": "Back to top",
+  "Visa bara dina favoriter (⭐-knappen på varje recept)": "Show only your favorites (⭐ button on each recipe)",
+  "⬆️ Importera fil": "⬆️ Import file",
+  "⬇️ Exportera till fil": "⬇️ Export to file",
+  "⭐ Favoriter": "⭐ Favorites",
+  "📦 Flytta till ny telefon": "📦 Move to new phone"
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3539,6 +3551,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3528,
- "_senast_robot": "2026-11-24"
+ "_auto_genererade": 3540,
+ "_senast_robot": "2026-11-25"
 }
