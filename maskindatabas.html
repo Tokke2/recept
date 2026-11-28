@@ -686,6 +686,38 @@ function oppnaFranHash() {
 }
 window.addEventListener('hashchange', oppnaFranHash);
 
+/* ============ 🔗 MASKIN → RECEPT (SPEC 269) ============
+   Kartan byggs varje natt av självläkningens steg 21 ur receptens
+   recept:maskiner-meta → varje maskinkort listar sina recept som
+   klickbara chips. Saknar ett recept koppling syns det i ägarkortet
+   under galleriet (0 just nu – håll det så!). */
+(async function maskinRecept() {
+  let karta = null;
+  try {
+    karta = await (await fetch('json/maskin-recept.json', { cache: 'no-store' })).json();
+  } catch (e) { return; }   /* kartan saknas → korten lämnas orörda */
+  const chip = r =>
+    `<a class="mrec-chip" href="recept/${r.fil.split('/').map(encodeURIComponent).join('/')}">${r.emoji} ${r.namn}</a>`;
+  MACHINES.forEach(m => {
+    const el = document.getElementById('mrec-' + m.id);
+    if (!el) return;
+    const lista = (karta.maskiner && karta.maskiner[m.id]) || [];
+    el.innerHTML = lista.length
+      ? `<div class="mrec-rubrik">📖 Recept med denna maskin <span class="mrec-antal">${lista.length}</span></div>
+         <div class="mrec-rad">${lista.map(chip).join('')}</div>`
+      : `<div class="mrec-rubrik" style="opacity:.6;">📭 Inga recept för denna maskin ännu – <a href="nytt-recept.html">skapa det första</a></div>`;
+  });
+  const utan = karta.utan_maskin || [];
+  if (utan.length) {
+    const kort = document.createElement('div');
+    kort.className = 'card no-print';
+    kort.innerHTML = `<div class="machine-title">🧩 Recept utan maskinkoppling (${utan.length})</div>
+      <p style="font-size:.85rem;color:#5f6e70;margin:4px 0 10px;">Dessa recept har ingen matchbar maskin i recept:maskiner-metan – öppna och rätta via ✏️.</p>
+      <div class="mrec-rad">${utan.map(chip).join('')}</div>`;
+    document.getElementById('machineCards').after(kort);
+  }
+})();
+
 /* ============ 🔗 Tillhörande recept per maskin ============
    Läser receptlistan (GitHub API → reservindex), matchar varje
    recepts "recept:maskiner"-meta + innehåll mot maskinens namn/

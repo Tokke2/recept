@@ -247,3 +247,57 @@ html.mk-dark header a, html.mk-dark .mk-hero a { color: inherit; }
   html.mk-dark th { background: #f0ebe3; color: #5f6e70; }
   html.mk-dark img { filter: none; }
 }
+
+
+/* ============================================================
+   🎨 LAYOUTPASSET v5 (SPEC 270, ägarorder 2026-07-05 "bättre
+   layout" – helheten, mobil & dator). Endast puts som bygger på
+   befintliga mönster; inget flyttas, inget göms.
+   ============================================================ */
+
+/* --- 🔗 maskin→recept-chipsen (SPEC 269) --- */
+.mk-maskinrecept { margin: 14px 0 4px; }
+.mrec-rubrik { font-size: .8rem; font-weight: 700; text-transform: uppercase; color: var(--muted, #5f6e70); margin-bottom: 8px; }
+.mrec-antal { display: inline-block; background: #e67e22; color: #fff; border-radius: 999px; padding: 1px 9px; font-size: .75rem; margin-left: 4px; }
+.mrec-rad { display: flex; flex-wrap: wrap; gap: 7px; }
+.mrec-chip { display: inline-block; background: var(--card, #fff); border: 1.5px solid #e0d9cd; border-radius: 999px;
+  padding: 7px 13px; font-size: .84rem; font-weight: 600; color: inherit; text-decoration: none; line-height: 1.2; }
+.mrec-chip:hover { border-color: #e67e22; box-shadow: 0 2px 8px rgba(0, 0, 0, .1); }
+html.mk-dark .mrec-chip { border-color: #3a434e; }
+
+/* --- ♿ synligt tangentbordsfokus överallt --- */
+:focus-visible { outline: 3px solid rgba(230, 126, 34, .75); outline-offset: 2px; border-radius: 4px; }
+
+/* --- ✨ markering i varumärkesfärg --- */
+::selection { background: #e67e22; color: #fff; }
+
+/* --- 🖱️ mjuk hovring: kort lyfter, knappar svarar (endast riktiga pekare) --- */
+.card { transition: box-shadow .18s ease; }
+@media (hover: hover) and (pointer: fine) {
+  .card:hover { box-shadow: 0 6px 22px rgba(0, 0, 0, .11); }
+  button:not(:disabled), .btn, .link-btn, .kat { transition: transform .12s ease, box-shadow .12s ease; }
+  button:not(:disabled):hover, .btn:hover, .link-btn:hover { transform: translateY(-1px); }
+  button:not(:disabled):active, .btn:active, .link-btn:active { transform: translateY(0); }
+}
+
+/* --- 📜 mjuk rull till ankare + smala eleganta rullister --- */
+html { scroll-behavior: smooth; }
+* { scrollbar-width: thin; scrollbar-color: #c9bfae transparent; }
+*::-webkit-scrollbar { width: 9px; height: 9px; }
+*::-webkit-scrollbar-thumb { background: #c9bfae; border-radius: 999px; }
+*::-webkit-scrollbar-track { background: transparent; }
+html.mk-dark * { scrollbar-color: #3a434e transparent; }
+html.mk-dark *::-webkit-scrollbar-thumb { background: #3a434e; }
+
+/* --- 📌 långa tabeller: rubrikraden följer med vid rullning (ej print) --- */
+@media screen {
+  .card thead th { position: sticky; top: 0; z-index: 2; }
+}
+
+/* --- 🌙 mörkt läge: korten får en fin tunn kant istället för tung skugga --- */
+html.mk-dark .card { border: 1px solid rgba(255, 255, 255, .06); }
+
+/* --- 📱 surfplatta/mobil: jämnare kortluft, aldrig klämda chips --- */
+@media (max-width: 900px) {
+  .card { padding-left: clamp(14px, 3vw, 24px); padding-right: clamp(14px, 3vw, 24px); }
+}

@@ -1164,6 +1164,57 @@ def steg20_bildoptimering():
 
 
 
+
+def steg21_maskinrecept(maskiner):
+    """🔗 MASKIN→RECEPT-KARTAN (SPEC 269, ägarorder 2026-07-05 "bättre
+    recept/maskinhantering"): bygger json/maskin-recept.json ur varje
+    recepts recept:maskiner-meta (samma matcha_maskin som energisteget):
+      · maskiner: { maskin-id: [ {fil, namn, emoji} … ] }  → maskinkorten
+        i databasen listar sina recept
+      · utan_maskin: [ … ]  → ägaren ser direkt vilka recept som saknar
+        maskinkoppling (ofta glömd/felstavad meta)
+    Skrivs ENDAST vid förändring (ingen onödig commit)."""
+    ut = {'_plats': '/json/maskin-recept.json  (byggs av självläkningens steg 21 – ändra ALDRIG för hand)',
+          'maskiner': {}, 'utan_maskin': []}
+    for f in sorted(glob.glob('recept/*/*.html')):
+        namn_fil = os.path.basename(f)
+        if 'MALL' in namn_fil.upper() or re.match(r'^(google|bingsiteauth|yandex_)', namn_fil, re.I):
+            continue
+        try:
+            html = open(f, encoding='utf-8', errors='ignore').read()
+        except Exception:
+            continue
+        def meta(n):
+            m = re.search(r'name="recept:%s"\s+content="([^"]*)"' % n, html)
+            return m.group(1).strip() if m else ''
+        post = {'fil': f.split('recept/', 1)[1],
+                'namn': meta('namn') or namn_fil.replace('.html', '').replace('-', ' '),
+                'emoji': meta('emoji') or '🍽️'}
+        ids = set()
+        for del_ in meta('maskiner').split('|'):
+            mid = matcha_maskin(del_.strip(), maskiner)
+            if mid:
+                ids.add(mid)
+        if ids:
+            for mid in sorted(ids):
+                ut['maskiner'].setdefault(mid, []).append(post)
+        else:
+            ut['utan_maskin'].append(post)
+    for lista in ut['maskiner'].values():
+        lista.sort(key=lambda x: x['namn'].lower())
+    ut['utan_maskin'].sort(key=lambda x: x['namn'].lower())
+    FIL = 'json/maskin-recept.json'
+    try:
+        gammal = json.load(open(FIL, encoding='utf-8'))
+    except Exception:
+        gammal = None
+    if gammal != ut:
+        json.dump(ut, open(FIL, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+        rader.append('| %s | 🔗 maskin→recept-kartan omritad (%d maskiner, %d recept utan koppling) |' %
+                     (FIL, len(ut['maskiner']), len(ut['utan_maskin'])))
+
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -1183,6 +1234,7 @@ def main():
     steg18_affiliaterot()
     steg19_intaktsvakt()
     steg20_bildoptimering()
+    steg21_maskinrecept(maskiner)
     steg12_beskrivningar()
     steg6_sitemap()
     steg7_receptindex()

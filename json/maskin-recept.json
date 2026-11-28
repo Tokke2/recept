@@ -1,0 +1,333 @@
+{
+ "_plats": "/json/maskin-recept.json  (byggs av självläkningens steg 21 – ändra ALDRIG för hand)",
+ "maskiner": {
+  "midea-mb-fs5017": [
+   {
+    "fil": "bakning/ananaskaka-med-svartvinbarssylt-i-riskokare.html",
+    "namn": "Ananaskaka med svartvinbärssylt i riskokare",
+    "emoji": "🫙"
+   },
+   {
+    "fil": "varmratt/frysbar-tomatsas-pa-egna-tomater-squash-lok-vitlok.html",
+    "namn": "Frysbar tomatsås på egna tomater, squash, lök &amp; vitlök – Riskokare",
+    "emoji": "🍕"
+   },
+   {
+    "fil": "sas/gron-tomatketchup.html",
+    "namn": "Grön tomatketchup – Riskokare",
+    "emoji": "🫙"
+   },
+   {
+    "fil": "varmratt/kokt-ris-i-riskokare-500-g-ris-1000-g-vatten.html",
+    "namn": "Kokt ris i riskokare – 500 g ris, 1000 g vatten",
+    "emoji": "🥩"
+   },
+   {
+    "fil": "varmratt/pulled-kycklinggryta-rotfrukter-vita-bonor.html",
+    "namn": "Pulled kycklinggryta med rotfrukter &amp; vita bönor – Riskokare",
+    "emoji": "🍲"
+   }
+  ],
+  "ninja-detect-power": [
+   {
+    "fil": "bakning/ananaskaka-med-svartvinbarssylt-i-riskokare.html",
+    "namn": "Ananaskaka med svartvinbärssylt i riskokare",
+    "emoji": "🫙"
+   },
+   {
+    "fil": "glass/grundrecept-glass-i-ninja-creami-nc502eu-mjolk-yoghurt-protein-hemgjord-sylt.html",
+    "namn": "Grundrecept glass i Ninja CREAMi (NC502EU) – mjölk, yoghurt, protein &amp; hemgjord sylt",
+    "emoji": "🫙"
+   },
+   {
+    "fil": "sas/klassisk-hamburgdressing.html",
+    "namn": "Klassisk hamburgdressing – Blender",
+    "emoji": "🍔"
+   },
+   {
+    "fil": "ovrigt/squashraggmunk-med-protein.html",
+    "namn": "Squashraggmunk med protein – Air Fryer",
+    "emoji": "🥔"
+   }
+  ],
+  "yumasia-sakura": [
+   {
+    "fil": "varmratt/kokt-ris-i-riskokare-500-g-ris-1000-g-vatten.html",
+    "namn": "Kokt ris i riskokare – 500 g ris, 1000 g vatten",
+    "emoji": "🥩"
+   },
+   {
+    "fil": "varmratt/pulled-kycklinggryta-rotfrukter-vita-bonor.html",
+    "namn": "Pulled kycklinggryta med rotfrukter &amp; vita bönor – Riskokare",
+    "emoji": "🍲"
+   },
+   {
+    "fil": "bakning/applekaka-i-riskokare.html",
+    "namn": "Äpplekaka i riskokare",
+    "emoji": "🧃"
+   }
+  ],
+  "clatronic-bba3774": [
+   {
+    "fil": "brod/brod-med-rivet-apple-bakmaskin.html",
+    "namn": "Bröd med rivet äpple (limpa, bakmaskin)",
+    "emoji": "🧃"
+   },
+   {
+    "fil": "deg/klassisk-havresmuldeg-lagom-sot.html",
+    "namn": "Klassisk havresmuldeg – lagom söt – Bakmaskin",
+    "emoji": "🍽️"
+   },
+   {
+    "fil": "brod/krispigt-grekiskt-lantbrod-bakmaskin.html",
+    "namn": "Krispigt grekiskt lantbröd (limpa) i bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "brod/lokbrod-i-bakmaskin.html",
+    "namn": "Lökbröd (limpa) i bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "brod/majsfrallor-bakmaskin.html",
+    "namn": "Majsfrallor – Bakmaskin",
+    "emoji": "🌽"
+   },
+   {
+    "fil": "brod/mjukt-protein-ostbrod-med-turkisk-yoghurt.html",
+    "namn": "Mjukt protein-ostbröd (limpa) med turkisk yoghurt – Bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "brod/mjukt-toastbrod-med-turkisk-yoghurt-hemgjord-sylt-utan-margarin.html",
+    "namn": "Mjukt toastbröd (limpa) med turkisk yoghurt &amp; hemgjord sylt – utan margarin – Bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "brod/ostfyllda-frallor-bakmaskin.html",
+    "namn": "Ostfyllda frallor – Bakmaskin",
+    "emoji": "🧀"
+   },
+   {
+    "fil": "bakning/pajdeg-i-bakmaskin.html",
+    "namn": "Pajdeg i bakmaskin",
+    "emoji": "🥧"
+   },
+   {
+    "fil": "brod/recept_pitabrod_airfryer.html",
+    "namn": "Pitabröd segt (Airfryer, 5 × 150 g)",
+    "emoji": "🫓"
+   },
+   {
+    "fil": "deg/pizzadeg-i-bakmaskin-4-250-g-utan-protein.html",
+    "namn": "Pizzadeg i bakmaskin – 4 × 250 g (utan protein)",
+    "emoji": "🍕"
+   },
+   {
+    "fil": "deg/pizzadeg-bakmaskin-4x250g.html",
+    "namn": "Pizzadeg – Bakmaskin",
+    "emoji": "🍕"
+   },
+   {
+    "fil": "deg/proteinrik-biscoff-smuldeg-for-pizza-bakmaskinsanpassad.html",
+    "namn": "Proteinrik Biscoff-smuldeg för pizza – bakmaskinsanpassad",
+    "emoji": "🍕"
+   },
+   {
+    "fil": "brod/rostbrod-for-smorgasgrill-bakmaskin.html",
+    "namn": "Rostbröd (limpa) för smörgåsgrill – Bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "brod/saft-wheybrod.html",
+    "namn": "Saft- &amp; wheybröd (limpa) – Bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "brod/snabba-frallor-bakmaskin.html",
+    "namn": "Snabb limpa – Bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "sylt/svartvinbarssylt-klassiskt-recept.html",
+    "namn": "Svartvinbärssylt – klassiskt recept – Bakmaskin",
+    "emoji": "🫙"
+   }
+  ],
+  "cosori-twinfry-10l": [
+   {
+    "fil": "brod/brod-med-rivet-apple-bakmaskin.html",
+    "namn": "Bröd med rivet äpple (limpa, bakmaskin)",
+    "emoji": "🧃"
+   },
+   {
+    "fil": "varmratt/helstekt-flaskytterfil-i-airfryer-800-g-kallskuren-med-kottslicer.html",
+    "namn": "Helstekt fläskytterfilé i airfryer – 800 g, kallskuren med köttslicer",
+    "emoji": "🥗"
+   },
+   {
+    "fil": "brod/krispigt-grekiskt-lantbrod-bakmaskin.html",
+    "namn": "Krispigt grekiskt lantbröd (limpa) i bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "brod/lokbrod-i-bakmaskin.html",
+    "namn": "Lökbröd (limpa) i bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "brod/majsfrallor-bakmaskin.html",
+    "namn": "Majsfrallor – Bakmaskin",
+    "emoji": "🌽"
+   },
+   {
+    "fil": "brod/mjukt-protein-ostbrod-med-turkisk-yoghurt.html",
+    "namn": "Mjukt protein-ostbröd (limpa) med turkisk yoghurt – Bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "brod/mjukt-toastbrod-med-turkisk-yoghurt-hemgjord-sylt-utan-margarin.html",
+    "namn": "Mjukt toastbröd (limpa) med turkisk yoghurt &amp; hemgjord sylt – utan margarin – Bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "brod/ostfyllda-frallor-bakmaskin.html",
+    "namn": "Ostfyllda frallor – Bakmaskin",
+    "emoji": "🧀"
+   },
+   {
+    "fil": "bakning/pajdeg-i-bakmaskin.html",
+    "namn": "Pajdeg i bakmaskin",
+    "emoji": "🥧"
+   },
+   {
+    "fil": "brod/rostbrod-for-smorgasgrill-bakmaskin.html",
+    "namn": "Rostbröd (limpa) för smörgåsgrill – Bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "brod/saft-wheybrod.html",
+    "namn": "Saft- &amp; wheybröd (limpa) – Bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "brod/majsbrod-saftig-print.html",
+    "namn": "Saftigt majsbröd (limpa) – Airfryer – COSORI CAF-TF101S (Dual Blaze TwinFry)",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "brod/snabba-frallor-bakmaskin.html",
+    "namn": "Snabb limpa – Bakmaskin",
+    "emoji": "🍞"
+   },
+   {
+    "fil": "ovrigt/squashraggmunk-med-protein.html",
+    "namn": "Squashraggmunk med protein – Air Fryer",
+    "emoji": "🥔"
+   },
+   {
+    "fil": "snacks/stekta-grona-tomater-air-fryer.html",
+    "namn": "Stekta gröna tomater – Air Fryer",
+    "emoji": "🍅"
+   },
+   {
+    "fil": "sylt/syltfyllda-vafflor-i-airfryer.html",
+    "namn": "Syltfyllda våfflor i airfryer",
+    "emoji": "🧇"
+   }
+  ],
+  "ninja-af500eucp": [
+   {
+    "fil": "varmratt/helstekt-flaskytterfil-i-airfryer-800-g-kallskuren-med-kottslicer.html",
+    "namn": "Helstekt fläskytterfilé i airfryer – 800 g, kallskuren med köttslicer",
+    "emoji": "🥗"
+   },
+   {
+    "fil": "brod/majsfrallor-bakmaskin.html",
+    "namn": "Majsfrallor – Bakmaskin",
+    "emoji": "🌽"
+   },
+   {
+    "fil": "snacks/a4-makaronichips-airfryer-salt--peppar.html",
+    "namn": "Makaronichips (Airfryer, salt &amp;amp; peppar)",
+    "emoji": "🥨"
+   },
+   {
+    "fil": "brod/ostfyllda-frallor-bakmaskin.html",
+    "namn": "Ostfyllda frallor – Bakmaskin",
+    "emoji": "🧀"
+   },
+   {
+    "fil": "sylt/syltfyllda-vafflor-i-airfryer.html",
+    "namn": "Syltfyllda våfflor i airfryer",
+    "emoji": "🧇"
+   }
+  ],
+  "klaif-pizzaugn": [
+   {
+    "fil": "deg/pizzadeg-i-bakmaskin-4-250-g-utan-protein.html",
+    "namn": "Pizzadeg i bakmaskin – 4 × 250 g (utan protein)",
+    "emoji": "🍕"
+   }
+  ],
+  "greenpan-frost": [
+   {
+    "fil": "saft/Ananas_Rom_Yoghurt_Slush.html",
+    "namn": "Ananas &amp; Rom Yoghurt Slush",
+    "emoji": "🍹"
+   },
+   {
+    "fil": "husdjur/annanasglas_hund.html",
+    "namn": "Hundglass – Ananas &amp; Yoghurt – Glassmaskin",
+    "emoji": "🐶"
+   },
+   {
+    "fil": "glass/Mjukglass MAX.html",
+    "namn": "Mjukglass MAX – 3 Mejerivarianter – Glassmaskin",
+    "emoji": "🍦"
+   },
+   {
+    "fil": "saft/recept_proteinshake_saft.html",
+    "namn": "Proteinshake med saft (utbytbar) – Glassmaskin",
+    "emoji": "🥤"
+   }
+  ],
+  "ninja-nc502eu": [
+   {
+    "fil": "glass/grundrecept-glass-i-ninja-creami-nc502eu-mjolk-yoghurt-protein-hemgjord-sylt.html",
+    "namn": "Grundrecept glass i Ninja CREAMi (NC502EU) – mjölk, yoghurt, protein &amp; hemgjord sylt",
+    "emoji": "🫙"
+   }
+  ],
+  "vevor-sus420": [
+   {
+    "fil": "snacks/grona-tomat-chips.html",
+    "namn": "Gröna tomat-chips",
+    "emoji": "🍟"
+   },
+   {
+    "fil": "varmratt/helstekt-flaskytterfil-i-airfryer-800-g-kallskuren-med-kottslicer.html",
+    "namn": "Helstekt fläskytterfilé i airfryer – 800 g, kallskuren med köttslicer",
+    "emoji": "🥗"
+   },
+   {
+    "fil": "snacks/squash-chips-i-torkautomat.html",
+    "namn": "Squash-chips i torkautomat",
+    "emoji": "🥨"
+   }
+  ],
+  "wmf-snacktogo": [
+   {
+    "fil": "snacks/grona-tomat-chips.html",
+    "namn": "Gröna tomat-chips",
+    "emoji": "🍟"
+   },
+   {
+    "fil": "snacks/squash-chips-i-torkautomat.html",
+    "namn": "Squash-chips i torkautomat",
+    "emoji": "🥨"
+   }
+  ]
+ },
+ "utan_maskin": []
+}

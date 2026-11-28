@@ -3900,6 +3900,12 @@ data i json/, ALDRIG per receptfil.
 268. 🎤 Röstverifiering (ägarorder 2026-07-05, "röststyrning när man verifierar maskin med tider, tex af") ✔️
    KLART 2026-07-05: 🎤 Tala in alltihop-knappen i verifieringsdialogen (maskinmatch.js) – säg t.ex. "Air fry 12 minuter 200 grader vänd halvvägs" så fylls fälten själva: tid → ⏱️-fältet (AF) eller programtexten, grader ≤110 → 🌡️-innertemp, >110 → ugnstemp i programtexten, vänd/skaka → bocken (negation "inte vända" vinner), resten → programnamnet. Grön "Uppfattat"-kvittorad. Svenska (sv-SE), knappen visas bara i webbläsare med taligenkänning (Chrome/Edge/Safari); mikrofonen stoppas ALLTID vid spara/avbryt.
 
+269. 🔗 Maskin → recept-kopplingen (ägarorder 2026-07-05, "bättre recept/maskinhantering") ✔️
+   KLART 2026-07-05: självläkningens steg 21 bygger json/maskin-recept.json nattligen ur recept:maskiner-metan (samma matchning som energisteget); varje maskinkort i databasen listar nu sina recept som klickbara chips (📖 Recept med denna maskin + antal); recept utan koppling visas i eget ägarkort under korten (just nu 0 – alla recept är kopplade). Motsatta riktningen fanns redan (maskinlank.js). Robotägd fil – ändras aldrig för hand.
+
+270. 🎨 Layoutpasset v5 (ägarorder 2026-07-05, "bättre layout" – helheten, mobil & dator) ✔️
+   KLART 2026-07-05: design.css – synligt tangentbordsfokus (:focus-visible i varumärkesorange), ::selection i varumärkesfärg, kort som lyfter + knappar som svarar vid hovring (ENDAST hover-kapabla pekare – aldrig på touch), mjuk ankarrullning, smala eleganta rullister (ljust+mörkt), sticky tabellrubriker i långa korttabeller (ej print), tunn kortkant i mörkt läge, jämnare kortluft på mobil/surfplatta. Inget flyttat, inget gömt.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
