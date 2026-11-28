@@ -3666,13 +3666,20 @@
   "⬆️ Importera fil": "⬆️ Datei importieren",
   "⬇️ Exportera till fil": "⬇️ In eine Datei exportieren",
   "⭐ Favoriter": "⭐ Favoriten",
-  "📦 Flytta till ny telefon": "📦 Wechseln Sie zu einem neuen Telefon"
+  "📦 Flytta till ny telefon": "📦 Wechseln Sie zu einem neuen Telefon",
+  "inte vända": "nicht umdrehen",
+  "” – prova t.ex. ”Air fry 12 minuter 200 grader vänd halvvägs”": "” – versuchen Sie es z. B. „Luftfrittieren 12 Minuten bei 200 Grad, halbieren drehen“",
+  "⚠️ Mikrofonen sa nej – kolla behörigheten i webbläsaren.": "⚠️ Das Mikrofon sagte Nein – überprüfen Sie die Berechtigungen im Browser.",
+  "👂 Lyssnar … (tryck för stopp)": "👂 Zuhören... (tippen, um zu stoppen)",
+  "🔄 ingen vändning": "🔄 kein Drehen",
+  "🔄 vänd halvvägs": "🔄 Auf halbem Weg umdrehen",
+  "🤔 Hörde ”": "🤔 Gehört“"
  },
  "monster": {
   "Steg {1} av {2}": "Schritt {1} von {2}",
   "{1} program": "{1} Programme",
   "~{1} kr": "~{1} SEK"
  },
- "_auto_genererade": 3665,
- "_senast_robot": "2026-11-27"
+ "_auto_genererade": 3672,
+ "_senast_robot": "2026-11-28"
 }

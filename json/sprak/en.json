@@ -3541,7 +3541,14 @@
   "⬆️ Importera fil": "⬆️ Import file",
   "⬇️ Exportera till fil": "⬇️ Export to file",
   "⭐ Favoriter": "⭐ Favorites",
-  "📦 Flytta till ny telefon": "📦 Move to new phone"
+  "📦 Flytta till ny telefon": "📦 Move to new phone",
+  "inte vända": "do not turn",
+  "” – prova t.ex. ”Air fry 12 minuter 200 grader vänd halvvägs”": "” – try e.g. “Air fry 12 minutes 200 degrees turn halfway”",
+  "⚠️ Mikrofonen sa nej – kolla behörigheten i webbläsaren.": "⚠️ The microphone said no - check the permissions in the browser.",
+  "👂 Lyssnar … (tryck för stopp)": "👂 Listening... (tap to stop)",
+  "🔄 ingen vändning": "🔄 no turning",
+  "🔄 vänd halvvägs": "🔄 turn halfway",
+  "🤔 Hörde ”": "🤔 Heard \""
  },
  "monster": {
   "Steg {1} av {2}": "Step {1} of {2}",
@@ -3551,6 +3558,6 @@
   "Sök recept... (t.ex. kaka, ananas, fika)": "Search recipes... (e.g. cake, pineapple)",
   "🔍 Sök recept... (t.ex. kaka, ananas, fika)": "🔍 Search recipes... (e.g. cake, pineapple)"
  },
- "_auto_genererade": 3540,
- "_senast_robot": "2026-11-27"
+ "_auto_genererade": 3547,
+ "_senast_robot": "2026-11-28"
 }
