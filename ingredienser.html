@@ -174,6 +174,49 @@
   </div>
 </div>
 
+<!-- 🔄 INGREDIENS-SYNKEN (SPEC 271): byggs nattligen av självläkningens
+     steg 22 – visar exakt vilka receptrader som saknar databaspost
+     (= pris/kcal kan inte räknas) och vilka poster inget recept använder. -->
+<div class="card no-print" id="synkKort" style="display:none;">
+  <h2>🔄 Synk mot recepten</h2>
+  <div id="synkInnehall"></div>
+</div>
+<script>
+(async function () {
+  try {
+    var d = await (await fetch('json/ingrediens-synk.json', { cache: 'no-store' })).json();
+    var kort = document.getElementById('synkKort');
+    var ut = '';
+    var osynk = d.osynkade || [];
+    if (!osynk.length) {
+      ut += '<p style="color:#27ae60;font-weight:700;">✅ Alla ' + ((d.stat && d.stat.rader) || '') +
+            ' ingrediensrader i recepten hittar sin databaspost – kalkylen är heltäckande!</p>';
+    } else {
+      ut += '<p style="font-size:.88rem;color:#5f6e70;margin:4px 0 10px;">⚠️ <b>' + osynk.length +
+            ' receptrader saknar databaspost</b> – deras pris &amp; näring kan inte räknas. ' +
+            'Lägg till varan nedan (➕) eller koppla raden som alias via 🔗-knappen i receptets kalkyl.</p>';
+      ut += '<div style="display:flex;flex-direction:column;gap:6px;">' + osynk.map(function (o) {
+        return '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;font-size:.88rem;">' +
+          '<b>' + o.namn + '</b><span style="opacity:.6;">(' + o.antal + ' rad' + (o.antal > 1 ? 'er' : '') + ')</span>' +
+          o.recept.map(function (r) {
+            return '<a href="recept/' + r.split('/').map(encodeURIComponent).join('/') +
+              '" style="font-size:.8rem;border:1px solid #e0d9cd;border-radius:999px;padding:2px 10px;text-decoration:none;color:inherit;">📖 ' +
+              r.split('/').pop().replace('.html', '').replace(/-/g, ' ').slice(0, 28) + '</a>';
+          }).join('') + '</div>';
+      }).join('') + '</div>';
+    }
+    var oanv = d.oanvanda || [];
+    if (oanv.length) {
+      ut += '<details style="margin-top:12px;"><summary style="cursor:pointer;font-size:.85rem;color:#5f6e70;">💤 ' +
+            oanv.length + ' databasposter används inte av något recept (helt ofarligt – bra att ha vid nya recept)</summary>' +
+            '<p style="font-size:.82rem;color:#5f6e70;margin-top:8px;">' + oanv.join(' · ') + '</p></details>';
+    }
+    document.getElementById('synkInnehall').innerHTML = ut;
+    kort.style.display = '';
+  } catch (e) { /* synkfilen saknas ännu – kortet förblir dolt */ }
+})();
+</script>
+
 <footer>Priser &amp; näring per 100 g · används av recepten och energiberäkningen · json/ingredienser.json</footer>
 
 <script>

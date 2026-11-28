@@ -1215,6 +1215,118 @@ def steg21_maskinrecept(maskiner):
 
 
 
+
+def steg22_ingredienssynk():
+    """🔄 INGREDIENS-SYNKEN (SPEC 271, ägarorder 2026-07-05 "bättre synk
+    av ingredienser mot recept"): går igenom VARJE ingrediensrad i VARJE
+    recept och matchar mot json/ingredienser.json med EXAKT samma
+    normalisering och poängtrappa som kalkyl.js (alias=100, exakt=100,
+    prefix=80, alla ord=60, 2 ord=40, enda ordet=30; under 30 = miss).
+    Skriver json/ingrediens-synk.json:
+      · osynkade  – rader utan träff (= pris/kcal saknas i kalkylen!)
+      · tvetydiga – rader med flera lika bra kandidater (väljaren i
+        kalkylen löser dem per besökare, men ett alias löser för alla)
+      · oanvanda  – databasposter som inget recept använder (städinfo)
+    Skrivs ENDAST vid förändring. Robotägd fil – ändras aldrig för hand."""
+    try:
+        db = json.load(open('json/ingredienser.json', encoding='utf-8')).get('ingredienser', [])
+    except Exception:
+        return
+    def norm(t):
+        t = str(t).lower()
+        t = re.sub(r'\([^)]*\)', '', t)
+        t = t.replace('å', 'a').replace('ä', 'a').replace('ö', 'o')
+        return re.sub(r'[^a-z0-9%]+', ' ', t).strip()
+    dbn = [(post, norm(post.get('namn', '')),
+            [norm(a) for a in post.get('alias', [])]) for post in db]
+    def matcha(n):
+        best, lista = 0, []
+        for post, d, alias in dbn:
+            score = 100 if n in alias else 0
+            if not score:
+                if d == n:
+                    score = 100
+                elif n.startswith(d) or d.startswith(n):
+                    score = 80
+                else:
+                    dw = [w for w in d.split(' ') if len(w) > 2]
+                    hits = sum(1 for w in dw if ' ' + w + ' ' in ' ' + n + ' ')
+                    if dw and hits == len(dw):
+                        score = 60
+                    elif hits >= 2:
+                        score = 40
+                    elif hits == 1 and len(dw) == 1:
+                        score = 30
+            if score > best:
+                best, lista = score, [post]
+            elif score == best and score >= 30:
+                lista.append(post)
+        return best, lista
+
+    osynk, tvety, anvanda = {}, {}, set()
+    rader_tot = 0
+    for f in sorted(glob.glob('recept/*/*.html')):
+        bas = os.path.basename(f)
+        if 'MALL' in bas.upper() or re.match(r'^(google|bingsiteauth|yandex_)', bas, re.I):
+            continue
+        try:
+            html = open(f, encoding='utf-8', errors='ignore').read()
+        except Exception:
+            continue
+        m = re.search(r'Ingredienser</h2>\s*<table>(.*?)</table>', html, re.S)
+        if not m:
+            continue
+        rel = f.split('recept/', 1)[1]
+        for td1, td2 in re.findall(r'<tr><td>(.*?)</td><td>(.*?)</td>', m.group(1)):
+            namn = re.sub(r'<[^>]+>', '', td1).replace('💧', '').strip()
+            mangd = re.sub(r'<[^>]+>', '', td2).strip()
+            # 🧹 äldre recept har ALLT i en tabell: steg/rubriker/tips har
+            # TOM mängdcell – bara rader med mängd är ingredienser
+            if not namn or not mangd:
+                continue
+            # 🧹 meningsheuristiken: stegtext som smugit sig in i gamla
+            # ingredienstabeller (slutar med punkt, börjar med stegnummer,
+            # eller är en hel mening) är INTE ingredienser
+            kort = re.sub(r'\([^)]*\)', '', namn).strip()
+            if (kort.endswith('.') or kort.endswith(':') or
+                    re.match(r'^\d+\.', kort) or len(kort.split()) > 6):
+                continue
+            rader_tot += 1
+            n = norm(namn)
+            if not n:
+                continue
+            best, lista = matcha(n)
+            if best < 30:
+                post = osynk.setdefault(namn, {'namn': namn, 'antal': 0, 'recept': []})
+                post['antal'] += 1
+                if rel not in post['recept']:
+                    post['recept'].append(rel)
+            else:
+                for kand in lista:
+                    anvanda.add(kand.get('id') or kand.get('namn'))
+                if len(lista) > 1:
+                    post = tvety.setdefault(namn, {'namn': namn, 'antal': 0,
+                                                   'kandidater': [k.get('namn') for k in lista]})
+                    post['antal'] += 1
+    oanv = sorted(p.get('namn', '') for p in db
+                  if (p.get('id') or p.get('namn')) not in anvanda)
+    ut = {'_plats': '/json/ingrediens-synk.json  (byggs av självläkningens steg 22 – ändra ALDRIG för hand)',
+          'stat': {'rader': rader_tot, 'osynkade': len(osynk), 'tvetydiga': len(tvety), 'oanvanda': len(oanv)},
+          'osynkade': sorted(osynk.values(), key=lambda x: -x['antal']),
+          'tvetydiga': sorted(tvety.values(), key=lambda x: -x['antal']),
+          'oanvanda': oanv}
+    FIL = 'json/ingrediens-synk.json'
+    try:
+        gammal = json.load(open(FIL, encoding='utf-8'))
+    except Exception:
+        gammal = None
+    if gammal != ut:
+        json.dump(ut, open(FIL, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+        rader.append('| %s | 🔄 ingrediens-synken omritad: %d osynkade, %d tvetydiga, %d oanvända |' %
+                     (FIL, len(osynk), len(tvety), len(oanv)))
+
+
+
 def main():
     maskiner = lasta_maskiner()
     steg1_effekt(maskiner)
@@ -1235,6 +1347,7 @@ def main():
     steg19_intaktsvakt()
     steg20_bildoptimering()
     steg21_maskinrecept(maskiner)
+    steg22_ingredienssynk()
     steg12_beskrivningar()
     steg6_sitemap()
     steg7_receptindex()

@@ -3906,6 +3906,9 @@ data i json/, ALDRIG per receptfil.
 270. 🎨 Layoutpasset v5 (ägarorder 2026-07-05, "bättre layout" – helheten, mobil & dator) ✔️
    KLART 2026-07-05: design.css – synligt tangentbordsfokus (:focus-visible i varumärkesorange), ::selection i varumärkesfärg, kort som lyfter + knappar som svarar vid hovring (ENDAST hover-kapabla pekare – aldrig på touch), mjuk ankarrullning, smala eleganta rullister (ljust+mörkt), sticky tabellrubriker i långa korttabeller (ej print), tunn kortkant i mörkt läge, jämnare kortluft på mobil/surfplatta. Inget flyttat, inget gömt.
 
+271. 🔄 Ingrediens-synken (ägarorder 2026-07-05, "bättre synk av ingredienser mot recept") ✔️
+   KLART 2026-07-05: självläkningens steg 22 matchar nattligen VARJE ingrediensrad i VARJE recept mot json/ingredienser.json med EXAKT kalkyl.js-poängtrappan (alias/exakt=100, prefix=80, ordöverlapp 60/40/30) → json/ingrediens-synk.json (robotägd). Ingredienser.html visar 🔄-kortet: osynkade rader (namn + antal + receptchips; pris/kcal kan ej räknas → lägg till vara eller alias-koppla via 🔗 i kalkylen), 💤 oanvända poster i hopfällbar detalj. Första körningen: 25 osynkade (Bakpulver-bristen bekräftad!), 0 tvetydiga, 36 oanvända. Meningsheuristik rensar stegtext ur gamla blandtabeller.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
