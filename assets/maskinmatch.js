@@ -179,6 +179,14 @@
            visas överallt där verifieringen syns. */
         '<label style="display:block;font-size:.75rem;font-weight:700;color:#5f6e70;text-transform:uppercase;margin:10px 0 4px;">🌡️ Innertemp när klar (°C, frivilligt)</label>' +
         '<input id="mt-temp" type="text" inputmode="decimal" style="width:110px;padding:10px 12px;border:2px solid #e8e2d8;border-radius:10px;font-size:.92rem;font-family:inherit;" placeholder="t.ex. 96">' +
+        /* 🎤 RÖSTVERIFIERING (SPEC 268, ägarorder 2026-07-05): säg allt i
+           en mening med mjöliga händer – "Air fry 12 minuter 200 grader
+           vänd halvvägs" → fälten fylls i automatiskt. */
+        ((window.SpeechRecognition || window.webkitSpeechRecognition) ?
+        '<div style="display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap;">' +
+          '<button type="button" id="mt-tala" style="background:#2c3e50;color:#fff;border:none;border-radius:10px;padding:11px 16px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:inherit;">🎤 Tala in alltihop</button>' +
+          '<span id="mt-horde" style="font-size:.82rem;color:#5f6e70;flex:1;min-width:140px;"></span>' +
+        '</div>' : '') +
         /* 🍟 AIRFRYER-EXTRA (användarens order 2026-11-07, punkt 141):
            registrera faktisk tid + om maten ska vändas – skrivs AUTOMATISKT
            in i instruktionerna vid maskinens ⚙️-ruta, med maskinnamnet */
@@ -220,11 +228,94 @@
         try { rec.start(); } catch (e) { rostStopp(); }
       };
     }
-    bg.querySelector('#mt-avbryt').onclick = function () { rostStopp(); bg.remove(); };
+    /* 🎤 SPEC 268: tolka EN intalad mening → rätt fält.
+       Förstår: "12 minuter"/"en kvart"/"en halvtimme" → tid,
+       "200 grader" → temp (96 o.d. hamnar i 🌡️-fältet),
+       "vänd/skaka (halvvägs)" → bocken (negation vinner: "inte vända"),
+       resten av meningen → programfältet. */
+    var talaRec = null;
+    function talaStopp() {
+      if (talaRec) { try { talaRec.stop(); } catch (e) {} talaRec = null; }
+      var tb = bg.querySelector('#mt-tala');
+      if (tb) { tb.style.background = '#2c3e50'; tb.textContent = '🎤 Tala in alltihop'; }
+    }
+    function talaTolka(txt) {
+      var kvar = ' ' + txt + ' ';
+      var lagt = [];
+      /* temperatur först (så "200 grader" inte äts som tid) */
+      var mT = kvar.match(/(\d{2,3})\s*(?:grader|°)/i);
+      if (mT) {
+        var gr = +mT[1];
+        kvar = kvar.replace(mT[0], ' ');
+        /* ⚙️ tumregel: ≤110° är innertemp (bröd blir ~96–99°), över = ugnstemp → programtexten */
+        if (gr <= 110 && bg.querySelector('#mt-temp')) {
+          bg.querySelector('#mt-temp').value = String(gr);
+          lagt.push('🌡️ ' + gr + '°');
+        } else { kvar += ' ' + gr + '°C '; lagt.push(gr + '°C'); }
+      }
+      /* tid */
+      var min = null;
+      var mM = kvar.match(/(\d+(?:[.,]5)?)\s*(?:minuter|minuters|minut|min)\b/i);
+      if (mM) { min = mM[1].replace(',', '.'); kvar = kvar.replace(mM[0], ' '); }
+      else if (/en kvart/i.test(kvar)) { min = '15'; kvar = kvar.replace(/en kvart/i, ' '); }
+      else if (/en halvtimme|halv timme/i.test(kvar)) { min = '30'; kvar = kvar.replace(/en halvtimme|halv timme/i, ' '); }
+      if (min !== null) {
+        var tidIn = bg.querySelector('#mt-tid');
+        if (tidIn) tidIn.value = min;        /* airfryer: eget fält */
+        else kvar += ' · ' + min + ' min ';  /* övriga maskiner: in i programtexten */
+        lagt.push('⏱️ ' + min + ' min');
+      }
+      /* vändning (negationen vinner) */
+      var vand = bg.querySelector('#mt-vand');
+      if (vand) {
+        if (/\b(inte|ej|ingen|utan)\b[^.]*\b(vänd|vända|vändning|skaka)/i.test(kvar)) {
+          vand.checked = false; lagt.push('🔄 ingen vändning');
+          kvar = kvar.replace(/\b(inte|ej|ingen|utan)\b[^.]*\b(vänd\w*|skaka\w*)/gi, ' ');
+        } else if (/\b(vänd\w*|skaka\w*)\b/i.test(kvar)) {
+          vand.checked = true; lagt.push('🔄 vänd halvvägs');
+          kvar = kvar.replace(/\b(halvvägs|vänd\w*|skaka\w*)\b/gi, ' ');
+        }
+      }
+      /* resten = programnamnet */
+      var prog = kvar.replace(/\s{2,}/g, ' ').replace(/^[\s·,.]+|[\s·,.]+$/g, '');
+      if (prog.length > 1) {
+        var pIn = bg.querySelector('#mt-prog');
+        pIn.value = prog.charAt(0).toUpperCase() + prog.slice(1);
+        lagt.push('⚙️ ”' + pIn.value + '”');
+      }
+      var ho = bg.querySelector('#mt-horde');
+      ho.textContent = lagt.length ? '✅ Uppfattat: ' + lagt.join(' · ') : '🤔 Hörde ”' + txt + '” – prova t.ex. ”Air fry 12 minuter 200 grader vänd halvvägs”';
+      ho.style.color = lagt.length ? '#27ae60' : '#c0392b';
+    }
+    var talaBtn = bg.querySelector('#mt-tala');
+    if (talaBtn) talaBtn.onclick = function () {
+      if (talaRec) { talaStopp(); return; }
+      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      talaRec = new SR();
+      talaRec.lang = 'sv-SE'; talaRec.continuous = false; talaRec.interimResults = false;
+      talaRec.onresult = function (e) {
+        var t = e.results[0] && e.results[0][0] ? e.results[0][0].transcript.trim() : '';
+        if (t) talaTolka(t);
+      };
+      talaRec.onerror = function () {
+        var ho = bg.querySelector('#mt-horde');
+        ho.textContent = '⚠️ Mikrofonen sa nej – kolla behörigheten i webbläsaren.';
+        ho.style.color = '#c0392b';
+        talaStopp();
+      };
+      talaRec.onend = talaStopp;
+      talaBtn.style.background = '#c0392b';
+      talaBtn.textContent = '👂 Lyssnar … (tryck för stopp)';
+      bg.querySelector('#mt-horde').textContent = '';
+      try { talaRec.start(); } catch (e) { talaStopp(); }
+    };
+
+    bg.querySelector('#mt-avbryt').onclick = function () { rostStopp(); talaStopp(); bg.remove(); };
     var dn = false;
     bg.addEventListener('mousedown', function (e) { dn = (e.target === bg); });
     bg.addEventListener('click', function (e) { if (e.target === bg && dn) bg.remove(); });
     bg.querySelector('#mt-spara').onclick = async function () {
+      talaStopp();
       var prog = bg.querySelector('#mt-prog').value.trim();
       var tEl = bg.querySelector('#mt-temp');
       var tv = tEl ? tEl.value.trim().replace(',', '.') : '';

@@ -3897,6 +3897,9 @@ data i json/, ALDRIG per receptfil.
 267. ⬆️ Tillbaka till toppen (förslag 1166) ✔️
    KLART 2026-07-05: rund knapp nere till höger (site.js) efter 2 skärmhöjders scroll, mjuk scroll upp; bottom 84px → krockar aldrig med 📤-knappen eller verktygsraden.
 
+268. 🎤 Röstverifiering (ägarorder 2026-07-05, "röststyrning när man verifierar maskin med tider, tex af") ✔️
+   KLART 2026-07-05: 🎤 Tala in alltihop-knappen i verifieringsdialogen (maskinmatch.js) – säg t.ex. "Air fry 12 minuter 200 grader vänd halvvägs" så fylls fälten själva: tid → ⏱️-fältet (AF) eller programtexten, grader ≤110 → 🌡️-innertemp, >110 → ugnstemp i programtexten, vänd/skaka → bocken (negation "inte vända" vinner), resten → programnamnet. Grön "Uppfattat"-kvittorad. Svenska (sv-SE), knappen visas bara i webbläsare med taligenkänning (Chrome/Edge/Safari); mikrofonen stoppas ALLTID vid spara/avbryt.
+
 ## ⏸️ ARBETSREGEL FÖR ROADMAPEN (användarens beställning)
 
 - 🛡️ REGRESSIONSKOLL VID VARJE KODÄNDRING: när kod skrivs eller
