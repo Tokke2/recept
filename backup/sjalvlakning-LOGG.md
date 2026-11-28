@@ -621,3 +621,9 @@
 | recept/bakning/pajdeg-i-bakmaskin.html | 🚫 spärrat program i metan: "10. Cake (Kaka)" (clatronic bba 3774) – ägarorder krävs (steg16) |
 | https://www.greenpan.us/products/frost-6-in-1-ice-cream-frozen-drink-maker | 🔗 DÖD produktlänk (HTTP 404) – byt via ✏️-dialogen (steg18) |
 | sitemap.xml | 🗺️ omgenererad (52 adresser) |
+
+**2026-11-28**
+
+| recept/bakning/pajdeg-i-bakmaskin.html | 🚫 spärrat program i metan: "10. Cake (Kaka)" (clatronic bba 3774) – ägarorder krävs (steg16) |
+| https://www.greenpan.us/products/frost-6-in-1-ice-cream-frozen-drink-maker | 🔗 DÖD produktlänk (HTTP 404) – byt via ✏️-dialogen (steg18) |
+| https://yum-asia.com/eu/product/sakura-advanced-fuzzy-logic-ceramic-rice-cooker/ | 🔗 gick inte att nå (nätfel/timeout) – kontrollera manuellt (steg18) |
